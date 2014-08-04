@@ -1,3 +1,6 @@
+Create a proper webpage.
+
+
 SQL za export mentorjev:
 SELECT u.username, u.email, p.first_name, p.last_name, p.phone_number, s.name as school_name FROM `users` u, profiles p, school s, school_mentor sm WHERE u.id = p.user_id and p.user_role >= 5 and p.country_id = 1 and sm.useR_id = u.id and sm.school_id = s.id order by school_name asc, p.last_name asc, p.first_name asc
 
