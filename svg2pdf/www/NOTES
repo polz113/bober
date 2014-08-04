@@ -1,0 +1,8 @@
+Notes
+-----
+
+Make PUT and POST work on Apache:
+   http://www.jfileupload.com/support/forums/viewtopic.php?f=2&t=361
+
+Thoughts about PUT, DELETE and how to mimic them per convention:
+   http://stackoverflow.com/questions/2081894/handling-put-delete-arguments-in-php

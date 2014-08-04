@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tns="http://soap.comcode.si/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns="http://schemas.xmlsoap.org/wsdl/" targetNamespace="http://soap.comcode.si/">
+    <types>
+        <xsd:schema targetNamespace="http://soap.comcode.si/">
+            <xsd:import namespace="http://schemas.xmlsoap.org/soap/encoding/" />
+            <xsd:import namespace="http://schemas.xmlsoap.org/wsdl/" />
+        </xsd:schema>
+    </types>
+    <message name="downloadContentRequest">
+        <part name="username" type="xsd:string" />
+        <part name="password" type="xsd:string" />
+        <part name="url" type="xsd:string" />
+        <part name="http_username" type="xsd:string" />
+        <part name="http_password" type="xsd:string" />
+    </message>
+    <message name="downloadContentResponse">
+        <part name="status" type="xsd:boolean" />
+        <part name="errorCode" type="xsd:integer" />
+        <part name="errorDescription" type="xsd:string" />
+        <part name="result" type="xsd:string" />
+    </message>
+    <portType name="COMCODE HTML2PDF SOAP APIPortType">
+        <operation name="downloadContent">
+            <input message="tns:downloadContentRequest"/>
+            <output message="tns:downloadContentResponse"/>
+        </operation>
+    </portType>
+    <binding name="COMCODE HTML2PDF SOAP APIBinding" type="tns:COMCODE HTML2PDF SOAP APIPortType">
+        <soap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <operation name="downloadContent">
+            <soap:operation soapAction="http://soap.comcode.si/index.php/downloadContent" style="rpc"/>
+            <input>
+                <soap:body use="encoded" namespace="http://soap.comcode.si/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+            </input>
+            <output>
+                <soap:body use="encoded" namespace="http://soap.comcode.si/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+            </output>
+        </operation>
+    </binding>
+    <service name="COMCODE HTML2PDF SOAP API">
+        <port name="COMCODE HTML2PDF SOAP APIPort" binding="tns:COMCODE HTML2PDF SOAP APIBinding">
+            <soap:address location="http://soap.comcode.si/index.php"/>
+        </port>
+    </service>
+</definitions>

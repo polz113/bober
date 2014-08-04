@@ -1,0 +1,4 @@
+Bober is a web-based bebras competition system written in php using the yii framework.
+It is easily localizable and is written to be scalable.
+
+Most of the files can be found under backend/ .

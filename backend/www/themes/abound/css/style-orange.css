@@ -1,0 +1,65 @@
+.navbar .brand {
+  color:#eee;
+  text-shadow:#777777 0 1px 0;
+}
+
+.navbar-inverse .navbar-inner {
+  background-color:#d85515;
+  background-image:-webkit-linear-gradient(top, #d85515, #ec6320);
+  background-repeat:repeat no-repeat;
+  border-color:#468847;
+  color:#eee;
+}
+
+.navbar .nav > li > a {
+  color:#eee;
+  text-shadow:#ccc 0 0 0;
+}
+
+.navbar .operations > li > a {
+  color:#1d2e7b;
+}
+
+.navbar-inverse .nav .active > a,
+.navbar-inverse .nav .active > a:hover,
+.navbar-inverse .nav .active > a:focus {
+  color: #ffffff;
+  background-color: #d85515;
+}
+
+.navbar-inverse .nav li.dropdown.open > .dropdown-toggle,
+.navbar-inverse .nav li.dropdown.active > .dropdown-toggle,
+.navbar-inverse .nav li.dropdown.open.active > .dropdown-toggle {
+  color: #ffffff;
+  background-color: #d85515;
+}
+
+.navbar-inverse .navbar-search .search-query {
+  background-color:#dedede;
+  border-color:#dedede;
+  color:#111111;
+}
+
+.navbar-inverse .divider-vertical {
+  border-right-color: #39436d;
+  border-left-color: #20317d;
+}
+
+a, a:hover, .sidebar-nav ul > li > a, .sidebar-nav ul > li > a:hover, .summary-number {
+	color: #d85515;
+}
+
+ul.yiiPager > li > a{
+	color: #d85515!important;
+	
+}
+
+ul.yiiPager .selected a {
+  background-color:#d85515;
+  background-image:-webkit-linear-gradient(top, #d85515, #ec6320);
+  background-repeat:repeat no-repeat;
+  border-color:#1D2E7B;
+  color:#DEDEDE !important;
+  text-shadow:#CCCCCC 0 0 0;
+  font-weight:bold;
+}
