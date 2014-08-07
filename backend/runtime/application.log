@@ -132,3 +132,173 @@ Stack trace:
 #33 {main}
 REQUEST_URI=/bober/
 ---
+2014/08/06 16:57:39 [error] [exception.CDbException] exception 'CDbException' with message 'CDbConnection failed to open the DB connection: SQLSTATE[28000] [1045] Access denied for user 'bober'@'localhost' (using password: YES)' in /home/polz/bober/common/lib/yii/db/CDbConnection.php:382
+Stack trace:
+#0 /home/polz/bober/common/lib/yii/db/CDbConnection.php(330): CDbConnection->open()
+#1 /home/polz/bober/common/lib/yii/db/CDbConnection.php(308): CDbConnection->setActive(true)
+#2 /home/polz/bober/common/lib/yii/base/CModule.php(387): CDbConnection->init()
+#3 /home/polz/bober/common/lib/yii/web/CDbHttpSession.php(175): CModule->getComponent('db')
+#4 /home/polz/bober/common/lib/yii/web/CDbHttpSession.php(221): CDbHttpSession->getDbConnection()
+#5 [internal function]: CDbHttpSession->readSession('7kh2ldvn0ublj74...')
+#6 /home/polz/bober/common/lib/yii/web/CHttpSession.php(114): session_start()
+#7 /home/polz/bober/common/lib/yii/web/CHttpSession.php(88): CHttpSession->open()
+#8 /home/polz/bober/common/lib/yii/base/CModule.php(387): CHttpSession->init()
+#9 /home/polz/bober/common/lib/yii/base/CModule.php(103): CModule->getComponent('session')
+#10 /home/polz/bober/backend/components/StartupBehavior.php(10): CModule->__get('session')
+#11 /home/polz/bober/common/lib/yii/base/CComponent.php(561): StartupBehavior->beginRequest(Object(CEvent))
+#12 /home/polz/bober/common/lib/yii/base/CApplication.php(207): CComponent->raiseEvent('onBeginRequest', Object(CEvent))
+#13 /home/polz/bober/common/lib/yii/base/CApplication.php(178): CApplication->onBeginRequest(Object(CEvent))
+#14 /home/polz/bober/backend/www/index.php(23): CApplication->run()
+#15 {main}
+REQUEST_URI=/bober-p/
+---
+2014/08/06 17:02:19 [error] [system.db.CDbCommand] CDbCommand::fetchColumn() failed: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'bober.YiiSession' doesn't exist. The SQL statement executed was: SELECT `data`
+FROM `YiiSession`
+WHERE expire>:expire AND id=:id.
+in /home/polz/bober/backend/components/StartupBehavior.php (10)
+in /home/polz/bober/backend/www/index.php (23)
+2014/08/06 17:02:19 [error] [exception.CDbException] exception 'CDbException' with message 'CDbCommand failed to execute the SQL statement: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'bober.YiiSession' doesn't exist. The SQL statement executed was: SELECT `data`
+FROM `YiiSession`
+WHERE expire>:expire AND id=:id' in /home/polz/bober/common/lib/yii/db/CDbCommand.php:543
+Stack trace:
+#0 /home/polz/bober/common/lib/yii/db/CDbCommand.php(433): CDbCommand->queryInternal('fetchColumn', 0, Array)
+#1 /home/polz/bober/common/lib/yii/web/CDbHttpSession.php(230): CDbCommand->queryScalar()
+#2 [internal function]: CDbHttpSession->readSession('7kh2ldvn0ublj74...')
+#3 /home/polz/bober/common/lib/yii/web/CHttpSession.php(114): session_start()
+#4 /home/polz/bober/common/lib/yii/web/CHttpSession.php(88): CHttpSession->open()
+#5 /home/polz/bober/common/lib/yii/base/CModule.php(387): CHttpSession->init()
+#6 /home/polz/bober/common/lib/yii/base/CModule.php(103): CModule->getComponent('session')
+#7 /home/polz/bober/backend/components/StartupBehavior.php(10): CModule->__get('session')
+#8 /home/polz/bober/common/lib/yii/base/CComponent.php(561): StartupBehavior->beginRequest(Object(CEvent))
+#9 /home/polz/bober/common/lib/yii/base/CApplication.php(207): CComponent->raiseEvent('onBeginRequest', Object(CEvent))
+#10 /home/polz/bober/common/lib/yii/base/CApplication.php(178): CApplication->onBeginRequest(Object(CEvent))
+#11 /home/polz/bober/backend/www/index.php(23): CApplication->run()
+#12 {main}
+REQUEST_URI=/bober-p/
+---
+2014/08/06 17:19:48 [error] [exception.CException] exception 'CException' with message 'CAssetManager.basePath "/home/polz/bober/backend/www/assets" is invalid. Please make sure the directory exists and is writable by the Web server process.' in /home/polz/bober/common/lib/yii/web/CAssetManager.php:138
+Stack trace:
+#0 /home/polz/bober/common/lib/yii/web/CAssetManager.php(123): CAssetManager->setBasePath('/home/polz/bobe...')
+#1 /home/polz/bober/common/lib/yii/web/CAssetManager.php(217): CAssetManager->getBasePath()
+#2 /home/polz/bober/backend/components/CustomCAssetManager.php(6): CAssetManager->publish('/home/polz/bobe...', true, -1, NULL)
+#3 /home/polz/bober/common/lib/yii/web/CClientScript.php(510): CustomCAssetManager->publish('/home/polz/bobe...')
+#4 /home/polz/bober/common/lib/yii/zii/widgets/jui/CJuiWidget.php(98): CClientScript->getCoreScriptUrl()
+#5 /home/polz/bober/common/lib/yii/zii/widgets/jui/CJuiWidget.php(81): CJuiWidget->resolvePackagePath()
+#6 /home/polz/bober/common/lib/yii/zii/widgets/jui/CJuiButton.php(87): CJuiWidget->init()
+#7 /home/polz/bober/common/lib/yii/web/CBaseController.php(147): CJuiButton->init()
+#8 /home/polz/bober/common/lib/yii/web/CBaseController.php(172): CBaseController->createWidget('zii.widgets.jui...', Array)
+#9 /home/polz/bober/backend/views/startCompetition/_form.php(92): CBaseController->widget('zii.widgets.jui...', Array)
+#10 /home/polz/bober/common/lib/yii/web/CBaseController.php(126): require('/home/polz/bobe...')
+#11 /home/polz/bober/common/lib/yii/web/CBaseController.php(95): CBaseController->renderInternal('/home/polz/bobe...', Array, true)
+#12 /home/polz/bober/common/lib/yii/web/CController.php(869): CBaseController->renderFile('/home/polz/bobe...', Array, true)
+#13 /home/polz/bober/backend/views/startCompetition/create.php(9): CController->renderPartial('_form', Array)
+#14 /home/polz/bober/common/lib/yii/web/CBaseController.php(126): require('/home/polz/bobe...')
+#15 /home/polz/bober/common/lib/yii/web/CBaseController.php(95): CBaseController->renderInternal('/home/polz/bobe...', Array, true)
+#16 /home/polz/bober/common/lib/yii/web/CController.php(869): CBaseController->renderFile('/home/polz/bobe...', Array, true)
+#17 /home/polz/bober/common/lib/yii/web/CController.php(782): CController->renderPartial('create', Array, true)
+#18 /home/polz/bober/backend/controllers/StartCompetitionController.php(187): CController->render('create', Array)
+#19 /home/polz/bober/backend/controllers/StartCompetitionController.php(213): StartCompetitionController->actionCreate()
+#20 /home/polz/bober/common/lib/yii/web/actions/CInlineAction.php(49): StartCompetitionController->actionIndex()
+#21 /home/polz/bober/common/lib/yii/web/CController.php(308): CInlineAction->runWithParams(Array)
+#22 /home/polz/bober/common/lib/yii/web/filters/CFilterChain.php(133): CController->runAction(Object(CInlineAction))
+#23 /home/polz/bober/common/lib/yii/web/filters/CFilter.php(40): CFilterChain->run()
+#24 /home/polz/bober/common/lib/yii/web/CController.php(1145): CFilter->filter(Object(CFilterChain))
+#25 /home/polz/bober/common/lib/yii/web/filters/CInlineFilter.php(58): CController->filterAccessControl(Object(CFilterChain))
+#26 /home/polz/bober/common/lib/yii/web/filters/CFilterChain.php(130): CInlineFilter->filter(Object(CFilterChain))
+#27 /home/polz/bober/common/lib/yii/web/CController.php(291): CFilterChain->run()
+#28 /home/polz/bober/common/lib/yii/web/CController.php(265): CController->runActionWithFilters(Object(CInlineAction), Array)
+#29 /home/polz/bober/common/lib/yii/web/CWebApplication.php(282): CController->run('')
+#30 /home/polz/bober/common/lib/yii/web/CWebApplication.php(141): CWebApplication->runController('')
+#31 /home/polz/bober/common/lib/yii/base/CApplication.php(180): CWebApplication->processRequest()
+#32 /home/polz/bober/backend/www/index.php(23): CApplication->run()
+#33 {main}
+REQUEST_URI=/bober-p/
+---
+2014/08/06 17:19:52 [error] [exception.CException] exception 'CException' with message 'CAssetManager.basePath "/home/polz/bober/backend/www/assets" is invalid. Please make sure the directory exists and is writable by the Web server process.' in /home/polz/bober/common/lib/yii/web/CAssetManager.php:138
+Stack trace:
+#0 /home/polz/bober/common/lib/yii/web/CAssetManager.php(123): CAssetManager->setBasePath('/home/polz/bobe...')
+#1 /home/polz/bober/common/lib/yii/web/CAssetManager.php(217): CAssetManager->getBasePath()
+#2 /home/polz/bober/backend/components/CustomCAssetManager.php(6): CAssetManager->publish('/home/polz/bobe...', true, -1, NULL)
+#3 /home/polz/bober/common/lib/yii/web/CClientScript.php(510): CustomCAssetManager->publish('/home/polz/bobe...')
+#4 /home/polz/bober/common/lib/yii/zii/widgets/jui/CJuiWidget.php(98): CClientScript->getCoreScriptUrl()
+#5 /home/polz/bober/common/lib/yii/zii/widgets/jui/CJuiWidget.php(81): CJuiWidget->resolvePackagePath()
+#6 /home/polz/bober/common/lib/yii/zii/widgets/jui/CJuiButton.php(87): CJuiWidget->init()
+#7 /home/polz/bober/common/lib/yii/web/CBaseController.php(147): CJuiButton->init()
+#8 /home/polz/bober/common/lib/yii/web/CBaseController.php(172): CBaseController->createWidget('zii.widgets.jui...', Array)
+#9 /home/polz/bober/backend/views/startCompetition/_form.php(92): CBaseController->widget('zii.widgets.jui...', Array)
+#10 /home/polz/bober/common/lib/yii/web/CBaseController.php(126): require('/home/polz/bobe...')
+#11 /home/polz/bober/common/lib/yii/web/CBaseController.php(95): CBaseController->renderInternal('/home/polz/bobe...', Array, true)
+#12 /home/polz/bober/common/lib/yii/web/CController.php(869): CBaseController->renderFile('/home/polz/bobe...', Array, true)
+#13 /home/polz/bober/backend/views/startCompetition/create.php(9): CController->renderPartial('_form', Array)
+#14 /home/polz/bober/common/lib/yii/web/CBaseController.php(126): require('/home/polz/bobe...')
+#15 /home/polz/bober/common/lib/yii/web/CBaseController.php(95): CBaseController->renderInternal('/home/polz/bobe...', Array, true)
+#16 /home/polz/bober/common/lib/yii/web/CController.php(869): CBaseController->renderFile('/home/polz/bobe...', Array, true)
+#17 /home/polz/bober/common/lib/yii/web/CController.php(782): CController->renderPartial('create', Array, true)
+#18 /home/polz/bober/backend/controllers/StartCompetitionController.php(187): CController->render('create', Array)
+#19 /home/polz/bober/backend/controllers/StartCompetitionController.php(213): StartCompetitionController->actionCreate()
+#20 /home/polz/bober/common/lib/yii/web/actions/CInlineAction.php(49): StartCompetitionController->actionIndex()
+#21 /home/polz/bober/common/lib/yii/web/CController.php(308): CInlineAction->runWithParams(Array)
+#22 /home/polz/bober/common/lib/yii/web/filters/CFilterChain.php(133): CController->runAction(Object(CInlineAction))
+#23 /home/polz/bober/common/lib/yii/web/filters/CFilter.php(40): CFilterChain->run()
+#24 /home/polz/bober/common/lib/yii/web/CController.php(1145): CFilter->filter(Object(CFilterChain))
+#25 /home/polz/bober/common/lib/yii/web/filters/CInlineFilter.php(58): CController->filterAccessControl(Object(CFilterChain))
+#26 /home/polz/bober/common/lib/yii/web/filters/CFilterChain.php(130): CInlineFilter->filter(Object(CFilterChain))
+#27 /home/polz/bober/common/lib/yii/web/CController.php(291): CFilterChain->run()
+#28 /home/polz/bober/common/lib/yii/web/CController.php(265): CController->runActionWithFilters(Object(CInlineAction), Array)
+#29 /home/polz/bober/common/lib/yii/web/CWebApplication.php(282): CController->run('')
+#30 /home/polz/bober/common/lib/yii/web/CWebApplication.php(141): CWebApplication->runController('')
+#31 /home/polz/bober/common/lib/yii/base/CApplication.php(180): CWebApplication->processRequest()
+#32 /home/polz/bober/backend/www/index.php(23): CApplication->run()
+#33 {main}
+REQUEST_URI=/bober-p/
+---
+2014/08/06 17:23:56 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'The system is unable to find the requested action "login.php".' in /home/polz/bober/common/lib/yii/web/CController.php:483
+Stack trace:
+#0 /home/polz/bober/common/lib/yii/web/CController.php(270): CController->missingAction('login.php')
+#1 /home/polz/bober/common/lib/yii/web/CWebApplication.php(282): CController->run('login.php')
+#2 /home/polz/bober/common/lib/yii/web/CWebApplication.php(141): CWebApplication->runController('site/login.php')
+#3 /home/polz/bober/common/lib/yii/base/CApplication.php(180): CWebApplication->processRequest()
+#4 /home/polz/bober/backend/www/index.php(23): CApplication->run()
+#5 {main}
+REQUEST_URI=/bober-p/index.php/site/login.php
+---
+2014/08/06 17:24:00 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'The system is unable to find the requested action "login.php".' in /home/polz/bober/common/lib/yii/web/CController.php:483
+Stack trace:
+#0 /home/polz/bober/common/lib/yii/web/CController.php(270): CController->missingAction('login.php')
+#1 /home/polz/bober/common/lib/yii/web/CWebApplication.php(282): CController->run('login.php')
+#2 /home/polz/bober/common/lib/yii/web/CWebApplication.php(141): CWebApplication->runController('site/login.php')
+#3 /home/polz/bober/common/lib/yii/base/CApplication.php(180): CWebApplication->processRequest()
+#4 /home/polz/bober/backend/www/index.php(23): CApplication->run()
+#5 {main}
+REQUEST_URI=/bober-p/index.php/site/login.php
+---
+2014/08/06 17:37:42 [error] [php] Array to string conversion (/home/polz/bober/backend/www/themes/Bober/views/layouts/column2.php:12)
+Stack trace:
+#0 /home/polz/bober/common/lib/yii/web/CController.php(784): StartCompetitionController->renderFile()
+#1 /home/polz/bober/backend/controllers/StartCompetitionController.php(187): StartCompetitionController->render()
+#2 /home/polz/bober/backend/controllers/StartCompetitionController.php(213): StartCompetitionController->actionCreate()
+#3 /home/polz/bober/common/lib/yii/web/actions/CInlineAction.php(49): StartCompetitionController->actionIndex()
+#4 /home/polz/bober/common/lib/yii/web/CController.php(308): CInlineAction->runWithParams()
+#5 /home/polz/bober/common/lib/yii/web/filters/CFilterChain.php(133): StartCompetitionController->runAction()
+#6 /home/polz/bober/common/lib/yii/web/filters/CFilter.php(40): CFilterChain->run()
+#7 /home/polz/bober/common/lib/yii/web/CController.php(1145): CAccessControlFilter->filter()
+#8 /home/polz/bober/common/lib/yii/web/filters/CInlineFilter.php(58): StartCompetitionController->filterAccessControl()
+#9 /home/polz/bober/common/lib/yii/web/filters/CFilterChain.php(130): CInlineFilter->filter()
+#10 /home/polz/bober/common/lib/yii/web/CController.php(291): CFilterChain->run()
+#11 /home/polz/bober/common/lib/yii/web/CController.php(265): StartCompetitionController->runActionWithFilters()
+#12 /home/polz/bober/common/lib/yii/web/CWebApplication.php(282): StartCompetitionController->run()
+#13 /home/polz/bober/common/lib/yii/web/CWebApplication.php(141): CWebApplication->runController()
+#14 /home/polz/bober/common/lib/yii/base/CApplication.php(180): CWebApplication->processRequest()
+#15 /home/polz/bober/backend/www/index.php(23): CWebApplication->run()
+REQUEST_URI=/bober-p/index.php
+in /home/polz/bober/backend/www/themes/Bober/views/layouts/column2.php (12)
+in /home/polz/bober/backend/controllers/StartCompetitionController.php (187)
+in /home/polz/bober/backend/controllers/StartCompetitionController.php (213)
+2014/08/06 17:43:26 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Unable to resolve the request "bober-p/user/login".' in /home/polz/bober/common/lib/yii/web/CWebApplication.php:286
+Stack trace:
+#0 /home/polz/bober/common/lib/yii/web/CWebApplication.php(141): CWebApplication->runController('bober-p/user/lo...')
+#1 /home/polz/bober/common/lib/yii/base/CApplication.php(180): CWebApplication->processRequest()
+#2 /home/polz/bober/backend/www/index.php(23): CApplication->run()
+#3 {main}
+REQUEST_URI=/bober-p/index.php/bober-p/user/login
+---

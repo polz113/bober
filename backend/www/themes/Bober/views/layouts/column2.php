@@ -9,7 +9,7 @@
                     <?php echo Yii::t('app', 'Homepage'); ?>
                 </div>
             </a>
-            <a href="/index.php/site/login">
+            <a href="<?php echo Yii::app()->user->loginUrl[0]; ?>">
                 <div class="green category_button" style="float: right;">
                     <?php echo Yii::t('app', 'Login for teachers'); ?>
                 </div>
