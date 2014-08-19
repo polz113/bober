@@ -1,0 +1,114 @@
+{% extends "main.html" %}
+{% load to_char %}
+
+{% load i18n %}
+{% block pageTitle %}{% trans "Displaying task" %}{% endblock pageTitle %}
+{% block content %}
+    <link rel="stylesheet" href="{{ STATIC_URL }}css/print.css" type="text/css" media="print"/>
+
+        <div class="row">
+            <div class="span9">
+                <div class="well">
+
+
+                    {% if task_translation.title %}<h1>{{ task_translation.title }}</h1>{% endif %}
+                    
+                    {{ task_translation.body|safe }}
+
+
+                    <h2>Answers:</h2>
+
+                        {% for solution in answers %}
+                            <div class="answer">
+                                <h3 {% ifequal solution.id|stringformat:"s" task_translation.correct_answer.id|stringformat:"s" %}style="font-weight:bold;"{% endifequal %}>
+                                    {{ forloop.counter|to_char }}
+                                </h3>
+                                {{ solution.value|safe }}
+                            </div>
+                        {% endfor %}
+
+                    {% for a in answers %}
+                        {{ a.correctness }}
+
+                    {% endfor %}
+
+                    <h2>Solution</h2>
+                    {% if task_translation.solution %}{{ task_translation.solution|safe }}{% endif %}
+
+
+                    <h2>It's informatics</h2>
+                    {% if task_translation.it_is_informatics %}
+                        {{ task_translation.it_is_informatics|safe }}{% endif %}
+                </div>
+                <div class="well">
+                    <h2>Version history</h2>
+                <ul>
+                    {% for version in versions %}
+                        <li><a href="{% url "tasks.display" version.id %}">{{ version.version }} - {{ version.title }}</a> ({{ version.timestamp }}), {{ version.comment }}</li>
+                    {% endfor %}
+                </ul>
+                </div>
+            </div>
+            <div class="span3 sidebar">
+                <div class="well">
+
+                    <h3>Task</h3>
+                    <ul class="nav nav-list">
+                        <li><a href="{% url "tasks.edit" task_translation.id %} ">Edit</a></li>
+                        <li><a href="/export/task/{{ task.id }}/{{ task_translation.language_locale.id }}/{{ task_translation.version }}">Export</a></li> <!-- make dynamic url -->
+                        <li><a href="{% url "tasks.translate" task_translation.id %} ">Translate</a></li>
+                        <li style="display: none"><a href="{% url "tasks.new_form" task_translation.id %} ">New from this version</a></li>
+                    </ul>
+
+                </div>
+                <div class="well">
+                    <h3>International ID:</h3> {% if task.international_id %}{{ task.international_id }}{% else %} No ID was set. {% endif %}
+                    
+                    <h3>Author:</h3>
+                    {% if task.author %}{{ task.author.first_name }} {{ task.author.last_name }}{% else %} There is no
+                        author! {% endif %}
+                    
+
+                    <h3>Available in languages:</h3>
+                    <ul class="nav">
+                        {% for language in languages %}
+
+                            <li>
+                                <a href="?language={{ language.value }}">
+                                    <img src="{{ STATIC_URL }}img/{{ language.id }}.png"/> {{ language.value }}
+                                </a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                    
+                    <h3>Age group:</h3>
+                    <ul class="nav">
+                        {% for a in task.agegrouptask_set.all %}
+                            <li>{{ a.difficulty_level.value }} - {{ a.age_group.value }}</li>
+                        {% endfor %}
+                    </ul>
+                    <h3>Category:</h3>
+                    <ul class="nav">
+                        {% for a in task.categories.all %}
+                            <li>{{ a.title }}</li>
+                        {% endfor %}
+                    </ul>
+
+                    <p>
+                        <a href="javascript:window.print()"><img src="{{ STATIC_URL }}img/print.png" alt="print this page" id="print" class="no-print"/></a>
+                    </p>
+                    <p>
+                        <a href="{% url "tasks.task" task.id %}">Edit task details</a>
+                    </p>
+                </div>
+            </div>
+
+        </div>
+
+
+{% endblock content %}
+{% block script %}
+    <script type="text/javascript" charset="utf-8">
+
+    </script>
+{% endblock script %}

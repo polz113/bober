@@ -1,0 +1,53 @@
+{% extends "control-panel/control-panel.html" %}
+
+{% load i18n %}
+
+{% block settings-title %}{% trans "User" %}{% endblock settings-title %}
+
+{% block control-panel-content %}
+<div class="well custom">
+    <a href="{% url "control_panel.users" %} " class="btn back-btn"><i class="icon-arrow-left"></i> {% trans "Back" %}</a>
+
+    <div class="inner_well">
+
+        <!-- User Settings -->
+        <form action="{% url "users.edit_user user_id" %} " method="post">
+            <legend>{% trans "User" %}: {{ user.username }}</legend>
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button class="btn btn-primary" type="submit" name="user" value="submit-user-settings">{% trans "Save" %}</button>
+        </form>
+
+        <!-- User Profile Settings -->
+        <form action="" method="post">
+            <legend>{% trans "User Profile Settings" %}</legend>
+            <div class="row">
+                <div class="span4">
+                    {% csrf_token %}
+                    {{ form_profile.as_p }}
+                    <button class="btn btn-primary" type="submit" name="user-profile" value="submit-profile-settings">{% trans "Save" %}</button>
+                </div>
+                <div class="span4">
+                    {% trans "You can choose among next languages:" %}
+                    <ul>
+                    {% for language in languages %}
+                        <li>{{ language }}</li>
+                    {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </form>
+
+        <!-- User Permissions -->
+        <form>
+            <legend>{% trans "User Permissions" %}</legend>
+            <ul>
+                {% for permission in user.get_all_permissions %}
+                    <li>{{ permission }}</li>
+                {% endfor %}
+            </ul>
+        </form>
+
+    </div>
+</div>
+{% endblock control-panel-content %}

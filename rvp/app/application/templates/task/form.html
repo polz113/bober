@@ -1,0 +1,294 @@
+{% extends "main.html" %}
+{% block pageTitle %}Prevajanje - New task{% endblock pageTitle %}
+{% block content %}
+<style type="text/css" media="screen">
+  .answer_lang{
+    width:100px;
+    margin-left:10px;
+  }
+</style>
+
+
+<style type="text/css" media="screen">
+  .content_category{
+    margin-right:1px;
+  }
+</style>
+
+
+asd
+
+<form id="task_form" action="" method="POST">
+        <div class="row-fluid">
+          <div class="span3">
+            <ul class="nav nav-list bs-docs-sidenav affix">
+              <li><a href="#language"><i class="icon-chevron-right"></i> Language</a></li>
+              <li><a href="#title"><i class="icon-chevron-right"></i> Title</a></li>
+              <li><a href="#body"><i class="icon-chevron-right"></i> Body</a></li>
+              <li><a href="#answers"><i class="icon-chevron-right"></i> Answers</a></li>
+              <li><a href="#correctness"><i class="icon-chevron-right"></i> Correctness</a></li>
+              <li><a href="#solution"><i class="icon-chevron-right"></i> Solution</a></li>
+              <li><a href="#informatics"><i class="icon-chevron-right"></i> Informatics</a></li>
+              <li><a href="#content_category"><i class="icon-chevron-right"></i> Content category</a></li>
+              <li><a href="#age_groups"><i class="icon-chevron-right"></i> Age groups</a></li>
+              <li><a href="#summary"><i class="icon-chevron-right"></i> Summary</a></li>
+            </ul>
+          </div>
+          <div class="span6">
+
+            <fieldset id="language" rel="Izbira jezika je nujna!">
+              <legend>Language</legend>
+              <br/>
+              <select class="answerLanguage span10" name="language">
+                <option value="0">Select Language...</option>
+                {% for language in languages %}
+                  <option value="{{language.value_short}}">{{language.value}}</option>
+                {% endfor %}
+              </select>
+            </fieldset>
+
+            <fieldset id="title" rel="Vpis naslova je obvezen!">
+              <legend>Title</legend>
+              <label>Title ...</label>
+              <input class="span12 title" name="title" type="text">
+            </fieldset>
+            <style type="text/css" media="screen">
+              #editor {overflow:scroll; max-height:300px}
+            </style>
+            <fieldset id="body">
+              <legend>Body</legend>
+              <label>Body ...</label>
+              <textarea id="taskBody" class="span12 text" name="body" rows="10"></textarea>
+            </fieldset>
+
+            <fieldset id="answers" rel="Vpis odgovorov je nujen!">
+              <legend>Answers</legend>
+              <label>Answers ...</label>
+              <div class="input-append span12">
+                <label class="control-label" style="display:inline;"><b>A</b> </label>
+                <input type="text" class="answer span10" name="answer[0]" rel="0">
+                <div class="btn-group">
+                  <a href="#" class="btn btn-danger eraseAnswer">
+                    <i class="icon-trash icon-white"></i>
+                  </a>
+                </div>
+              </div>
+              <br/>
+
+              <div class="input-append span12">
+                <label class="control-label" style="display:inline;"><b>B</b> </label>
+                <input type="text" class="answer span10" name="answer[1]" rel="1">
+                <div class="btn-group">
+                  <a href="#" class="btn btn-danger eraseAnswer">
+                    <i class="icon-trash icon-white"></i>
+                  </a>
+                </div>
+              </div>
+              <br/>
+
+              <div class="input-append span12">
+                <label class="control-label" style="display:inline;"><b>C</b> </label>
+                <input type="text" class="answer span10" name="answer[2]" rel="2">
+                <div class="btn-group">
+                  <a href="#" class="btn btn-danger eraseAnswer">
+                    <i class="icon-trash icon-white"></i>
+                  </a>
+                </div>
+              </div>
+              <br/>
+
+              <div class="input-append span12">
+                <label class="control-label" style="display:inline;"><b>D</b> </label>
+                <input type="text" class="answer span10" name="answer[3]" rel="3">
+                <div class="btn-group">
+                  <a href="#" class="btn btn-danger eraseAnswer">
+                    <i class="icon-trash icon-white"></i>
+                  </a>
+                </div>
+              </div>
+              <br/>
+            </fieldset>
+
+            <fieldset id="correctness">
+              <legend>Correctness</legend>
+              <label>Correctness ...</label>
+              <select name="correctness" value="" id="correctness">
+                <option value="1">A</option>
+                <option value="2">B</option>
+                <option value="3">C</option>
+                <option value="4">D</option>
+              </select>
+            </fieldset>
+
+            <fieldset id="solution">
+              <legend>Solution</legend>
+              <label>Solution ...</label>
+              <textarea class="span12 text" name="solution" rows="10"></textarea>
+            </fieldset>
+
+            <fieldset id="informatics">
+              <legend>Informatics</legend>
+              <label>Informatics ...</label>
+              <textarea class="span12 text" name="informatics" rows="10"></textarea>
+            </fieldset>
+
+            <fieldset id="content_category">
+              <legend>Content category</legend>
+              <label>Content category ...</label>
+              <div id="categoriesContainter"></div>
+              <div id="categoriesTemplate" style="display:none;">
+                <select class="contentCategory span10 pull-left" name="categories">
+                  {% for content_category in content_categories %}
+                    <option value="{{content_category.id}}">{{content_category.title}}</option>
+                  {% endfor %}
+                </select>
+
+                <a href="#" class="btn btn-danger remove_category pull-right">
+                  <i class="icon-trash icon-white"></i>
+                </a>
+              </div>
+              <a href="#" id="add_category" class="btn btn-primary">Dodaj Category</a>
+              <br/>
+              <br/>
+            </fieldset>
+
+            <fieldset id="age_groups">
+              <legend>Age groups</legend>
+              <label>Age groups ...</label>
+              <div id="ageGroupContainter"></div>
+              <div id="ageGroupTemplate" style="display:none;">
+                <select class="ageGroups span5 pull-left" name="ageGroup">
+                  {% for age_group in age_groups %}
+                    <option value="{{age_group.id}}">{{age_group.value}}</option>
+                  {% endfor %}
+                </select>
+
+                <select class="ageGroups span5 pull-left" name="ageGroup">
+                  {% for difficulty_level in difficulty_levels %}
+                    <option value="{{difficulty_level.id}}">{{difficulty_level.value}}</option>
+                  {% endfor %}
+                </select>
+
+               <a href="#" class="btn btn-danger remove_age_group pull-right">
+                 <i class="icon-trash icon-white"></i>
+               </a>
+
+              </div>
+              <a href="#" id="add_age_group" class="btn btn-primary">Dodaj Age Group</a>
+              <br />
+              <br />
+            </fieldset>
+
+            <fieldset id="summary" rel="Nujno!!!!!">
+              <legend>Summary</legend>
+              <label>Summary ...</label>
+              <input type="text" class="span12" name="diff">
+            </fieldset>
+
+            <div class="form-actions">
+              <button type="submit" class="btn btn-primary">Shrani</button>
+              <a href="/" class="btn btn-danger">Cancel</a>
+            </div>
+          </div>
+
+          <div class="span3">
+
+            <div class="nav nav-list bs-docs-sidenav affix floating_well task_preview">
+  						<h4>Naslov naloge</h4>
+  						<p>
+  							<b>Besedilo naloge.</b> <i>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</i>
+  						</p>
+							<ul>
+								<li>Odgovor 1</li>
+								<li>Odgovor 2</li>
+								<li>Odgovor 3</li>
+								<li>Odgovor 4</li>
+							</ul>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+</form>
+<script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+<script type="text/javascript" charset="utf-8">
+    task_translation_id = 0;
+</script>
+<script type="text/javascript" src="/resources/js/tinymce/tinymce.min.js"></script>
+<script type="text/javascript" src="/resources/js/ajaxupload.js" charset="utf-8"></script>
+<script type="text/javascript" src="/resources/js/editor.js"></script>
+<script type="text/javascript" src="/resources/js/validate.js"></script>
+
+<script type="text/javascript" charset="utf-8">
+function add_age_group() {
+  var index = $("#ageGroupContainter > div").length;
+  if(!!index) index = $("#ageGroupContainter > div:last-child").find("select").attr("rel")*1+1;
+  var template = $("#ageGroupTemplate").clone(false);
+  $(template).show();
+  $(template).find("select").attr("name","age_group[" + index + "]");
+  $(template).find("select").attr("rel",index);
+  $(template).attr("id","");
+  $(template).attr("class","ageGroup");
+  $(template).find("input").val("");
+  $("#ageGroupContainter").append(template);
+  $(template).find(".remove_age_group").bind("click",function(e) {
+    e.preventDefault();
+    $(this).parents(".ageGroup").remove();
+  });
+};
+
+function add_category() {
+  var index = $("#categoriesContainter > div").length;
+  if(!!index) index = $("#categoriesContainter > div:last-child").find("select").attr("rel")*1+1;
+  var template = $("#categoriesTemplate").clone(false);
+  $(template).show();
+  $(template).find("select").attr("name","category[" + index + "]");
+  $(template).find("select").attr("rel",index);
+  $(template).find("input").val("");
+  $(template).attr("id","");
+  $(template).attr("class","category");
+  $("#categoriesContainter").append(template);
+  $(template).find(".remove_category").bind("click",function(e) {
+    e.preventDefault();
+    $(this).parents(".category").remove();
+  });
+};
+
+
+$("a.eraseAnswer").bind("click",function(e) {
+  e.preventDefault();
+  var index = $(this).parents(".input-append").find("input").attr("rel"),
+      item = $(".task_preview ul li")[index];
+  $(this).parents(".input-append").find("input").val("");
+  $(item).text("");
+});
+
+$("#title input.title").keyup(function() {
+  $(".task_preview h4").text($(this).val());
+});
+$("#body textarea").keyup(function() {
+  $(".task_preview p").text($(this).val());
+});
+$("#answers .answer").keyup(function() {
+  var index = $(this).attr("rel")*1;
+  //$(".preview ul li")[index].text($(this).val());
+  var item = $(".task_preview ul li")[index];
+  $(item).text($(this).val());
+});
+
+add_age_group();
+$("#add_age_group").bind("click",function(e) {
+  e.preventDefault();
+  add_age_group();
+});
+add_category();
+$("#add_category").bind("click",function(e) {
+  e.preventDefault();
+  add_category();
+});
+
+
+
+</script>
+{% endblock content %}

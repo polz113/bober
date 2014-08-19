@@ -1,0 +1,260 @@
+{% extends "main.html" %}
+
+{% load i18n %}
+{% load url_sort %}
+{% block pageTitle %}Prevajanje - začetna stran{% endblock pageTitle %}
+{% block content %}
+  <style type="text/css">
+
+   .table td,th {
+       text-align: center;
+}
+</style>
+    <a href="{% url "tasks.new" %} " ><button class="btn btn-primary">{% trans "New task" %}</button></a>
+    <br />
+    <br />
+
+    <div class="well custom">
+        <div class="input-append ">
+            <label class="checkbox inline">
+                <b>{% trans "Display" %}: </b>
+            </label>
+            <label class="checkbox inline">
+                <input type="checkbox" name="col1" id="col1"  checked="checked" onclick="togglecol(this.name)" value="1"> {% trans "Interaction Type"%}
+            </label>
+            <label class="checkbox inline">
+                <input type="checkbox" name="col2"  id="col2" checked="checked" onclick="togglecol(this.name)" value="2"> {% trans "Category" %}
+            </label>
+            <label class="checkbox inline">
+                <input type="checkbox" name="col3"  id="col3" checked="checked" onclick="togglecol(this.name)" value="3"> {% trans "Age Group" %}
+            </label>
+            <label class="checkbox inline">
+                <input type="checkbox" name="col4" id="col4" checked="checked" onclick="togglecol(this.name)" value="4"> {% trans "Description" %}
+            </label>
+            <label class="checkbox inline">
+                <input type="checkbox" name="col5" id="col5" checked="checked" onclick="togglecol(this.name)" value="4"> {% trans "Language" %}
+            </label>
+        </div>
+        <form action="{% url "index" %} " method="GET" class="form-search form-horizontal" style="margin:0px;display:inline;" >
+            <input type="hidden" name="search" value="true" />
+
+            <div class="input-append" style="position:relative; left:20px;">
+                <input class="span2" id="searchFull" name="searchFull" placeholder="{% trans "Search" %}..." id="appendedInputButtons" type="text">
+                <button class="btn" id="searchFullButton" type="submit"><i class="icon-search"></i></button>
+            </div>
+
+        </form>
+        <div style="float:right;margin-right:10px;">
+            <a href="#" class="btn btn-info" id="searchbutton"><i class="icon-white icon-search"></i> {% trans "Advanced" %}</a>
+
+        </div>
+
+        <table class="table table-striped table-condensed">
+
+            <tr>
+                <th style="text-align:center;"><a class="sort" href="?{% url_sort request 'order' 'title' %}">{% trans "Title" %}</a></th>
+                <th class="tcol1" style="text-align:center;">{% trans "Type" %}</th>
+                <th class="tcol2" style="text-align:center;"><a class="sort" href="?{% url_sort request 'order' 'category' %}">{% trans "Category" %}</a></th>
+                <th class="tcol3" style="text-align:center;"><a class="sort" href="?{% url_sort request 'order' 'age' %}">{% trans "Age" %}</a></th>
+                <th class="tcol4" style="text-align:center;"><a class="sort" href="?{% url_sort request 'order' 'description' %}">{% trans "Description" %}</a></th>
+                <th class="tcol5" colspan="2" style="text-align:center;"><a class="sort" href="?{% url_sort request 'order' 'language' %}">{% trans "Language" %}</a></th>
+            </tr>
+            {% comment %} SEARCH  {% endcomment %}
+            <tr class="searchtr" style="display:none;">
+                <form action="/" method="GET" id="advSearch" >
+                <input type="hidden" name="search" value="true" />
+                <input type="hidden" name="adv" value="true" />
+                    <td class="tcol1" id="tcol1">
+                        <div class="input-append">
+                            <input class="span1 send" placeholder="{% trans "Search" %}..." id="titleSearch" name="t" type="text">
+                        <select name="tc" class="span1 selectpicker">
+                            <option value="1">OR</option>
+                            <option value="2">AND</option>
+                        </select>
+                        </div>
+                    </td>
+                    <td class="tcol2" id="tcol2">
+                        <div class="input-append">
+                            <input class="span1 send" placeholder="{% trans "Search" %}..." id="typeSearch" name="ty" type="text">
+                        <select name="tyc" class="span1 selectpicker">
+                            <option value="1">OR</option>
+                            <option value="2">AND</option>
+                        </select>                    </div>
+                    </td>
+                    <td class="tcol3" id="tcol3">
+                        <div class="input-append">
+                            <select id="categorySearch" name="ca" class="span1  send selectpicker" multiple title='{% trans "Search" %}...' data-selected-text-format="count">
+                                {% for c in categories %}
+                                    <option>{{ c.title }}</option>
+                                {% endfor %}
+                            </select>
+                        <select name="cac" class="span1 selectpicker">
+                            <option value="1">OR</option>
+                            <option value="2">AND</option>
+                        </select>
+                        </div>
+                    </td>
+                    <td class="tcol4" id="tcol4">
+                        <div class="input-append">
+                            <select id="ageSearch" name="a" class="span1 send selectpicker" multiple title='{% trans "Search" %}...' data-selected-text-format="count">
+                                {% for a in age %}
+                                    <option>{{ a.value }}</option>
+                                {% endfor %}
+                            </select>
+                        <select name="ac" class="span1 selectpicker">
+                            <option value="1">OR</option>
+                            <option value="2">AND</option>
+                        </select>
+                        </div>
+                    </td>
+                    <td class="tcol5" id="tcol5">
+                        <div class="input-append">
+                            <input class="span1 send" id="descriptionSearch" name="desc" placeholder="{% trans "Search" %}..." id="appendedInputButtons" type="text">
+                        <select name="dc" class="span1 selectpicker">
+                            <option value="1">OR</option>
+                            <option value="2">AND</option>
+                        </select>                    </div>
+                    </td>
+                    <td class="tcol6" id="tcol6">
+                        <div class="input-append">
+                            <select id="langsearch" name="l" class="span1 send selectpicker" multiple title='{% trans "Search" %}...' data-selected-text-format="count">
+                                {% for l in all_languages %}
+                                    <option>{{ l.value_short }}</option>
+                                {% endfor %}
+                            </select>
+                        <select name="lc" class="span1 selectpicker">
+                            <option value="1">OR</option>
+                            <option value="2">AND</option>
+                        </select>
+                        </div>
+                    </td>
+                <td style="width:100px;">
+                        <button class="btn">Search</button>
+                </td>
+                </form>
+            </tr>
+
+            {% if tasks %}
+                {% for task in tasks %}
+                    <tr>
+                        <td>
+                            <a href="{% url "tasks.display" task.id %} ">
+
+                            {% with task.tasktranslation_set.all|first as first %}
+                                  {{ first.title }}
+                            {% endwith %}
+                            </a>
+                        </td>
+                        <td class="tcol1" id="tcol1">{% trans "Select" %}</td>
+                        <td class="tcol2" id="tcol2">
+                            <div title="{% for t in task.category.all %}{% if not forloop.first %}, {% endif %}{{ t.title }}{% endfor %}">
+                            {% with  task.category.all|first as category %}
+                                {{ category.title }} <br /> <span style="font-size:0.6em;">(Hover for more)</span>
+                            {% endwith %}
+
+                                 </div>
+                        </td>
+                        <td class="tcol3" id="tcol3">
+                            {% with  task.agegrouptask_set.all|first as translation %}
+                                {{ translation.age_group.value }}<br /><span style="font-size:0.6em;">(Hover for more)</span>
+                            {% endwith %}
+                            <div title="{% for a in task.agegrouptask_set.all %}{% if not forloop.first %}, {% endif %}{{ a.age_group.value }} ({{ a.difficulty_level.value }}){% endfor %}">
+
+                            </div>
+                        </td>
+                        <td class="tcol4" id="tcol4" >
+                            {% with  task.tasktranslation_set.all|first as translation %}
+                                {{ translation.body|truncatechars:50|striptags }}
+                            {% endwith %}</td>
+                        <td class="tcol5" id="tcol5" colspan="2">
+                            {% for lang in task.tasktranslation_set.all %}
+                                <a href="#"><img src="/resources/img/{{ lang.language_locale_id }}.png"></a>
+                            {% endfor %}
+
+                        </td>
+                    </tr>
+                {% endfor %}
+            {% endif %}
+        </table>
+        <div class="pagination pagination-centered">
+          <ul>
+            {% if tasks.has_previous %}
+                <li><a href="?page={{ tasks.previous_page_number }}">Prev</a></li>
+            {% endif %}
+            <li>
+              <span class="current">
+                  Page {{ tasks.number }} of {{ tasks.paginator.num_pages }}
+              </span>
+            </li>
+            {% if tasks.has_next %}
+              <li><a href="?page={{ tasks.next_page_number }}">Next</a></li>
+            {% endif %}
+          </ul>
+        </div>
+    </div>
+
+
+
+
+
+
+  <div id="erorrModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <h3 id="myModalLabel">Empty field</h3>
+  </div>
+  <div class="modal-body">
+    <p><div class="alert alert-error">{% trans "Field cannot be empty" %}</div></p>
+  </div>
+  <div class="modal-footer">
+    <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+  </div>
+</div>
+
+
+{% endblock content %}
+
+{% block script %}
+    <script type="text/javascript" charset="utf-8">
+    function getUrlVars() {
+        var vars = {};
+        var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) {
+            vars[key] = value;
+        });
+        return vars;
+    }
+
+        $("input[type='checkbox']").change(function() {
+            var id = $(this).attr('id');
+            if(this.checked) {
+                $('.t'+id).fadeIn();
+            }else {
+                $('.t'+id).fadeOut();
+            }
+        });
+
+    $('#searchbutton').click(function() {
+
+    $('table.table tr').filter('.searchtr').toggle('fast', function() {
+
+        // Animation complete.
+        });
+
+
+    });
+    if( getUrlVars()["adv"] == "true")
+    {
+        $('table.table tr').filter('.searchtr').toggle('fast', function() {
+            // Animation complete.
+        });
+    }
+
+
+
+
+
+
+    $('.selectpicker').selectpicker();
+
+    </script>
+{% endblock script %}
