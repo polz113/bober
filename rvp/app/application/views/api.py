@@ -8,7 +8,7 @@ import codecs
 from os.path import join as path
 import StringIO
 from django.http import HttpResponse
-from models import task_translation
+from application.models import task_translation
 from settings import *
 from django.contrib.auth import *
 from django.shortcuts import render
