@@ -1,7 +1,7 @@
 from application import forms
 from application import settings
 from application.models import Task
-from django.core.validators import email_re
+from django.core.validators import validate_email
 from django.contrib import auth, messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User, Group
@@ -77,7 +77,9 @@ def register( request ):
         if User.objects.filter( email__exact = email ):
             message_error += "Email already exists. "
 
-        if not email_re.search( email ):
+        try:
+            validate_email( email )
+        except:
             message_error += "Email address is not valid. "
 
         # check password length and if passwords match
