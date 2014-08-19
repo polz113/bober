@@ -12,7 +12,7 @@ import os
 from os.path import join as path
 from application.models import *
 from application.helper import all_ages, all_lang, all_cat, all_dif
-from settings import *
+from application.settings import *
 from json import dumps as to_json
 
 @login_required()
