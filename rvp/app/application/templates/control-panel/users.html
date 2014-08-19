@@ -49,8 +49,8 @@
                         {% endfor %}
                     </td>
                     <td>
-                        <a class="btn btn-mini" href="{% url "users.edit_user user.id" %} "><i class="icon icon-edit"></i> {% trans "Edit" %}</a>
-                        <a class="btn btn-mini" href="{% url "users.delete_user user.id" %} "><i class="icon icon-trash"></i> {% trans "Delete" %}</a>
+                        <a class="btn btn-mini" href="{% url "users.edit_user" user.id %} "><i class="icon icon-edit"></i> {% trans "Edit" %}</a>
+                        <a class="btn btn-mini" href="{% url "users.delete_user" user.id %} "><i class="icon icon-trash"></i> {% trans "Delete" %}</a>
                     </td>
                 </tr>
             {% endfor %}

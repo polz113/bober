@@ -11,7 +11,7 @@
     <div class="inner_well">
 
         <!-- User Settings -->
-        <form action="{% url "users.edit_user user_id" %} " method="post">
+        <form action="{% url "users.edit_user" user_id %} " method="post">
             <legend>{% trans "User" %}: {{ user.username }}</legend>
             {% csrf_token %}
             {{ form.as_p }}
