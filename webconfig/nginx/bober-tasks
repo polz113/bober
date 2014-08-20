@@ -1,0 +1,67 @@
+# You may add here your
+# server {
+#	...
+# }
+# statements for each of your virtual hosts to this file
+
+##
+# You should look at the following URL's in order to grasp a solid understanding
+# of Nginx configuration files in order to fully unleash the power of Nginx.
+# http://wiki.nginx.org/Pitfalls
+# http://wiki.nginx.org/QuickStart
+# http://wiki.nginx.org/Configuration
+#
+# Generally, you will want to move this file somewhere, and start with a clean
+# file but keep this around for reference. Or just disable in sites-enabled.
+#
+# Please see /usr/share/doc/nginx-doc/examples/ for more detailed examples.
+##
+
+#server {
+#        listen         80;
+#        server_name    localhost;
+
+#        location ~ /\.ht {
+#                deny all;
+#        }
+
+#        location /nginx_status {
+                # Turn on stats
+#                stub_status on;
+#                access_log   off;
+#	        allow 212.235.189.164;
+#	        allow 93.103.19.252;
+#                allow 127.0.0.1;
+#                deny all;
+#        }
+#}
+
+#server {
+#	listen         80;
+#	server_name    bober-tr.acm.si;
+#	rewrite        ^ https://$server_name$request_uri? permanent;
+
+#	location ~ /\.ht {
+#		deny all;
+#	}
+#}
+
+# HTTPS server
+#
+
+server {
+	listen 80;
+	server_name BOBER_TASKS_SERVER_NAME;
+
+	root BOBER_HOME/bober/rvp/;
+	include /etc/nginx/uwsgi_params;
+
+	charset utf-8;
+
+	tcp_nodelay on;
+	server_tokens off;
+
+	location / {
+		uwsgi_pass unix:/tmp/bober-tasks-uwsgi.sock;
+	}
+}
