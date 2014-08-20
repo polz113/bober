@@ -1,0 +1,429 @@
+[
+        {
+        "model": "auth.User",
+        "pk": "1",
+        "fields": {
+            "username": "root",
+            "first_name": "Admin",
+            "last_name": "Root",
+            "email": "root@gmail.com",
+            "is_active": true,
+            "is_superuser": true,
+            "is_staff": true,
+            "last_login": "2011-09-20 06:36:54",
+            "password": "pbkdf2_sha256$12000$MM8lvLaxP3vJ$HwGGoX4YcE8Lhsbrk39yGtMF2r2B2qYbI7ZlWV+hWu0=",
+              "date_joined": "2011-03-15 06:01:41"
+        }
+    },
+    
+
+    {
+        "model": "application.category",
+        "pk": "1",
+        "fields": {
+            "acronym": "INF",
+            "title": "Information comprehension",
+            "description": "representation (symbolic, numeric, visual), coding, encryption"
+        }
+    },
+    {
+        "model": "application.category",
+        "pk": "2",
+        "fields": {
+            "acronym": "ALG",
+            "title": "Algorithmic thinking",
+            "description": "including programming aspects"
+        }
+    },
+    {
+        "model": "application.category",
+        "pk": "3",
+        "fields": {
+            "acronym": "USE",
+            "title": "Using computer systems",
+            "description": "search engines, email, spread sheets, etc. general principles, but no specific systems"
+        }
+    },
+    {
+        "model": "application.category",
+        "pk": "4",
+        "fields": {
+            "acronym": "STRUC",
+            "title": "Structures, patterns and arrangements",
+            "description": "combinatorics, discrete structures (graphs, etc)"
+        }
+    },
+    {
+        "model": "application.category",
+        "pk": "5",
+        "fields": {
+            "acronym": "PUZ",
+            "title": "Puzzles",
+            "description": "logic puzzles, games (mastermind, minesweeper, etc.)"
+        }
+    },
+    {
+        "model": "application.category",
+        "pk": "6",
+        "fields": {
+            "acronym": "SOC",
+            "title": "ICT and Society",
+            "description": "social, ethical, cultural, international, legal issues"
+        }
+    },
+
+
+    {
+        "model": "application.difficultylevel",
+        "pk": "1",
+        "fields": {
+            "value": "Level A - simple"
+        }
+    },
+    {
+        "model": "application.difficultylevel",
+        "pk": "2",
+        "fields": {
+            "value": "Level B - intermediate"
+        }
+    },
+    {
+        "model": "application.difficultylevel",
+        "pk": "3",
+        "fields": {
+            "value": "Level C - hard to solve"
+        }
+    },
+
+
+    {
+        "model": "application.agegroup",
+        "pk": "1",
+        "fields": {
+            "value": "Benjamin: grade 5 to 8"
+        }
+    },
+    {
+        "model": "application.agegroup",
+        "pk": "2",
+        "fields": {
+            "value": "Junior: grade 9 to 10"
+        }
+    },
+    {
+        "model": "application.agegroup",
+        "pk": "3",
+        "fields": {
+            "value": "Senior: grade 11 to 13"
+        }
+    }
+
+
+
+
+    ,{
+        "model": "application.language",
+        "pk": "en",
+        "fields": {
+            "value": "Angleščina"
+        }
+    },
+    {
+      "model": "application.language",
+      "pk": "fr",
+      "fields": {
+          "value": "Francoščina"
+      }
+    },
+    {
+      "model": "application.language",
+      "pk": "es",
+      "fields": {
+        "value": "Španščina"
+      }
+    },
+    {
+      "model": "application.language",
+      "pk": "it",
+      "fields": {
+        "value": "Italianščina"
+      }
+    },
+    {
+      "model": "application.language",
+      "pk": "de",
+      "fields": {
+        "value": "Nemščina"
+      }
+    },
+    {
+      "model": "application.language",
+      "pk": "sl",
+      "fields": {
+        "value": "Slovenščina"
+      }
+    },
+    {
+      "model": "application.language",
+      "pk": "ru",
+      "fields": {
+        "value": "Ruščina"
+      }
+    },
+    {
+        "pk": 1,
+        "model": "application.task",
+        "fields": {
+            "categories": [
+                4
+            ],
+            "parent": null,
+            "author": 1,
+            "interaction_type": "MULTI-ANSWER TASK"
+        }
+    },
+    {
+        "pk": 2,
+        "model": "application.task",
+        "fields": {
+            "categories": [
+                3
+            ],
+            "parent": null,
+            "author": 1,
+            "interaction_type": "MULTI-ANSWER TASK"
+        }
+    },
+    {
+        "pk": 3,
+        "model": "application.task",
+        "fields": {
+            "categories": [
+                3
+            ],
+            "parent": null,
+            "author": 1,
+            "interaction_type": "MULTI-ANSWER TASK"
+        }
+    },
+	{
+		"pk": 4,
+        "model": "application.task",
+        "fields": {
+            "categories": [
+                1
+            ],
+            "parent": null,
+            "author": 1,
+            "international_id": "",
+            "interaction_type": "INTERACTIVE TASK"
+        }
+    },
+
+    {
+        "pk": 1,
+        "model": "application.answer",
+        "fields": {
+            "task_translation": 1,
+            "value": "[illuminated plant, [ghettoblaster, None, None], party lamps, None]"
+        }
+    },
+    {
+        "pk": 2,
+        "model": "application.answer",
+        "fields": {
+            "task_translation": 1,
+            "value": "[party lamps, [ghettoblaster, illuminated plant]]"
+        }
+    },
+    {
+        "pk": 3,
+        "model": "application.answer",
+        "fields": {
+            "task_translation": 1,
+            "value": "[party lamps, None, None, ghettoblaster, illuminated plant]"
+        }
+    },
+    {
+        "pk": 4,
+        "model": "application.answer",
+        "fields": {
+            "task_translation": 1,
+            "value": "[party lamps, None, None, [ghettoblaster, [illuminated plant], None]]"
+        }
+    },
+    {
+        "pk": 5,
+        "model": "application.answer",
+        "fields": {
+            "task_translation": 2,
+            "value": "2"
+        }
+    },
+    {
+        "pk": 6,
+        "model": "application.answer",
+        "fields": {
+            "task_translation": 2,
+            "value": "5"
+        }
+    },
+    {
+        "pk": 7,
+        "model": "application.answer",
+        "fields": {
+            "task_translation": 2,
+            "value": "3"
+        }
+    },
+    {
+        "pk": 8,
+        "model": "application.answer",
+        "fields": {
+            "task_translation": 2,
+            "value": "4"
+        }
+    },
+    {
+        "pk": 9,
+        "model": "application.answer",
+        "fields": {
+            "task_translation": 3,
+            "value": "(39, 0)"
+        }
+    },
+    {
+        "pk": 10,
+        "model": "application.answer",
+        "fields": {
+            "task_translation": 3,
+            "value": "(39, 39)"
+        }
+    },
+    {
+        "pk": 11,
+        "model": "application.answer",
+        "fields": {
+            "task_translation": 3,
+            "value": "(40, 0)"
+        }
+    },
+    {
+        "pk": 12,
+        "model": "application.answer",
+        "fields": {
+            "task_translation": 3,
+            "value": "(40, 40)"
+        }
+    },
+	{
+        "pk": 13,
+        "model": "application.answer",
+        "fields": {
+            "task_translation": 4,
+            "value": "Ponedeljek"
+        }
+    },
+	{
+        "pk": 14,
+        "model": "application.answer",
+        "fields": {
+            "task_translation": 4,
+            "value": "Torek"
+        }
+    },
+	{
+        "pk": 15,
+        "model": "application.answer",
+        "fields": {
+            "task_translation": 4,
+            "value": "Sreda"
+        }
+    },
+	{
+        "pk": 16,
+        "model": "application.answer",
+        "fields": {
+            "task_translation": 4,
+            "value": "Četrtek"
+        }
+    },
+    {
+        "pk": 1,
+        "model": "application.tasktranslation",
+        "fields": {
+            "task": 1,
+            "author": 1,
+            "body": "<p>The Beaver wants to model&nbsp; the power supply for his garden party through lists. A list is a sequence of objects written in brackets and separated by commas. A list may contain any kind of objects, including empty objects None, and other lists.</p>",
+            "solution": "<p>B list modeles just one big power strip with 4 outlets.C list assumes two power strips with two outlets each. D list ignores the extension cord (with one outlet).</p>",
+            "language_locale": "en",
+            "title": "Multiple sockets",
+            "correct_answer" : 1,
+            "it_is_informatics": "<p>Computer programs process data structures that model real things.</p>"
+        }
+    },
+    {
+        "pk": 2,
+        "model": "application.tasktranslation",
+        "fields": {
+            "task": 2,
+            "author": 1,
+            "body": "<p>You are playing a game with the computer. There are 9 shapes on the screen. You choose one of them, but you do not reveal your choice to the computer. Then the computer starts asking questions and you must answer them truthfully. The computer is allowed to ask only&nbsp; these questions: Is your shape red? Is your shape yellow? Is your shape blue? Is your shape a circle? Is your shape a square? Is your shape a triangle? The goal of the computer is to know your shape after as little number of questions as possible. You know that the computer is programmed to play the game in the best possible way. How many questions needs to put the computer in the worst case?</p>",
+            "solution": "<p>4 is correct. There must be 9 different sequences.</p>",
+            "language_locale": "en",
+            "title": "Guess the shape",
+            "correct_answer" : 7,
+            "it_is_informatics": "<p>The solution involves creating an algorithm.</p>"
+        }
+    },
+    {
+        "pk": 3,
+        "model": "application.tasktranslation",
+        "fields": {
+            "task": 3,
+            "author": 1,
+            "body": "<p>A robot moves in a coordinate system as shown in the picture. It makes one move - a segment of a length 1 - per second. It begins at the point (0,0). Example: 1st step is (1,0), 2nd (1,1), 3rd&nbsp; (0,1),...At what point will it be after 26 minutes?</p>",
+            "solution": "<p>The right answer is (39, 39) (no explanation given).</p>",
+            "language_locale": "en",
+            "title": "The Robot",
+            "correct_answer" : 12,
+            "it_is_informatics": "<p>The solution involves creating an algorithm.</p>"
+        }
+    },
+	{
+        "pk": 4,
+        "model": "application.tasktranslation",
+        "fields": {
+            "task": 4,
+            "author": 1,
+            "body": "Kateri dan v tednu se zacne na crko P?",
+            "solution": "<p>Ponedeljek se zacne na crko P</p><img src=\"/resources/bober.png\" />To je bober",
+            "language_locale": "sl",
+            "title": "Dan v tednu",
+            "correct_answer" : 13,
+			"it_is_informatics": "Potrebno je poznavanje dnevov v tednu."
+        }
+    },
+	{
+        "pk": 1,
+        "model": "application.resources",
+        "fields": {
+            "filename": "bober.png",
+			"type": "image",
+			"task": 4,
+			"language": "sl"
+		}
+    },
+	{
+        "pk": 2,
+        "model": "application.resources",
+        "fields": {
+            "filename": "boberII.png",
+			"type": "image",
+			"task": 4,
+			"language": "sl"
+		}
+    }
+
+
+]

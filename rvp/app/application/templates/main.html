@@ -1,0 +1,111 @@
+{% load i18n %}
+
+{% load active_tag %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>{% block pageTitle %}Prevajanje{% endblock pageTitle %}</title>
+
+    <link href="{{ STATIC_URL }}css/bootstrap.css" rel="stylesheet">
+    <link href="{{ STATIC_URL }}css/bootstrap-responsive.css" rel="stylesheet">
+    <link href="{{ STATIC_URL }}css/docs.css" rel="stylesheet">
+    <link href="{{ STATIC_URL }}css/layout.css" rel="stylesheet">
+    <link href="{{ STATIC_URL }}css/bootstrap-select.min.css" rel="stylesheet">
+
+    {% block head %}
+    {% endblock head %}
+</head>
+
+<body>
+
+<div class="navbar navbar-inverse navbar-fixed-top">
+    <div class="navbar-inner">
+        <div class="container">
+            <div class="nav-collapse collapse">
+                <ul class="nav">
+                    <li class="{% add_active request "index" %}">
+                        <a href="{% url "index" %} ">{% trans "Home" %}</a>
+                    </li>
+                    <li class="{% add_active request "control_panel.users" %}{% add_active request "control_panel.parameters" %}">
+                        <a href="{% url "control_panel.parameters" %} ">{% trans "Control Panel" %}</a>
+                    </li>
+                </ul>
+            </div>
+
+            {% if user.is_authenticated %}
+                <div class="pull-right btn-group no-print">
+                    <a class="btn" href="{% url "users.profile" %} ">
+                        <i class="icon icon-user"></i>
+                        {{ request.user }}
+                    </a>
+                    <a class="btn" href="{% url "users.logout" %} ">
+                        <i class="icon icon-off"></i>
+                        {% trans "Logout" %}
+                    </a>
+                </div>
+            {% else %}
+                <div class="pull-right btn-group no-print">
+                    <a class="btn" href="{% url "users.login" %} ">
+                        <i class="icon icon-off"></i>
+                        Login
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <!-- For django's message framework! -->
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert {% if message.tags %} alert-{{ message.tags }}"{% endif %}>
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    {% if message_success %}
+        <div class="alert alert-success">
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+            {{ message_success }}
+        </div>
+    {% endif %}
+
+    {% if message_error %}
+        <div class="alert alert-error">
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+            {{ message_error }}
+        </div>
+    {% endif %}
+
+    {% block content %}
+    {% endblock content %}
+</div>
+<!-- /container -->
+
+<!-- Le javascript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="{{ STATIC_URL }}js/jquery.js"></script>
+<script src="{{ STATIC_URL }}js/bootstrap-transition.js"></script>
+<script src="{{ STATIC_URL }}js/bootstrap-alert.js"></script>
+<script src="{{ STATIC_URL }}js/bootstrap-modal.js"></script>
+<script src="{{ STATIC_URL }}js/bootstrap-dropdown.js"></script>
+<script src="{{ STATIC_URL }}js/bootstrap-scrollspy.js"></script>
+<script src="{{ STATIC_URL }}js/bootstrap-tab.js"></script>
+<script src="{{ STATIC_URL }}js/bootstrap-tooltip.js"></script>
+<script src="{{ STATIC_URL }}js/bootstrap-popover.js"></script>
+<script src="{{ STATIC_URL }}js/bootstrap-button.js"></script>
+<script src="{{ STATIC_URL }}js/bootstrap-collapse.js"></script>
+<script src="{{ STATIC_URL }}js/bootstrap-carousel.js"></script>
+<script src="{{ STATIC_URL }}js/bootstrap-typeahead.js"></script>
+<script src="{{ STATIC_URL }}js/bootstrap-select.min.js"></script>
+
+{% block script %}
+{% endblock script %}
+</body>
+</html>
