@@ -1,0 +1,68 @@
+{% extends "main.html" %}
+
+{% load i18n %}
+
+{% block pageTitle %}{% trans "My Profile" %}{% endblock pageTitle %}
+
+{% block content %}
+<div class="well custom">
+    <a href="{% url "index" %} " class="btn back-btn"><i class="icon-arrow-left"></i> {% trans "Home" %}</a>
+
+    <div id="profile" class="inner_well">
+
+        <!-- Profile settings -->
+        <form action="" method="post" class="">
+            <fieldset>
+                <legend>{% trans "My Profile Settings   " %}: {{user}} {% for group in user.groups.all %}<span class="label">{{ group }}</span>{% endfor %}</legend>
+
+                <label>{{form.first_name.label}}</label>
+                {{form.first_name}}
+                {{form.first_name.errors}}
+
+                <label>{{form.last_name.label}}</label>
+                {{form.last_name}}
+                {{form.last_name.errors}}
+
+                <label>{{form.email.label}}</label>
+                {{form.email}}
+                {{form.email.errors}}
+
+                <label>{{form.password.label}}</label>
+                {{form.password}}
+                {{form.password.errors}}
+
+                <label>{{form.confirm_password.label}}</label>
+                {{form.confirm_password}}
+                {{form.password.errors}}
+
+                <br><br>
+                <button type="submit" class="btn btn-primary">{% trans "Save" %}</button>
+            </fieldset>
+        </form>
+
+        <!-- Language settings -->
+        <form action="{% url "users.set_interface_lang" %} " method="post">
+            {% csrf_token %}
+            <legend>{% trans "Language settings" %}</legend>
+
+            <fieldset>
+                <input name="next" type="hidden" value="{{ redirect_to }}" />
+
+                <label>{% trans "Interface language" %}</label>
+                <select name="language">
+                    {% get_language_info_list for LANGUAGES as languages %}
+                    {% for language in languages %}
+                        <option value="{{ language.code }}"{% if language.code == LANGUAGE_CODE %} selected="selected"{% endif %}>
+                            {{ language.name_local }} ({{ language.code }})
+                        </option>
+                    {% endfor %}
+                </select>
+
+                <br />
+                <br />
+                <button class="btn btn-primary" type="submit">{% trans "Save" %}</button>
+            </fieldset>
+        </form>
+    </div>
+</div>
+{% endblock content %}

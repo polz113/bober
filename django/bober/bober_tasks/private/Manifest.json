@@ -1,0 +1,35 @@
+{
+    "id": "213",
+    "language": "sl",
+    "version": "9",
+    "title": "Kontrolka",
+
+    "authors": " ",
+
+    
+
+    "license": "Creative commons CC­By",
+
+    "browserSupport": [
+        {"name": "ie", "version": "6", "os": "windows", "supported": false}
+    ],
+
+    "acceptedAnswers": ["2340"],
+
+    "task": [
+        {"type": "html", "url": "index.html"},
+        {"type": "javascript", "url": "lib/functions.js"}
+        
+    ],
+
+    "solution": [
+        {"type": "html", "content": "solution.html"}
+    ],
+    "task_modules": [
+        {"type": "javascript", "url": "js/jquery.js"}
+    ],
+    "grader_modules": [],
+    "solution_modules": [
+        {"type": "javascript", "url": "js/jquery.js"}
+    ]
+}
