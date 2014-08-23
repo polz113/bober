@@ -1,0 +1,21 @@
+{% extends "control-panel/control-panel.html" %}
+
+{% load i18n %}
+
+{% block settings-title %}{% trans "Difficulty Levels" %}{% endblock settings-title %}
+
+{% block control-panel-content %}
+<div class="well custom">
+    <a href="{% url "control_panel.parameters" %} #difficulty-levels" class="btn back-btn"><i class="icon-arrow-left"></i> {% trans "Back" %}</a>
+
+    <div class="inner_well">
+        <br>
+        <form action="" method="post">
+          {% csrf_token %}
+          {{form}}
+          <br />
+          <input class="btn btn-primary" type="submit" value="Submit" />
+        </form>
+    </div>
+</div>
+{% endblock control-panel-content %}

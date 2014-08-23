@@ -1,0 +1,89 @@
+{
+    "format": "1",
+    "tasks":
+            [{
+                "id": "{{ task.id }}",
+                "type": "{{ task.interaction_type }}",
+
+                {% if task_translation.version %}
+                "version": "{{ task_translation.version  }}",
+                {% endif %}
+
+                "title":
+                        [{
+                            "value": "{{ task_translation.title }}",
+                            "lang": "{{ task_translation.language_locale }}"
+                        }],
+
+                {% if task.author %}
+                "authors":
+                        [{
+                            "author": "{{ task.author.first_name }} {{ task.author.last_name }}"
+                        }],
+                {% endif %}
+
+                {% if task_translation.author %}
+                "translators":
+                            [{
+                                "translator": "{{ task_translation.author.first_name }} {{ task_translation.author.last_name }}"
+                            }],
+                {% endif %}
+
+                "license": "BSD",
+                "task":
+                        [{
+                            {% if task_translation.body %}
+                            "value": "{{ task_translation.body }}",
+                            {% endif %}
+                            "lang": "{{ task_translation.language_locale }}"
+                        }],
+
+                "answers":
+                        [
+                            {
+                                "id": "{{  current_task_unique_identifiers_of_answers.0 }}",
+                                "correct": {{ current_task_answer_correctness.0 }},
+                                "answer":
+                                        [{
+                                            "value": "{{ current_task_answer_values.0 }}",
+                                            "lang": "{{ current_task_language }}"
+                                        }]
+                            },
+                            {
+                                "id": " {{  current_task_unique_identifiers_of_answers.1 }}",
+                                "correct": {{ current_task_answer_correctness.1 }},
+                                "answer":
+                                        [{
+                                            "value": "{{ current_task_answer_values.1 }}",
+                                            "lang": "{{ current_task_language }}"
+                                        }]
+                            },
+                            {
+                                "id": "{{  current_task_unique_identifiers_of_answers.2 }}",
+                                "correct": {{ current_task_answer_correctness.2 }},
+                                "answer":
+                                        [{
+                                            "value": "{{ current_task_answer_values.2 }}",
+                                            "lang": "{{ current_task_language }}"
+                                        }]
+                            },
+                            {
+                                "id": "{{  current_task_unique_identifiers_of_answers.3 }}",
+                                "correct": {{ current_task_answer_correctness.3 }},
+                                "answer":
+                                        [{
+                                            "value": "{{ current_task_answer_values.3 }}",
+                                            "lang": "{{ current_task_language }}"
+                                        }]
+                            }
+                        ]
+                {% if task_translation.solution %}
+                ,
+                "explanation":
+                            [{
+                                "value": "{{ task_translation.solution }}",
+                                "lang": "{{ task_translation.language_locale }}"
+                            }]
+                {%  endif %}
+            }]
+}

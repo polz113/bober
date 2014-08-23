@@ -1,0 +1,39 @@
+{
+    "id": "{{ task.id }}",
+    "language": "{{ task_translation.language_locale_id }}",
+    "version": "{{ task_translation.version }}",
+    "title": "{{ task_translation.title }}",
+
+    "authors": "{{ task.author.first_name }} {{ task.author.last_name }}",
+
+    {% if task_translation.author %}
+    "translators": "{{ task_translation.author.first_name }} {{ task_translation.author.last_name }}",
+    {% endif %}
+
+    "license": "Creative commons CC­By",
+
+    "browserSupport": [
+        {"name": "ie", "version": "6", "os": "windows", "supported": false}
+    ],
+
+    "acceptedAnswers": ["{{ task_translation.correct_answer_id }}"],
+
+    "task": [
+        {"type": "html", "url": "index.html"},
+        {"type": "javascript", "url": "lib/functions.js"}
+        {% for type, name in current_task_resources_objects %}
+            ,{"type": "{{ type }}", "url": "{{ name }}"}
+        {% endfor %}
+    ],
+
+    "solution": [
+        {"type": "html", "content": "solution.html"}
+    ],
+    "task_modules": [
+        {"type": "javascript", "url": "js/jquery.js"}
+    ],
+    "grader_modules": [],
+    "solution_modules": [
+        {"type": "javascript", "url": "js/jquery.js"}
+    ]
+}

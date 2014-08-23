@@ -1,0 +1,90 @@
+{% extends "control-panel/control-panel.html" %}
+
+{% load i18n %}
+
+{% block settings-title %}{% trans "User Management" %}{% endblock settings-title %}
+
+{% block control-panel-content %}
+    <div class="well custom">
+        <div class="input-append user-group-filter">
+            <label class="checkbox inline">
+                <b>{% trans "Display:" %} </b>
+            </label>
+            <label class="checkbox inline">
+                <input type="checkbox" value="Registered User" checked="checked"> Registered User
+            </label>
+            <label class="checkbox inline">
+                <input type="checkbox" value="Language Administrator" checked="checked"> Language Administrator
+            </label>
+            <label class="checkbox inline">
+                <input type="checkbox" value="Program Committee" checked="checked"> Program Committee
+            </label>
+        </div>
+
+        <div class="input-append" style="float:right;margin-right:20px;">
+            <input class="span3" id="appendedInputButtons" type="text">
+            <a class="btn" type="button"><i class="icon-search"></i></a>
+        </div>
+
+        <table class="users-list table">
+            <tr>
+                <th>{% trans "Username" %}</th>
+                <th>{% trans "Email" %}</th>
+                <th>{% trans "Interface" %}</th>
+                <th>{% trans "Group" %}</th>
+                <th>{% trans "Actions" %}</th>
+            </tr>
+            {% for user in users %}
+                <tr>
+                    <td>
+                        <a href="{% url "users.edit_user" user.id %} ">{{ user.username }}
+                            {% if user.is_active %}<span class="label label-success">Active</span>
+                            {% else %}<span class="label label-important">Inactive</span>{% endif %}
+                        </a></td>
+                    <td>{{ user.email }}</td>
+                    <td>{{ user.get_profile.interface_lang_code }}</td>
+                    <td>
+                        {% for group in user.groups.all %}
+                            {{ group }}
+                        {% endfor %}
+                    </td>
+                    <td>
+                        <a class="btn btn-mini" href="{% url "users.edit_user" user.id %} "><i class="icon icon-edit"></i> {% trans "Edit" %}</a>
+                        <a class="btn btn-mini" href="{% url "users.delete_user" user.id %} "><i class="icon icon-trash"></i> {% trans "Delete" %}</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+
+        <div class="pagination pagination-centered">
+            <ul>
+                <li><a href="#">Prev</a></li>
+                <li><a href="#">1</a></li>
+                <li><a href="#">2</a></li>
+                <li><a href="#">3</a></li>
+                <li><a href="#">4</a></li>
+                <li><a href="#">5</a></li>
+                <li><a href="#">Next</a></li>
+            </ul>
+        </div>
+
+    </div>
+
+{% endblock control-panel-content %}
+
+{% block script %}
+    <script type="text/javascript">
+        $(document).ready(function(){
+            $('.user-group-filter input[type="checkbox"]').click(function(){
+                $('input[class="user_group"]').each(function(){
+                    $(this).parent().parent().hide()
+                });
+
+                $('.user-group-filter input[type="checkbox"]:checked').each(function(){
+                    $('input[class="user_group"][value="' + $(this).val() + '"]').parent().parent().show()
+                  })
+            });
+        });
+    </script>
+{% endblock script %}
+
