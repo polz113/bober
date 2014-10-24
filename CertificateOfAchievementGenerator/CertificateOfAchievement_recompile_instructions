@@ -1,0 +1,7 @@
+If you changed something in Generator, you must first install newest version of NetBeans (instructions are for NetBeans 8.0.1). Then you should open the project, optionally change file "BoberGenPriznanj.java" and at the end compile it. For compilation follow next steps: 
+    Open File -> Project Properties -> Packaging
+    Check "Compress JAR File" and accept changes
+    Click the button in the ribbon tab with the hammer/broom. (clean and build project)
+    Go to the directory where your project is stored
+    Look in the "dist" folder
+Afterwards replace file "BoberGenPriznanj.jar" in "compressedCode" with the one from dist.
