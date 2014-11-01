@@ -7,8 +7,8 @@ class StartupBehavior extends CBehavior {
     }
 
     public function beginRequest(CEvent $event) {
-        if (isset(Yii::app()->session['preffered_language'])) {
-            $language = Yii::app()->session['preffered_language'];
+        if (isset(Yii::app()->session['preferred_language'])) {
+            $language = Yii::app()->session['preferred_language'];
         }else{
             $language = Yii::app()->request->getPreferredLanguage();
         }

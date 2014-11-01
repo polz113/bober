@@ -26,6 +26,7 @@
  * @property string $start_time
  * @property string $finish_time
  * @property integer $finished
+ * @property integer $questions_prepared
  * @property string $total_points_via_answers
  * @property string $total_points_via_time
  * @property string $total_points_manual
@@ -49,7 +50,7 @@ class CompetitionUser extends CActiveRecord {
     public $competition_name;
     public $competition_category_name;
     public $mentor_name;
-    // this fields are used for checkdata
+    // these fields are used for checkdata
     public $timestamp_start;
     public $timestamp_stop;
     public $uploadedData;
@@ -82,14 +83,14 @@ class CompetitionUser extends CActiveRecord {
         // will receive user inputs.
         return array(
             array('competition_id, competition_category_id, school_id', 'required'),
-            array('competition_id, competition_category_id, user_id, competition_category_school_mentor_id, school_id, disqualified_request, disqualified_request_by, disqualified, disqualified_by, advancing_to_next_level, award, finished, number_of_points_needed_for_advancing_to_next_level, class_numberic', 'numerical', 'integerOnly' => true),
+            array('competition_id, competition_category_id, user_id, competition_category_school_mentor_id, school_id, disqualified_request, disqualified_request_by, disqualified, disqualified_by, advancing_to_next_level, award, finished, questions_prepared, number_of_points_needed_for_advancing_to_next_level, class_numberic', 'numerical', 'integerOnly' => true),
             array('last_name, first_name, access_code', 'length', 'max' => 255),
             array('class', 'length', 'max' => 20),
             array('total_points_via_answers, total_points_via_time, total_points_manual, total_points, gender', 'length', 'max' => 10),
             array('disqualified_reason, start_time, finish_time', 'safe'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
-            array('id, competition_id, number_of_points_needed_for_advancing_to_next_level, mentor_name, school_name, competition_name, competition_category_name, competition_category_id, user_id, competition_category_school_mentor_id, last_name, first_name, gender, class, school_id, disqualified_request, disqualified_request_by, disqualified, disqualified_by, disqualified_reason, advancing_to_next_level, award, start_time, finish_time, finished, total_points_via_answers, total_points_via_time, total_points_manual, total_points, uploadedData, class_numberic, ip_start, ip_stop', 'safe', 'on' => 'search'),
+            array('id, competition_id, number_of_points_needed_for_advancing_to_next_level, mentor_name, school_name, competition_name, competition_category_name, competition_category_id, user_id, competition_category_school_mentor_id, last_name, first_name, gender, class, school_id, disqualified_request, disqualified_request_by, disqualified, disqualified_by, disqualified_reason, advancing_to_next_level, award, start_time, finish_time, finished, questions_prepared, total_points_via_answers, total_points_via_time, total_points_manual, total_points, uploadedData, class_numberic, ip_start, ip_stop', 'safe', 'on' => 'search'),
         );
     }
 
@@ -137,6 +138,7 @@ class CompetitionUser extends CActiveRecord {
             'start_time' => Yii::t('app', 'Competition Start Time'),
             'finish_time' => Yii::t('app', 'Competition Finished Time'),
             'finished' => Yii::t('app', 'Competition Finished'),
+            'questions_prepared' => Yii::t('app', 'questions_prepared'),
             'total_points_via_answers' => Yii::t('app', 'total_points_via_answers'),
             'total_points_via_time' => Yii::t('app', 'total_points_via_time'),
             'total_points_manual' => Yii::t('app', 'total_points_manual'),

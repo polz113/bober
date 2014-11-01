@@ -58,9 +58,9 @@ class CompetitionLoaderController extends Controller {
     public function actionChangeLanguage() {
         $language = Yii::app()->getRequest()->getParam('lang', '');
         if ($language == '') {
-            unset(Yii::app()->session['preffered_language']);
+            unset(Yii::app()->session['preferred_language']);
         }else{
-            Yii::app()->session['preffered_language'] = $language;
+            Yii::app()->session['preferred_language'] = $language;
         }
         header('Location: /index.php/CompetitionLoader');
         die();

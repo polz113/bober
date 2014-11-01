@@ -248,15 +248,13 @@ class QuestionResourceController extends Controller {
      * @return boolean true if access to specific action is allowed; false otherwise
      */
     private function CanAccess($action = "") {
-        $superuser = Generic::isSuperAdmin();
-        $user_role = Generic::getUserRole();
-        $allowed = false;
-
-        if ($user_role >= 10) {
-            $allowed = true;
-        }
-
-        if ($action == 'index') {
+        if ($action == 'get') {
+            $competition_user_id = isset(Yii::app()->session['competition_user_id']) ? Yii::app()->session['competition_user_id'] : 0;
+            // demo
+            if ($competition_user_id != 0) {
+                return true;
+            }
+        } else if ($action == 'index') {
             
         } else if ($action == 'admin') {
             
@@ -272,20 +270,17 @@ class QuestionResourceController extends Controller {
             
         } else if ($action == 'deactivate') {
             
-        } else if ($action == 'get') {
-            $competition_user_id = isset(Yii::app()->session['competition_user_id']) ? Yii::app()->session['competition_user_id'] : 0;
-            // demo
-            if ($competition_user_id == 0) {
-                $competition_user_id = 1;
-            }
-
-            if ($competition_user_id != 0) {
-                return true;
-            }
         } else if ($action == 'adminget') {
+            $superuser = Generic::isSuperAdmin();
             if ($superuser) {
                 return true;
             }
+        }
+        $user_role = Generic::getUserRole();
+        $allowed = false;
+
+        if ($user_role >= 10) {
+            $allowed = true;
         }
 
         return $allowed;
@@ -308,13 +303,15 @@ class QuestionResourceController extends Controller {
             }
             $competition_user_id = isset(Yii::app()->session['competition_user_id']) ? Yii::app()->session['competition_user_id'] : 0;
             Yii::app()->session->close();
-            // demo
-            if ($competition_user_id == 0) {
-                $competition_user_id = 1;
-            }
 
-            $competition_user_question = CompetitionUserQuestion::model()->with('competitionQuestion')->find('competitionQuestion.question_id=:question_id and t.competition_user_id=:competition_user_id', array(':question_id' => $question_id, ':competition_user_id' => $competition_user_id));
-
+            $criteria = new CDbCriteria();
+            $criteria->limit = 1;
+            $criteria->join = 'INNER JOIN competition_question on t.competition_question_id = competition_question.id';
+            $criteria->condition = 't.competition_user_id = :competition_user_id AND competition_question.question_id = :question_id';
+            $criteria->params = array(':question_id'=>$question_id, ':competition_user_id' => $competition_user_id);
+            
+            $competition_user_question = CompetitionUserQuestion::model()->find($criteria);
+            //$competition_user_question = CompetitionUserQuestion::model()->with('competitionQuestion')->find('competitionQuestion.question_id=:question_id and t.competition_user_id=:competition_user_id', array(':question_id' => $question_id, ':competition_user_id' => $competition_user_id));
             if ($competition_user_question != null) {
                 $allow = true;
             }

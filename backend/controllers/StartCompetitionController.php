@@ -138,9 +138,6 @@ class StartCompetitionController extends Controller {
                     ));
 
                     if ($competitionUser != null && $isOk) {
-                        if ($competitionUser == null) {
-                            $competitionUser = new CompetitionUser();
-                        }
                         if ($competitionUser->finished == 1 || $competitionUser->finish_time != null) {
                             Yii::app()->session['errorMsg'] = Yii::t('app', 'User already finished competition.');
                         } else {
@@ -242,9 +239,9 @@ class StartCompetitionController extends Controller {
     public function actionChangeLanguage() {
         $language = Yii::app()->getRequest()->getParam('lang', '');
         if ($language == '') {
-            unset(Yii::app()->session['preffered_language']);
+            unset(Yii::app()->session['preferred_language']);
         } else {
-            Yii::app()->session['preffered_language'] = $language;
+            Yii::app()->session['preferred_language'] = $language;
         }
         header('Location: /index.php/StartCompetition');
         die();
