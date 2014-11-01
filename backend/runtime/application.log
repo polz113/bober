@@ -2887,3 +2887,36 @@ Stack trace:
 REQUEST_URI=/index.php/questionResource/get/280/sl/index.html
 HTTP_REFERER=http://bober-dev.acm.si/index.php/CompetitionLoader
 ---
+2014/11/01 13:42:06 [error] [php] Trying to get property of non-object (/var/www/bober/backend/controllers/CompetitionServiceController.php:71)
+Stack trace:
+#0 /var/www/bober/common/lib/yii/web/CController.php(286): CompetitionServiceController->runAction()
+#1 /var/www/bober/common/lib/yii/web/CController.php(265): CompetitionServiceController->runActionWithFilters()
+#2 /var/www/bober/common/lib/yii/web/CWebApplication.php(282): CompetitionServiceController->run()
+#3 /var/www/bober/common/lib/yii/web/CWebApplication.php(141): CWebApplication->runController()
+#4 /var/www/bober/common/lib/yii/base/CApplication.php(180): CWebApplication->processRequest()
+#5 /var/www/bober/backend/www/index.php(23): CWebApplication->run()
+REQUEST_URI=/index.php/CompetitionService/GetQuestions?_=1414792687349
+in /var/www/bober/backend/controllers/CompetitionServiceController.php (71)
+in /var/www/bober/backend/www/index.php (23)
+2014/11/01 13:42:15 [error] [php] Trying to get property of non-object (/var/www/bober/backend/controllers/CompetitionServiceController.php:71)
+Stack trace:
+#0 /var/www/bober/common/lib/yii/web/CController.php(286): CompetitionServiceController->runAction()
+#1 /var/www/bober/common/lib/yii/web/CController.php(265): CompetitionServiceController->runActionWithFilters()
+#2 /var/www/bober/common/lib/yii/web/CWebApplication.php(282): CompetitionServiceController->run()
+#3 /var/www/bober/common/lib/yii/web/CWebApplication.php(141): CWebApplication->runController()
+#4 /var/www/bober/common/lib/yii/base/CApplication.php(180): CWebApplication->processRequest()
+#5 /var/www/bober/backend/www/index.php(23): CWebApplication->run()
+REQUEST_URI=/index.php/CompetitionService/GetQuestions?_=1414792687349
+in /var/www/bober/backend/controllers/CompetitionServiceController.php (71)
+in /var/www/bober/backend/www/index.php (23)
+2014/11/01 13:42:25 [error] [php] Trying to get property of non-object (/var/www/bober/backend/controllers/CompetitionServiceController.php:71)
+Stack trace:
+#0 /var/www/bober/common/lib/yii/web/CController.php(286): CompetitionServiceController->runAction()
+#1 /var/www/bober/common/lib/yii/web/CController.php(265): CompetitionServiceController->runActionWithFilters()
+#2 /var/www/bober/common/lib/yii/web/CWebApplication.php(282): CompetitionServiceController->run()
+#3 /var/www/bober/common/lib/yii/web/CWebApplication.php(141): CWebApplication->runController()
+#4 /var/www/bober/common/lib/yii/base/CApplication.php(180): CWebApplication->processRequest()
+#5 /var/www/bober/backend/www/index.php(23): CWebApplication->run()
+REQUEST_URI=/index.php/CompetitionService/GetQuestions?_=1414792687349
+in /var/www/bober/backend/controllers/CompetitionServiceController.php (71)
+in /var/www/bober/backend/www/index.php (23)
