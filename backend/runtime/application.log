@@ -2920,3 +2920,384 @@ Stack trace:
 REQUEST_URI=/index.php/CompetitionService/GetQuestions?_=1414792687349
 in /var/www/bober/backend/controllers/CompetitionServiceController.php (71)
 in /var/www/bober/backend/www/index.php (23)
+2014/11/01 14:50:59 [error] [php] Trying to get property of non-object (/var/www/bober/backend/controllers/CompetitionServiceController.php:71)
+Stack trace:
+#0 /var/www/bober/common/lib/yii/web/CController.php(286): CompetitionServiceController->runAction()
+#1 /var/www/bober/common/lib/yii/web/CController.php(265): CompetitionServiceController->runActionWithFilters()
+#2 /var/www/bober/common/lib/yii/web/CWebApplication.php(282): CompetitionServiceController->run()
+#3 /var/www/bober/common/lib/yii/web/CWebApplication.php(141): CWebApplication->runController()
+#4 /var/www/bober/common/lib/yii/base/CApplication.php(180): CWebApplication->processRequest()
+#5 /var/www/bober/backend/www/index.php(23): CWebApplication->run()
+REQUEST_URI=/index.php/CompetitionService/GetQuestions?_=1414792687349
+in /var/www/bober/backend/controllers/CompetitionServiceController.php (71)
+in /var/www/bober/backend/www/index.php (23)
+2014/11/01 14:51:00 [error] [php] Trying to get property of non-object (/var/www/bober/backend/controllers/CompetitionServiceController.php:71)
+Stack trace:
+#0 /var/www/bober/common/lib/yii/web/CController.php(286): CompetitionServiceController->runAction()
+#1 /var/www/bober/common/lib/yii/web/CController.php(265): CompetitionServiceController->runActionWithFilters()
+#2 /var/www/bober/common/lib/yii/web/CWebApplication.php(282): CompetitionServiceController->run()
+#3 /var/www/bober/common/lib/yii/web/CWebApplication.php(141): CWebApplication->runController()
+#4 /var/www/bober/common/lib/yii/base/CApplication.php(180): CWebApplication->processRequest()
+#5 /var/www/bober/backend/www/index.php(23): CWebApplication->run()
+REQUEST_URI=/index.php/CompetitionService/GetQuestions?_=1414792687349
+in /var/www/bober/backend/controllers/CompetitionServiceController.php (71)
+in /var/www/bober/backend/www/index.php (23)
+2014/11/01 14:51:00 [error] [php] Trying to get property of non-object (/var/www/bober/backend/controllers/CompetitionServiceController.php:71)
+Stack trace:
+#0 /var/www/bober/common/lib/yii/web/CController.php(286): CompetitionServiceController->runAction()
+#1 /var/www/bober/common/lib/yii/web/CController.php(265): CompetitionServiceController->runActionWithFilters()
+#2 /var/www/bober/common/lib/yii/web/CWebApplication.php(282): CompetitionServiceController->run()
+#3 /var/www/bober/common/lib/yii/web/CWebApplication.php(141): CWebApplication->runController()
+#4 /var/www/bober/common/lib/yii/base/CApplication.php(180): CWebApplication->processRequest()
+#5 /var/www/bober/backend/www/index.php(23): CWebApplication->run()
+REQUEST_URI=/index.php/CompetitionService/GetQuestions?_=1414792687349
+in /var/www/bober/backend/controllers/CompetitionServiceController.php (71)
+in /var/www/bober/backend/www/index.php (23)
+2014/11/01 14:51:37 [error] [php] Trying to get property of non-object (/var/www/bober/backend/controllers/CompetitionServiceController.php:71)
+Stack trace:
+#0 /var/www/bober/common/lib/yii/web/CController.php(286): CompetitionServiceController->runAction()
+#1 /var/www/bober/common/lib/yii/web/CController.php(265): CompetitionServiceController->runActionWithFilters()
+#2 /var/www/bober/common/lib/yii/web/CWebApplication.php(282): CompetitionServiceController->run()
+#3 /var/www/bober/common/lib/yii/web/CWebApplication.php(141): CWebApplication->runController()
+#4 /var/www/bober/common/lib/yii/base/CApplication.php(180): CWebApplication->processRequest()
+#5 /var/www/bober/backend/www/index.php(23): CWebApplication->run()
+REQUEST_URI=/index.php/CompetitionService/GetQuestions?_=1414792687349
+in /var/www/bober/backend/controllers/CompetitionServiceController.php (71)
+in /var/www/bober/backend/www/index.php (23)
+2014/11/01 14:51:55 [error] [php] Trying to get property of non-object (/var/www/bober/backend/controllers/CompetitionServiceController.php:71)
+Stack trace:
+#0 /var/www/bober/common/lib/yii/web/CController.php(286): CompetitionServiceController->runAction()
+#1 /var/www/bober/common/lib/yii/web/CController.php(265): CompetitionServiceController->runActionWithFilters()
+#2 /var/www/bober/common/lib/yii/web/CWebApplication.php(282): CompetitionServiceController->run()
+#3 /var/www/bober/common/lib/yii/web/CWebApplication.php(141): CWebApplication->runController()
+#4 /var/www/bober/common/lib/yii/base/CApplication.php(180): CWebApplication->processRequest()
+#5 /var/www/bober/backend/www/index.php(23): CWebApplication->run()
+REQUEST_URI=/index.php/CompetitionService/GetQuestions?_=1414792687349
+in /var/www/bober/backend/controllers/CompetitionServiceController.php (71)
+in /var/www/bober/backend/www/index.php (23)
+2014/11/01 14:52:03 [error] [php] Trying to get property of non-object (/var/www/bober/backend/controllers/CompetitionServiceController.php:71)
+Stack trace:
+#0 /var/www/bober/common/lib/yii/web/CController.php(286): CompetitionServiceController->runAction()
+#1 /var/www/bober/common/lib/yii/web/CController.php(265): CompetitionServiceController->runActionWithFilters()
+#2 /var/www/bober/common/lib/yii/web/CWebApplication.php(282): CompetitionServiceController->run()
+#3 /var/www/bober/common/lib/yii/web/CWebApplication.php(141): CWebApplication->runController()
+#4 /var/www/bober/common/lib/yii/base/CApplication.php(180): CWebApplication->processRequest()
+#5 /var/www/bober/backend/www/index.php(23): CWebApplication->run()
+REQUEST_URI=/index.php/CompetitionService/GetQuestions?_=1414792687349
+in /var/www/bober/backend/controllers/CompetitionServiceController.php (71)
+in /var/www/bober/backend/www/index.php (23)
+2014/11/01 14:52:05 [error] [php] Trying to get property of non-object (/var/www/bober/backend/controllers/CompetitionServiceController.php:71)
+Stack trace:
+#0 /var/www/bober/common/lib/yii/web/CController.php(286): CompetitionServiceController->runAction()
+#1 /var/www/bober/common/lib/yii/web/CController.php(265): CompetitionServiceController->runActionWithFilters()
+#2 /var/www/bober/common/lib/yii/web/CWebApplication.php(282): CompetitionServiceController->run()
+#3 /var/www/bober/common/lib/yii/web/CWebApplication.php(141): CWebApplication->runController()
+#4 /var/www/bober/common/lib/yii/base/CApplication.php(180): CWebApplication->processRequest()
+#5 /var/www/bober/backend/www/index.php(23): CWebApplication->run()
+REQUEST_URI=/index.php/CompetitionService/GetQuestions?_=1414792687349
+in /var/www/bober/backend/controllers/CompetitionServiceController.php (71)
+in /var/www/bober/backend/www/index.php (23)
+2014/11/01 14:52:05 [error] [php] Trying to get property of non-object (/var/www/bober/backend/controllers/CompetitionServiceController.php:71)
+Stack trace:
+#0 /var/www/bober/common/lib/yii/web/CController.php(286): CompetitionServiceController->runAction()
+#1 /var/www/bober/common/lib/yii/web/CController.php(265): CompetitionServiceController->runActionWithFilters()
+#2 /var/www/bober/common/lib/yii/web/CWebApplication.php(282): CompetitionServiceController->run()
+#3 /var/www/bober/common/lib/yii/web/CWebApplication.php(141): CWebApplication->runController()
+#4 /var/www/bober/common/lib/yii/base/CApplication.php(180): CWebApplication->processRequest()
+#5 /var/www/bober/backend/www/index.php(23): CWebApplication->run()
+REQUEST_URI=/index.php/CompetitionService/GetQuestions?_=1414792687349
+in /var/www/bober/backend/controllers/CompetitionServiceController.php (71)
+in /var/www/bober/backend/www/index.php (23)
+2014/11/01 14:52:31 [error] [php] Trying to get property of non-object (/var/www/bober/backend/controllers/CompetitionServiceController.php:71)
+Stack trace:
+#0 /var/www/bober/common/lib/yii/web/CController.php(286): CompetitionServiceController->runAction()
+#1 /var/www/bober/common/lib/yii/web/CController.php(265): CompetitionServiceController->runActionWithFilters()
+#2 /var/www/bober/common/lib/yii/web/CWebApplication.php(282): CompetitionServiceController->run()
+#3 /var/www/bober/common/lib/yii/web/CWebApplication.php(141): CWebApplication->runController()
+#4 /var/www/bober/common/lib/yii/base/CApplication.php(180): CWebApplication->processRequest()
+#5 /var/www/bober/backend/www/index.php(23): CWebApplication->run()
+REQUEST_URI=/index.php/CompetitionService/GetQuestions?_=1414792687349
+in /var/www/bober/backend/controllers/CompetitionServiceController.php (71)
+in /var/www/bober/backend/www/index.php (23)
+2014/11/01 14:52:34 [error] [php] Trying to get property of non-object (/var/www/bober/backend/controllers/CompetitionServiceController.php:71)
+Stack trace:
+#0 /var/www/bober/common/lib/yii/web/CController.php(286): CompetitionServiceController->runAction()
+#1 /var/www/bober/common/lib/yii/web/CController.php(265): CompetitionServiceController->runActionWithFilters()
+#2 /var/www/bober/common/lib/yii/web/CWebApplication.php(282): CompetitionServiceController->run()
+#3 /var/www/bober/common/lib/yii/web/CWebApplication.php(141): CWebApplication->runController()
+#4 /var/www/bober/common/lib/yii/base/CApplication.php(180): CWebApplication->processRequest()
+#5 /var/www/bober/backend/www/index.php(23): CWebApplication->run()
+REQUEST_URI=/index.php/CompetitionService/GetQuestions?_=1414792687349
+in /var/www/bober/backend/controllers/CompetitionServiceController.php (71)
+in /var/www/bober/backend/www/index.php (23)
+2014/11/01 14:54:04 [error] [php] Trying to get property of non-object (/var/www/bober/backend/controllers/CompetitionServiceController.php:71)
+Stack trace:
+#0 /var/www/bober/common/lib/yii/web/CController.php(286): CompetitionServiceController->runAction()
+#1 /var/www/bober/common/lib/yii/web/CController.php(265): CompetitionServiceController->runActionWithFilters()
+#2 /var/www/bober/common/lib/yii/web/CWebApplication.php(282): CompetitionServiceController->run()
+#3 /var/www/bober/common/lib/yii/web/CWebApplication.php(141): CWebApplication->runController()
+#4 /var/www/bober/common/lib/yii/base/CApplication.php(180): CWebApplication->processRequest()
+#5 /var/www/bober/backend/www/index.php(23): CWebApplication->run()
+REQUEST_URI=/index.php/CompetitionService/GetQuestions?_=1414792687349
+in /var/www/bober/backend/controllers/CompetitionServiceController.php (71)
+in /var/www/bober/backend/www/index.php (23)
+2014/11/01 15:01:13 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'The requested page does not exist.' in /var/www/bober/backend/controllers/StartCompetitionController.php:222
+Stack trace:
+#0 /var/www/bober/backend/controllers/StartCompetitionController.php(51): StartCompetitionController->loadModel('32070')
+#1 [internal function]: StartCompetitionController->actionView('32070')
+#2 /var/www/bober/common/lib/yii/web/actions/CAction.php(108): ReflectionMethod->invokeArgs(Object(StartCompetitionController), Array)
+#3 /var/www/bober/common/lib/yii/web/actions/CInlineAction.php(47): CAction->runWithParamsInternal(Object(StartCompetitionController), Object(ReflectionMethod), Array)
+#4 /var/www/bober/common/lib/yii/web/CController.php(308): CInlineAction->runWithParams(Array)
+#5 /var/www/bober/common/lib/yii/web/filters/CFilterChain.php(133): CController->runAction(Object(CInlineAction))
+#6 /var/www/bober/common/lib/yii/web/filters/CFilter.php(40): CFilterChain->run()
+#7 /var/www/bober/common/lib/yii/web/CController.php(1145): CFilter->filter(Object(CFilterChain))
+#8 /var/www/bober/common/lib/yii/web/filters/CInlineFilter.php(58): CController->filterAccessControl(Object(CFilterChain))
+#9 /var/www/bober/common/lib/yii/web/filters/CFilterChain.php(130): CInlineFilter->filter(Object(CFilterChain))
+#10 /var/www/bober/common/lib/yii/web/CController.php(291): CFilterChain->run()
+#11 /var/www/bober/common/lib/yii/web/CController.php(265): CController->runActionWithFilters(Object(CInlineAction), Array)
+#12 /var/www/bober/common/lib/yii/web/CWebApplication.php(282): CController->run('view')
+#13 /var/www/bober/common/lib/yii/web/CWebApplication.php(141): CWebApplication->runController('startCompetitio...')
+#14 /var/www/bober/common/lib/yii/base/CApplication.php(180): CWebApplication->processRequest()
+#15 /var/www/bober/backend/www/index.php(23): CApplication->run()
+#16 {main}
+REQUEST_URI=/index.php/startCompetition/32070
+HTTP_REFERER=http://bober-dev.acm.si/index.php/StartCompetition
+---
+2014/11/01 15:01:13 [error] [system.db.CDbCommand] CDbCommand::execute() failed: SQLSTATE[23000]: Integrity constraint violation: 1452 Cannot add or update a child row: a foreign key constraint fails (`bober_dev`.`competition_user_question`, CONSTRAINT `competition_user_question_ibfk_1` FOREIGN KEY (`competition_user_id`) REFERENCES `competition_user` (`id`) ON DELETE CASCADE ON UPDATE NO A). The SQL statement executed was: INSERT INTO `competition_user_question` (`random_seed`, `competition_question_id`, `competition_user_id`, `ordering`) VALUES (:yp0, :yp1, :yp2, :yp3).
+in /var/www/bober/backend/controllers/CompetitionServiceController.php (98)
+in /var/www/bober/backend/www/index.php (23)
+2014/11/01 15:01:13 [error] [system.db.CDbCommand] CDbCommand::execute() failed: SQLSTATE[23000]: Integrity constraint violation: 1452 Cannot add or update a child row: a foreign key constraint fails (`bober_dev`.`competition_user_question`, CONSTRAINT `competition_user_question_ibfk_1` FOREIGN KEY (`competition_user_id`) REFERENCES `competition_user` (`id`) ON DELETE CASCADE ON UPDATE NO A). The SQL statement executed was: INSERT INTO `competition_user_question` (`random_seed`, `competition_question_id`, `competition_user_id`, `ordering`) VALUES (:yp0, :yp1, :yp2, :yp3).
+in /var/www/bober/backend/controllers/CompetitionServiceController.php (98)
+in /var/www/bober/backend/www/index.php (23)
+2014/11/01 15:01:13 [error] [system.db.CDbCommand] CDbCommand::execute() failed: SQLSTATE[23000]: Integrity constraint violation: 1452 Cannot add or update a child row: a foreign key constraint fails (`bober_dev`.`competition_user_question`, CONSTRAINT `competition_user_question_ibfk_1` FOREIGN KEY (`competition_user_id`) REFERENCES `competition_user` (`id`) ON DELETE CASCADE ON UPDATE NO A). The SQL statement executed was: INSERT INTO `competition_user_question` (`random_seed`, `competition_question_id`, `competition_user_id`, `ordering`) VALUES (:yp0, :yp1, :yp2, :yp3).
+in /var/www/bober/backend/controllers/CompetitionServiceController.php (98)
+in /var/www/bober/backend/www/index.php (23)
+2014/11/01 15:01:14 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'The requested page does not exist.' in /var/www/bober/backend/controllers/StartCompetitionController.php:222
+Stack trace:
+#0 /var/www/bober/backend/controllers/StartCompetitionController.php(51): StartCompetitionController->loadModel('32073')
+#1 [internal function]: StartCompetitionController->actionView('32073')
+#2 /var/www/bober/common/lib/yii/web/actions/CAction.php(108): ReflectionMethod->invokeArgs(Object(StartCompetitionController), Array)
+#3 /var/www/bober/common/lib/yii/web/actions/CInlineAction.php(47): CAction->runWithParamsInternal(Object(StartCompetitionController), Object(ReflectionMethod), Array)
+#4 /var/www/bober/common/lib/yii/web/CController.php(308): CInlineAction->runWithParams(Array)
+#5 /var/www/bober/common/lib/yii/web/filters/CFilterChain.php(133): CController->runAction(Object(CInlineAction))
+#6 /var/www/bober/common/lib/yii/web/filters/CFilter.php(40): CFilterChain->run()
+#7 /var/www/bober/common/lib/yii/web/CController.php(1145): CFilter->filter(Object(CFilterChain))
+#8 /var/www/bober/common/lib/yii/web/filters/CInlineFilter.php(58): CController->filterAccessControl(Object(CFilterChain))
+#9 /var/www/bober/common/lib/yii/web/filters/CFilterChain.php(130): CInlineFilter->filter(Object(CFilterChain))
+#10 /var/www/bober/common/lib/yii/web/CController.php(291): CFilterChain->run()
+#11 /var/www/bober/common/lib/yii/web/CController.php(265): CController->runActionWithFilters(Object(CInlineAction), Array)
+#12 /var/www/bober/common/lib/yii/web/CWebApplication.php(282): CController->run('view')
+#13 /var/www/bober/common/lib/yii/web/CWebApplication.php(141): CWebApplication->runController('startCompetitio...')
+#14 /var/www/bober/common/lib/yii/base/CApplication.php(180): CWebApplication->processRequest()
+#15 /var/www/bober/backend/www/index.php(23): CApplication->run()
+#16 {main}
+REQUEST_URI=/index.php/startCompetition/32073
+HTTP_REFERER=http://bober-dev.acm.si/index.php/StartCompetition
+---
+2014/11/01 15:01:15 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'The requested page does not exist.' in /var/www/bober/backend/controllers/StartCompetitionController.php:222
+Stack trace:
+#0 /var/www/bober/backend/controllers/StartCompetitionController.php(51): StartCompetitionController->loadModel('32055')
+#1 [internal function]: StartCompetitionController->actionView('32055')
+#2 /var/www/bober/common/lib/yii/web/actions/CAction.php(108): ReflectionMethod->invokeArgs(Object(StartCompetitionController), Array)
+#3 /var/www/bober/common/lib/yii/web/actions/CInlineAction.php(47): CAction->runWithParamsInternal(Object(StartCompetitionController), Object(ReflectionMethod), Array)
+#4 /var/www/bober/common/lib/yii/web/CController.php(308): CInlineAction->runWithParams(Array)
+#5 /var/www/bober/common/lib/yii/web/filters/CFilterChain.php(133): CController->runAction(Object(CInlineAction))
+#6 /var/www/bober/common/lib/yii/web/filters/CFilter.php(40): CFilterChain->run()
+#7 /var/www/bober/common/lib/yii/web/CController.php(1145): CFilter->filter(Object(CFilterChain))
+#8 /var/www/bober/common/lib/yii/web/filters/CInlineFilter.php(58): CController->filterAccessControl(Object(CFilterChain))
+#9 /var/www/bober/common/lib/yii/web/filters/CFilterChain.php(130): CInlineFilter->filter(Object(CFilterChain))
+#10 /var/www/bober/common/lib/yii/web/CController.php(291): CFilterChain->run()
+#11 /var/www/bober/common/lib/yii/web/CController.php(265): CController->runActionWithFilters(Object(CInlineAction), Array)
+#12 /var/www/bober/common/lib/yii/web/CWebApplication.php(282): CController->run('view')
+#13 /var/www/bober/common/lib/yii/web/CWebApplication.php(141): CWebApplication->runController('startCompetitio...')
+#14 /var/www/bober/common/lib/yii/base/CApplication.php(180): CWebApplication->processRequest()
+#15 /var/www/bober/backend/www/index.php(23): CApplication->run()
+#16 {main}
+REQUEST_URI=/index.php/startCompetition/32055
+HTTP_REFERER=http://bober-dev.acm.si/index.php/StartCompetition
+---
+2014/11/01 15:01:16 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'The requested page does not exist.' in /var/www/bober/backend/controllers/StartCompetitionController.php:222
+Stack trace:
+#0 /var/www/bober/backend/controllers/StartCompetitionController.php(51): StartCompetitionController->loadModel('32079')
+#1 [internal function]: StartCompetitionController->actionView('32079')
+#2 /var/www/bober/common/lib/yii/web/actions/CAction.php(108): ReflectionMethod->invokeArgs(Object(StartCompetitionController), Array)
+#3 /var/www/bober/common/lib/yii/web/actions/CInlineAction.php(47): CAction->runWithParamsInternal(Object(StartCompetitionController), Object(ReflectionMethod), Array)
+#4 /var/www/bober/common/lib/yii/web/CController.php(308): CInlineAction->runWithParams(Array)
+#5 /var/www/bober/common/lib/yii/web/filters/CFilterChain.php(133): CController->runAction(Object(CInlineAction))
+#6 /var/www/bober/common/lib/yii/web/filters/CFilter.php(40): CFilterChain->run()
+#7 /var/www/bober/common/lib/yii/web/CController.php(1145): CFilter->filter(Object(CFilterChain))
+#8 /var/www/bober/common/lib/yii/web/filters/CInlineFilter.php(58): CController->filterAccessControl(Object(CFilterChain))
+#9 /var/www/bober/common/lib/yii/web/filters/CFilterChain.php(130): CInlineFilter->filter(Object(CFilterChain))
+#10 /var/www/bober/common/lib/yii/web/CController.php(291): CFilterChain->run()
+#11 /var/www/bober/common/lib/yii/web/CController.php(265): CController->runActionWithFilters(Object(CInlineAction), Array)
+#12 /var/www/bober/common/lib/yii/web/CWebApplication.php(282): CController->run('view')
+#13 /var/www/bober/common/lib/yii/web/CWebApplication.php(141): CWebApplication->runController('startCompetitio...')
+#14 /var/www/bober/common/lib/yii/base/CApplication.php(180): CWebApplication->processRequest()
+#15 /var/www/bober/backend/www/index.php(23): CApplication->run()
+#16 {main}
+REQUEST_URI=/index.php/startCompetition/32079
+HTTP_REFERER=http://bober-dev.acm.si/index.php/StartCompetition
+---
+2014/11/01 15:01:16 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'The requested page does not exist.' in /var/www/bober/backend/controllers/StartCompetitionController.php:222
+Stack trace:
+#0 /var/www/bober/backend/controllers/StartCompetitionController.php(51): StartCompetitionController->loadModel('32076')
+#1 [internal function]: StartCompetitionController->actionView('32076')
+#2 /var/www/bober/common/lib/yii/web/actions/CAction.php(108): ReflectionMethod->invokeArgs(Object(StartCompetitionController), Array)
+#3 /var/www/bober/common/lib/yii/web/actions/CInlineAction.php(47): CAction->runWithParamsInternal(Object(StartCompetitionController), Object(ReflectionMethod), Array)
+#4 /var/www/bober/common/lib/yii/web/CController.php(308): CInlineAction->runWithParams(Array)
+#5 /var/www/bober/common/lib/yii/web/filters/CFilterChain.php(133): CController->runAction(Object(CInlineAction))
+#6 /var/www/bober/common/lib/yii/web/filters/CFilter.php(40): CFilterChain->run()
+#7 /var/www/bober/common/lib/yii/web/CController.php(1145): CFilter->filter(Object(CFilterChain))
+#8 /var/www/bober/common/lib/yii/web/filters/CInlineFilter.php(58): CController->filterAccessControl(Object(CFilterChain))
+#9 /var/www/bober/common/lib/yii/web/filters/CFilterChain.php(130): CInlineFilter->filter(Object(CFilterChain))
+#10 /var/www/bober/common/lib/yii/web/CController.php(291): CFilterChain->run()
+#11 /var/www/bober/common/lib/yii/web/CController.php(265): CController->runActionWithFilters(Object(CInlineAction), Array)
+#12 /var/www/bober/common/lib/yii/web/CWebApplication.php(282): CController->run('view')
+#13 /var/www/bober/common/lib/yii/web/CWebApplication.php(141): CWebApplication->runController('startCompetitio...')
+#14 /var/www/bober/common/lib/yii/base/CApplication.php(180): CWebApplication->processRequest()
+#15 /var/www/bober/backend/www/index.php(23): CApplication->run()
+#16 {main}
+REQUEST_URI=/index.php/startCompetition/32076
+HTTP_REFERER=http://bober-dev.acm.si/index.php/StartCompetition
+---
+2014/11/01 15:01:21 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'The requested page does not exist.' in /var/www/bober/backend/controllers/StartCompetitionController.php:222
+Stack trace:
+#0 /var/www/bober/backend/controllers/StartCompetitionController.php(51): StartCompetitionController->loadModel('32082')
+#1 [internal function]: StartCompetitionController->actionView('32082')
+#2 /var/www/bober/common/lib/yii/web/actions/CAction.php(108): ReflectionMethod->invokeArgs(Object(StartCompetitionController), Array)
+#3 /var/www/bober/common/lib/yii/web/actions/CInlineAction.php(47): CAction->runWithParamsInternal(Object(StartCompetitionController), Object(ReflectionMethod), Array)
+#4 /var/www/bober/common/lib/yii/web/CController.php(308): CInlineAction->runWithParams(Array)
+#5 /var/www/bober/common/lib/yii/web/filters/CFilterChain.php(133): CController->runAction(Object(CInlineAction))
+#6 /var/www/bober/common/lib/yii/web/filters/CFilter.php(40): CFilterChain->run()
+#7 /var/www/bober/common/lib/yii/web/CController.php(1145): CFilter->filter(Object(CFilterChain))
+#8 /var/www/bober/common/lib/yii/web/filters/CInlineFilter.php(58): CController->filterAccessControl(Object(CFilterChain))
+#9 /var/www/bober/common/lib/yii/web/filters/CFilterChain.php(130): CInlineFilter->filter(Object(CFilterChain))
+#10 /var/www/bober/common/lib/yii/web/CController.php(291): CFilterChain->run()
+#11 /var/www/bober/common/lib/yii/web/CController.php(265): CController->runActionWithFilters(Object(CInlineAction), Array)
+#12 /var/www/bober/common/lib/yii/web/CWebApplication.php(282): CController->run('view')
+#13 /var/www/bober/common/lib/yii/web/CWebApplication.php(141): CWebApplication->runController('startCompetitio...')
+#14 /var/www/bober/common/lib/yii/base/CApplication.php(180): CWebApplication->processRequest()
+#15 /var/www/bober/backend/www/index.php(23): CApplication->run()
+#16 {main}
+REQUEST_URI=/index.php/startCompetition/32082
+HTTP_REFERER=http://bober-dev.acm.si/index.php/StartCompetition
+---
+2014/11/01 15:01:25 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'The requested page does not exist.' in /var/www/bober/backend/controllers/StartCompetitionController.php:222
+Stack trace:
+#0 /var/www/bober/backend/controllers/StartCompetitionController.php(51): StartCompetitionController->loadModel('32088')
+#1 [internal function]: StartCompetitionController->actionView('32088')
+#2 /var/www/bober/common/lib/yii/web/actions/CAction.php(108): ReflectionMethod->invokeArgs(Object(StartCompetitionController), Array)
+#3 /var/www/bober/common/lib/yii/web/actions/CInlineAction.php(47): CAction->runWithParamsInternal(Object(StartCompetitionController), Object(ReflectionMethod), Array)
+#4 /var/www/bober/common/lib/yii/web/CController.php(308): CInlineAction->runWithParams(Array)
+#5 /var/www/bober/common/lib/yii/web/filters/CFilterChain.php(133): CController->runAction(Object(CInlineAction))
+#6 /var/www/bober/common/lib/yii/web/filters/CFilter.php(40): CFilterChain->run()
+#7 /var/www/bober/common/lib/yii/web/CController.php(1145): CFilter->filter(Object(CFilterChain))
+#8 /var/www/bober/common/lib/yii/web/filters/CInlineFilter.php(58): CController->filterAccessControl(Object(CFilterChain))
+#9 /var/www/bober/common/lib/yii/web/filters/CFilterChain.php(130): CInlineFilter->filter(Object(CFilterChain))
+#10 /var/www/bober/common/lib/yii/web/CController.php(291): CFilterChain->run()
+#11 /var/www/bober/common/lib/yii/web/CController.php(265): CController->runActionWithFilters(Object(CInlineAction), Array)
+#12 /var/www/bober/common/lib/yii/web/CWebApplication.php(282): CController->run('view')
+#13 /var/www/bober/common/lib/yii/web/CWebApplication.php(141): CWebApplication->runController('startCompetitio...')
+#14 /var/www/bober/common/lib/yii/base/CApplication.php(180): CWebApplication->processRequest()
+#15 /var/www/bober/backend/www/index.php(23): CApplication->run()
+#16 {main}
+REQUEST_URI=/index.php/startCompetition/32088
+HTTP_REFERER=http://bober-dev.acm.si/index.php/StartCompetition
+---
+2014/11/01 15:01:25 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'The requested page does not exist.' in /var/www/bober/backend/controllers/StartCompetitionController.php:222
+Stack trace:
+#0 /var/www/bober/backend/controllers/StartCompetitionController.php(51): StartCompetitionController->loadModel('31881')
+#1 [internal function]: StartCompetitionController->actionView('31881')
+#2 /var/www/bober/common/lib/yii/web/actions/CAction.php(108): ReflectionMethod->invokeArgs(Object(StartCompetitionController), Array)
+#3 /var/www/bober/common/lib/yii/web/actions/CInlineAction.php(47): CAction->runWithParamsInternal(Object(StartCompetitionController), Object(ReflectionMethod), Array)
+#4 /var/www/bober/common/lib/yii/web/CController.php(308): CInlineAction->runWithParams(Array)
+#5 /var/www/bober/common/lib/yii/web/filters/CFilterChain.php(133): CController->runAction(Object(CInlineAction))
+#6 /var/www/bober/common/lib/yii/web/filters/CFilter.php(40): CFilterChain->run()
+#7 /var/www/bober/common/lib/yii/web/CController.php(1145): CFilter->filter(Object(CFilterChain))
+#8 /var/www/bober/common/lib/yii/web/filters/CInlineFilter.php(58): CController->filterAccessControl(Object(CFilterChain))
+#9 /var/www/bober/common/lib/yii/web/filters/CFilterChain.php(130): CInlineFilter->filter(Object(CFilterChain))
+#10 /var/www/bober/common/lib/yii/web/CController.php(291): CFilterChain->run()
+#11 /var/www/bober/common/lib/yii/web/CController.php(265): CController->runActionWithFilters(Object(CInlineAction), Array)
+#12 /var/www/bober/common/lib/yii/web/CWebApplication.php(282): CController->run('view')
+#13 /var/www/bober/common/lib/yii/web/CWebApplication.php(141): CWebApplication->runController('startCompetitio...')
+#14 /var/www/bober/common/lib/yii/base/CApplication.php(180): CWebApplication->processRequest()
+#15 /var/www/bober/backend/www/index.php(23): CApplication->run()
+#16 {main}
+REQUEST_URI=/index.php/startCompetition/31881
+HTTP_REFERER=http://bober-dev.acm.si/index.php/StartCompetition
+---
+2014/11/01 15:15:59 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Unable to resolve the request "phpmyadmin".' in /var/www/bober/common/lib/yii/web/CWebApplication.php:286
+Stack trace:
+#0 /var/www/bober/common/lib/yii/web/CWebApplication.php(141): CWebApplication->runController('phpmyadmin')
+#1 /var/www/bober/common/lib/yii/base/CApplication.php(180): CWebApplication->processRequest()
+#2 /var/www/bober/backend/www/index.php(23): CApplication->run()
+#3 {main}
+REQUEST_URI=/phpmyadmin
+---
+2014/11/01 22:50:40 [error] [php] Trying to get property of non-object (/var/www/bober/backend/controllers/CompetitionServiceController.php:71)
+Stack trace:
+#0 /var/www/bober/common/lib/yii/web/CController.php(286): CompetitionServiceController->runAction()
+#1 /var/www/bober/common/lib/yii/web/CController.php(265): CompetitionServiceController->runActionWithFilters()
+#2 /var/www/bober/common/lib/yii/web/CWebApplication.php(282): CompetitionServiceController->run()
+#3 /var/www/bober/common/lib/yii/web/CWebApplication.php(141): CWebApplication->runController()
+#4 /var/www/bober/common/lib/yii/base/CApplication.php(180): CWebApplication->processRequest()
+#5 /var/www/bober/backend/www/index.php(23): CWebApplication->run()
+REQUEST_URI=/index.php/CompetitionService/GetQuestions?_=1414878642869
+in /var/www/bober/backend/controllers/CompetitionServiceController.php (71)
+in /var/www/bober/backend/www/index.php (23)
+2014/11/02 13:41:56 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Unable to resolve the request "phpmyadmin".' in /var/www/bober/common/lib/yii/web/CWebApplication.php:286
+Stack trace:
+#0 /var/www/bober/common/lib/yii/web/CWebApplication.php(141): CWebApplication->runController('phpmyadmin')
+#1 /var/www/bober/common/lib/yii/base/CApplication.php(180): CWebApplication->processRequest()
+#2 /var/www/bober/backend/www/index.php(23): CApplication->run()
+#3 {main}
+REQUEST_URI=/phpmyadmin
+---
+2014/11/02 14:06:26 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Unable to resolve the request "themes/Bober/img/flags/null.png".' in /var/www/bober/common/lib/yii/web/CWebApplication.php:286
+Stack trace:
+#0 /var/www/bober/common/lib/yii/web/CWebApplication.php(141): CWebApplication->runController('themes/Bober/im...')
+#1 /var/www/bober/common/lib/yii/base/CApplication.php(180): CWebApplication->processRequest()
+#2 /var/www/bober/backend/www/index.php(23): CApplication->run()
+#3 {main}
+REQUEST_URI=/themes/Bober/img/flags/null.png
+HTTP_REFERER=http://bober-dev.acm.si/index.php/CompetitionLoader
+---
+2014/11/02 16:00:49 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Unable to resolve the request "themes/Bober/img/flags/null.png".' in /var/www/bober/common/lib/yii/web/CWebApplication.php:286
+Stack trace:
+#0 /var/www/bober/common/lib/yii/web/CWebApplication.php(141): CWebApplication->runController('themes/Bober/im...')
+#1 /var/www/bober/common/lib/yii/base/CApplication.php(180): CWebApplication->processRequest()
+#2 /var/www/bober/backend/www/index.php(23): CApplication->run()
+#3 {main}
+REQUEST_URI=/themes/Bober/img/flags/null.png
+HTTP_REFERER=http://bober-dev.acm.si/index.php/CompetitionLoader
+---
+2014/11/02 18:34:22 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Unable to resolve the request "phpmyadmin".' in /var/www/bober/common/lib/yii/web/CWebApplication.php:286
+Stack trace:
+#0 /var/www/bober/common/lib/yii/web/CWebApplication.php(141): CWebApplication->runController('phpmyadmin')
+#1 /var/www/bober/common/lib/yii/base/CApplication.php(180): CWebApplication->processRequest()
+#2 /var/www/bober/backend/www/index.php(23): CApplication->run()
+#3 {main}
+REQUEST_URI=/phpmyadmin
+---
+2014/11/02 23:35:39 [error] [php] Trying to get property of non-object (/var/www/bober/backend/controllers/CompetitionServiceController.php:71)
+Stack trace:
+#0 /var/www/bober/common/lib/yii/web/CController.php(286): CompetitionServiceController->runAction()
+#1 /var/www/bober/common/lib/yii/web/CController.php(265): CompetitionServiceController->runActionWithFilters()
+#2 /var/www/bober/common/lib/yii/web/CWebApplication.php(282): CompetitionServiceController->run()
+#3 /var/www/bober/common/lib/yii/web/CWebApplication.php(141): CWebApplication->runController()
+#4 /var/www/bober/common/lib/yii/base/CApplication.php(180): CWebApplication->processRequest()
+#5 /var/www/bober/backend/www/index.php(23): CWebApplication->run()
+REQUEST_URI=/CompetitionService/GetQuestions?_=1414967742063
+in /var/www/bober/backend/controllers/CompetitionServiceController.php (71)
+in /var/www/bober/backend/www/index.php (23)
+2014/11/02 23:37:05 [error] [php] Trying to get property of non-object (/var/www/bober/backend/controllers/CompetitionServiceController.php:71)
+Stack trace:
+#0 /var/www/bober/common/lib/yii/web/CController.php(286): CompetitionServiceController->runAction()
+#1 /var/www/bober/common/lib/yii/web/CController.php(265): CompetitionServiceController->runActionWithFilters()
+#2 /var/www/bober/common/lib/yii/web/CWebApplication.php(282): CompetitionServiceController->run()
+#3 /var/www/bober/common/lib/yii/web/CWebApplication.php(141): CWebApplication->runController()
+#4 /var/www/bober/common/lib/yii/base/CApplication.php(180): CWebApplication->processRequest()
+#5 /var/www/bober/backend/www/index.php(23): CWebApplication->run()
+REQUEST_URI=/CompetitionService/GetQuestions?_=1414967828100
+in /var/www/bober/backend/controllers/CompetitionServiceController.php (71)
+in /var/www/bober/backend/www/index.php (23)

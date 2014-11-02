@@ -71,7 +71,13 @@
                         }
                     }
 
-
+        },
+        "country": {
+            "type": "string",
+            "title": "Country of Origin",
+            "description": "Language code (ISO 639-1)",
+            "id": "http://jsonschema.net/language",
+            "required": false,
         },
         "grader_modules": {
             "type": "array",

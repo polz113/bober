@@ -129,6 +129,7 @@ class CompetitionServiceController extends Controller {
                         $questions[] = array(
                             'id' => $question_id,
                             'title' => $competitionUserQuestion->competitionQuestion->question->title,
+                            'country' => $competitionUserQuestion->competitionQuestion->question->country_of_origin,
                             'link' => $question_id . '/' . $language_code . '/' . $startup_file->path . $startup_file->filename,
                             'custom_answer' => ($competitionUserQuestion->custom_answer == null ? '' : $competitionUserQuestion->custom_answer),
                             'random_seed' => $competitionUserQuestion->random_seed,

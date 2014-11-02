@@ -513,6 +513,7 @@ CREATE TABLE `competition_user` (
   `start_time` datetime DEFAULT NULL,
   `finish_time` datetime DEFAULT NULL,
   `finished` tinyint(1) NOT NULL DEFAULT '0',
+  `questions_prepared` tinyint(1) NOT NULL DEFAULT '0',
   `total_points_via_answers` decimal(10,4) NOT NULL DEFAULT '0.0000',
   `total_points_via_time` decimal(10,4) NOT NULL DEFAULT '0.0000',
   `total_points_manual` decimal(10,4) NOT NULL DEFAULT '0.0000',
@@ -834,6 +835,7 @@ DROP TABLE IF EXISTS `question`;
 CREATE TABLE `question` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `country_id` int(11) NOT NULL,
+  `country_of_origin` char(5),
   `identifier` varchar(255) NOT NULL,
   `type` int(1) NOT NULL DEFAULT '1' COMMENT '1==Normalna naloga v našem sistemu,2==Interaktivna naloga',
   `title` varchar(255) NOT NULL,

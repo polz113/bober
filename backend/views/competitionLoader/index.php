@@ -53,7 +53,7 @@
 
     <div class="task_header hide-controls">
         <div class="middlebar">
-            <span class="task_name"></span>
+            <span class="task_name"></span><span id="task_country"></span>
             <input style="float: right;" type="button" value="<?php echo Yii::t('app', 'Clear Answer'); ?>" class="btn" onclick="return resetResponse();" />
             <div id="bottom_msg"></div>
         </div>
@@ -84,6 +84,8 @@
 
 <script type="text/javascript">
     //<![CDATA[
+    var root_url = "<?php echo Yii::app()->baseUrl; ?>";
+    var images_url ="<?php echo Yii::app()->theme->baseUrl . '/img'; ?>";
     var question_data = [];
     var current_selected_question = 0;
     var controlsEnabled = true;
@@ -127,7 +129,7 @@
             }
         });
         jQuery.ajax({
-            "url": "/index.php/CompetitionService/GetQuestions",
+            "url": root_url + "/CompetitionService/GetQuestions",
             "type": "GET",
             "dataType": "JSON",
             "cache": false,
@@ -178,7 +180,7 @@
                         question_data[data[i].id] = data[i];
                         checkIfAllTasksLoaded();
                         var iframe = jQuery('<iframe />');
-                        iframe.attr('src', '/index.php/questionResource/get/' + data[i]["link"]);
+                        iframe.attr('src', root_url + '/questionResource/get/' + data[i]["link"]);
                         iframe.addClass('naloga');
                         iframe.addClass('naloga_hide');
                         iframe.attr('id', 'naloga_' + data[i]["id"]);
@@ -250,7 +252,7 @@
 
     function GetTimeToEndOfCompetition() {
         jQuery.ajax({
-            "url": "/index.php/CompetitionService/GetTimeToEndOfCompetition",
+            "url": root_url + "/CompetitionService/GetTimeToEndOfCompetition",
             "type": "GET",
             "dataType": "JSON",
             "cache": false,
@@ -356,7 +358,7 @@
         cleanupLastQuestionCookie();
         alert("<?php echo Yii::t('app', 'Your are out of time for solving competition.'); ?>");
         window.close();
-        window.location = '/index.php/StartCompetition';
+        window.location = root_url + '/StartCompetition';
     }
 
     function loadQuestionPreviousSaved() {
@@ -388,7 +390,7 @@
 
             jQuery(naloga).fadeIn(300, "swing", updateIframeSize);
             jQuery(".task_name").html(jQuery("#question_button_" + question_id).text() + ". " + question_data[question_id]["title"]);
-
+            jQuery("#task_country").html("<img src=\""+images_url + "/flags-iso/flat/32/"+ question_data[question_id]["country"] + ".png\" alt=\""+question_data[question_id]["country"]+"\"/>");
             return true;
         } else {
             callback_question_id = question_id;
@@ -419,7 +421,7 @@
             var answer = document.getElementById('naloga_' + current_selected_question).contentWindow.task.getAnswer();
             DisableEnableControls(false);
             jQuery.ajax({
-                "url": "/index.php/CompetitionService/SaveResponse",
+                "url": root_url + "/CompetitionService/SaveResponse",
                 "type": "POST",
                 "data": {"q": current_selected_question, "a": answer},
                 "dataType": "JSON",
@@ -530,7 +532,7 @@
                 enabledConfirmExit = false;
                 cleanupLastQuestionCookie();
                 jQuery.ajax({
-                    "url": "/index.php/CompetitionService/FinishCompetition",
+                    "url": root_url + "/CompetitionService/FinishCompetition",
                     "type": "POST",
                     "data": {"finish": true},
                     "dataType": "JSON",
@@ -548,7 +550,7 @@
                     "complete": function() {
                         DisableEnableControls(true);
                         window.close();
-                        window.location = '/index.php/StartCompetition';
+                        window.location = root_url + '/StartCompetition';
                     }
                 });
             }

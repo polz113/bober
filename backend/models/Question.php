@@ -6,6 +6,7 @@
  * The followings are the available columns in table 'question':
  * @property integer $id
  * @property integer $country_id
+ * @property integer $country_of_origin
  * @property string $identifier
  * @property integer $type
  * @property string $title
@@ -56,6 +57,7 @@ class Question extends CActiveRecord {
         return array(
             array('country_id, identifier, title', 'required'),
             array('country_id, type, verification_function_type', 'numerical', 'integerOnly' => true),
+            array('country_of_origin', 'length', 'max' => 5), /* same as Language.short */
             array('title, version', 'length', 'max' => 255),
             array('text, data, verification_function, authors, css', 'safe'),
             // The following rule is used by search().
@@ -86,6 +88,7 @@ class Question extends CActiveRecord {
         return array(
             'id' => Yii::t('app', 'id'),
             'country_id' => Yii::t('app', 'Country'),
+            'country_of_origin' => Yii::t('app', 'Country of Origin'),
             'identifier' => Yii::t('app', 'Identifier'),
             'type' => Yii::t('app', 'Type'),
             'title' => Yii::t('app', 'Title'),
@@ -291,7 +294,11 @@ class Question extends CActiveRecord {
         $model->type = 2;
         $model->title = $this->getJSONAttribute('title', $manifest);
         $model->authors = $this->getJSONAttribute('authors', $manifest);
-
+        if (array_key_exists('country', $manifest)){
+            $model->country_of_origin = $this->getJSONAttribute('country', $manifest);
+        } else {
+            $model->country_of_origin = '';
+        }
         if (array_key_exists('browserSupport', $manifest) && count($manifest['browserSupport'] != 0)) {
             $model->data = $this->processBrowserSupport($manifest['browserSupport']);
         }
