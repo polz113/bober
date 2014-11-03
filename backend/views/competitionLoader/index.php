@@ -3,16 +3,6 @@
         <div id="title_and_timer">
             <h1 id="competition_title"><?php echo Yii::t('app', 'Loading...'); ?></h1>
         </div>
-        <div id="language_select">
-            <?php
-            $languages = Language::model()->findAll();
-            foreach ($languages as $language) {
-                ?>
-                <a href="/index.php/CompetitionLoader/changeLanguage/?lang=<?php echo $language->short; ?>"><?php echo $language->short; ?></a>&nbsp;
-                <?php
-            }
-            ?>
-        </div>
         <div class="collumns">
             <div class="column1">
                 <div class="qbartop">

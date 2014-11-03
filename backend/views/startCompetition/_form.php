@@ -101,16 +101,6 @@
 
 
 
-    <div id="language_select_black">
-        <?php
-        $languages = Language::model()->findAll();
-        foreach ($languages as $language) {
-            ?>
-            <a href="/index.php/StartCompetition/changeLanguage/?lang=<?php echo $language->short; ?>"><?php echo $language->short; ?></a>&nbsp;
-            <?php
-        }
-        ?>
-    </div>
-    <div class="clearfix"></div>
+   <div class="clearfix"></div>
 
 </div><!-- form -->

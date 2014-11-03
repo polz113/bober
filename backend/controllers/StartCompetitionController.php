@@ -63,11 +63,13 @@ class StartCompetitionController extends Controller {
      */
     public function actionCreate() {
         if ($this->CanAccess('create')) {
+            // just statically set the preferred_language for now.
+            Yii::app()->session['preferred_language'] = Yii::app()->params['preferred_language'];
+            // Yii::app()->session['preferred_language'] = 'sl';
             $model = new CompetitionUser;
 
             // Uncomment the following line if AJAX validation is needed
             // $this->performAjaxValidation($model);
-
             if (isset($_POST['CompetitionUser'])) {
                 unset(Yii::app()->session['errorMsg']);
                 $model->attributes = $_POST['CompetitionUser'];
@@ -239,7 +241,8 @@ class StartCompetitionController extends Controller {
     public function actionChangeLanguage() {
         $language = Yii::app()->getRequest()->getParam('lang', '');
         if ($language == '') {
-            unset(Yii::app()->session['preferred_language']);
+            // unset(Yii::app()->session['preferred_language']);
+           Yii::app()->session['preferred_language'] = Yii::app()->params['language'];
         } else {
             Yii::app()->session['preferred_language'] = $language;
         }

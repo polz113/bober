@@ -53,16 +53,6 @@
 
     <?php $this->endWidget(); ?>
 
-    <div id="language_select_black">
-        <?php
-        $languages = Language::model()->findAll();
-        foreach ($languages as $language) {
-            ?>
-            <a href="/index.php/HomePage/changeLanguage/?lang=<?php echo $language->short; ?>"><?php echo $language->short; ?></a>&nbsp;
-            <?php
-        }
-        ?>
-    </div>
     <div class="clearfix"></div>
 
 </div><!-- form -->

@@ -3301,3 +3301,121 @@ Stack trace:
 REQUEST_URI=/CompetitionService/GetQuestions?_=1414967828100
 in /var/www/bober/backend/controllers/CompetitionServiceController.php (71)
 in /var/www/bober/backend/www/index.php (23)
+2014/11/03 12:35:01 [error] [php] Undefined index: js (/var/www/bober/common/lib/yii/i18n/CLocale.php:286)
+Stack trace:
+#0 /var/www/bober/common/lib/yii/web/CBaseController.php(126): require()
+#1 /var/www/bober/common/lib/yii/web/CBaseController.php(95): CompetitionController->renderInternal()
+#2 /var/www/bober/common/lib/yii/web/CController.php(869): CompetitionController->renderFile()
+#3 /var/www/bober/backend/views/competition/create.php(17): CompetitionController->renderPartial()
+#4 /var/www/bober/common/lib/yii/web/CBaseController.php(126): require()
+#5 /var/www/bober/common/lib/yii/web/CBaseController.php(95): CompetitionController->renderInternal()
+#6 /var/www/bober/common/lib/yii/web/CController.php(869): CompetitionController->renderFile()
+#7 /var/www/bober/common/lib/yii/web/CController.php(782): CompetitionController->renderPartial()
+#8 /var/www/bober/backend/controllers/CompetitionController.php(95): CompetitionController->render()
+#9 /var/www/bober/common/lib/yii/web/actions/CInlineAction.php(49): CompetitionController->actionCreate()
+#10 /var/www/bober/common/lib/yii/web/CController.php(308): CInlineAction->runWithParams()
+#11 /var/www/bober/common/lib/yii/web/filters/CFilterChain.php(133): CompetitionController->runAction()
+#12 /var/www/bober/common/lib/yii/web/filters/CFilter.php(40): CFilterChain->run()
+#13 /var/www/bober/common/lib/yii/web/CController.php(1145): CAccessControlFilter->filter()
+#14 /var/www/bober/common/lib/yii/web/filters/CInlineFilter.php(58): CompetitionController->filterAccessControl()
+#15 /var/www/bober/common/lib/yii/web/filters/CFilterChain.php(130): CInlineFilter->filter()
+#16 /var/www/bober/common/lib/yii/web/CController.php(291): CFilterChain->run()
+#17 /var/www/bober/common/lib/yii/web/CController.php(265): CompetitionController->runActionWithFilters()
+#18 /var/www/bober/common/lib/yii/web/CWebApplication.php(282): CompetitionController->run()
+#19 /var/www/bober/common/lib/yii/web/CWebApplication.php(141): CWebApplication->runController()
+#20 /var/www/bober/common/lib/yii/base/CApplication.php(180): CWebApplication->processRequest()
+#21 /var/www/bober/backend/www/index.php(23): CWebApplication->run()
+REQUEST_URI=/index.php/competition/create
+in /var/www/bober/backend/components/LocalTime.php (240)
+in /var/www/bober/backend/views/competition/_form.php (51)
+in /var/www/bober/backend/views/competition/create.php (17)
+2014/11/03 12:35:02 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Unable to resolve the request "favicon.ico".' in /var/www/bober/common/lib/yii/web/CWebApplication.php:286
+Stack trace:
+#0 /var/www/bober/common/lib/yii/web/CWebApplication.php(141): CWebApplication->runController('favicon.ico')
+#1 /var/www/bober/common/lib/yii/base/CApplication.php(180): CWebApplication->processRequest()
+#2 /var/www/bober/backend/www/index.php(23): CApplication->run()
+#3 {main}
+REQUEST_URI=/favicon.ico
+---
+2014/11/03 12:35:02 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Unable to resolve the request "favicon.ico".' in /var/www/bober/common/lib/yii/web/CWebApplication.php:286
+Stack trace:
+#0 /var/www/bober/common/lib/yii/web/CWebApplication.php(141): CWebApplication->runController('favicon.ico')
+#1 /var/www/bober/common/lib/yii/base/CApplication.php(180): CWebApplication->processRequest()
+#2 /var/www/bober/backend/www/index.php(23): CApplication->run()
+#3 {main}
+REQUEST_URI=/favicon.ico
+---
+2014/11/03 12:36:13 [error] [php] Undefined index: js (/var/www/bober/common/lib/yii/i18n/CLocale.php:286)
+Stack trace:
+#0 /var/www/bober/common/lib/yii/web/CBaseController.php(126): require()
+#1 /var/www/bober/common/lib/yii/web/CBaseController.php(95): CompetitionController->renderInternal()
+#2 /var/www/bober/common/lib/yii/web/CController.php(869): CompetitionController->renderFile()
+#3 /var/www/bober/backend/views/competition/update.php(20): CompetitionController->renderPartial()
+#4 /var/www/bober/common/lib/yii/web/CBaseController.php(126): require()
+#5 /var/www/bober/common/lib/yii/web/CBaseController.php(95): CompetitionController->renderInternal()
+#6 /var/www/bober/common/lib/yii/web/CController.php(869): CompetitionController->renderFile()
+#7 /var/www/bober/common/lib/yii/web/CController.php(782): CompetitionController->renderPartial()
+#8 /var/www/bober/backend/controllers/CompetitionController.php(146): CompetitionController->render()
+#9 unknown(0): CompetitionController->actionUpdate()
+#10 /var/www/bober/common/lib/yii/web/actions/CAction.php(108): ReflectionMethod->invokeArgs()
+#11 /var/www/bober/common/lib/yii/web/actions/CInlineAction.php(47): CInlineAction->runWithParamsInternal()
+#12 /var/www/bober/common/lib/yii/web/CController.php(308): CInlineAction->runWithParams()
+#13 /var/www/bober/common/lib/yii/web/filters/CFilterChain.php(133): CompetitionController->runAction()
+#14 /var/www/bober/common/lib/yii/web/filters/CFilter.php(40): CFilterChain->run()
+#15 /var/www/bober/common/lib/yii/web/CController.php(1145): CAccessControlFilter->filter()
+#16 /var/www/bober/common/lib/yii/web/filters/CInlineFilter.php(58): CompetitionController->filterAccessControl()
+#17 /var/www/bober/common/lib/yii/web/filters/CFilterChain.php(130): CInlineFilter->filter()
+#18 /var/www/bober/common/lib/yii/web/CController.php(291): CFilterChain->run()
+#19 /var/www/bober/common/lib/yii/web/CController.php(265): CompetitionController->runActionWithFilters()
+#20 /var/www/bober/common/lib/yii/web/CWebApplication.php(282): CompetitionController->run()
+#21 /var/www/bober/common/lib/yii/web/CWebApplication.php(141): CWebApplication->runController()
+#22 /var/www/bober/common/lib/yii/base/CApplication.php(180): CWebApplication->processRequest()
+#23 /var/www/bober/backend/www/index.php(23): CWebApplication->run()
+REQUEST_URI=/index.php/competition/update/5
+in /var/www/bober/backend/components/LocalTime.php (240)
+in /var/www/bober/backend/views/competition/_form.php (51)
+in /var/www/bober/backend/views/competition/update.php (20)
+2014/11/03 19:08:47 [error] [exception.CException] exception 'CException' with message 'Property "CWebApplication.config" is not defined.' in /var/www/bober/common/lib/yii/base/CComponent.php:130
+Stack trace:
+#0 /var/www/bober/common/lib/yii/base/CModule.php(105): CComponent->__get('config')
+#1 /var/www/bober/backend/controllers/StartCompetitionController.php(67): CModule->__get('config')
+#2 /var/www/bober/backend/controllers/StartCompetitionController.php(211): StartCompetitionController->actionCreate()
+#3 /var/www/bober/common/lib/yii/web/actions/CInlineAction.php(49): StartCompetitionController->actionIndex()
+#4 /var/www/bober/common/lib/yii/web/CController.php(308): CInlineAction->runWithParams(Array)
+#5 /var/www/bober/common/lib/yii/web/filters/CFilterChain.php(133): CController->runAction(Object(CInlineAction))
+#6 /var/www/bober/common/lib/yii/web/filters/CFilter.php(40): CFilterChain->run()
+#7 /var/www/bober/common/lib/yii/web/CController.php(1145): CFilter->filter(Object(CFilterChain))
+#8 /var/www/bober/common/lib/yii/web/filters/CInlineFilter.php(58): CController->filterAccessControl(Object(CFilterChain))
+#9 /var/www/bober/common/lib/yii/web/filters/CFilterChain.php(130): CInlineFilter->filter(Object(CFilterChain))
+#10 /var/www/bober/common/lib/yii/web/CController.php(291): CFilterChain->run()
+#11 /var/www/bober/common/lib/yii/web/CController.php(265): CController->runActionWithFilters(Object(CInlineAction), Array)
+#12 /var/www/bober/common/lib/yii/web/CWebApplication.php(282): CController->run('')
+#13 /var/www/bober/common/lib/yii/web/CWebApplication.php(141): CWebApplication->runController('')
+#14 /var/www/bober/common/lib/yii/base/CApplication.php(180): CWebApplication->processRequest()
+#15 /var/www/bober/backend/www/index.php(23): CApplication->run()
+#16 {main}
+REQUEST_URI=/
+---
+2014/11/03 19:08:47 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Unable to resolve the request "favicon.ico".' in /var/www/bober/common/lib/yii/web/CWebApplication.php:286
+Stack trace:
+#0 /var/www/bober/common/lib/yii/web/CWebApplication.php(141): CWebApplication->runController('favicon.ico')
+#1 /var/www/bober/common/lib/yii/base/CApplication.php(180): CWebApplication->processRequest()
+#2 /var/www/bober/backend/www/index.php(23): CApplication->run()
+#3 {main}
+REQUEST_URI=/favicon.ico
+---
+2014/11/03 19:08:48 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Unable to resolve the request "favicon.ico".' in /var/www/bober/common/lib/yii/web/CWebApplication.php:286
+Stack trace:
+#0 /var/www/bober/common/lib/yii/web/CWebApplication.php(141): CWebApplication->runController('favicon.ico')
+#1 /var/www/bober/common/lib/yii/base/CApplication.php(180): CWebApplication->processRequest()
+#2 /var/www/bober/backend/www/index.php(23): CApplication->run()
+#3 {main}
+REQUEST_URI=/favicon.ico
+---
+2014/11/03 19:50:18 [error] [php] Undefined variable: language (/var/www/bober/backend/controllers/CompetitionLoaderController.php:9)
+Stack trace:
+#0 /var/www/bober/common/lib/yii/base/CApplication.php(180): CWebApplication->processRequest()
+#1 /var/www/bober/backend/www/index.php(23): CWebApplication->run()
+REQUEST_URI=/index.php/CompetitionLoader
+in /var/www/bober/backend/controllers/CompetitionLoaderController.php (9)
+in /var/www/bober/backend/www/index.php (23)

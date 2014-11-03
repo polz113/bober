@@ -23,7 +23,6 @@
         <?php
     }
     ?>
-
     <div class="buttons">
         <br /><?php
         $this->widget('zii.widgets.jui.CJuiButton', array(

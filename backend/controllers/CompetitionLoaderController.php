@@ -6,6 +6,7 @@ class CompetitionLoaderController extends Controller {
         if (Yii::app()->browser->getBrowser() == Browser::BROWSER_IE && Yii::app()->browser->getVersion() < 8) {
             die('Unsupported browser. Please use at least IE8');
         }
+        Yii::app()->session['preferred_language'] = Yii::app()->params['preferred_language'];
         Yii::app()->theme = "Bober";
         parent::init();
     }
@@ -58,7 +59,7 @@ class CompetitionLoaderController extends Controller {
     public function actionChangeLanguage() {
         $language = Yii::app()->getRequest()->getParam('lang', '');
         if ($language == '') {
-            unset(Yii::app()->session['preferred_language']);
+            Yii::app()->session['preferred_language'] = Yii::app()->params['preferred_language'];
         }else{
             Yii::app()->session['preferred_language'] = $language;
         }
