@@ -3419,3 +3419,162 @@ Stack trace:
 REQUEST_URI=/index.php/CompetitionLoader
 in /var/www/bober/backend/controllers/CompetitionLoaderController.php (9)
 in /var/www/bober/backend/www/index.php (23)
+2014/11/03 22:02:14 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Unable to resolve the request "registration".' in /var/www/bober/common/lib/yii/web/CWebApplication.php:286
+Stack trace:
+#0 /var/www/bober/common/lib/yii/web/CWebApplication.php(141): CWebApplication->runController('registration')
+#1 /var/www/bober/common/lib/yii/base/CApplication.php(180): CWebApplication->processRequest()
+#2 /var/www/bober/backend/www/index.php(23): CApplication->run()
+#3 {main}
+REQUEST_URI=/index.php/registration
+---
+2014/11/03 22:02:18 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Unable to resolve the request "registration".' in /var/www/bober/common/lib/yii/web/CWebApplication.php:286
+Stack trace:
+#0 /var/www/bober/common/lib/yii/web/CWebApplication.php(141): CWebApplication->runController('registration')
+#1 /var/www/bober/common/lib/yii/base/CApplication.php(180): CWebApplication->processRequest()
+#2 /var/www/bober/backend/www/index.php(23): CApplication->run()
+#3 {main}
+REQUEST_URI=/index.php/registration/
+---
+2014/11/04 22:07:51 [warning] [application] Failed to set unsafe attribute "uploadedData" of "Question".
+in /var/www/bober/backend/controllers/QuestionController.php (127)
+in /var/www/bober/backend/www/index.php (23)
+2014/11/04 22:07:51 [error] [exception.CHttpException.405] exception 'CHttpException' with message 'Could not parse the SCHEMA object.' in /var/www/bober/backend/models/Question.php:245
+Stack trace:
+#0 /var/www/bober/backend/controllers/QuestionController.php(129): Question->processImport('/tmp/phpGJ8cEh')
+#1 /var/www/bober/common/lib/yii/web/actions/CInlineAction.php(49): QuestionController->actionImport()
+#2 /var/www/bober/common/lib/yii/web/CController.php(308): CInlineAction->runWithParams(Array)
+#3 /var/www/bober/common/lib/yii/web/filters/CFilterChain.php(133): CController->runAction(Object(CInlineAction))
+#4 /var/www/bober/common/lib/yii/web/filters/CFilter.php(40): CFilterChain->run()
+#5 /var/www/bober/common/lib/yii/web/CController.php(1145): CFilter->filter(Object(CFilterChain))
+#6 /var/www/bober/common/lib/yii/web/filters/CInlineFilter.php(58): CController->filterAccessControl(Object(CFilterChain))
+#7 /var/www/bober/common/lib/yii/web/filters/CFilterChain.php(130): CInlineFilter->filter(Object(CFilterChain))
+#8 /var/www/bober/common/lib/yii/web/CController.php(291): CFilterChain->run()
+#9 /var/www/bober/common/lib/yii/web/CController.php(265): CController->runActionWithFilters(Object(CInlineAction), Array)
+#10 /var/www/bober/common/lib/yii/web/CWebApplication.php(282): CController->run('import')
+#11 /var/www/bober/common/lib/yii/web/CWebApplication.php(141): CWebApplication->runController('question/import')
+#12 /var/www/bober/common/lib/yii/base/CApplication.php(180): CWebApplication->processRequest()
+#13 /var/www/bober/backend/www/index.php(23): CApplication->run()
+#14 {main}
+REQUEST_URI=/index.php/question/import
+HTTP_REFERER=http://bober-dev.acm.si/index.php/question/import
+---
+2014/11/04 22:12:14 [warning] [application] Failed to set unsafe attribute "uploadedData" of "Question".
+in /var/www/bober/backend/controllers/QuestionController.php (127)
+in /var/www/bober/backend/www/index.php (23)
+2014/11/04 22:12:14 [error] [exception.CHttpException.405] exception 'CHttpException' with message 'Could not parse the SCHEMA object.' in /var/www/bober/backend/models/Question.php:245
+Stack trace:
+#0 /var/www/bober/backend/controllers/QuestionController.php(129): Question->processImport('/tmp/phpnz7MGe')
+#1 /var/www/bober/common/lib/yii/web/actions/CInlineAction.php(49): QuestionController->actionImport()
+#2 /var/www/bober/common/lib/yii/web/CController.php(308): CInlineAction->runWithParams(Array)
+#3 /var/www/bober/common/lib/yii/web/filters/CFilterChain.php(133): CController->runAction(Object(CInlineAction))
+#4 /var/www/bober/common/lib/yii/web/filters/CFilter.php(40): CFilterChain->run()
+#5 /var/www/bober/common/lib/yii/web/CController.php(1145): CFilter->filter(Object(CFilterChain))
+#6 /var/www/bober/common/lib/yii/web/filters/CInlineFilter.php(58): CController->filterAccessControl(Object(CFilterChain))
+#7 /var/www/bober/common/lib/yii/web/filters/CFilterChain.php(130): CInlineFilter->filter(Object(CFilterChain))
+#8 /var/www/bober/common/lib/yii/web/CController.php(291): CFilterChain->run()
+#9 /var/www/bober/common/lib/yii/web/CController.php(265): CController->runActionWithFilters(Object(CInlineAction), Array)
+#10 /var/www/bober/common/lib/yii/web/CWebApplication.php(282): CController->run('import')
+#11 /var/www/bober/common/lib/yii/web/CWebApplication.php(141): CWebApplication->runController('question/import')
+#12 /var/www/bober/common/lib/yii/base/CApplication.php(180): CWebApplication->processRequest()
+#13 /var/www/bober/backend/www/index.php(23): CApplication->run()
+#14 {main}
+REQUEST_URI=/index.php/question/import
+HTTP_REFERER=http://bober-dev.acm.si/index.php/question/import
+---
+2014/11/04 22:16:45 [warning] [application] Failed to set unsafe attribute "uploadedData" of "Question".
+in /var/www/bober/backend/controllers/QuestionController.php (127)
+in /var/www/bober/backend/www/index.php (23)
+2014/11/04 22:16:45 [error] [exception.CHttpException.405] exception 'CHttpException' with message 'Could not parse the SCHEMA object.' in /var/www/bober/backend/models/Question.php:245
+Stack trace:
+#0 /var/www/bober/backend/controllers/QuestionController.php(129): Question->processImport('/tmp/phpov9J9u')
+#1 /var/www/bober/common/lib/yii/web/actions/CInlineAction.php(49): QuestionController->actionImport()
+#2 /var/www/bober/common/lib/yii/web/CController.php(308): CInlineAction->runWithParams(Array)
+#3 /var/www/bober/common/lib/yii/web/filters/CFilterChain.php(133): CController->runAction(Object(CInlineAction))
+#4 /var/www/bober/common/lib/yii/web/filters/CFilter.php(40): CFilterChain->run()
+#5 /var/www/bober/common/lib/yii/web/CController.php(1145): CFilter->filter(Object(CFilterChain))
+#6 /var/www/bober/common/lib/yii/web/filters/CInlineFilter.php(58): CController->filterAccessControl(Object(CFilterChain))
+#7 /var/www/bober/common/lib/yii/web/filters/CFilterChain.php(130): CInlineFilter->filter(Object(CFilterChain))
+#8 /var/www/bober/common/lib/yii/web/CController.php(291): CFilterChain->run()
+#9 /var/www/bober/common/lib/yii/web/CController.php(265): CController->runActionWithFilters(Object(CInlineAction), Array)
+#10 /var/www/bober/common/lib/yii/web/CWebApplication.php(282): CController->run('import')
+#11 /var/www/bober/common/lib/yii/web/CWebApplication.php(141): CWebApplication->runController('question/import')
+#12 /var/www/bober/common/lib/yii/base/CApplication.php(180): CWebApplication->processRequest()
+#13 /var/www/bober/backend/www/index.php(23): CApplication->run()
+#14 {main}
+REQUEST_URI=/index.php/question/import
+HTTP_REFERER=http://bober-dev.acm.si/index.php/question/import
+---
+2014/11/04 22:17:06 [warning] [application] Failed to set unsafe attribute "uploadedData" of "Question".
+in /var/www/bober/backend/controllers/QuestionController.php (127)
+in /var/www/bober/backend/www/index.php (23)
+2014/11/04 22:17:06 [error] [exception.CHttpException.405] exception 'CHttpException' with message 'Could not parse the SCHEMA object.' in /var/www/bober/backend/models/Question.php:245
+Stack trace:
+#0 /var/www/bober/backend/controllers/QuestionController.php(129): Question->processImport('/tmp/phpRAwU4b')
+#1 /var/www/bober/common/lib/yii/web/actions/CInlineAction.php(49): QuestionController->actionImport()
+#2 /var/www/bober/common/lib/yii/web/CController.php(308): CInlineAction->runWithParams(Array)
+#3 /var/www/bober/common/lib/yii/web/filters/CFilterChain.php(133): CController->runAction(Object(CInlineAction))
+#4 /var/www/bober/common/lib/yii/web/filters/CFilter.php(40): CFilterChain->run()
+#5 /var/www/bober/common/lib/yii/web/CController.php(1145): CFilter->filter(Object(CFilterChain))
+#6 /var/www/bober/common/lib/yii/web/filters/CInlineFilter.php(58): CController->filterAccessControl(Object(CFilterChain))
+#7 /var/www/bober/common/lib/yii/web/filters/CFilterChain.php(130): CInlineFilter->filter(Object(CFilterChain))
+#8 /var/www/bober/common/lib/yii/web/CController.php(291): CFilterChain->run()
+#9 /var/www/bober/common/lib/yii/web/CController.php(265): CController->runActionWithFilters(Object(CInlineAction), Array)
+#10 /var/www/bober/common/lib/yii/web/CWebApplication.php(282): CController->run('import')
+#11 /var/www/bober/common/lib/yii/web/CWebApplication.php(141): CWebApplication->runController('question/import')
+#12 /var/www/bober/common/lib/yii/base/CApplication.php(180): CWebApplication->processRequest()
+#13 /var/www/bober/backend/www/index.php(23): CApplication->run()
+#14 {main}
+REQUEST_URI=/index.php/question/import
+HTTP_REFERER=http://bober-dev.acm.si/index.php/question/import
+---
+2014/11/04 22:18:09 [warning] [application] Failed to set unsafe attribute "uploadedData" of "Question".
+in /var/www/bober/backend/controllers/QuestionController.php (127)
+in /var/www/bober/backend/www/index.php (23)
+2014/11/04 22:18:09 [warning] [application] Failed to set unsafe attribute "uploadedData" of "Question".
+in /var/www/bober/backend/models/Question.php (287)
+in /var/www/bober/backend/models/Question.php (242)
+in /var/www/bober/backend/controllers/QuestionController.php (129)
+2014/11/04 22:19:06 [warning] [application] Failed to set unsafe attribute "uploadedData" of "Question".
+in /var/www/bober/backend/controllers/QuestionController.php (127)
+in /var/www/bober/backend/www/index.php (23)
+2014/11/04 22:19:06 [error] [exception.CHttpException.405] exception 'CHttpException' with message 'Could not parse the SCHEMA object.' in /var/www/bober/backend/models/Question.php:245
+Stack trace:
+#0 /var/www/bober/backend/controllers/QuestionController.php(129): Question->processImport('/tmp/phpfB1MXS')
+#1 /var/www/bober/common/lib/yii/web/actions/CInlineAction.php(49): QuestionController->actionImport()
+#2 /var/www/bober/common/lib/yii/web/CController.php(308): CInlineAction->runWithParams(Array)
+#3 /var/www/bober/common/lib/yii/web/filters/CFilterChain.php(133): CController->runAction(Object(CInlineAction))
+#4 /var/www/bober/common/lib/yii/web/filters/CFilter.php(40): CFilterChain->run()
+#5 /var/www/bober/common/lib/yii/web/CController.php(1145): CFilter->filter(Object(CFilterChain))
+#6 /var/www/bober/common/lib/yii/web/filters/CInlineFilter.php(58): CController->filterAccessControl(Object(CFilterChain))
+#7 /var/www/bober/common/lib/yii/web/filters/CFilterChain.php(130): CInlineFilter->filter(Object(CFilterChain))
+#8 /var/www/bober/common/lib/yii/web/CController.php(291): CFilterChain->run()
+#9 /var/www/bober/common/lib/yii/web/CController.php(265): CController->runActionWithFilters(Object(CInlineAction), Array)
+#10 /var/www/bober/common/lib/yii/web/CWebApplication.php(282): CController->run('import')
+#11 /var/www/bober/common/lib/yii/web/CWebApplication.php(141): CWebApplication->runController('question/import')
+#12 /var/www/bober/common/lib/yii/base/CApplication.php(180): CWebApplication->processRequest()
+#13 /var/www/bober/backend/www/index.php(23): CApplication->run()
+#14 {main}
+REQUEST_URI=/index.php/question/import
+HTTP_REFERER=http://bober-dev.acm.si/index.php/question/import
+---
+2014/11/04 22:24:02 [warning] [application] Failed to set unsafe attribute "uploadedData" of "Question".
+in /var/www/bober/backend/controllers/QuestionController.php (127)
+in /var/www/bober/backend/www/index.php (23)
+2014/11/04 22:24:02 [warning] [application] Failed to set unsafe attribute "uploadedData" of "Question".
+in /var/www/bober/backend/models/Question.php (287)
+in /var/www/bober/backend/models/Question.php (242)
+in /var/www/bober/backend/controllers/QuestionController.php (129)
+2014/11/04 22:26:24 [warning] [application] Failed to set unsafe attribute "uploadedData" of "Question".
+in /var/www/bober/backend/controllers/QuestionController.php (127)
+in /var/www/bober/backend/www/index.php (23)
+2014/11/04 22:26:24 [warning] [application] Failed to set unsafe attribute "uploadedData" of "Question".
+in /var/www/bober/backend/models/Question.php (287)
+in /var/www/bober/backend/models/Question.php (242)
+in /var/www/bober/backend/controllers/QuestionController.php (129)
+2014/11/04 22:27:12 [warning] [application] Failed to set unsafe attribute "uploadedData" of "Question".
+in /var/www/bober/backend/controllers/QuestionController.php (127)
+in /var/www/bober/backend/www/index.php (23)
+2014/11/04 22:27:12 [warning] [application] Failed to set unsafe attribute "uploadedData" of "Question".
+in /var/www/bober/backend/models/Question.php (287)
+in /var/www/bober/backend/models/Question.php (242)
+in /var/www/bober/backend/controllers/QuestionController.php (129)

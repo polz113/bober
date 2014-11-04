@@ -25,6 +25,7 @@ $this->menu=array(
                     'name' => 'country_id',
                     'value' => $model->country->country,
                 ),
+                'country_of_origin',
                 'identifier',
 		array(
                     'name' => 'type',

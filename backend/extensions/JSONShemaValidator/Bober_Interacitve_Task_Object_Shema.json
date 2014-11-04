@@ -72,13 +72,6 @@
                     }
 
         },
-        "country": {
-            "type": "string",
-            "title": "Country of Origin",
-            "description": "Language code (ISO 639-1)",
-            "id": "http://jsonschema.net/language",
-            "required": false,
-        },
         "grader_modules": {
             "type": "array",
             "title": "Grader Modules",
@@ -168,6 +161,13 @@
             "description": "Unique identification of interacitve task, important for updating existing records in competiton systems",
             "id": "http://jsonschema.net/id",
             "required": true
+        },
+        "country": {
+            "type": "string",
+            "title": "country of origin",
+            "description": "country of origin (ISO 639-1)",
+            "id": "http://jsonschema.net/country",
+            "required": false
         },
         "language": {
             "type": "string",
