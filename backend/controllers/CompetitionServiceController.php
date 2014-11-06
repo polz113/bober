@@ -67,6 +67,7 @@ class CompetitionServiceController extends Controller {
             }/*
             $count = CompetitionUserQuestion::model()->count('competition_user_id=:competition_user_id', array(':competition_user_id' => $competition_user_id));*/
             $language_code = $session['preferred_language'];
+            // error_log("Lang:".$language_code);
             $language = Language::model()->findByAttributes(array('short'=>$language_code));
             $language_id = $language->id;
             if (!$competitionUser->questions_prepared) {

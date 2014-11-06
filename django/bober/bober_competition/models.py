@@ -21,7 +21,7 @@ class Yiisession(models.Model):
 
 class Award(models.Model):
     id = models.IntegerField(primary_key=True)
-    competition_user = models.ForeignKey('CompetitionUser')
+    competition_user = models.ForeignKey('CompetitionUser', related_name='award_back')
     type = models.IntegerField()
     serial = models.CharField(unique=True, max_length=255)
     class Meta:
@@ -29,6 +29,8 @@ class Award(models.Model):
         db_table = 'award'
 
 class Competition(models.Model):
+    def __unicode__(self):
+        return u"{0}".format(self.name)
     id = models.IntegerField(primary_key=True)
     name = models.CharField(max_length=255)
     active = models.IntegerField()
@@ -45,6 +47,8 @@ class Competition(models.Model):
         db_table = 'competition'
 
 class CompetitionCategory(models.Model):
+    def __unicode__(self):
+        return u"{0}".format(self.name)
     id = models.IntegerField(primary_key=True)
     active = models.IntegerField()
     country = models.ForeignKey('Country')
@@ -74,6 +78,8 @@ class CompetitionCategoryActive(models.Model):
         db_table = 'competition_category_active'
 
 class CompetitionCategorySchool(models.Model):
+    def __unicode__(self):
+        return u"{0}: {1}".format(self.school, self.competition_category)
     id = models.IntegerField(primary_key=True)
     competition = models.ForeignKey(Competition)
     competition_category = models.ForeignKey(CompetitionCategory)
@@ -83,12 +89,18 @@ class CompetitionCategorySchool(models.Model):
         db_table = 'competition_category_school'
 
 class CompetitionCategorySchoolMentor(models.Model):
+    def __unicode__(self):
+        if self.disqualified:
+            disqualified_str = u"X(by {0})".format(self.disqualified_by)
+        else:
+            disqualified_str = u''
+        return u"{0} - {1}: {2}".format(self.user, self.competition_category_school, self.access_code)+disqualified_str
     id = models.IntegerField(primary_key=True)
     competition_category_school = models.ForeignKey(CompetitionCategorySchool)
-    user = models.ForeignKey('Users')
+    user = models.ForeignKey('Users', related_name = 'mentor_set')
     access_code = models.CharField(unique=True, max_length=20, blank=True)
     disqualified = models.IntegerField()
-    disqualified_by = models.ForeignKey('Users', db_column='disqualified_by', blank=True, null=True)
+    disqualified_by = models.ForeignKey('Users', related_name = 'disqualified_set', db_column='disqualified_by', blank=True, null=True)
     disqualified_reason = models.TextField(blank=True)
     class Meta:
         managed = False
@@ -178,9 +190,9 @@ class CompetitionUser(models.Model):
     class_field = models.CharField(db_column='class', max_length=20, blank=True) # Field renamed because it was a Python reserved word.
     school = models.ForeignKey('School')
     disqualified_request = models.IntegerField()
-    disqualified_request_by = models.ForeignKey('Users', db_column='disqualified_request_by', blank=True, null=True)
+    disqualified_request_by = models.ForeignKey('Users', related_name='disqualified_request_set', db_column='disqualified_request_by', blank=True, null=True)
     disqualified = models.IntegerField()
-    disqualified_by = models.ForeignKey('Users', db_column='disqualified_by', blank=True, null=True)
+    disqualified_by = models.ForeignKey('Users', related_name = 'disqualified_competition_user_set', db_column='disqualified_by', blank=True, null=True)
     disqualified_reason = models.TextField(blank=True)
     advancing_to_next_level = models.IntegerField()
     award = models.IntegerField(blank=True, null=True)
@@ -220,6 +232,8 @@ class CompetitionUserQuestionAnswer(models.Model):
         db_table = 'competition_user_question_answer'
 
 class Country(models.Model):
+    def __unicode__(self):
+        return unicode(self.country)
     id = models.IntegerField(primary_key=True)
     country = models.CharField(unique=True, max_length=255)
     class Meta:
@@ -259,6 +273,8 @@ class Municipality(models.Model):
         db_table = 'municipality'
 
 class Profiles(models.Model):
+    def __unicode__(self):
+        return u"{0}: {1} {2}".format(self.user, self.first_name, self.last_name)
     user = models.ForeignKey('Users', primary_key=True)
     first_name = models.CharField(max_length=255, blank=True)
     last_name = models.CharField(max_length=255, blank=True)
@@ -362,6 +378,8 @@ class Region(models.Model):
         db_table = 'region'
 
 class School(models.Model):
+    def __unicode__(self):
+        return u"{0}".format(self.name)
     id = models.IntegerField(primary_key=True)
     name = models.CharField(unique=True, max_length=255)
     school_category = models.ForeignKey('SchoolCategory')
@@ -388,11 +406,13 @@ class SchoolCategory(models.Model):
         db_table = 'school_category'
 
 class SchoolMentor(models.Model):
+    def __unicode__(self):
+        return u"{}: {}".format(self.user, self.school)
     id = models.IntegerField(primary_key=True)
     school = models.ForeignKey(School)
     user = models.ForeignKey('Users')
     active = models.IntegerField()
-    activated_by = models.ForeignKey('Users', db_column='activated_by', blank=True, null=True)
+    activated_by = models.ForeignKey('Users', related_name='activated_set', db_column='activated_by', blank=True, null=True)
     activated_timestamp = models.DateTimeField(blank=True, null=True)
     coordinator = models.IntegerField()
     class Meta:
@@ -400,6 +420,8 @@ class SchoolMentor(models.Model):
         db_table = 'school_mentor'
 
 class Users(models.Model):
+    def __unicode__(self):
+    	return u"{0}:{1}".format(self.username, self.email)
     id = models.IntegerField(primary_key=True)
     username = models.CharField(unique=True, max_length=20)
     password = models.CharField(max_length=128)
@@ -411,6 +433,9 @@ class Users(models.Model):
     status = models.IntegerField()
     create_at = models.DateTimeField()
     lastvisit_at = models.DateTimeField()
+    @property
+    def profile(self):
+        return self.profiles_set.all()[0];
     class Meta:
         managed = False
         db_table = 'users'
