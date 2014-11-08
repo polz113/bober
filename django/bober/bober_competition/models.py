@@ -8,7 +8,7 @@
 # Also note: You'll have to insert the output of 'django-admin.py sqlcustom [appname]'
 # into your database.
 from __future__ import unicode_literals
-
+import hashlib
 from django.db import models
 
 class Yiisession(models.Model):
