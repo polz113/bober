@@ -433,7 +433,7 @@ class Users(models.Model):
     status = models.IntegerField()
     create_at = models.DateTimeField()
     lastvisit_at = models.DateTimeField()
-    def set_password(password):
+    def set_password(self, password):
         self.password = hashlib.sha512(password).hexdigest()
     @property
     def profile(self):
