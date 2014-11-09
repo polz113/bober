@@ -9,6 +9,8 @@
 # into your database.
 from __future__ import unicode_literals
 
+import hashlib
+import datetime
 from django.db import models
 
 class Yiisession(models.Model):
@@ -97,7 +99,7 @@ class CompetitionCategorySchoolMentor(models.Model):
         return u"{0} - {1}: {2}".format(self.user, self.competition_category_school, self.access_code)+disqualified_str
     id = models.IntegerField(primary_key=True)
     competition_category_school = models.ForeignKey(CompetitionCategorySchool)
-    user = models.ForeignKey('Users', related_name = 'mentor_set')
+    user = models.ForeignKey('Users', related_name = 'competition_category_school_mentor_set')
     access_code = models.CharField(unique=True, max_length=20, blank=True)
     disqualified = models.IntegerField()
     disqualified_by = models.ForeignKey('Users', related_name = 'disqualified_set', db_column='disqualified_by', blank=True, null=True)
@@ -398,6 +400,8 @@ class School(models.Model):
         db_table = 'school'
 
 class SchoolCategory(models.Model):
+    def __unicode__(self):
+        return unicode(self.name)
     id = models.IntegerField(primary_key=True)
     name = models.CharField(unique=True, max_length=255)
     active = models.IntegerField()
@@ -408,6 +412,10 @@ class SchoolCategory(models.Model):
 class SchoolMentor(models.Model):
     def __unicode__(self):
         return u"{}: {}".format(self.user, self.school)
+    def activate(self, by_user):
+        self.active = 1
+        self.activated_by = by_user
+        self.activated_timestamp = datetime.datetime.now()
     id = models.IntegerField(primary_key=True)
     school = models.ForeignKey(School)
     user = models.ForeignKey('Users')
@@ -422,6 +430,10 @@ class SchoolMentor(models.Model):
 class Users(models.Model):
     def __unicode__(self):
     	return u"{0}:{1}".format(self.username, self.email)
+    def set_password(self, password):
+        self.password = hashlib.sha512(password).hexdigest()
+    def check_password(self, password):
+        return self.password == hashlib.sha512(password).hexdigest()
     id = models.IntegerField(primary_key=True)
     username = models.CharField(unique=True, max_length=20)
     password = models.CharField(max_length=128)
