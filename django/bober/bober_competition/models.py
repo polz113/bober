@@ -8,7 +8,6 @@
 # Also note: You'll have to insert the output of 'django-admin.py sqlcustom [appname]'
 # into your database.
 from __future__ import unicode_literals
-
 import hashlib
 import datetime
 from django.db import models
@@ -434,6 +433,9 @@ class Users(models.Model):
         self.password = hashlib.sha512(password).hexdigest()
     def check_password(self, password):
         return self.password == hashlib.sha512(password).hexdigest()
+    @property
+    def profile(self):
+        return self.profiles_set.all()[0];
     id = models.IntegerField(primary_key=True)
     username = models.CharField(unique=True, max_length=20)
     password = models.CharField(max_length=128)
@@ -445,9 +447,6 @@ class Users(models.Model):
     status = models.IntegerField()
     create_at = models.DateTimeField()
     lastvisit_at = models.DateTimeField()
-    @property
-    def profile(self):
-        return self.profiles_set.all()[0];
     class Meta:
         managed = False
         db_table = 'users'
