@@ -134,6 +134,8 @@ class CompetitionCountry(models.Model):
         db_table = 'competition_country'
 
 class CompetitionQuestion(models.Model):
+    def __unicode__(self):
+        return u"{} - {}".format(self.competition, self.question)
     id = models.IntegerField(primary_key=True)
     competition = models.ForeignKey(Competition)
     question = models.ForeignKey('Question')
@@ -142,6 +144,8 @@ class CompetitionQuestion(models.Model):
         db_table = 'competition_question'
 
 class CompetitionQuestionCategory(models.Model):
+    def __unicode__(self):
+        return u"{} - {}({})".format(self.competition_category, self.competition_question, self.competiton_question_difficulty)
     id = models.IntegerField(primary_key=True)
     competition_question = models.ForeignKey(CompetitionQuestion)
     competition_category = models.ForeignKey(CompetitionCategory)
@@ -151,6 +155,8 @@ class CompetitionQuestionCategory(models.Model):
         db_table = 'competition_question_category'
 
 class CompetitionQuestionDifficulty(models.Model):
+    def __unicode__(self):
+        return unicode(self.name)
     id = models.IntegerField(primary_key=True)
     country = models.ForeignKey('Country')
     active = models.IntegerField()
@@ -310,6 +316,8 @@ class ProfilesFields(models.Model):
         db_table = 'profiles_fields'
 
 class Question(models.Model):
+    def __unicode__(self):
+        return u"{}:{}".format(self.identifier, self.title)
     id = models.IntegerField(primary_key=True)
     country = models.ForeignKey(Country)
     identifier = models.CharField(max_length=255)
