@@ -174,6 +174,7 @@ class CompetitionQuestionDifficultyTranslation(models.Model):
     name = models.CharField(max_length=255)
     class Meta:
         managed = False
+        verbose_name = 'c_q_difficulty_translation'
         db_table = 'competition_question_difficulty_translation'
 
 class CompetitionTranslation(models.Model):
