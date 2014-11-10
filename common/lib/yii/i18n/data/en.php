@@ -160,6 +160,7 @@ return array (
   ),
   'dateFormats' => 
   array (
+    'js' => 'd. m. yy',
     'full' => 'EEEE, MMMM d, y',
     'long' => 'MMMM d, y',
     'medium' => 'MMM d, y',

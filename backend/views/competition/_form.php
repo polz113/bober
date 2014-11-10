@@ -49,7 +49,7 @@ Yii::import('application.extensions.CJuiDateTimePicker.CJuiDateTimePicker');
             'mode' => 'datetime', //use "time","date" or "datetime" (default)
             'options' => array(
                 // 'dateFormat' => Yii::app()->localtime->getLocalDateFormat('js')
-                'dateFormat' => Yii::app()->localtime->getLocalDateFormat('short')
+                'dateFormat' => Yii::app()->localtime->getLocalDateFormat('js')
             ) // jquery plugin options
         ));
         ?>
@@ -65,7 +65,7 @@ Yii::import('application.extensions.CJuiDateTimePicker.CJuiDateTimePicker');
             'attribute' => 'timestamp_stop', //attribute name
             'mode' => 'datetime', //use "time","date" or "datetime" (default)
             'options' => array(
-                'dateFormat' => Yii::app()->localtime->getLocalDateFormat('short')
+                'dateFormat' => Yii::app()->localtime->getLocalDateFormat('js')
             ) // jquery plugin options
         ));
         ?>
@@ -99,7 +99,7 @@ Yii::import('application.extensions.CJuiDateTimePicker.CJuiDateTimePicker');
             'attribute' => 'timestamp_mentor_results', //attribute name
             'mode' => 'datetime', //use "time","date" or "datetime" (default)
             'options' => array(
-                'dateFormat' => Yii::app()->localtime->getLocalDateFormat('short')
+                'dateFormat' => Yii::app()->localtime->getLocalDateFormat('js')
             ) // jquery plugin options
         ));
         ?>
@@ -115,7 +115,7 @@ Yii::import('application.extensions.CJuiDateTimePicker.CJuiDateTimePicker');
             'attribute' => 'timestamp_mentor_awards', //attribute name
             'mode' => 'datetime', //use "time","date" or "datetime" (default)
             'options' => array(
-                'dateFormat' => Yii::app()->localtime->getLocalDateFormat('short')
+                'dateFormat' => Yii::app()->localtime->getLocalDateFormat('js')
             ) // jquery plugin options
         ));
         ?>
@@ -131,7 +131,7 @@ Yii::import('application.extensions.CJuiDateTimePicker.CJuiDateTimePicker');
             'attribute' => 'timestamp_mentor_advancing_to_next_level', //attribute name
             'mode' => 'datetime', //use "time","date" or "datetime" (default)
             'options' => array(
-                'dateFormat' => Yii::app()->localtime->getLocalDateFormat('short')
+                'dateFormat' => Yii::app()->localtime->getLocalDateFormat('js')
             ) // jquery plugin options
         ));
         ?>
