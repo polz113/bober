@@ -1,2 +1,4 @@
 /CertificateOfAchievementGenerator/sourceCode/build/
 /CertificateOfAchievementGenerator/sourceCode/dist/
+settings.py
+*pyc
