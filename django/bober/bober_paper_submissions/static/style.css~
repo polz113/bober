@@ -7,7 +7,7 @@ body {
     background-image:url(background.png);
     background-color: #E8FEE8;
     background-repeat: repeat-x; */
-    background-image:url(background.png);
+    background-image:url(../img/beaver_background.png);
     background-repeat: repeat-x;
     /* background-repeat: repeat-xy;  */
     color: #333;
@@ -125,7 +125,7 @@ Navigation bar
 }
 
 .testi_flagbase .title {
-    background-image:url(../img/choose_fade2.png);
+    background-image:url(background.png);
     background-repeat:repeat-x;
     /* background-color:#000000 VARIKOODI? */
     /* max-width:188px; */
