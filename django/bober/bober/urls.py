@@ -1,7 +1,7 @@
 from django.conf.urls import patterns, include, url
 
 from django.contrib import admin
-import bober_competition.urls
+import bober_paper_submissions.urls
 
 admin.autodiscover()
 
@@ -11,6 +11,6 @@ urlpatterns = patterns('',
     # url(r'^blog/', include('blog.urls')),
 
     url(r'^admin/', include(admin.site.urls)),
-    url(r'^school_mentor/', include(bober_competition.urls)),
+    url(r'^school_mentor/', include(bober_paper_submissions.urls)),
     url(r'^accounts/login/$', 'django.contrib.auth.views.login'),
 )
