@@ -1,0 +1,78 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html>
+<head>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
+<title>Bober 2014 - Oddaja rezultatov</title>
+
+<style>
+
+body {
+    color:black;
+    font-family:Verdana,Arial;
+    font-size:14px;
+    line-height:1.6;
+    margin:0;
+    padding:15px;
+    background-color: #EBC693;
+}
+
+h1 {
+    font-size: 20px;
+    padding-bottom: 30px;
+}
+
+.explain {
+    font-weight: normal;
+    width: 250px;
+}
+
+td, p {
+    font-weight: bold;
+    margin-top:0;
+}
+
+input {
+    margin-right: 10px;
+}
+
+td {
+    vertical-align: top;
+    padding-top: 0;
+    padding-right: 30px;
+}
+
+button {
+    font-size: 13px;
+    width: 250px;
+}
+
+div.button {
+    padding-top: 30px;
+    font-weight: normal;
+}
+</style>
+</head>
+<body>
+
+<h1>Obrazec za oddajo rezultatov</h1>
+
+<form action="" method="post">
+{% csrf_token %}
+<div style="float: left">
+    <p class="explain">V polja na desni vnesite rezultate za učence v posameznem razredu.
+        Polja za razrede, v katerih tekmovanja niste izvedli, pustite prazna.</p>
+    <p class="explain">Imena, priimke in točke vnesite, kot kaže primer.</p>
+    <div class="button" style="clear:both">
+        <button id="submit" type="submit">Oddaj podatke</button>
+    </div>
+</div>
+
+<div>
+{{form}}
+</div>
+</form>
+<div>{{obj}}</div>
+<div>{{first_visit}}</div>
+</body>
+</html>
