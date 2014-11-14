@@ -4,4 +4,3 @@
 /django/static
 settings.py
 *.pyc
-.idea*
