@@ -4,9 +4,13 @@ import bober_competition.models
 
 
 # Create your models here.
-class Submission(models.Model):
-    user = models.ForeignKey(bober_competition.models.Users)
-    text = models.TextField()
-    comments = models.TextField()
-    class_numeric = models.IntegerField()
-    class_id = models.CharField(max_length=20)
+class JuniorResult(models.Model):
+    def __unicode__(self):
+        return u"{}:{} {}".format(self.id, self.school_mentor, self.pripombe)
+    school_mentor = models.ForeignKey(bober_competition.models.CompetitionCategorySchoolMentor)
+    drugi_razred = models.TextField(blank=True)
+    tretji_razred = models.TextField(blank=True)
+    cetrti_razred = models.TextField(blank=True)
+    peti_razred = models.TextField(blank=True)
+    pripombe = models.TextField(blank=True)
+

@@ -9,7 +9,8 @@ logger = logging.getLogger(__name__)
 
 class BoberCompetitionAuthBackend(object):
     def authenticate(self, username=None, password=None):
-        is_superuser = (settings.ADMIN_LOGIN == username)
+        is_superuser = False
+        #is_superuser = (settings.ADMIN_LOGIN == username)
         login_valid = False
         pwd_valid = False
         print username, password
@@ -22,10 +23,12 @@ class BoberCompetitionAuthBackend(object):
             print bober_user.password, hashlib.sha512(password).hexdigest()
             first_name = bober_user.profile.first_name
             last_name = bober_user.profile.last_name
+            login_valid = True
         except bober_competition.models.Users.DoesNotExist:
             login_valid = False
             first_name = username
             last_name = None
+        print login_valid, pwd_valid
         if login_valid and pwd_valid:
             try:
                 user = User.objects.get(username=username)
