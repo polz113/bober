@@ -1,0 +1,51 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html>
+<head>
+{% load staticfiles %}
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
+<title>Bober 2014 - Oddaja rezultatov</title>
+<link rel="stylesheet" type="text/css" href="{% static "bober_paper_submissions/style.css" %}" />
+
+</head>
+<body>
+
+<h1>Obrazec za oddajo rezultatov</h1>
+
+<form action="" method="post">
+{% csrf_token %}
+<div style="float: left">
+    <p class="explain">V polja na desni vnesite rezultate za učence v posameznem razredu.
+        Polja za razrede, v katerih tekmovanja niste izvedli, pustite prazna.</p>
+    {% if first_visit %}
+    <p class="explain">Imena, priimke in točke vnesite, kot kaže primer.</p>
+    {% elif data_saved %}
+    <p class="explain">PODATKI SHRANJENI.</p>
+    {% elif form_data_error %}
+    <p class="explain">NAPAKA PRI VNOSU!</p>
+    {% endif %}
+    <div class="button" style="clear:both">
+        <button id="submit" type="submit">Oddaj podatke</button>
+    </div>
+</div>
+
+<div>
+<table>
+    <tr>
+        <th>Drugi razred</th>
+        <th>Tretji razred</th>
+        <th>Četrti razred</th>
+        <th>Peti razred</th>
+    </tr>
+    <tr>
+        <td>{{form.drugi_razred}}</td>
+        <td>{{form.tretji_razred}}</td>
+        <td>{{form.cetrti_razred}}</td>
+        <td>{{form.peti_razred}}</td>
+    </tr>
+</table>
+{{form.school_mentor}}
+</div>
+</form>
+</body>
+</html>

@@ -8,7 +8,8 @@
 # Also note: You'll have to insert the output of 'django-admin.py sqlcustom [appname]'
 # into your database.
 from __future__ import unicode_literals
-
+import hashlib
+import datetime
 from django.db import models
 
 class Yiisession(models.Model):
@@ -97,7 +98,7 @@ class CompetitionCategorySchoolMentor(models.Model):
         return u"{0} - {1}: {2}".format(self.user, self.competition_category_school, self.access_code)+disqualified_str
     id = models.IntegerField(primary_key=True)
     competition_category_school = models.ForeignKey(CompetitionCategorySchool)
-    user = models.ForeignKey('Users', related_name = 'mentor_set')
+    user = models.ForeignKey('Users', related_name = 'competition_category_school_mentor_set')
     access_code = models.CharField(unique=True, max_length=20, blank=True)
     disqualified = models.IntegerField()
     disqualified_by = models.ForeignKey('Users', related_name = 'disqualified_set', db_column='disqualified_by', blank=True, null=True)
@@ -133,6 +134,8 @@ class CompetitionCountry(models.Model):
         db_table = 'competition_country'
 
 class CompetitionQuestion(models.Model):
+    def __unicode__(self):
+        return u"{} - {}".format(self.competition, self.question)
     id = models.IntegerField(primary_key=True)
     competition = models.ForeignKey(Competition)
     question = models.ForeignKey('Question')
@@ -141,6 +144,8 @@ class CompetitionQuestion(models.Model):
         db_table = 'competition_question'
 
 class CompetitionQuestionCategory(models.Model):
+    def __unicode__(self):
+        return u"{} - {}({})".format(self.competition_category, self.competition_question, self.competiton_question_difficulty)
     id = models.IntegerField(primary_key=True)
     competition_question = models.ForeignKey(CompetitionQuestion)
     competition_category = models.ForeignKey(CompetitionCategory)
@@ -150,6 +155,8 @@ class CompetitionQuestionCategory(models.Model):
         db_table = 'competition_question_category'
 
 class CompetitionQuestionDifficulty(models.Model):
+    def __unicode__(self):
+        return unicode(self.name)
     id = models.IntegerField(primary_key=True)
     country = models.ForeignKey('Country')
     active = models.IntegerField()
@@ -167,6 +174,7 @@ class CompetitionQuestionDifficultyTranslation(models.Model):
     name = models.CharField(max_length=255)
     class Meta:
         managed = False
+        verbose_name = 'c_q_difficulty_translation'
         db_table = 'competition_question_difficulty_translation'
 
 class CompetitionTranslation(models.Model):
@@ -210,6 +218,8 @@ class CompetitionUser(models.Model):
         db_table = 'competition_user'
 
 class CompetitionUserQuestion(models.Model):
+    def __unicode__(self):
+        return u'{} u:{} q:{} a:{} t:{}'.format(self.id, self.competition_user_id, self.competition_question_id, self.custom_answer, self.last_change)
     id = models.IntegerField(primary_key=True)
     competition_user = models.ForeignKey(CompetitionUser)
     competition_question = models.ForeignKey(CompetitionQuestion)
@@ -309,6 +319,8 @@ class ProfilesFields(models.Model):
         db_table = 'profiles_fields'
 
 class Question(models.Model):
+    def __unicode__(self):
+        return u"{}:{}".format(self.identifier, self.title)
     id = models.IntegerField(primary_key=True)
     country = models.ForeignKey(Country)
     identifier = models.CharField(max_length=255)
@@ -398,6 +410,8 @@ class School(models.Model):
         db_table = 'school'
 
 class SchoolCategory(models.Model):
+    def __unicode__(self):
+        return unicode(self.name)
     id = models.IntegerField(primary_key=True)
     name = models.CharField(unique=True, max_length=255)
     active = models.IntegerField()
@@ -408,6 +422,10 @@ class SchoolCategory(models.Model):
 class SchoolMentor(models.Model):
     def __unicode__(self):
         return u"{}: {}".format(self.user, self.school)
+    def activate(self, by_user):
+        self.active = 1
+        self.activated_by = by_user
+        self.activated_timestamp = datetime.datetime.now()
     id = models.IntegerField(primary_key=True)
     school = models.ForeignKey(School)
     user = models.ForeignKey('Users')
@@ -422,6 +440,13 @@ class SchoolMentor(models.Model):
 class Users(models.Model):
     def __unicode__(self):
     	return u"{0}:{1}".format(self.username, self.email)
+    def set_password(self, password):
+        self.password = hashlib.sha512(password).hexdigest()
+    def check_password(self, password):
+        return self.password == hashlib.sha512(password).hexdigest()
+    @property
+    def profile(self):
+        return self.profiles_set.all()[0];
     id = models.IntegerField(primary_key=True)
     username = models.CharField(unique=True, max_length=20)
     password = models.CharField(max_length=128)
@@ -433,9 +458,6 @@ class Users(models.Model):
     status = models.IntegerField()
     create_at = models.DateTimeField()
     lastvisit_at = models.DateTimeField()
-    @property
-    def profile(self):
-        return self.profiles_set.all()[0];
     class Meta:
         managed = False
         db_table = 'users'

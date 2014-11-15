@@ -48,6 +48,7 @@ Yii::import('application.extensions.CJuiDateTimePicker.CJuiDateTimePicker');
             'attribute' => 'timestamp_start', //attribute name
             'mode' => 'datetime', //use "time","date" or "datetime" (default)
             'options' => array(
+                // 'dateFormat' => Yii::app()->localtime->getLocalDateFormat('js')
                 'dateFormat' => Yii::app()->localtime->getLocalDateFormat('js')
             ) // jquery plugin options
         ));

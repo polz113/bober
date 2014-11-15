@@ -187,6 +187,10 @@ return array(
     // application-level parameters that can be accessed
     // using Yii::app()->params['paramName']
     'params' => array(
+        // the language used for competitions on this server
+        'preferred_language' => 'en',
+        // dump answers to disk instead of a database for marginally improved performance
+        'dump_answers_to_disk' => False,
         // this is used in contact page
         'adminEmail' => 'admin@localhost',
         'staticDomain' => (in_array($_SERVER['HTTP_HOST'], array('bober.comcode.si', 'boberadmin.comcode.si')) ? 'static-bober.comcode.si' : 'static.bober' . ($_SERVER['SERVER_PORT'] != 80 ? ':' . $_SERVER['SERVER_PORT'] : ''))

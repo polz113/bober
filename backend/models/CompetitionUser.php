@@ -289,22 +289,27 @@ class CompetitionUser extends CActiveRecord {
         $criteria->compare('t.`total_points_manual`', $this->total_points_manual, true);
         $criteria->compare('t.`total_points`', $this->total_points, true);
 
-
         $competition_ids = array();
-
+        $filter_competition = False;
+        $cc = new CDbCriteria();
+        $cc->select = 'id';
         if ($this->competition_name != '') {
-            $cc = new CDbCriteria();
-            $cc->select = 'id';
             $cc->compare('name', $this->competition_name);
+            $filter_competition = True;
+        }
+        if (! $superuser) {
+            $cc->addCondition('public_access=1');
+            $filter_competition = True;
+        }
+        if ($filter_competition) {
             $competitions = Competition::model()->findAll($cc);
             foreach ($competitions as $el) {
                 $competition_ids[] = $el->id;
             }
             $criteria->with[] = 'competition';
             $criteria->together = true;
-            if (count($competition_ids) > 0) {
-                $criteria->addInCondition('t.`competition_id`', $competition_ids);
-            }
+            // error_log("PUBLIC_OK:" . implode(", ", $competition_ids));
+            $criteria->addInCondition('t.`competition_id`', $competition_ids);
         }
 
         // award search should work only for admins / mentors who has set search parameter competition_name and they have access to this results

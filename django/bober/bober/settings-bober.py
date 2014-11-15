@@ -36,6 +36,8 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'bober_competition',
+    'bober_paper_submissions'
 )
 
 MIDDLEWARE_CLASSES = (
@@ -60,7 +62,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'bober',
         'USER': 'bober',
-        'PASSWORD': 'DATABASE PASSWORD HERE',
+        'PASSWORD': 'CHANGE THIS',
         'HOST': 'localhost',
     }
 }
