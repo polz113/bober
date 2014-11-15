@@ -13,14 +13,14 @@ class BoberCompetitionAuthBackend(object):
         #is_superuser = (settings.ADMIN_LOGIN == username)
         login_valid = False
         pwd_valid = False
-        print username, password
+        #print username, password
         if is_superuser:
             login_valid = True
         try:
             bober_user = bober_competition.models.Users.objects.get(username=username)
-            print "got bober user"
+            #print "got bober user"
             pwd_valid = (bober_user.password == hashlib.sha512(password).hexdigest())
-            print bober_user.password, hashlib.sha512(password).hexdigest()
+            #print bober_user.password, hashlib.sha512(password).hexdigest()
             first_name = bober_user.profile.first_name
             last_name = bober_user.profile.last_name
             login_valid = True

@@ -12,7 +12,7 @@ import bober_paper_submissions.models
 @login_required
 def school_mentor(request):
     user = bober_competition.models.Users.objects.get(username=request.user.username)
-    seznam = user.competition_category_school_mentor_set.all()
+    seznam = user.competition_category_school_mentor_set.filter(competition_category_school__competition_category__class_to__lte = 5, competition_category_school__competition_category__level_of_education = 1)
     if len(seznam) == 1:
         return redirect('junior_results', competition_category_school_mentor_id = seznam[0].id)
     #seznam = bober_competition.models.SchoolMentor.objects.all()
