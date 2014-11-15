@@ -29,6 +29,6 @@ def junior_results(request, competition_category_school_mentor_id):
         first_visit = created
         if first_visit:
             obj.drugi_razred = u"Jože Primer  10\nJana Novak 11\nTina Pobriši T. Primere 8\n"
-        #    obj.save()
+            obj.save()
         form = JuniorResultForm(instance = obj)
     return render(request, "bober_paper_submissions/junior_results.html", locals())
