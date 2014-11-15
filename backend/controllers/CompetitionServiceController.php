@@ -229,16 +229,23 @@ class CompetitionServiceController extends Controller {
 
         $competition_user_question = CompetitionUserQuestion::model()->with('competitionQuestion')->find('competitionQuestion.question_id=:question_id and t.competition_user_id=:competition_user_id', array(':question_id' => $question_id, ':competition_user_id' => $competition_user_id));
         if ($competition_user_question != null) {
-            if ($competition_user_question->custom_answer != $answer) {
-                $competition_user_question->custom_answer = $answer;
-                $competition_user_question->last_change = date('Y-m-d H:i:s');
-                if ($competition_user_question->save(true, array('custom_answer', 'last_change'))) {
-                    self::reponseJSON(array('success' => true));
-                } else {
-                    self::reponseJSON(array('success' => false, 'error' => Yii::t('app', 'Error saving question answer!')));
-                }
+		// DUMPING DATA TO DISK
+            if (Yii::app()->params['dump_answers_to_disk']){
+		$dataToLog = $competition_user_id.";".$question_id.";".$answer.";".date("Y-m-d H:i:s")."\n";
+		file_put_contents(dirname(__FILE__)."/../data/".$competition_user_id.".txt", $dataToLog, FILE_APPEND);
             } else {
-                self::reponseJSON(array('success' => true, 'same_in_db' => true, 'error' => Yii::t('app', 'Nothing changed!')));
+            	// END OF DUMPING DATA TO DISK
+                if ($competition_user_question->custom_answer != $answer) {
+                    $competition_user_question->custom_answer = $answer;
+                    $competition_user_question->last_change = date('Y-m-d H:i:s');
+                    if ($competition_user_question->save(true, array('custom_answer', 'last_change'))) {
+                        self::reponseJSON(array('success' => true));
+                    } else {
+                        self::reponseJSON(array('success' => false, 'error' => Yii::t('app', 'Error saving question answer!')));
+                    }
+                } else {
+                    self::reponseJSON(array('success' => true, 'same_in_db' => true, 'error' => Yii::t('app', 'Nothing changed!')));
+                }
             }
         } else {
             self::reponseJSON(array('success' => false, 'error' => Yii::t('app', 'You submited answer for question you don\'t have!')));
