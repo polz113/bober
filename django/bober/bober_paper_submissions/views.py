@@ -21,6 +21,7 @@ def school_mentor(request):
 def junior_results(request, competition_category_school_mentor_id):
     obj, created = bober_paper_submissions.models.JuniorResult.objects.get_or_create(school_mentor_id = int(competition_category_school_mentor_id))
     data_saved = False
+    form_data_error = False
     if request.method == 'POST':
         first_visit = False
         form = JuniorResultForm(request.POST, instance=obj)
@@ -28,7 +29,7 @@ def junior_results(request, competition_category_school_mentor_id):
             form.save()
             data_saved = True
         else:
-            print form.errors
+            form_data_error = True
     else:
         first_visit = created
         if first_visit:

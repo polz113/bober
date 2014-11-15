@@ -17,7 +17,13 @@
 <div style="float: left">
     <p class="explain">V polja na desni vnesite rezultate za učence v posameznem razredu.
         Polja za razrede, v katerih tekmovanja niste izvedli, pustite prazna.</p>
+    {% if first_visit %}
     <p class="explain">Imena, priimke in točke vnesite, kot kaže primer.</p>
+    {% elif data_saved %}
+    <p class="explain">PODATKI SHRANJENI.</p>
+    {% elif form_data_error %}
+    <p class="explain">NAPAKA PRI VNOSU!</p>
+    {% endif %}
     <div class="button" style="clear:both">
         <button id="submit" type="submit">Oddaj podatke</button>
     </div>
