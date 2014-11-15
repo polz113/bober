@@ -219,7 +219,7 @@ class CompetitionUser(models.Model):
 
 class CompetitionUserQuestion(models.Model):
     def __unicode__(self):
-        return u'{} u:{} q:{} a:{} t:{}'.format(self.id, self.competition_user_id, self.competition_question_id, self.cusom_answer, self.last_change)
+        return u'{} u:{} q:{} a:{} t:{}'.format(self.id, self.competition_user_id, self.competition_question_id, self.custom_answer, self.last_change)
     id = models.IntegerField(primary_key=True)
     competition_user = models.ForeignKey(CompetitionUser)
     competition_question = models.ForeignKey(CompetitionQuestion)
