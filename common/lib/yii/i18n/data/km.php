@@ -165,6 +165,8 @@ return array (
     'long' => 'd ខែ MMMM ឆ្នាំ y',
     'medium' => 'd MMM y',
     'short' => 'd/M/yyyy',
+    'js' => 'd. m. yy',
+    'php' => 'j. n. Y',
   ),
   'timeFormats' => 
   array (

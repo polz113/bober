@@ -165,6 +165,8 @@ return array (
     'long' => 'd MMMM yyyy',
     'medium' => 'd MMM yyyy',
     'short' => 'dd/MM/yy',
+    'js' => 'd. m. yy',
+    'php' => 'j. n. Y',
   ),
   'timeFormats' => 
   array (

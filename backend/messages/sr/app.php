@@ -104,7 +104,7 @@ return array(
     'view_product' => 'Pregled proizvoda',
     'list_product' => 'Lista proizvoda ',
     'product_ignore' => 'Ignoriši proizvod',
-    'product_identifier' => 'Šifra proizvoda'
+    'product_identifier' => 'Šifra proizvoda',
     'product_name' => 'Naziv proizvoda',
     'product_description' => 'Opis proizvoda',
     'product_description_short' => 'Kratek opis proizvoda ',
@@ -151,7 +151,7 @@ return array(
     'delete_company_user' => 'Izbriši korisnike kompanije',
     'view_company_user' => 'Pregled korisnika kompanije',
     'update_company_user' => 'Ažuriranje korisnika kompanije',
-    'description_title' => 'Opis'
+    'description_title' => 'Opis',
     'product_attribute_group' => 'Grupa atributa proizvoda',
     'add_group_of_attributes' => 'Dodaj grupu atributov',
     'add_one_attribute' => 'Dodaj atribut',

@@ -165,6 +165,8 @@ return array (
     'long' => 'སྤྱི་ལོ་y ཟླ་ MMMM ཚེས་ dd',
     'medium' => 'སྤྱི་ལོ་y ཟླ་ MMM ཚེས་ dd',
     'short' => 'yyyy-MM-dd',
+    'js' => 'd. m. yy',
+    'php' => 'j. n. Y',
   ),
   'timeFormats' => 
   array (

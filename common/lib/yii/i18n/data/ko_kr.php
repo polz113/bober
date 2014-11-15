@@ -164,6 +164,8 @@ return array (
     'long' => 'y년 M월 d일',
     'medium' => 'yyyy. M. d.',
     'short' => 'yy. M. d.',
+    'js' => 'd. m. yy',
+    'php' => 'j. n. Y',
   ),
   'timeFormats' => 
   array (

@@ -21,7 +21,7 @@ class Yiisession(models.Model):
         db_table = 'YiiSession'
 
 class Award(models.Model):
-    id = models.IntegerField(primary_key=True)
+    id = models.AutoField(primary_key=True)
     competition_user = models.ForeignKey('CompetitionUser', related_name='award_back')
     type = models.IntegerField()
     serial = models.CharField(unique=True, max_length=255)
@@ -32,7 +32,7 @@ class Award(models.Model):
 class Competition(models.Model):
     def __unicode__(self):
         return u"{0}".format(self.name)
-    id = models.IntegerField(primary_key=True)
+    id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=255)
     active = models.IntegerField()
     timestamp_start = models.DateTimeField()
@@ -50,7 +50,7 @@ class Competition(models.Model):
 class CompetitionCategory(models.Model):
     def __unicode__(self):
         return u"{0}".format(self.name)
-    id = models.IntegerField(primary_key=True)
+    id = models.AutoField(primary_key=True)
     active = models.IntegerField()
     country = models.ForeignKey('Country')
     name = models.CharField(max_length=255)
@@ -62,7 +62,7 @@ class CompetitionCategory(models.Model):
         db_table = 'competition_category'
 
 class CompetitionCategoryActive(models.Model):
-    id = models.IntegerField(primary_key=True)
+    id = models.AutoField(primary_key=True)
     competition = models.ForeignKey(Competition)
     competition_category = models.ForeignKey(CompetitionCategory)
     number_of_questions = models.IntegerField(blank=True, null=True)
@@ -81,7 +81,7 @@ class CompetitionCategoryActive(models.Model):
 class CompetitionCategorySchool(models.Model):
     def __unicode__(self):
         return u"{0}: {1}".format(self.school, self.competition_category)
-    id = models.IntegerField(primary_key=True)
+    id = models.AutoField(primary_key=True)
     competition = models.ForeignKey(Competition)
     competition_category = models.ForeignKey(CompetitionCategory)
     school = models.ForeignKey('School')
@@ -96,7 +96,7 @@ class CompetitionCategorySchoolMentor(models.Model):
         else:
             disqualified_str = u''
         return u"{0} - {1}: {2}".format(self.user, self.competition_category_school, self.access_code)+disqualified_str
-    id = models.IntegerField(primary_key=True)
+    id = models.AutoField(primary_key=True)
     competition_category_school = models.ForeignKey(CompetitionCategorySchool)
     user = models.ForeignKey('Users', related_name = 'competition_category_school_mentor_set')
     access_code = models.CharField(unique=True, max_length=20, blank=True)
@@ -108,7 +108,7 @@ class CompetitionCategorySchoolMentor(models.Model):
         db_table = 'competition_category_school_mentor'
 
 class CompetitionCategoryTranslation(models.Model):
-    id = models.IntegerField(primary_key=True)
+    id = models.AutoField(primary_key=True)
     competition_category = models.ForeignKey(CompetitionCategory)
     language = models.ForeignKey('Language')
     name = models.CharField(max_length=255)
@@ -117,7 +117,7 @@ class CompetitionCategoryTranslation(models.Model):
         db_table = 'competition_category_translation'
 
 class CompetitionCommittee(models.Model):
-    id = models.IntegerField(primary_key=True)
+    id = models.AutoField(primary_key=True)
     competition = models.ForeignKey(Competition)
     user = models.ForeignKey('Users')
     president = models.IntegerField()
@@ -126,7 +126,7 @@ class CompetitionCommittee(models.Model):
         db_table = 'competition_committee'
 
 class CompetitionCountry(models.Model):
-    id = models.IntegerField(primary_key=True)
+    id = models.AutoField(primary_key=True)
     competition = models.ForeignKey(Competition)
     country = models.ForeignKey('Country')
     class Meta:
@@ -136,7 +136,7 @@ class CompetitionCountry(models.Model):
 class CompetitionQuestion(models.Model):
     def __unicode__(self):
         return u"{} - {}".format(self.competition, self.question)
-    id = models.IntegerField(primary_key=True)
+    id = models.AutoField(primary_key=True)
     competition = models.ForeignKey(Competition)
     question = models.ForeignKey('Question')
     class Meta:
@@ -146,7 +146,7 @@ class CompetitionQuestion(models.Model):
 class CompetitionQuestionCategory(models.Model):
     def __unicode__(self):
         return u"{} - {}({})".format(self.competition_category, self.competition_question, self.competiton_question_difficulty)
-    id = models.IntegerField(primary_key=True)
+    id = models.AutoField(primary_key=True)
     competition_question = models.ForeignKey(CompetitionQuestion)
     competition_category = models.ForeignKey(CompetitionCategory)
     competiton_question_difficulty = models.ForeignKey('CompetitionQuestionDifficulty')
@@ -157,7 +157,7 @@ class CompetitionQuestionCategory(models.Model):
 class CompetitionQuestionDifficulty(models.Model):
     def __unicode__(self):
         return unicode(self.name)
-    id = models.IntegerField(primary_key=True)
+    id = models.AutoField(primary_key=True)
     country = models.ForeignKey('Country')
     active = models.IntegerField()
     name = models.CharField(max_length=255)
@@ -168,7 +168,7 @@ class CompetitionQuestionDifficulty(models.Model):
         db_table = 'competition_question_difficulty'
 
 class CompetitionQuestionDifficultyTranslation(models.Model):
-    id = models.IntegerField(primary_key=True)
+    id = models.AutoField(primary_key=True)
     competition_question_difficulty = models.ForeignKey(CompetitionQuestionDifficulty)
     language = models.ForeignKey('Language')
     name = models.CharField(max_length=255)
@@ -178,7 +178,7 @@ class CompetitionQuestionDifficultyTranslation(models.Model):
         db_table = 'competition_question_difficulty_translation'
 
 class CompetitionTranslation(models.Model):
-    id = models.IntegerField(primary_key=True)
+    id = models.AutoField(primary_key=True)
     competition = models.ForeignKey(Competition)
     language = models.ForeignKey('Language')
     name = models.CharField(max_length=255)
@@ -187,7 +187,7 @@ class CompetitionTranslation(models.Model):
         db_table = 'competition_translation'
 
 class CompetitionUser(models.Model):
-    id = models.IntegerField(primary_key=True)
+    id = models.AutoField(primary_key=True)
     competition = models.ForeignKey(Competition)
     competition_category = models.ForeignKey(CompetitionCategory)
     user = models.ForeignKey('Users', blank=True, null=True)
@@ -220,7 +220,7 @@ class CompetitionUser(models.Model):
 class CompetitionUserQuestion(models.Model):
     def __unicode__(self):
         return u'{} u:{} q:{} a:{} t:{}'.format(self.id, self.competition_user_id, self.competition_question_id, self.custom_answer, self.last_change)
-    id = models.IntegerField(primary_key=True)
+    id = models.AutoField(primary_key=True)
     competition_user = models.ForeignKey(CompetitionUser)
     competition_question = models.ForeignKey(CompetitionQuestion)
     ordering = models.IntegerField()
@@ -233,7 +233,7 @@ class CompetitionUserQuestion(models.Model):
         db_table = 'competition_user_question'
 
 class CompetitionUserQuestionAnswer(models.Model):
-    id = models.IntegerField(primary_key=True)
+    id = models.AutoField(primary_key=True)
     competition_user_question = models.ForeignKey(CompetitionUserQuestion)
     question_answer = models.ForeignKey('QuestionAnswer')
     ordering = models.IntegerField()
@@ -244,14 +244,14 @@ class CompetitionUserQuestionAnswer(models.Model):
 class Country(models.Model):
     def __unicode__(self):
         return unicode(self.country)
-    id = models.IntegerField(primary_key=True)
+    id = models.AutoField(primary_key=True)
     country = models.CharField(unique=True, max_length=255)
     class Meta:
         managed = False
         db_table = 'country'
 
 class CountryAdministrator(models.Model):
-    id = models.IntegerField(primary_key=True)
+    id = models.AutoField(primary_key=True)
     country = models.ForeignKey(Country)
     user = models.ForeignKey('Users')
     class Meta:
@@ -259,7 +259,7 @@ class CountryAdministrator(models.Model):
         db_table = 'country_administrator'
 
 class CountryLanguage(models.Model):
-    id = models.IntegerField(primary_key=True)
+    id = models.AutoField(primary_key=True)
     country = models.ForeignKey(Country)
     language = models.ForeignKey('Language')
     class Meta:
@@ -267,7 +267,7 @@ class CountryLanguage(models.Model):
         db_table = 'country_language'
 
 class Language(models.Model):
-    id = models.IntegerField(primary_key=True)
+    id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=255)
     short = models.CharField(max_length=5)
     class Meta:
@@ -275,7 +275,9 @@ class Language(models.Model):
         db_table = 'language'
 
 class Municipality(models.Model):
-    id = models.IntegerField(primary_key=True)
+    def __unicode__(self):
+        return unicode(name)
+    id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=255)
     country = models.ForeignKey(Country)
     class Meta:
@@ -298,7 +300,7 @@ class Profiles(models.Model):
         db_table = 'profiles'
 
 class ProfilesFields(models.Model):
-    id = models.IntegerField(primary_key=True)
+    id = models.AutoField(primary_key=True)
     varname = models.CharField(max_length=50)
     title = models.CharField(max_length=255)
     field_type = models.CharField(max_length=50)
@@ -321,7 +323,7 @@ class ProfilesFields(models.Model):
 class Question(models.Model):
     def __unicode__(self):
         return u"{}:{}".format(self.identifier, self.title)
-    id = models.IntegerField(primary_key=True)
+    id = models.AutoField(primary_key=True)
     country = models.ForeignKey(Country)
     identifier = models.CharField(max_length=255)
     type = models.IntegerField()
@@ -339,7 +341,7 @@ class Question(models.Model):
         db_table = 'question'
 
 class QuestionAnswer(models.Model):
-    id = models.IntegerField(primary_key=True)
+    id = models.AutoField(primary_key=True)
     question = models.ForeignKey(Question)
     type = models.IntegerField()
     value = models.TextField()
@@ -348,7 +350,7 @@ class QuestionAnswer(models.Model):
         db_table = 'question_answer'
 
 class QuestionAnswerTranslation(models.Model):
-    id = models.IntegerField(primary_key=True)
+    id = models.AutoField(primary_key=True)
     question_answer = models.ForeignKey(QuestionAnswer)
     language = models.ForeignKey(Language)
     value = models.TextField()
@@ -357,7 +359,7 @@ class QuestionAnswerTranslation(models.Model):
         db_table = 'question_answer_translation'
 
 class QuestionResource(models.Model):
-    id = models.IntegerField(primary_key=True)
+    id = models.AutoField(primary_key=True)
     question = models.ForeignKey(Question)
     language = models.ForeignKey(Language)
     type = models.IntegerField()
@@ -371,7 +373,7 @@ class QuestionResource(models.Model):
         db_table = 'question_resource'
 
 class QuestionTranslation(models.Model):
-    id = models.IntegerField(primary_key=True)
+    id = models.AutoField(primary_key=True)
     question = models.ForeignKey(Question)
     language = models.ForeignKey(Language)
     title = models.CharField(max_length=255)
@@ -382,7 +384,7 @@ class QuestionTranslation(models.Model):
         db_table = 'question_translation'
 
 class Region(models.Model):
-    id = models.IntegerField(primary_key=True)
+    id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=255)
     country = models.ForeignKey(Country)
     class Meta:
@@ -392,7 +394,7 @@ class Region(models.Model):
 class School(models.Model):
     def __unicode__(self):
         return u"{0}".format(self.name)
-    id = models.IntegerField(primary_key=True)
+    id = models.AutoField(primary_key=True)
     name = models.CharField(unique=True, max_length=255)
     school_category = models.ForeignKey('SchoolCategory')
     level_of_education = models.IntegerField()
@@ -412,7 +414,7 @@ class School(models.Model):
 class SchoolCategory(models.Model):
     def __unicode__(self):
         return unicode(self.name)
-    id = models.IntegerField(primary_key=True)
+    id = models.AutoField(primary_key=True)
     name = models.CharField(unique=True, max_length=255)
     active = models.IntegerField()
     class Meta:
@@ -426,7 +428,7 @@ class SchoolMentor(models.Model):
         self.active = 1
         self.activated_by = by_user
         self.activated_timestamp = datetime.datetime.now()
-    id = models.IntegerField(primary_key=True)
+    id = models.AutoField(primary_key=True)
     school = models.ForeignKey(School)
     user = models.ForeignKey('Users')
     active = models.IntegerField()
@@ -447,7 +449,7 @@ class Users(models.Model):
     @property
     def profile(self):
         return self.profiles_set.all()[0];
-    id = models.IntegerField(primary_key=True)
+    id = models.AutoField(primary_key=True)
     username = models.CharField(unique=True, max_length=20)
     password = models.CharField(max_length=128)
     email = models.CharField(unique=True, max_length=128)

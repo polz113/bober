@@ -190,7 +190,7 @@ return array (
     'medium' => 'd. M. yyyy',
     'short' => 'd. MM. yy',
     'js' => 'd. m. yy',
-    'php' => 'j. n. Y'
+    'php' => 'j. n. Y',
   ),
   'timeFormats' => 
   array (
