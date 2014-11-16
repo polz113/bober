@@ -232,7 +232,11 @@ class CompetitionServiceController extends Controller {
 		// DUMPING DATA TO DISK
             if (Yii::app()->params['dump_answers_to_disk']){
 		$dataToLog = $competition_user_id.";".$question_id.";".$answer.";".date("Y-m-d H:i:s")."\n";
-		file_put_contents(dirname(__FILE__)."/../data/".$competition_user_id.".txt", $dataToLog, FILE_APPEND);
+		if (file_put_contents(dirname(__FILE__)."/../data/".$competition_user_id.".txt", $dataToLog, FILE_APPEND) === FALSE){
+                    self::reponseJSON(array('success' => false, 'error' => Yii::t('app', 'Error saving question answer into a file!')));
+                } else {
+                    self::reponseJSON(array('success' => true));
+                }
             } else {
             	// END OF DUMPING DATA TO DISK
                 if ($competition_user_question->custom_answer != $answer) {
