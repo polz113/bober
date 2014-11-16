@@ -718,6 +718,7 @@ return array(
     'File name' => 'Ime datoteke',
     'Manage shared files' => 'Vaše datoteke',
     'Shared files' => 'Deljene datoteke',
-    'Import mentors for next level' => 'Uvezi mentore za sledeći nivo takmičenja'
+    'Import mentors for next level' => 'Uvezi mentore za sledeći nivo takmičenja',
+    'http://www.bebras.org' => 'http://dabar.edu.rs/',
     );
 ?>  
