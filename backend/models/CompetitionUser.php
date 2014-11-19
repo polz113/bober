@@ -441,7 +441,6 @@ class CompetitionUser extends CActiveRecord {
         if ($pagination == false) {
             $options['pagination'] = false;
         }
-
         return new CActiveDataProvider($this, $options);
     }
 
