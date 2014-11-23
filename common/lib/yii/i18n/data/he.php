@@ -205,6 +205,8 @@ return array (
     'long' => 'd בMMMM y',
     'medium' => 'd בMMM yyyy',
     'short' => 'dd/MM/yy',
+    'js' => 'd. m. yy',
+    'php' => 'j. n. Y',
   ),
   'timeFormats' => 
   array (

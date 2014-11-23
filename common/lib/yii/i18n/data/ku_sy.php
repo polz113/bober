@@ -299,6 +299,8 @@ return array (
     'long' => 'y MMMM d',
     'medium' => 'y MMM d',
     'short' => 'yyyy-MM-dd',
+    'js' => 'd. m. yy',
+    'php' => 'j. n. Y',
   ),
   'timeFormats' => 
   array (

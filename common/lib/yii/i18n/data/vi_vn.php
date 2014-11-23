@@ -189,6 +189,8 @@ return array (
     'long' => '\'Ngày\' dd \'tháng\' M \'năm\' y',
     'medium' => 'dd-MM-yyyy',
     'short' => 'dd/MM/yyyy',
+    'js' => 'd. m. yy',
+    'php' => 'j. n. Y',
   ),
   'timeFormats' => 
   array (

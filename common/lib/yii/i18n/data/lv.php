@@ -180,6 +180,8 @@ return array (
     'long' => 'y. \'gada\' d. MMMM',
     'medium' => 'y. \'gada\' d. MMM',
     'short' => 'dd.MM.yy',
+    'js' => 'd. m. yy',
+    'php' => 'j. n. Y',
   ),
   'timeFormats' => 
   array (

@@ -4,7 +4,7 @@
 <div class="row-fluid">
     <div class="span3">
         <div id="topWrapper">
-            <a href="<?php echo Yii::t('app', 'http://tekmovanja.acm.si/bober');?>" style="float: left;">
+            <a href="<?php echo Yii::t('app', 'http://www.bebras.org');?>" style="float: left;">
                 <div class="category_button green">
                     <?php echo Yii::t('app', 'Homepage'); ?>
                 </div>

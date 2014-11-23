@@ -316,6 +316,7 @@ return array(
     'type' => 'Yarışmanın tipi',
     'timestamp_start' => 'Yarışmanın başlangıcı',
     'timestamp_stop' => 'Yarışmanın bitişi',
-    'public_access' => 'Genel Erişim'
+    'public_access' => 'Genel Erişim',
+    'http://www.bebras.org' => 'http://tekmovanja.acm.si/bober',
 );
 ?>

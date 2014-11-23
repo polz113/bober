@@ -316,6 +316,7 @@ return array(
     'type' => 'Type of Competition',
     'timestamp_start' => 'Start of the Competition',
     'timestamp_stop' => 'Stop of the Competiton',
-    'public_access' => 'Public Access'
+    'public_access' => 'Public Access',
+    'http://www.bebras.org' => 'http://www.bebras.org/',
 );
 ?>

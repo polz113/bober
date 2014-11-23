@@ -200,6 +200,8 @@ return array (
     'long' => 'd MMMM، y',
     'medium' => 'yyyy/MM/dd',
     'short' => 'yyyy/M/d',
+    'js' => 'd. m. yy',
+    'php' => 'j. n. Y',
   ),
   'timeFormats' => 
   array (

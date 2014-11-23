@@ -719,6 +719,7 @@ return array(
     'File name' => 'Ime datoteke',
     'Manage shared files' => 'Vaše datoteke',
     'Shared files' => 'Skupna raba',
-    'Import mentors for next level' => 'Uvozi mentorje za naslednjo stopnjo tekmovanja'
+    'Import mentors for next level' => 'Uvozi mentorje za naslednjo stopnjo tekmovanja',
+    'http://www.bebras.org' => 'http://tekmovanja.acm.si/bober',
     );
 ?>  

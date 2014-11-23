@@ -240,6 +240,8 @@ return array (
     'long' => 'y \'m\'. MMMM d \'d\'.',
     'medium' => 'y MMM d',
     'short' => 'yyyy-MM-dd',
+    'js' => 'd. m. yy',
+    'php' => 'j. n. Y',
   ),
   'timeFormats' => 
   array (

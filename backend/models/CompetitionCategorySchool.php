@@ -300,11 +300,16 @@ class CompetitionCategorySchool extends CActiveRecord
             $h_cols = trim($h_cols);
             if (in_array($h_cols, $keys)) {
                 $cols_matrix[$index] = $cols[$h_cols];
+                echo "Found:", $h_cols, "<br />";
+            } else {
+                echo "Not found:", $h_cols, "<br />";
             }
             $index++;
         }
         if (count($cols_matrix) != count($cols)) {
             echo 'One of required header columns is missing. Required columns: ', implode(', ', $keys), "<br />";
+            echo 'Got cols: ', implode(', ', $header_cols), "<br />";
+            echo 'Cols matrix: ', implode(', ', $cols_matrix), "<br />";
             die();
         }
 

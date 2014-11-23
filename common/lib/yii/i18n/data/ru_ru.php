@@ -242,6 +242,8 @@ return array (
     'long' => 'd MMMM y \'г\'.',
     'medium' => 'dd.MM.yyyy',
     'short' => 'dd.MM.yy',
+    'js' => 'd. m. yy',
+    'php' => 'j. n. Y',
   ),
   'timeFormats' => 
   array (

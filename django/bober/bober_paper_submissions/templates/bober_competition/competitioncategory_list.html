@@ -1,0 +1,10 @@
+<html>
+<body>
+<h1>Izberi kategorijo.</h1>
+    <ul>
+        {% for category in object_list %}
+            <li><a href={% url "competition_category_results_by_school" competition_category_id=category.id %}>{{ category }}</a></li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
