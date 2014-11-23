@@ -90,8 +90,8 @@ def export_task_translation( request, task_translation ):
 
         # ZIP archive filename, Open StringIO to grab in-memory ZIP contents, The zip compressor
         #zip_filename = "task-" + str(task.id) + "-" + task_translation.language_locale + "-v" + task_translation.version
-        #zip_filename = 'Task%d_%s_v%d' % (task_translation.task_id, task_translation.language_locale_id, task_translation.version)
-        zip_filename = task_translation.title
+        zip_filename = 'Task%d_%s_v%d' % (task_translation.task_id, task_translation.language_locale_id, task_translation.version)
+        #zip_filename = task_translation.title
         s = StringIO.StringIO()
         zf = zipfile.ZipFile(s, "w")
 
