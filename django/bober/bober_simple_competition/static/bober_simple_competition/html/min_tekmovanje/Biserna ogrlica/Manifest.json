@@ -1,0 +1,36 @@
+{
+    "id": "14040",
+    "country": "CZ",
+    "language": "sl",
+    "version": "8",
+    "title": "Biserna ogrlica",
+    "authors": "Various",
+    "license": "Creative commons CC-By",
+
+    "browserSupport": [
+        {"name": "ie", "version": "6", "os": "windows", "supported": false}
+    ],
+
+    "acceptedAnswers": ["13402"],
+
+    "task": [
+        {"type": "html", "url": "index.html"},
+        {"type": "javascript", "url": "lib/functions.js"},
+        {"type": "image", "url": "resources/answer-a.png"},
+        {"type": "image", "url": "resources/answer-b.png"},
+        {"type": "image", "url": "resources/answer-c.png"},
+        {"type": "image", "url": "resources/answer-d.png"},
+        {"type": "image", "url": "resources/bracelet.png"}
+    ],
+
+    "solution": [
+        {"type": "html", "content": "solution.html"}
+    ],
+    "task_modules": [
+        {"type": "javascript", "url": "js/jquery.js"}
+    ],
+    "grader_modules": [],
+    "solution_modules": [
+        {"type": "javascript", "url": "js/jquery.js"}
+    ]
+}

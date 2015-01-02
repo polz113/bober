@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Gobelin</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script type="text/javascript">
+        /* <![CDATA[ */
+        var task = {
+            load: function (randomSeed, mode) { task.randomizeAnswers(randomSeed);  },
+            unload: function () { return true; },
+            getAnswer: function () {
+                var answer = jQuery("input[name='answer']:checked");
+                if (answer.length > 0) { return jQuery(answer[0]).val(); }
+                else { return ''; }
+            },
+            reloadAnswer: function (answer) {
+                if (answer) {
+                    jQuery("input[name='answer']").each(function () {
+                        if (jQuery(this).val() === answer) {
+                            jQuery(this).prop('checked', true);
+                        }}); }
+                else { jQuery("input[name='answer']").prop('checked', false); }
+            },
+            displayMessage: function (type, html, isOptional) {
+                if (type === 'validate') {
+                } else if (type === 'cancel') {
+                    if (confirm('Ali želite poenostaviti odgovore?')) {
+                        taskReloadAnswer('');
+                    }
+                } else if (type === 'saved') {}
+                else if (type === 'changed') {}
+                else if (type === 'deleted') {}
+            },
+            randomizeAnswers: function (seed) { task.shuffle("answers", seed); },
+            shuffle: function (tblName, seed) {
+                var list = jQuery("#" + tblName + " > .answer");
+                jQuery("#" + tblName + " > .answer").remove();
+                var rand = new task.RandomNumberGenerator(seed);
+                for (var j, x, i = list.length; i>0; i--) {
+                    j = parseInt(rand.next() * i);
+                    if (j < 0) j = 0;
+                    if (j >= i) j =i-1;
+                    x = list[i-1]; list[i-1] = list[j]; list[j] = x
+                }
+                var answers = $("#" + tblName);
+                for (i = 0; i < list.length; i++) {
+                    answers.append(list[i]);
+                }
+            },
+            nextRandomNumber: function () {
+                var hi = this.seed / this.Q;
+                var lo = this.seed % this.Q;
+                var test = this.A * lo - this.R * hi;
+                if (test > 0) {
+                    this.seed = test;
+                } else {
+                    this.seed = test + this.M;
+                }
+                return (this.seed * this.oneOverM);
+            },
+            RandomNumberGenerator: function (s) {
+                var d = new Date();
+                this.seed = s;
+                this.A = 48271;
+                this.M = 2147483647;
+                this.Q = this.M / this.A;
+                this.R = this.M % this.A;
+                this.oneOverM = 1.0 / this.M;
+                this.next = task.nextRandomNumber;
+                return this;
+            }
+        };
+        /* ]]> */
+    </script>
+    <style type="text/css">
+        @import url(https://fonts.googleapis.com/css?family=Lato);
+
+        body {
+            font-size: 15px;
+            line-height: 21px;
+            font-family: Lato, Helvetica;
+        }
+
+        ul {
+            list-style-type: disc;
+        }
+
+        label {
+            padding-left: 10px;
+        }
+
+        .answer{
+            background: whitesmoke;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            padding: 20px;
+            border: grey 1px solid;
+        }
+
+        img.centered-image {
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+            }
+
+        div.answer, div.answer input, div.answer img {
+            vertical-align: middle;
+        }
+
+        div.answer {
+            margin-right: 15px;
+        }
+    </style>
+
+</head>
+<body>
+<div>
+    <object style="float: left; margin-right: 40px; "
+            data="resources/gobelin.svg" type="image/svg+xml">
+    </object>
+
+<p>Uganka na levi se imenuje gobelin. Levo od vrstice in nad
+   stolpci so zapisana števila, ki povedo, koliko zaporednih kvadratkov je
+   črnih. Med dvema takšnima zaporedjema črnih kvadratkov je vsaj en bel
+   kvadratek.</p>
+
+<p>Na primer, zapis »2 1« pred vrstico pomeni, da sta nekje v vrstici dva
+   zaporedna črna kvadratka, desno od njiju pa še eden; vmes je vsaj en bel,
+   poljubno število belih kvadratkov pa je lahko tudi na začetku ali koncu
+   vrstice. Zapis »1 3« nad stolpcem pomeni, da je v stolpcu črn kvadratek,
+   nekje pod njim pa trije zaporedni črni; med njimi je vsaj en bel, prav tako
+   so lahko beli na vrhu in dnu stolpca.</p>
+
+<p>Reši gobelin na levi (klikanje po kvadratkih spreminja njihovo barvo). Kaj
+    lahko poveš o kvadratkih, označenih z A, B, C in D?</p>
+</div>
+<form action="get" onsubmit="return false;" style="margin-top: 20px">
+    <div id="answers">
+            <center><table><tr><td>
+            <div class="answer">
+                <input type="radio" name="answer" value="131091" id="answer1">
+                <label for="answer1">
+                    A in B sta bela, C in D črna
+                </label>
+            </div>
+
+        </td>
+        <td>
+            <div class="answer">
+                <input type="radio" name="answer" value="131092" id="answer2">
+                <label for="answer2">
+                    A in C sta bela, B in D črna
+                </label>
+            </div>
+        </td></tr><tr><td>
+            <div class="answer">
+                <input type="radio" name="answer" value="131093" id="answer3">
+                <label for="answer3">
+                    C in D sta bela, A in B črna
+                </label>
+            </div>
+
+        </td>
+        <td>
+            <div class="answer">
+                <input type="radio" name="answer" value="131094" id="answer4">
+                <label for="answer4">
+                    B in D sta bela, A in C črna
+                </label>
+            </div>
+        </td></tr></table></center>
+
+    </div>
+
+</form>
+</body>
+</html>

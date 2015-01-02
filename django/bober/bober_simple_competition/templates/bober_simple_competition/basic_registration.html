@@ -1,0 +1,15 @@
+{% load i18n %} 
+
+<html>
+<body>
+<h1>{% trans "Registration" %}</h1>
+<div>
+<form action="" method="post">{% csrf_token %}
+    <table>
+    {{ form }}
+    </table>
+    <input type="submit" value="{% trans "Submit" %}" />
+</form>
+</div>
+</body>
+</html>

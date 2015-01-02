@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Competition attempts" %}{% endblock %}
+
+{% block headline %}{% trans "Competition attempts" %}{% endblock %}
+
+{% block content %}
+<ul>
+{% for i in object_list %}
+    <li>
+    {{i}}
+        <ul>
+    {% for j in i.latest_answers %}
+            <li>{{j}}:{% if j.correct %}OK{% else %}WRONG{% endif %}</li>
+    {% endfor %}
+        </ul>
+    </li>
+{% endfor %}
+</ul>
+{% endblock %}

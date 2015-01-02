@@ -1,0 +1,33 @@
+{
+    "id": "14109",
+    "country": "PL",
+    "language": "sl",
+    "version": "8",
+    "title": "Gobelin",
+    "authors": "Various",
+    "license": "Creative commons CC-By",
+
+    "browserSupport": [
+        {"name": "ie", "version": "6", "os": "windows", "supported": false}
+    ],
+
+    "acceptedAnswers": ["131092"],
+
+    "task": [
+        {"type": "html", "url": "index.html"},
+        {"type": "javascript", "url": "lib/functions.js"},
+        {"type": "image", "url": "resources/gobelin 2.svg"},
+        {"type": "image", "url": "resources/gobelin.svg"}
+    ],
+
+    "solution": [
+        {"type": "html", "content": "solution.html"}
+    ],
+    "task_modules": [
+        {"type": "javascript", "url": "js/jquery.js"}
+    ],
+    "grader_modules": [],
+    "solution_modules": [
+        {"type": "javascript", "url": "js/jquery.js"}
+    ]
+}
