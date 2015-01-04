@@ -2,6 +2,7 @@ from django import forms
 from django.forms.models import inlineformset_factory, model_to_dict, fields_for_model
 from bober_simple_competition.models import *
 from django.utils.translation import ugettext as _
+import code_based_auth.models
 
 class ProfileForm(forms.ModelForm):
     class Meta:
@@ -89,3 +90,45 @@ class CompetitorCodeForm(forms.Form):
 
 class AdminCodeForm(CompetitorCodeForm):
     admin_privileges = forms.MultipleChoiceField(choices=ADMIN_PRIVILEGES)
+
+class CompetitionCreateForm(forms.ModelForm):
+    class Meta:
+        model = Competition
+        exclude = ('administrator_code_generator', 
+            'competitor_code_generator',
+            'questionsets')
+    competitor_code_format = forms.ModelChoiceField(
+        queryset = code_based_auth.models.CodeFormat.objects.all())
+    admin_code_format = forms.ModelChoiceField(
+        queryset = code_based_auth.models.CodeFormat.objects.all())
+    admin_salt = forms.CharField()
+    competitor_salt = forms.CharField()
+
+class CodeFormatForm(forms.Form):
+    code_id_bits = forms.IntegerField(initial=32)
+    competitor_privilege_bits = forms.IntegerField()
+    competitor_privilege_format = forms.ChoiceField(
+        choices = code_based_auth.models.CODE_COMPONENT_FORMATS)
+    competitor_privilege_hash = forms.ChoiceField(
+        initial = code_based_auth.models.DEFAULT_HASH_ALGORITHM,
+        choices = code_based_auth.models.HASH_ALGORITHMS)
+   
+class CompetitorCodeFormatForm(CodeFormatForm):
+    questionset_bits = forms.IntegerField()
+    questionset_format = forms.ChoiceField(
+        initial = 'r',
+        choices = code_based_auth.models.CODE_COMPONENT_FORMATS)
+    questionset_hash = forms.ChoiceField(
+        initial = 'noop',
+        choices = code_based_auth.models.HASH_ALGORITHMS)
+ 
+class AdminCodeFormatForm(CodeFormatForm):
+    admin_privilege_bits = forms.IntegerField()
+    admin_privilege_format = forms.ChoiceField(
+        choices = code_based_auth.models.CODE_COMPONENT_FORMATS)
+    admin_privilege_hash = forms.ChoiceField(
+        initial = code_based_auth.models.DEFAULT_HASH_ALGORITHM,
+        choices = code_based_auth.models.HASH_ALGORITHMS)
+ 
+CompetitionFormSet = forms.inlineformset_factory(Competition, CompetitionQuestionSet)
+

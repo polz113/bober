@@ -536,6 +536,7 @@
     function finish_competition(saved) {
         if (saved) {
             var confirm_msg = "";
+            var redirect_url;
             var count = updateAnsweredQuestionCount();
             if (count['count'] !== count['all']) {
                 var unanswered = count['all'] - count['count'];
@@ -555,6 +556,7 @@
                     "cache": false,
                     "success": function(data) {
                         if (data["success"]) {
+                            redirect_url = data["redirect_url"];
                             alert(translations["participation_thanks"]);
                         } else {
                             alert(data["error"]);
@@ -569,7 +571,7 @@
                     "complete": function() {
                         disableEnableControls(true);
                         window.close();
-                        window.location = '/';
+                        window.location = redirect_url;
                     }
                 });
             }

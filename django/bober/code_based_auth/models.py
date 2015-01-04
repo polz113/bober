@@ -11,17 +11,17 @@ CODE_COMPONENT_FORMATS = (
 )
 
 HASH_ALGORITHMS = tuple(
-    [(i, i) for i in list(hashlib.algorithms_available)]
+    [(i, i) for i in list(hashlib.algorithms_available)] + [('noop', 'No hash')]
 )
 
 DEFAULT_HASH_BITS = 32
-DEFAULT_ALGORITHM = 'sha512'
+DEFAULT_HASH_ALGORITHM = 'sha512'
 DEFAULT_SEPARATOR = "-"
 
 # TODO load words from a file or database
 DEFAULT_WORDS = ['Beaver', 'Tree', 'Brook', 'Stream']
 
-def long_hash(salt, data, bits, algorithm = DEFAULT_ALGORITHM):
+def long_hash(salt, data, bits, algorithm = DEFAULT_HASH_ALGORITHM):
     h = hashlib.new(algorithm)
     h.update(salt)
     h.update(data)
@@ -34,13 +34,13 @@ def long_hash(salt, data, bits, algorithm = DEFAULT_ALGORITHM):
     s += digest[-bits/4:]
     return long(s, 16)
  
-def hex_hash(salt, data, bits, algorithm = DEFAULT_ALGORITHM):
+def hex_hash(salt, data, bits, algorithm = DEFAULT_HASH_ALGORITHM):
     return hex(long_hash(salt, data, bits, algorithm))[2:-1]
 
-def decimal_hash(salt, data, bits, algorithm = DEFAULT_ALGORITHM):
+def decimal_hash(salt, data, bits, algorithm = DEFAULT_HASH_ALGORITHM):
     return str(long_hash(salt, data, bits, algorithm))[:-1]
 
-def words_hash(salt, data, bits, algorithm = DEFAULT_ALGORITHM, 
+def words_hash(salt, data, bits, algorithm = DEFAULT_HASH_ALGORITHM, 
     words=DEFAULT_WORDS):
     i = long_hash(salt, data, bits, algorithm)
     base = len(words)
@@ -93,7 +93,7 @@ class CodeComponent(models.Model):
         choices = CODE_COMPONENT_FORMATS)
     hash_bits = models.PositiveIntegerField()
     hash_algorithm = models.CharField(max_length = 16,
-        choices=HASH_ALGORITHMS, null=True, blank=True)
+        choices = HASH_ALGORITHMS, null=True, blank=True)
     max_parts = models.IntegerField(default=1)
     part_separator = models.CharField(max_length=1, default='+')
 
@@ -103,29 +103,31 @@ class CodeFormat(models.Model):
             unicode(i) for i in self.components.order_by('ordering')])
     separator = models.CharField(max_length=1, default=DEFAULT_SEPARATOR)
     @classmethod
-    def from_parts(cls, parts, separator=DEFAULT_SEPARATOR):
+    def from_components(cls, components, separator=DEFAULT_SEPARATOR):
         cf = cls(separator = separator)
         cf.save()
-        for i, p in enumerate(parts):
+        for i, p in enumerate(components):
             cc = CodeComponent(code_format = cf, ordering = i, **p)
             cc.save()
-    def code_matches(self, code, salt, components):
-        if len(components) < 1:
+        return cf
+    def code_matches(self, code, salt, parts):
+        if len(parts) < 1:
             return False
+        salt = salt.encode('utf-8')
         format_components = self.components.order_by('ordering')
-        split_components = code.split(self.separator)
+        split_parts = code.split(self.separator)
         hash_params = dict()
         challenge = bytes()
         # collect the hashes, calculate challenge
         for i, component in enumerate(format_components):
             hashes = set()
             if component.hash_format == 'a' or not component.part_separator:
-                h = split_components[i]
+                h = split_parts[i]
                 if component.hash_format == 'a':
                     challenge += h
                 hashes.add(h)
             else:
-                s = split_components[i].split(component.part_separator)
+                s = split_parts[i].split(component.part_separator)
                 if len(s) > component.max_parts:
                     return False
                 for h in s:
@@ -144,19 +146,20 @@ class CodeFormat(models.Model):
                     return False
         return True
                 
-    def code_from_components(self, salt, components):
+    def code_from_parts(self, salt, parts):
+        salt = salt.encode('utf-8')
         format_components = self.components.order_by('ordering')
         # 'a' means match any
         unhashed_format_components = format_components.filter(hash_format='a')
         challenge = bytes()
         for i in unhashed_format_components:
-            for value in components.get(i.name, []):
+            for value in parts.get(i.name, []):
                 challenge += value
         hashed_components = list()
         for i, component in enumerate(format_components):
             hash_list = list()
             hash_format = component.hash_format
-            values = components.get(component.name, [])
+            values = parts.get(component.name, [])
             if hash_format == 'a':
                 hash_list += values
             else:
@@ -171,7 +174,7 @@ class CodeFormat(models.Model):
 class CodePart(models.Model):
     def __unicode__(self):
         return str(self.ordering) + self.value
-    code = models.ForeignKey('Code', related_name = 'parts')
+    code = models.ForeignKey('Code', related_name = 'code_parts')
     ordering = models.IntegerField(default=0)
     name = models.CharField(max_length = 64)
     value = models.CharField(max_length = 256)
@@ -183,29 +186,28 @@ class Code(models.Model):
     salt = models.CharField(max_length=256)
     format = models.ForeignKey('CodeFormat')
     @property
-    def components(self):
-        components = defaultdict(list)
+    def parts(self):
+        parts = defaultdict(list)
         for i in self.parts.order_by('name', 'ordering'):
-            components[i.name].append(i.value)
+            parts[i.name].append(i.value)
         return dict(components)
-    @components.setter
-    def components(self, component_dict):
-        self.parts.all().delete()
-        print component_dict
-        for k, values in component_dict.iteritems():
+    @parts.setter
+    def parts(self, parts_dict):
+        self.code_parts.all().delete()
+        for k, values in parts_dict.iteritems():
             for i, value in enumerate(values):
                 part = CodePart(code = self, ordering = i,
                     name = k, value = value)
                 part.save()
-        self.value = self.format.code_from_components(self.salt, component_dict)
-    @components.deleter
-    def components(self):
-        self.parts.delete()
+        self.value = self.format.code_from_parts(self.salt, parts_dict)
+    @parts.deleter
+    def parts(self):
+        self.code_parts.delete()
     @classmethod
-    def create(cls, format, salt, components):
+    def create(cls, format, salt, parts):
         c = cls(format=format, salt=salt, value = "foo")
         c.save()
-        c.components = components
+        c.parts = parts
         return c
 
 class CodeGenerator(models.Model):
@@ -216,18 +218,18 @@ class CodeGenerator(models.Model):
     format = models.ForeignKey('CodeFormat')
     salt = models.CharField(max_length=256)
     codes = models.ManyToManyField('Code', null=True, blank=True)
-    def create_code(self, components):
+    def create_code(self, parts):
         created_code = Code.create(salt=self.salt, format=self.format, 
-            components={})
+            parts={})
         if self.unique_code_component:
-            components[self.unique_code_component] = [str(created_code.id)]
-        created_code.components = components
+            parts[self.unique_code_component] = [str(created_code.id)]
+        created_code.parts = parts
         created_code.save()
         self.codes.add(created_code)
         return created_code
     def variable_components(self):
         return self.format.components.order_by('ordering').exclude(
             name = self.unique_code_component)
-    def code_matches(self, code, components):
+    def code_matches(self, code, parts):
         return self.format.code_matches(salt = self.salt, 
-            code = code, components = components)
+            code = code, parts = parts)

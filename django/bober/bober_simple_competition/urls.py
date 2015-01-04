@@ -14,7 +14,7 @@ urlpatterns = patterns('',
     #   2.1 teacher, admin (for this competition)
     #     2.1.1 create, list codes for competition
     url(r'^competitions/(?P<competition_slug>[\w-]+)/codes$', views.competition_code_list, name="competition_code_list"),
-    url(r'^competitions/(?P<competition_slug>[\w-]+)/codes/(?P<generator>[\w]+)/create/$', views.competition_code_create, name="competition_code_create"),
+    url(r'^competitions/(?P<competition_slug>[\w-]+)/codes/(?P<user_type>[\w]+)/create/$', views.competition_code_create, name="competition_code_create"),
     #           codes can have the following permissions:
     #           1. can create admin codes for this competition
     #           2. can create teacher codes for this competition
@@ -73,6 +73,7 @@ urlpatterns = patterns('',
     #   all questionsets for competitions you have admin access to can be used.
     #   Also, newly created questionsets can be used.
     url(r'^competition_create/$', views.competition_create, name="competition_create"),
+    url(r'^code_format_create/(?P<user_type>\w+)/$', views.code_format_create, name="code_format_create"),
     # shortcut for registering and competing immediately 
     url(r'^immediate_competition/$', views.immediate_competition, name="immediate_competition"),
 )

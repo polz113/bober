@@ -6,9 +6,12 @@
 {% block headline %}{% trans "Create competition" %}{% endblock %}
 
 {% block content %}
+<a href="{% url 'code_format_create' user_type='admin' %}">{% trans "Create code format for admin users (teachers)" %}</a>
+<a href="{% url 'code_format_create' user_type='competitor' %}">{% trans "Create code format for competitors" %}</a>
 <form action="" method="post">{% csrf_token %}
 <table>
 {{form}}
+{{formset}}
 </table>
 <input type="submit" value="{% trans "Submit" %}" />
 </form>

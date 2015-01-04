@@ -7,14 +7,14 @@
 
 {% block content %}
 <h1>{% trans "Admin codes" %}</h1>
-<a href="{% url "competition_code_create" competition_slug=competition_slug generator='admin' %}">{% trans "Generate code" %}</a>
+<a href="{% url "competition_code_create" competition_slug=competition_slug user_type='admin' %}">{% trans "Generate code" %}</a>
 <ul>
 {% for i in competition.administrator_code_generator.codes.all %}
 <li>{{i}}</li>
 {% endfor %}
 </ul>
 <h1>{% trans "Competitor codes" %}</h1>
-<a href="{% url "competition_code_create" competition_slug=competition_slug generator='competitor' %}">{% trans "Generate code" %}</a>
+<a href="{% url "competition_code_create" competition_slug=competition_slug user_type='competitor' %}">{% trans "Generate code" %}</a>
 <ul>
 {% for i in competition.competitor_code_generator.codes.all %}
 <li>{{i}}</li>

@@ -35,9 +35,9 @@ def competition_code_list(request, competition_slug):
 # 6. can view results before official end
 # 7. can use questionset to create new competitions
 @login_required
-def competition_code_create(request, competition_slug, generator='admin'):
+def competition_code_create(request, competition_slug, user_type='admin'):
     competition = Competition.objects.get(slug=competition_slug)
-    if generator == 'admin':
+    if user_type == 'admin':
         generator = competition.administrator_code_generator
         class FormClass(forms.Form):
             competitor_privileges = forms.MultipleChoiceField(
@@ -63,13 +63,59 @@ def competition_code_create(request, competition_slug, generator='admin'):
                     str(data['competition_questionset'].id) + "-" + \
                         str(data['competition_questionset'].name)
                 ]
-            print data
             c = generator.create_code(data)
-            print c
     else:
         form = FormClass()
     return render(request, 
         "bober_simple_competition/competition_code_create.html",
+        locals())
+
+@login_required
+def code_format_create(request, user_type='admin'):
+    if user_type == 'admin':
+        FormClass = AdminCodeFormatForm
+    else:
+        FormClass = CompetitorCodeFormatForm
+    if request.method == 'POST':
+        form = FormClass(request.POST)
+        if form.is_valid():
+            code_components = [
+                {
+                    'name': 'code_id',
+                    'hash_bits': form.cleaned_data['code_id_bits'],
+                    'hash_format': 'a',
+                    'hash_algorithm': 'noop',
+                    'max_parts': 1,
+                },
+                {
+                    'name': 'competitor_privileges',
+                    'hash_bits': form.cleaned_data['competitor_privilege_bits'],
+                    'hash_format': form.cleaned_data['competitor_privilege_format'],
+                    'hash_algorithm': form.cleaned_data['competitor_privilege_hash'],
+                    'max_parts': len(COMPETITOR_PRIVILEGES),
+                }]
+            if user_type == 'admin':
+                code_components += [{
+                    'name': 'admin_privileges',
+                    'hash_bits': form.cleaned_data['admin_privilege_bits'],
+                    'hash_format': form.cleaned_data['admin_privilege_format'],
+                    'hash_algorithm': form.cleaned_data['admin_privilege_hash'],
+                    'max_parts': len(ADMIN_PRIVILEGES),
+                }]
+            else:
+                code_components += [{
+                    'name': 'competition_questionset',
+                    'hash_bits': form.cleaned_data['questionset_bits'],
+                    'hash_format': form.cleaned_data['questionset_format'],
+                    'hash_algorithm': form.cleaned_data['questionset_hash'],
+                    'max_parts': 1,
+                }]
+            f = code_based_auth.models.CodeFormat.from_components(code_components)
+            print "Format:", f 
+    else:
+        form = FormClass()
+    return render(request, 
+        "bober_simple_competition/code_format_create.html",
         locals())
 
 # 2.1.2 distribute codes to registered and other users
@@ -210,15 +256,21 @@ def finish_competition(request, competition_questionset_id, attempt_id):
         attempt = Attempt.objects.get(id=attempt_id)
         attempt.finish = timezone.now()
         attempt.save()
-        data = {'success': True}
+        data = {'success': True, 
+            'redirect_url': reverse('attempt_results', kwargs = {
+                'competition_questionset_id': competition_questionset_id,
+                'attempt_id': attempt_id})
+            }
     except Exception, e:
         data = {'success': False, 'error': str(e)}
     return HttpResponse(json.dumps(data), content_type="application/json")
 
 # 2.2.7 view results
+@login_required
 def attempt_results(request, competition_questionset_id, attempt_id):
-    pass
-    return render_to_response("bober_simple_competition/attempt_results.html", locals())
+    attempt = Attempt.objects.get(id=attempt_id)
+    object_list = attempt.latest_answers()
+    return render(request, "bober_simple_competition/attempt_results.html", locals())
 
 # 3. create registration codes
 def registration_codes(request):
@@ -234,6 +286,7 @@ def user_registration(request):
     return render_to_response("bober_simple_competition/user_registration.html", locals())
 
 # 5. edit user data
+@login_required
 def user_list(request):
     pass
     return render_to_response("bober_simple_competition/user_list.html", locals())
@@ -241,6 +294,7 @@ def user_list(request):
 # 5.1 merge users
 #  any users registered with codes created or distributed
 #  by the current user can be merged
+@login_required
 def user_merge(request):
     pass
     return render_to_response("bober_simple_competition/user_merge.html", locals())
@@ -248,21 +302,25 @@ def user_merge(request):
 # 5.2 edit users
 #  the data for users registered with codes created or distributed
 #  by the current user can be edited
+@login_required
 def user_edit(request):
     pass
     return render_to_response("bober_simple_competition/user_edit.html", locals())
 
 #   5.3 get certificates, other files
+@login_required
 def user_files(request):
     pass
     return render_to_response("bober_simple_competition/user_files.html", locals())
 
 # 6. import question(s)
+@login_required
 def question_import(request):
     pass
     return render_to_response("bober_simple_competition/question_import.html", locals())
 
 # 7. create questionset from questions
+@login_required
 def questionset_create(request):
     pass
     return render_to_response("bober_simple_competition/questionset_create.html", locals())
@@ -271,8 +329,35 @@ def questionset_create(request):
 # 8. create competition (from multiple questionsets)
 #   all questionsets for competitions you have admin access to can be used.
 #   Also, newly created questionsets can be used.
+@login_required
 def competition_create(request):
-    return render_to_response("bober_simple_competition/competition_create.html", locals())
+    formset = CompetitionFormSet()
+    if request.method == 'POST':
+        form = CompetitionCreateForm(request.POST)
+        if form.is_valid():
+            admin_codegen = code_based_auth.models.CodeGenerator(
+                unique_code_component = 'code_id',
+                format = form.cleaned_data['admin_code_format'],
+                salt = form.cleaned_data['admin_salt'])
+            admin_codegen.save()
+            competitor_codegen = code_based_auth.models.CodeGenerator(
+                unique_code_component = 'code_id',
+                format = form.cleaned_data['competitor_code_format'],
+                salt = form.cleaned_data['competitor_salt'])
+            competitor_codegen.save()
+            competition = form.instance
+            competition.administrator_code_generator = admin_codegen
+            competition.competitor_code_generator = competitor_codegen
+            competition.save()
+            master_code = competition.administrator_code_generator.create_code({
+                'admin_privileges': [i[0] for i in ADMIN_PRIVILEGES],
+                'competitor_privileges': [i[0] for i in COMPETITOR_PRIVILEGES]
+            })
+            master_code.save()
+            request.user.profile.received_codes.add(master_code)
+    else:
+        form = CompetitionCreateForm()
+    return render(request, "bober_simple_competition/competition_create.html", locals())
 
 # shortcut for registering and competing immediately 
 def immediate_competition(request):
