@@ -10,7 +10,7 @@ from django.views.generic import ListView
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django import forms
 import code_based_auth.models
-
+from django.core.urlresolvers import reverse
 import datetime
 import json
 
@@ -179,7 +179,7 @@ def competition_data(request, competition_questionset_id):
     user = request.user
     access_code = request.session['access_code']
     try:
-        attempt = Attempt.objects.filter(user=user,
+        attempt = Attempt.objects.filter(user=user.profile,
             access_code=access_code,
             competitionquestionset_id = competition_questionset_id)[0]
         answers = []
@@ -189,6 +189,7 @@ def competition_data(request, competition_questionset_id):
                 val = ''
             answers.append({ 'q': a.randomized_question_id, 'a': str(val)})
     except Exception, e:
+        print e
         finish = timezone.now() + datetime.timedelta(
             seconds = CompetitionQuestionSet.objects.get(
                 id=competition_questionset_id).competition.duration)

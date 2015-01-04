@@ -1,10 +1,14 @@
-{% load i18n %}
 {% extends "base.html" %}
+{% load i18n %}
 
-{% block title %}{% trans "Registration" %}{% endblock %}
+{% block title %}{% trans "Results" %}{% endblock %}
 
-{% block headline %}{% trans "Registration" %}{% endblock %}
+{% block headline %}{% trans "Results" %}{% endblock %}
 
 {% block content %}
-{{registration_form}}
+<ul>
+{%for i in object_list %}
+  <li>{{i}}:{{i.correct}}</li>
+{%endfor%}
+</ul>
 {% endblock %}
