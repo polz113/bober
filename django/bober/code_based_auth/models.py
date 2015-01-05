@@ -11,7 +11,7 @@ CODE_COMPONENT_FORMATS = (
 )
 
 HASH_ALGORITHMS = tuple(
-    [(i, i) for i in list(hashlib.algorithms_available)] + [('noop', 'No hash')]
+    [(i, i) for i in list(hashlib.algorithms)] + [('noop', 'No hash')]
 )
 
 DEFAULT_HASH_BITS = 32
