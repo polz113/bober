@@ -1,5 +1,6 @@
 from django import forms
 from django.forms.models import inlineformset_factory, model_to_dict, fields_for_model
+# from django.forms.models import model_to_dict, fields_for_model
 from bober_simple_competition.models import *
 from django.utils.translation import ugettext as _
 import code_based_auth.models
@@ -130,5 +131,5 @@ class AdminCodeFormatForm(CodeFormatForm):
         initial = code_based_auth.models.DEFAULT_HASH_ALGORITHM,
         choices = code_based_auth.models.HASH_ALGORITHMS)
  
-CompetitionFormSet = forms.inlineformset_factory(Competition, CompetitionQuestionSet)
+CompetitionFormSet = inlineformset_factory(Competition, CompetitionQuestionSet)
 
