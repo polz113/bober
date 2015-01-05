@@ -8,6 +8,7 @@ from django.utils import timezone
 from django.template import RequestContext
 from django.views.generic import ListView
 from django.views.decorators.csrf import ensure_csrf_cookie
+from django.conf import settings
 from django import forms
 import code_based_auth.models
 from django.core.urlresolvers import reverse
@@ -19,6 +20,7 @@ class CompetitionListView(ListView):
 
 # Create your views here.
 def index(request):
+#    raise Exception(request.META["SERVER_SOFTWARE"])
     return render_to_response("bober_simple_competition/index.html", locals())
 
 @login_required
@@ -58,9 +60,8 @@ def competition_code_create(request, competition_slug, user_type='admin'):
         if form.is_valid():
             data = form.cleaned_data
             if 'competition_questionset' in data:
-                print data ['competition_questionset']
                 data['competition_questionset'] = [
-                    str(data['competition_questionset'].id) + "-" + \
+                    str(data['competition_questionset'].id) + "." + \
                         str(data['competition_questionset'].name)
                 ]
             c = generator.create_code(data)
@@ -111,7 +112,6 @@ def code_format_create(request, user_type='admin'):
                     'max_parts': 1,
                 }]
             f = code_based_auth.models.CodeFormat.from_components(code_components)
-            print "Format:", f 
     else:
         form = FormClass()
     return render(request, 
@@ -164,13 +164,22 @@ def competition_registration(request, competition_questionset_id):
 def competition_index(request, competition_questionset_id):
     return render_to_response("bober_simple_competition/competition_index.html", locals())
 
+def safe_media_redirect(resource_path):
+    response = HttpResponse()
+    response['Content-Type'] = ''
+    url = (os.path.join(settings.MEDIA_URL, resource_path)).encode('utf-8')
+    try:
+        response[settings.SAFE_REDIRECT_HEADER] = url
+    except:
+        response = redirect(url)
+    return response
+
 # 2.2.2 get question resources
 def competition_resources(request, competition_questionset_id, resource_path):
     q = CompetitionQuestionSet.objects.get(
         id=competition_questionset_id).questionset
     cache_dir = "caches/" + str(q.id) + "-" + q.slug
-    # TODO change this from a redirect to something more secure
-    return redirect('/'.join((settings.MEDIA_URL, cache_dir, resource_path))) 
+    return safe_media_redirect(os.path.join(cache_dir, resource_path)) 
 
 # 2.2.3 get question data (existing answers, attempt_id, randomised_question map)
 @login_required
@@ -189,7 +198,6 @@ def competition_data(request, competition_questionset_id):
                 val = ''
             answers.append({ 'q': a.randomized_question_id, 'a': str(val)})
     except Exception, e:
-        print e
         finish = timezone.now() + datetime.timedelta(
             seconds = CompetitionQuestionSet.objects.get(
                 id=competition_questionset_id).competition.duration)
@@ -252,7 +260,6 @@ def submit_answer(request, competition_questionset_id, attempt_id):
 
 # 2.2.6 finish competition
 def finish_competition(request, competition_questionset_id, attempt_id):
-    print "finish"
     try:
         attempt = Attempt.objects.get(id=attempt_id)
         attempt.finish = timezone.now()
