@@ -6,7 +6,8 @@
 {% block headline %}{% trans "Enter access code" %}{% endblock %}
 
 {% block content %}
-<form action="" method="post">{% csrf_token %}
+<form action="" method="post">
+	{% csrf_token %}
     {{ form }}
     <br>
     <input type="submit" value="{% trans "Submit" %}" />

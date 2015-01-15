@@ -1,3 +1,25 @@
+/**********/
+/* button */
+/**********/
+
+.button {
+  -webkit-border-radius: 28;
+  -moz-border-radius: 28;
+  border-radius: 28px;
+  font-family: Arial;
+  color: #ffffff;
+  font-size: 14px;
+  background: #096b04;
+  padding: 8px 15px 8px 15px;
+  text-decoration: none;
+}
+
+.button:hover {
+  background: #428c24;
+  text-decoration: none;
+}
+
+
 /***********/
 /* answers */
 /***********/
@@ -12,6 +34,10 @@
 	color: #940000;
 	margin-left: 1%;
 }
+/************/
+/* attempts */
+/************/
+
 .attempts_list {
 	overflow: auto;
 	text-align: left;
@@ -25,5 +51,26 @@
 	font-style: italic;
 }
 .attempt_answers_info {
+	margin-left: 2%;
+}
+
+/****************/
+/* competitions */
+/****************/
+.competitions_list {
+	min-height: 100px;
+	max-height: 300px;
+	overflow: auto;
+	text-align: left;
+	margin-left: 2%;
+}
+.competition_name {
+	margin-bottom: 1%;
+}
+.competition_questionset {
+	margin-left: 2%;
+}
+.competition_create {
+	text-align: left;
 	margin-left: 2%;
 }
