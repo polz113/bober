@@ -1,7 +1,7 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# Nejc Zupec <zupec.nejc@gmail.com>, 2013.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 #, fuzzy
 msgid ""
@@ -10,79 +10,77 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-01-15 22:07+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Nejc Zupec <zupec.nejc@gmail.com>\n"
-"Language-Team: SLOVENIAN <LL@li.org>\n"
-"Language: Slovenian\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=4; plural=(n%100==1 ? 0 : n%100==2 ? 1 : n%100==3 || n"
-"%100==4 ? 2 : 3)\n"
 
 #: bober_tasks/forms.py:16
 msgid "First name"
-msgstr "Ime"
+msgstr ""
 
 #: bober_tasks/forms.py:17
 msgid "Last name"
-msgstr "Priimek"
+msgstr ""
 
 #: bober_tasks/forms.py:18 bober_tasks/templates/control-panel/users.html:32
 msgid "Email"
-msgstr "Elektronska pošta"
+msgstr ""
 
 #: bober_tasks/forms.py:19
 msgid "Password"
-msgstr "Geslo"
+msgstr ""
 
 #: bober_tasks/forms.py:20
 msgid "Confirm password"
-msgstr "Ponovi geslo"
+msgstr ""
 
 #: bober_tasks/templates/control-panel/control-panel.html:7
 #: bober_tasks/templates/control-panel/control-panel.html:36
 #: bober_tasks/templates/main.html:32
 msgid "Control Panel"
-msgstr "Nadzorna plošča"
+msgstr ""
 
 #: bober_tasks/templates/control-panel/control-panel.html:17
 msgid "Parameters settings"
-msgstr "Nastavitve parametrov"
+msgstr ""
 
 #: bober_tasks/templates/control-panel/control-panel.html:18
 #: bober_tasks/templates/control-panel/parameters.html:15
 msgid "Age Groups"
-msgstr "Starostna skupina"
+msgstr ""
 
 #: bober_tasks/templates/control-panel/control-panel.html:19
 #: bober_tasks/templates/control-panel/parameters.html:47
 msgid "Categories"
-msgstr "Kategorije"
+msgstr ""
 
 #: bober_tasks/templates/control-panel/control-panel.html:20
 #: bober_tasks/templates/control-panel/edit-difficultys.html:5
 #: bober_tasks/templates/control-panel/parameters.html:80
 msgid "Difficulty Levels"
-msgstr "Težavnostni nivoji"
+msgstr ""
 
 #: bober_tasks/templates/control-panel/control-panel.html:21
 #: bober_tasks/templates/control-panel/edit-language.html:5
 #: bober_tasks/templates/control-panel/parameters.html:109
 msgid "Languages"
-msgstr "Jeziki"
+msgstr ""
 
 #: bober_tasks/templates/control-panel/control-panel.html:25
 msgid "Users settings"
-msgstr "Uporabniške nastavitve"
+msgstr ""
 
 #: bober_tasks/templates/control-panel/control-panel.html:26
 #: bober_tasks/templates/control-panel/users.html:5
 msgid "User Management"
-msgstr "Urejanje uporabnikov"
+msgstr ""
 
 #: bober_tasks/templates/control-panel/edit-age-group.html:5
 msgid "Edit Age Group"
-msgstr "Starostna skupina"
+msgstr ""
 
 #: bober_tasks/templates/control-panel/edit-age-group.html:9
 #: bober_tasks/templates/control-panel/edit-category.html:9
@@ -90,51 +88,51 @@ msgstr "Starostna skupina"
 #: bober_tasks/templates/control-panel/edit-language.html:9
 #: bober_tasks/templates/control-panel/edit-user.html:9
 msgid "Back"
-msgstr "Nazaj"
+msgstr ""
 
 #: bober_tasks/templates/control-panel/edit-category.html:5
 msgid "Edit Category"
-msgstr "Kategorije"
+msgstr ""
 
 #: bober_tasks/templates/control-panel/edit-user.html:5
 #: bober_tasks/templates/control-panel/edit-user.html:15
 msgid "User"
-msgstr "Uporabnik"
+msgstr ""
 
 #: bober_tasks/templates/control-panel/edit-user.html:18
 #: bober_tasks/templates/control-panel/edit-user.html:28
 #: bober_tasks/templates/user/profile.html:39
 #: bober_tasks/templates/user/profile.html:63
 msgid "Save"
-msgstr "Shrani"
+msgstr ""
 
 #: bober_tasks/templates/control-panel/edit-user.html:23
 msgid "User Profile Settings"
-msgstr "Moje profilne nastavitve"
+msgstr ""
 
 #: bober_tasks/templates/control-panel/edit-user.html:31
 msgid "You can choose among next languages:"
-msgstr "Izbirate lahko med naslednjimi jeziki:"
+msgstr ""
 
 #: bober_tasks/templates/control-panel/edit-user.html:43
 msgid "User Permissions"
-msgstr "Uporabniške pravice"
+msgstr ""
 
 #: bober_tasks/templates/control-panel/parameters.html:5
 msgid "Parameters Settings"
-msgstr "Nastavitve parametrov"
+msgstr ""
 
 #: bober_tasks/templates/control-panel/parameters.html:17
 #: bober_tasks/templates/control-panel/parameters.html:49
 #: bober_tasks/templates/control-panel/parameters.html:82
 #: bober_tasks/templates/control-panel/parameters.html:111
 msgid "New"
-msgstr "Dodaj"
+msgstr ""
 
 #: bober_tasks/templates/control-panel/parameters.html:24
 #: bober_tasks/templates/index.html:29
 msgid "Age Group"
-msgstr "Starostna skupina"
+msgstr ""
 
 #: bober_tasks/templates/control-panel/parameters.html:25
 #: bober_tasks/templates/control-panel/parameters.html:58
@@ -142,7 +140,7 @@ msgstr "Starostna skupina"
 #: bober_tasks/templates/control-panel/parameters.html:119
 #: bober_tasks/templates/control-panel/users.html:35
 msgid "Actions"
-msgstr "Akcije"
+msgstr ""
 
 #: bober_tasks/templates/control-panel/parameters.html:33
 #: bober_tasks/templates/control-panel/parameters.html:67
@@ -150,7 +148,7 @@ msgstr "Akcije"
 #: bober_tasks/templates/control-panel/parameters.html:127
 #: bober_tasks/templates/control-panel/users.html:52
 msgid "Edit"
-msgstr "Uredi"
+msgstr ""
 
 #: bober_tasks/templates/control-panel/parameters.html:36
 #: bober_tasks/templates/control-panel/parameters.html:69
@@ -158,60 +156,60 @@ msgstr "Uredi"
 #: bober_tasks/templates/control-panel/parameters.html:130
 #: bober_tasks/templates/control-panel/users.html:53
 msgid "Delete"
-msgstr "Briši"
+msgstr ""
 
 #: bober_tasks/templates/control-panel/parameters.html:55
 #: bober_tasks/templates/control-panel/parameters.html:118
 msgid "Acronym"
-msgstr "Akronim"
+msgstr ""
 
 #: bober_tasks/templates/control-panel/parameters.html:56
 #: bober_tasks/templates/index.html:26 bober_tasks/templates/index.html:57
 msgid "Category"
-msgstr "Kategorija"
+msgstr ""
 
 #: bober_tasks/templates/control-panel/parameters.html:57
 #: bober_tasks/templates/index.html:32 bober_tasks/templates/index.html:59
 #: bober_tasks/templates/task/list.html:37
 msgid "Description"
-msgstr "Opis"
+msgstr ""
 
 #: bober_tasks/templates/control-panel/parameters.html:88
 msgid "Difficulty level"
-msgstr "Težavnostni nivo"
+msgstr ""
 
 #: bober_tasks/templates/control-panel/parameters.html:117
 #: bober_tasks/templates/index.html:35 bober_tasks/templates/index.html:60
 msgid "Language"
-msgstr "Jezik"
+msgstr ""
 
 #: bober_tasks/templates/control-panel/users.html:11
 msgid "Display:"
-msgstr "Prikaži:"
+msgstr ""
 
 #: bober_tasks/templates/control-panel/users.html:31
 msgid "Username"
-msgstr "Uporabniško ime"
+msgstr ""
 
 #: bober_tasks/templates/control-panel/users.html:33
 msgid "Interface"
-msgstr "Vmesnik"
+msgstr ""
 
 #: bober_tasks/templates/control-panel/users.html:34
 msgid "Group"
-msgstr "Skupina"
+msgstr ""
 
 #: bober_tasks/templates/index.html:13 bober_tasks/templates/task/list.html:14
 msgid "New task"
-msgstr "Novo vprašanje"
+msgstr ""
 
 #: bober_tasks/templates/index.html:20
 msgid "Display"
-msgstr "Prikaži"
+msgstr ""
 
 #: bober_tasks/templates/index.html:23
 msgid "Interaction Type"
-msgstr "Interaktivni tip"
+msgstr ""
 
 #: bober_tasks/templates/index.html:42 bober_tasks/templates/index.html:70
 #: bober_tasks/templates/index.html:79 bober_tasks/templates/index.html:87
@@ -219,47 +217,46 @@ msgstr "Interaktivni tip"
 #: bober_tasks/templates/index.html:121
 #: bober_tasks/templates/task/list.html:24
 msgid "Search"
-msgstr "Iskanje"
+msgstr ""
 
 #: bober_tasks/templates/index.html:48
 msgid "Advanced"
-msgstr "Napredno iskanje"
+msgstr ""
 
 #: bober_tasks/templates/index.html:55 bober_tasks/templates/task/list.html:35
 msgid "Title"
-msgstr "Naslov vprašanja"
+msgstr ""
 
 #: bober_tasks/templates/index.html:56
 msgid "Type"
-msgstr "Tip"
+msgstr ""
 
 #: bober_tasks/templates/index.html:58
 msgid "Age"
-msgstr "Starost"
+msgstr ""
 
 #: bober_tasks/templates/index.html:149
 msgid "Select"
-msgstr "Izbirni tip"
+msgstr ""
 
 #: bober_tasks/templates/index.html:208
 #: bober_tasks/templates/task/list.html:99
 msgid "Field cannot be empty"
-msgstr "Polje ne sme biti prazno"
+msgstr ""
 
 #: bober_tasks/templates/main.html:29
 #: bober_tasks/templates/user/profile.html:9
 msgid "Home"
-msgstr "Domov"
+msgstr ""
 
 #: bober_tasks/templates/main.html:45
 msgid "Logout"
-msgstr "Odjava"
+msgstr ""
 
 #: bober_tasks/templates/task/details.html:5
 #: bober_tasks/templates/task/display.html:5
-#, fuzzy
 msgid "Displaying task"
-msgstr "Prikaži"
+msgstr ""
 
 #: bober_tasks/templates/task/history.html:36
 msgid "Author does not exist"
@@ -267,44 +264,39 @@ msgstr ""
 
 #: bober_tasks/templates/task/history.html:72
 msgid "Are you sure you want to delete this task?"
-msgstr "Ali si prepričan, če želiš izbrisati to nalogo?"
+msgstr ""
 
 #: bober_tasks/templates/task/list.html:8
 msgid "List of tasks in language "
 msgstr ""
 
 #: bober_tasks/templates/task/list.html:10
-#, fuzzy
-#| msgid "Interface language"
 msgid "Change language"
-msgstr "Jezik vmesnika"
+msgstr ""
 
 #: bober_tasks/templates/task/list.html:40
-#, fuzzy
-#| msgid "Last name"
 msgid "Last edit"
-msgstr "Priimek"
+msgstr ""
 
 #: bober_tasks/templates/user/profile.html:5
 msgid "My Profile"
-msgstr "Profil"
+msgstr ""
 
 #: bober_tasks/templates/user/profile.html:16
 msgid "My Profile Settings   "
-msgstr "Moje profilne nastavitve"
+msgstr ""
 
 #: bober_tasks/templates/user/profile.html:46
 msgid "Language settings"
-msgstr "Jezikovne nastavitve"
+msgstr ""
 
 #: bober_tasks/templates/user/profile.html:51
 msgid "Interface language"
-msgstr "Jezik vmesnika"
+msgstr ""
 
 #: bober_tasks/templates/user/show.html:5
-#, fuzzy
 msgid "Displaying user"
-msgstr "Prikaži"
+msgstr ""
 
 #: bober_tasks/views/index.py:157
 msgid "No search field filled."
@@ -312,59 +304,56 @@ msgstr ""
 
 #: bober_tasks/views/users.py:16
 msgid "You have been logged out."
-msgstr "Vaša odjava je bila uspešna."
+msgstr ""
 
 #: bober_tasks/views/users.py:24
 msgid "You are already logged in."
-msgstr "Ste že prijavljeni."
+msgstr ""
 
 #: bober_tasks/views/users.py:47
 msgid "You have been successfully logged in!"
-msgstr "Uspešno ste se prijavili!"
+msgstr ""
 
 #: bober_tasks/views/users.py:53
 msgid "The username or password are incorrect."
-msgstr "Uporabniško ime oz. geslo je napačno."
+msgstr ""
 
 #: bober_tasks/views/users.py:55
 msgid "Please fill the form below."
-msgstr "Prosimo, izpolnite spodnji obrazec."
+msgstr ""
 
 #: bober_tasks/views/users.py:108
 msgid "You have been successfully registered."
-msgstr "Uspešno ste se registrirali!"
+msgstr ""
 
 #: bober_tasks/views/users.py:129
 msgid "Passwords have to be the same!"
-msgstr "Gesli se morata ujemati!"
+msgstr ""
 
 #: bober_tasks/views/users.py:138
 msgid "Your profile has been updated!"
-msgstr "Vaš profil je posdobljen."
+msgstr ""
 
 #: bober_tasks/views/users.py:142
 msgid "Form is not valid!"
-msgstr "Obrazec ni veljaven."
+msgstr ""
 
 #: bober_tasks/views/users.py:158
 msgid "Your interface language has been changed."
-msgstr "Vaš jezik vmesnika je spremenjen."
+msgstr ""
 
 #: bober_tasks/views/users.py:179
 msgid "User settings are updated."
-msgstr "Jezikovne nastavitve so posodobljene."
+msgstr ""
 
 #: bober_tasks/views/users.py:186
 msgid "User profile is updated."
-msgstr "Uporabnikov profil je posodobljen."
+msgstr ""
 
 #: bober_tasks/views/users.py:196
 msgid "User is deleted!"
-msgstr "Uporabnik je izbrisan."
+msgstr ""
 
 #: bober_tasks/views/users.py:198
 msgid "User cannot be deleted! User is still active."
-msgstr "Uporabnik ne more biti izbrisan, ker je še vedno aktiven."
-
-#~ msgid "Groups"
-#~ msgstr "Uporabniška skupina"
+msgstr ""
