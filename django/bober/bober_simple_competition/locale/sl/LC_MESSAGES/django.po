@@ -1,0 +1,176 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-01-15 22:07+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=4; plural=(n%100==1 ? 0 : n%100==2 ? 1 : n%100==3 || n"
+"%100==4 ? 2 : 3);\n"
+
+#: bober_simple_competition/forms.py:27
+msgid "Access code"
+msgstr ""
+
+#: bober_simple_competition/models.py:48
+msgid "Create admin codes"
+msgstr ""
+
+#: bober_simple_competition/models.py:49
+msgid "Use question sets for new competitions"
+msgstr ""
+
+#: bober_simple_competition/models.py:50
+msgid "Use questions for new question sets"
+msgstr ""
+
+#: bober_simple_competition/static/bober_simple_competition/html/get_competition.html:63
+#: bober_simple_competition/templates/bober_simple_competition/competition_index.html:63
+msgid "Time left"
+msgstr ""
+
+#: bober_simple_competition/static/bober_simple_competition/html/get_competition.html:80
+#: bober_simple_competition/static/bober_simple_competition/html/get_competition.html:92
+#: bober_simple_competition/templates/bober_simple_competition/competition_index.html:80
+#: bober_simple_competition/templates/bober_simple_competition/competition_index.html:92
+msgid "Clear Answer"
+msgstr ""
+
+#: bober_simple_competition/templates/bober_simple_competition/attempt_results.html:4
+#: bober_simple_competition/templates/bober_simple_competition/attempt_results.html:6
+msgid "Results"
+msgstr ""
+
+#: bober_simple_competition/templates/bober_simple_competition/basic_registration.html:5
+#: bober_simple_competition/templates/bober_simple_competition/competition_data.html:4
+#: bober_simple_competition/templates/bober_simple_competition/competition_data.html:6
+#: bober_simple_competition/templates/bober_simple_competition/competition_resources.html:4
+#: bober_simple_competition/templates/bober_simple_competition/competition_resources.html:6
+#: bober_simple_competition/templates/bober_simple_competition/disqualify_attempt.html:4
+#: bober_simple_competition/templates/bober_simple_competition/disqualify_attempt.html:6
+#: bober_simple_competition/templates/bober_simple_competition/index.html:10
+#: bober_simple_competition/templates/bober_simple_competition/question_import.html:4
+#: bober_simple_competition/templates/bober_simple_competition/question_import.html:6
+#: bober_simple_competition/templates/bober_simple_competition/registration_codes.html:4
+#: bober_simple_competition/templates/bober_simple_competition/registration_codes.html:6
+#: bober_simple_competition/templates/bober_simple_competition/send_codes.html:4
+#: bober_simple_competition/templates/bober_simple_competition/send_codes.html:6
+#: bober_simple_competition/templates/bober_simple_competition/submit_answer.html:4
+#: bober_simple_competition/templates/bober_simple_competition/submit_answer.html:6
+#: bober_simple_competition/templates/bober_simple_competition/user_edit.html:4
+#: bober_simple_competition/templates/bober_simple_competition/user_edit.html:6
+#: bober_simple_competition/templates/bober_simple_competition/user_files.html:4
+#: bober_simple_competition/templates/bober_simple_competition/user_files.html:6
+#: bober_simple_competition/templates/bober_simple_competition/user_list.html:4
+#: bober_simple_competition/templates/bober_simple_competition/user_list.html:6
+#: bober_simple_competition/templates/bober_simple_competition/user_merge.html:4
+#: bober_simple_competition/templates/bober_simple_competition/user_merge.html:6
+#: bober_simple_competition/templates/bober_simple_competition/user_registration.html:4
+#: bober_simple_competition/templates/bober_simple_competition/user_registration.html:6
+msgid "Registration"
+msgstr ""
+
+#: bober_simple_competition/templates/bober_simple_competition/basic_registration.html:11
+#: bober_simple_competition/templates/bober_simple_competition/code_format_create.html:13
+#: bober_simple_competition/templates/bober_simple_competition/competition_code_create.html:13
+#: bober_simple_competition/templates/bober_simple_competition/competition_create.html:16
+#: bober_simple_competition/templates/bober_simple_competition/competition_registration.html:13
+#: bober_simple_competition/templates/bober_simple_competition/user_registration.html:13
+msgid "Submit"
+msgstr ""
+
+#: bober_simple_competition/templates/bober_simple_competition/code_format_create.html:4
+#: bober_simple_competition/templates/bober_simple_competition/code_format_create.html:6
+msgid "Create code format"
+msgstr ""
+
+#: bober_simple_competition/templates/bober_simple_competition/competition_attempt_list.html:4
+#: bober_simple_competition/templates/bober_simple_competition/competition_attempt_list.html:6
+msgid "Competition attempts"
+msgstr ""
+
+#: bober_simple_competition/templates/bober_simple_competition/competition_code_create.html:4
+#: bober_simple_competition/templates/bober_simple_competition/competition_code_create.html:6
+msgid "Create code"
+msgstr ""
+
+#: bober_simple_competition/templates/bober_simple_competition/competition_code_list.html:4
+#: bober_simple_competition/templates/bober_simple_competition/competition_code_list.html:6
+msgid "Codes"
+msgstr ""
+
+#: bober_simple_competition/templates/bober_simple_competition/competition_code_list.html:9
+msgid "Admin codes"
+msgstr ""
+
+#: bober_simple_competition/templates/bober_simple_competition/competition_code_list.html:10
+#: bober_simple_competition/templates/bober_simple_competition/competition_code_list.html:17
+msgid "Generate code"
+msgstr ""
+
+#: bober_simple_competition/templates/bober_simple_competition/competition_code_list.html:16
+msgid "Competitor codes"
+msgstr ""
+
+#: bober_simple_competition/templates/bober_simple_competition/competition_create.html:4
+#: bober_simple_competition/templates/bober_simple_competition/competition_create.html:6
+#: bober_simple_competition/templates/bober_simple_competition/competition_list.html:19
+msgid "Create competition"
+msgstr ""
+
+#: bober_simple_competition/templates/bober_simple_competition/competition_create.html:9
+msgid "Create code format for admin users (teachers)"
+msgstr ""
+
+#: bober_simple_competition/templates/bober_simple_competition/competition_create.html:10
+msgid "Create code format for competitors"
+msgstr ""
+
+#: bober_simple_competition/templates/bober_simple_competition/competition_list.html:4
+msgid "Competition"
+msgstr ""
+
+#: bober_simple_competition/templates/bober_simple_competition/competition_list.html:6
+msgid "Competitions in progress"
+msgstr ""
+
+#: bober_simple_competition/templates/bober_simple_competition/competition_list.html:11
+msgid "codes"
+msgstr ""
+
+#: bober_simple_competition/templates/bober_simple_competition/competition_list.html:12
+msgid "attempts"
+msgstr ""
+
+#: bober_simple_competition/templates/bober_simple_competition/competition_registration.html:4
+#: bober_simple_competition/templates/bober_simple_competition/competition_registration.html:6
+msgid "Enter access code"
+msgstr ""
+
+#: bober_simple_competition/templates/bober_simple_competition/index.html:4
+msgid "Welcome to the Bober competition"
+msgstr ""
+
+#: bober_simple_competition/templates/bober_simple_competition/index.html:6
+msgid "Bober"
+msgstr ""
+
+#: bober_simple_competition/templates/bober_simple_competition/index.html:9
+msgid "Competitions"
+msgstr ""
+
+#: bober_simple_competition/templates/bober_simple_competition/questionset_create.html:4
+#: bober_simple_competition/templates/bober_simple_competition/questionset_create.html:6
+msgid "Create question set"
+msgstr ""
