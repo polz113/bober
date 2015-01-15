@@ -373,7 +373,7 @@ class Question(models.Model):
 
 class Answer(models.Model):
     def __unicode__(self):
-        print self.correct()
+        #print self.correct()
         return "{} ({}): {}".format(
             unicode(self.attempt.reverse_question_mapping().get(
                 self.randomized_question_id, "??")),

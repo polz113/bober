@@ -1,0 +1,29 @@
+/***********/
+/* answers */
+/***********/
+
+.correct_answer {
+	font-weight: bold;
+	color: #024302;
+	margin-left: 1%;
+}
+.wrong_answer {
+	font-weight: bold;
+	color: #940000;
+	margin-left: 1%;
+}
+.attempts_list {
+	overflow: auto;
+	text-align: left;
+}
+.attempt {
+	margin-left: 2%;
+	margin-bottom: 1%;
+	padding-left: 2%;
+}
+.attempt_info {
+	font-style: italic;
+}
+.attempt_answers_info {
+	margin-left: 2%;
+}

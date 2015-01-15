@@ -6,9 +6,18 @@
 {% block headline %}{% trans "Results" %}{% endblock %}
 
 {% block content %}
-<ul>
-{%for i in object_list %}
-  <li>{{i}}:{{i.correct}}</li>
-{%endfor%}
-</ul>
+<div class="attempts_list">
+	<div class="attempt">
+		{%for i in object_list %}
+			<div class="attempt_answers_info">
+				<div class="attempt_question">Naloga: {{i.question}}</div>
+				{% if i.correct %} 
+				<span class="correct_answer">{% trans "Correct Answer" %} :)</span>
+				{% else %} 
+				<span class="wrong_answer">{% trans "Wrong Answer" %} :(</span>
+				{% endif %}
+			</div>
+		{%endfor%}
+	</div>
+</div>
 {% endblock %}

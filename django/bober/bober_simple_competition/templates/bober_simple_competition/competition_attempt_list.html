@@ -6,16 +6,21 @@
 {% block headline %}{% trans "Competition attempts" %}{% endblock %}
 
 {% block content %}
-<ul>
-{% for i in object_list %}
-    <li>
-    {{i}}
-        <ul>
-    {% for j in i.latest_answers %}
-            <li>{{j}}:{% if j.correct %}OK{% else %}WRONG{% endif %}</li>
-    {% endfor %}
-        </ul>
-    </li>
-{% endfor %}
-</ul>
+<div class="attempts_list">
+	{% for i in object_list %}
+		<div class="attempt">
+			<span class="attempt_info">{{i}}</span>
+			{% for j in i.latest_answers %}
+				<div class="attempt_answers_info">
+					<div class="attempt_question">Naloga: {{j.question}}</div>
+					{% if j.correct %} 
+					<span class="correct_answer">{% trans "Correct Answer" %} :)</span>
+					{% else %} 
+					<span class="wrong_answer">{% trans "Wrong Answer" %} :(</span>
+					{% endif %}
+				</div>
+			{% endfor %}
+		</div>
+	{% endfor %}
+</div>
 {% endblock %}
