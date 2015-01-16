@@ -159,6 +159,7 @@ def competition_registration(request, competition_questionset_id, accesscode=Non
                 competition_questionset_id = competition_questionset_id)
         except:
             form = MinimalCompetitionRegistrationForm()
+            form.fields['access_code'].initial = accesscode            
     return render(request,
         "bober_simple_competition/competition_registration.html", locals())
 

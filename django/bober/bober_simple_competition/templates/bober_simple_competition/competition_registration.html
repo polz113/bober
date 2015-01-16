@@ -16,9 +16,6 @@
 		</div>
 		<div class="form_compete_column">
 			{{i}}
-		{% if i.name == 'access_code' %}
-
-		{% endif %}
 		</div>
 		<div class="form_compete_column">
 			&nbsp;
@@ -29,6 +26,7 @@
 	</div>
 {% endfor %}
 </form>
-{% endblock %}
 {% load staticfiles %}
-<script src="{% static "js/autoSubmit.js" %}"></script>
+<script src='{% static "js/autoSubmit.js" %}'></script>
+
+{% endblock %}
