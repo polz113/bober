@@ -5,8 +5,12 @@
 .bold_text {
 	font-weight: bold;
 }
-
-
+select {
+	max-width: 180px;
+}
+.toLeft {
+	text-align: left;
+}
 
 /**********/
 /* button */
@@ -118,8 +122,31 @@ footer {
 /* forms */
 /*********/
  
-/* register form */
+/* regular form */
+.form_table{
+	margin-left: 2%;
+}
+.form_row {
+	height: 35px;
+}
+.form_row:before,
+.form_row:after {
+    content: " ";
+    display: table;
+}
+.form_row:after {
+    clear: both;
+}
 
+.form_column {
+	float:left;
+	text-align:left;
+	width:200px;
+}
+
+
+
+/* register form */
 .form_register_table{
 	margin-left: 2%;
 }
@@ -142,7 +169,6 @@ footer {
 }
 
 /* compete form */
-
 .form_compete_table{
 	margin-left: 2%;
 }
@@ -163,5 +189,4 @@ footer {
 	text-align:left;
 	width:100px;
 }
-
 

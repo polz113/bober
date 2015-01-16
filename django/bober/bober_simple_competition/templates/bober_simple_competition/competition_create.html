@@ -6,13 +6,56 @@
 {% block headline %}{% trans "Create competition" %}{% endblock %}
 
 {% block content %}
-<a href="{% url 'code_format_create' user_type='admin' %}">{% trans "Create code format for admin users (teachers)" %}</a>
-<a href="{% url 'code_format_create' user_type='competitor' %}">{% trans "Create code format for competitors" %}</a>
-<form action="" method="post">{% csrf_token %}
-<table>
-{{form}}
-{{formset}}
-</table>
-<input type="submit" value="{% trans "Submit" %}" />
-</form>
+<br>
+<div class="form_table toLeft">
+	<form action="" method="post">
+	{% csrf_token %}
+	{% for i in form %}
+		<div class="form_row">
+			<div class="form_column bold_text">
+				{{i.label}}:
+			</div>
+			<div class="form_column">
+				{{i}}
+			</div>
+		</div>
+	{% endfor %}
+	<br>
+	<a href='#' id='display1' onmousedown='javascript:toggle(1);' onclick='return false;'> {% trans "Show More" %}</a>
+	<br>
+	<div id='body1' style='display: none;'>
+		<table>
+		{{formset}}
+		</table>
+	</div>
+
+	<input type="submit" value='{% trans "Submit" %}' />
+	</form>
+
+	<br>
+	<a href="{% url 'code_format_create' user_type='admin' %}" class="button">
+		{% trans "Create code format for admin users (teachers)" %}
+	</a>
+	<br><br>
+	<a href="{% url 'code_format_create' user_type='competitor' %}" class="button">
+		{% trans "Create code format for competitors" %}
+	</a>
+	<br>
+</div>
+
+
+<script type="text/javascript">
+function toggle(id) {
+var ele = document.getElementById('body'+id);
+var text = document.getElementById('display'+id);
+if(ele.style.display == 'block') {
+	ele.style.display = 'none';
+	text.innerHTML = '{% trans "Show More" %}';
+}
+else {
+	ele.style.display = 'block';
+	text.innerHTML = '{% trans "Show Less" %}';
+}
+}
+</script>
 {% endblock %}
