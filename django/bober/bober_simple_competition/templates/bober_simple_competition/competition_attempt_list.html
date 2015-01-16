@@ -12,7 +12,7 @@
 			<span class="attempt_info">{{i}}</span>
 			{% for j in i.latest_answers %}
 				<div class="attempt_answers_info">
-					<div class="attempt_question">Naloga: {{j.question}}</div>
+					<div class="attempt_question">{% trans "Question" %}: {{j.question}}</div>
 					{% if j.correct %} 
 					<span class="correct_answer">{% trans "Correct Answer" %} :)</span>
 					{% else %} 

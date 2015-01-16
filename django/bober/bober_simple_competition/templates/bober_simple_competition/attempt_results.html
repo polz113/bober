@@ -10,7 +10,7 @@
 	<div class="attempt">
 		{%for i in object_list %}
 			<div class="attempt_answers_info">
-				<div class="attempt_question">Naloga: {{i.question}}</div>
+				<div class="attempt_question">{% trans "Question" %}: {{i.question}}</div>
 				{% if i.correct %} 
 				<span class="correct_answer">{% trans "Correct Answer" %} :)</span>
 				{% else %} 
