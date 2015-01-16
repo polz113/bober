@@ -33,7 +33,7 @@ urlpatterns = patterns('',
     url(r'^competitions/(?P<competition_slug>[\w-]+)/attempts/(?P<attempt_id>\d+)/disqualify$', views.disqualify_attempt, name="disqualify_attempt"),
     #   2.2 competitor
     #     2.2.0 register as competitor using a code
-    url(r'^compete/(?P<competition_questionset_id>[\d]+)/$', views.competition_registration, name="competition_registration"),
+    url(r'^compete/(?P<competition_questionset_id>[\d]+)/(?P<accesscode>[\d]+)/$', views.competition_registration, name="competition_registration"),
     #     2.2.1 get question page
     url(r'^compete/(?P<competition_questionset_id>[\d]+)/resources/competition.html$', views.competition_index, name="competition_index"),
 	#     2.2.1.1 get question page as guest

@@ -144,7 +144,7 @@ def disqualify_attempt(request, competition_slug, attempt_id):
 # 2.2 competitor
 #     2.2.1 get question page
 @login_required
-def competition_registration(request, competition_questionset_id):
+def competition_registration(request, competition_questionset_id, accesscode=None):
     if request.method == 'POST':
         form = MinimalCompetitionRegistrationForm(request.POST)
         if form.is_valid():
@@ -170,7 +170,7 @@ def competition_index(request, competition_questionset_id):
 #	2.2.1.1 get question page as guest
 def competition_guest(request):
 	code = randint(123456789,987654321)
-	return render_to_response("bober_simple_competition/competition_registration.html", locals())
+	return render_to_response("bober_simple_competition/competition_guest.html", locals())
 	
 def safe_media_redirect(resource_path):
     response = HttpResponse()

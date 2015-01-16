@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Enter access code" %}{% endblock %}
+
+{% block headline %}{% trans "Enter access code" %}{% endblock %}
+
+{% block content %}
+
+<meta http-equiv="REFRESH" content="0;url={% url "competition_registration" competition_questionset_id=2 accesscode=code %}">
+
+{% endblock %}
