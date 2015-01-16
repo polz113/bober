@@ -34,8 +34,10 @@ class BasicRegistrationForm(forms.ModelForm):
     
     def __init__(self, instance=None, *args, **kwargs):
         _fields = ('first_name', 'last_name', 'email',)
-        _initial = model_to_dict(instance.user, _fields) if instance is not None else {}
-        super(BasicRegistrationForm, self).__init__(initial=_initial, instance=instance, *args, **kwargs)
+        _initial = model_to_dict(instance.user, _fields) \
+            if instance is not None else {}
+        super(BasicRegistrationForm, self).__init__(
+            initial=_initial, instance=instance, *args, **kwargs)
         self.fields.update(fields_for_model(User, _fields))
 
     def save(self, *args, **kwargs):
@@ -99,9 +101,11 @@ class CompetitionCreateForm(forms.ModelForm):
             'competitor_code_generator',
             'questionsets')
     competitor_code_format = forms.ModelChoiceField(
-        queryset = code_based_auth.models.CodeFormat.objects.all())
+        queryset = code_based_auth.models.CodeFormat.objects.filter(
+            components__name = 'competition_questionset').distinct())
     admin_code_format = forms.ModelChoiceField(
-        queryset = code_based_auth.models.CodeFormat.objects.all())
+        queryset = code_based_auth.models.CodeFormat.objects.filter(
+            components__name = 'admin_privileges').distinct())
     admin_salt = forms.CharField()
     competitor_salt = forms.CharField()
 

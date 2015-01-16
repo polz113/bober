@@ -14,6 +14,7 @@ import code_based_auth.models
 from django.core.urlresolvers import reverse
 import datetime
 import json
+from random import randint
 
 class CompetitionListView(ListView):
     model = Competition
@@ -164,6 +165,11 @@ def competition_registration(request, competition_questionset_id):
 def competition_index(request, competition_questionset_id):
     return render_to_response("bober_simple_competition/competition_index.html", locals())
 
+#	2.2.1.1 get question page as guest
+def competition_guest(request):
+	code = randint(123456789,987654321)
+	return render_to_response("bober_simple_competition/competition_registration.html", locals())
+	
 def safe_media_redirect(resource_path):
     response = HttpResponse()
     response['Content-Type'] = ''

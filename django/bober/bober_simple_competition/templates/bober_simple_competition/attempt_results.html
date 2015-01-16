@@ -11,9 +11,9 @@
 		{%for i in object_list %}
 			<div class="attempt_answers_info">
 				<div class="attempt_question">{% trans "Question" %}: {{i.question}}</div>
-				{% if i.correct %} 
+				{% if i.correct %}
 				<span class="correct_answer">{% trans "Correct Answer" %} :)</span>
-				{% else %} 
+				{% else %}
 				<span class="wrong_answer">{% trans "Wrong Answer" %} :(</span>
 				{% endif %}
 			</div>
