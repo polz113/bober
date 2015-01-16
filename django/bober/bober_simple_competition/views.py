@@ -14,6 +14,8 @@ import code_based_auth.models
 from django.core.urlresolvers import reverse
 import datetime
 import json
+import random
+import string
 
 class CompetitionListView(ListView):
     model = Competition
@@ -364,7 +366,22 @@ def competition_create(request):
             master_code.save()
             request.user.profile.received_codes.add(master_code)
     else:
-        form = CompetitionCreateForm()
+        form = CompetitionCreateForm(initial={
+            'admin_code_format':
+                (code_based_auth.models.CodeFormat.objects.filter(
+                    components__name = 'admin_privileges'
+                ).order_by('id')[:1] or [None])[0],
+            'competitor_code_format':
+                (code_based_auth.models.CodeFormat.objects.filter(
+                    components__name = 'competition_questionset'
+                ).order_by('id')[:1] or [None])[0],
+            'admin_salt': ''.join([
+                random.choice(string.letters+string.digits) 
+                for i in xrange(10)]),
+            'competitor_salt': ''.join([
+                random.choice(string.letters+string.digits) 
+                for i in xrange(10)]),
+            })
     return render(request, "bober_simple_competition/competition_create.html", locals())
 
 # shortcut for registering and competing immediately 

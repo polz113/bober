@@ -13,7 +13,10 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         dirname = unicode(args[0])
         questions = []
-        name = os.path.split(dirname)[-1]
+        split_path = os.path.split(dirname)
+        name = split_path[1]
+        if name == '':
+            name = os.path.split(split_path[0])[1]
         slug = slugify(name)
         for i in os.listdir(dirname):
             try:
@@ -22,7 +25,7 @@ class Command(BaseCommand):
             except Exception, e:
                 print "Error:", e
                 pass
-        
+        print slug 
         question_set, created = QuestionSet.objects.get_or_create(name = name, slug = slug)
         for q in questions:
             q_dict = Question.objects.filter(id = q.id).values_list()[0]
