@@ -141,4 +141,27 @@ footer {
 	width:140px;
 }
 
+/* compete form */
+
+.form_compete_table{
+	margin-left: 2%;
+}
+.form_compete_row {
+	height: 35px;
+}
+.form_compete_row:before,
+.form_compete_row:after {
+    content: " ";
+    display: table;
+}
+.form_compete_row:after {
+    clear: both;
+}
+
+.form_compete_column {
+	float:left;
+	text-align:left;
+	width:100px;
+}
+
 

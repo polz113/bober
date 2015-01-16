@@ -6,10 +6,24 @@
 {% block headline %}{% trans "Enter access code" %}{% endblock %}
 
 {% block content %}
-<form action="" method="post">
-	{% csrf_token %}
-    {{ form }}
-    <br>
-    <input type="submit" value="{% trans "Submit" %}" />
+<br>
+<form action="" method="post" class="form_compete_table">
+{% csrf_token %}
+{% for i in form %}
+	<div class="form_compete_row">
+		<div class="form_compete_column bold_text">
+			{{i.label}}:
+		</div>
+		<div class="form_compete_column">
+			{{i}}
+		</div>
+		<div class="form_compete_column">
+			&nbsp;
+		</div>
+		<div class="form_compete_column">
+			<input type="submit" value='{% trans "Submit" %}' class="button"/>
+		</div>			
+	</div>
+{% endfor %}
 </form>
 {% endblock %}
