@@ -14,12 +14,9 @@ import code_based_auth.models
 from django.core.urlresolvers import reverse
 import datetime
 import json
-<<<<<<< HEAD
 from random import randint
-=======
 import random
 import string
->>>>>>> 7c94a5767f448cf1b4365febba02c05406f5ddfe
 
 class CompetitionListView(ListView):
     model = Competition
