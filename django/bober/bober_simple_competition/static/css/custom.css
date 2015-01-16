@@ -1,3 +1,13 @@
+/*********/
+/* basic */
+/*********/
+
+.bold_text {
+	font-weight: bold;
+}
+
+
+
 /**********/
 /* button */
 /**********/
@@ -101,3 +111,34 @@ footer {
 	margin-left:  3%;
 	margin-right: 1%;
 }
+
+
+
+/*********/
+/* forms */
+/*********/
+ 
+/* register form */
+
+.form_register_table{
+	margin-left: 2%;
+}
+.form_register_row {
+	height: 35px;
+}
+.form_register_row:before,
+.form_register_row:after {
+    content: " ";
+    display: table;
+}
+.form_register_row:after {
+    clear: both;
+}
+
+.form_register_column {
+	float:left;
+	text-align:left;
+	width:140px;
+}
+
+

@@ -6,11 +6,28 @@
 {% block headline %}{% trans "Registration" %}{% endblock %}
 
 {% block content %}
-<form action="" method="post">{% csrf_token %}
-<table>
-{{registration_form}}
-</table>
-<input type="submit" value="{% trans "Submit" %}" />
+<br>
+<form action="" method="post" class="form_register_table">
+{% csrf_token %}
+{% for i in registration_form %}
+	<div class="form_register_row">
+		<div class="form_register_column bold_text">
+			{{i.label}}:
+		</div>
+		<div class="form_register_column">
+			{{i}}
+		</div>
+	</div>
+{% endfor %}
+<br>
+<div class="form_register_row">
+	<div class="form_register_column">
+		&nbsp;
+	</div>
+	<div class="form_register_column">
+		<input type="submit" value='{% trans "Submit" %}' class="button"/>
+	</div>	
+</div>
 </form>
 
 {% endblock %}
