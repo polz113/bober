@@ -144,7 +144,26 @@ def disqualify_attempt(request, competition_slug, attempt_id):
 # 2.2 competitor
 #     2.2.1 get question page
 @login_required
-def competition_registration(request, competition_questionset_id, accesscode=None):
+def competition_registration(request, competition_questionset_id):
+    if request.method == 'POST':
+        form = MinimalCompetitionRegistrationForm(request.POST)
+        if form.is_valid():
+            request.session['access_code'] = form.cleaned_data['access_code']
+            return redirect('competition_index', 
+                competition_questionset_id = competition_questionset_id)
+    else:
+        try:
+            form = MinimalCompetitionRegistrationForm(request.GET)
+            request.session['access_code'] = form.cleaned_data['access_code']
+            return redirect('competition_index', 
+                competition_questionset_id = competition_questionset_id)
+        except:
+            form = MinimalCompetitionRegistrationForm()         
+    return render(request,
+        "bober_simple_competition/competition_registration.html", locals())
+        
+@login_required
+def competition_registration_guest(request, competition_questionset_id, accesscode=None):
     if request.method == 'POST':
         form = MinimalCompetitionRegistrationForm(request.POST)
         if form.is_valid():
@@ -161,7 +180,7 @@ def competition_registration(request, competition_questionset_id, accesscode=Non
             form = MinimalCompetitionRegistrationForm()
             form.fields['access_code'].initial = accesscode            
     return render(request,
-        "bober_simple_competition/competition_registration.html", locals())
+        "bober_simple_competition/competition_registration.html", locals())        
 
 #     2.2.1 get question page
 @login_required
@@ -169,7 +188,7 @@ def competition_index(request, competition_questionset_id):
     return render_to_response("bober_simple_competition/competition_index.html", locals())
 
 #	2.2.1.1 get question page as guest
-def competition_guest(request):
+def competition_guest(request, competition_questionset_id):
 	code = randint(123456789,987654321)
 	return render_to_response("bober_simple_competition/competition_guest.html", locals())
 	
