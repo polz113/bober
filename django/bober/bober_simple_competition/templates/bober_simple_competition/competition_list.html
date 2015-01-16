@@ -6,10 +6,9 @@
 {% block headline %}{% trans "Competitions in progress" %}{% endblock %}
 
 {% block content %}
-
-{% for i in object_list %}
 <br>
 <div class="competitions_list">
+{% for i in object_list %}
 		<div class="competition_name">
 			{{i.slug}}
 			<a href="{% url "competition_code_list" competition_slug=i.slug %}">{% trans "codes" %}</a>
@@ -17,15 +16,15 @@
 			
 			  <div class="competition_questionset">
 				  {% for j in i.competitionquestionset_set.all %}
-					<a href="{% url 'competition_registration' competition_questionset_id=j.id %}">{{j.questionset}}</a>
+					<a href="{% url 'competition_registration' competition_questionset_id=j.id %}">{{j.questionset.name}}</a>
 				  {% endfor %}
 			  </div>
-		  </div>
+		</div>
 	{% endfor %}
 </div>
 
-
-<div class="competition_create">
+<br>
+<div class="toLeft">
 <br>
 <a href="{% url "competition_create" %}" class="button">{% trans "Create competition" %}</a>
 </div>
