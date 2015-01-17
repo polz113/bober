@@ -9,6 +9,7 @@
         <link rel="stylesheet" type="text/css" href="{% static 'bober_simple_competition/css/jui/jquery-ui.css' %}" />
         <link rel="stylesheet" type="text/css" href="{% static 'bober_simple_competition/css/style.css' %}" />
         <link rel="stylesheet" type="text/css" href="{% static 'bober_simple_competition/css/jquery.jCounter.css' %}" />
+        <script type="text/javascript" src="{% url 'django.views.i18n.javascript_catalog' packages='bober_simple_competition' %}"></script>
         <script type="text/javascript" src="{% static 'bober_simple_competition/js/jquery.js' %}"></script>
         <script type="text/javascript" src="{% static 'bober_simple_competition/js/jquery-ui.min.js' %}"></script>
         <script type="text/javascript" src="{% static 'bober_simple_competition/js/jquery.jCounter.js' %}"></script>
@@ -53,7 +54,7 @@
                     </ul>
                 </div>
                 <div class="answeredStats hide-controls">
-                    <span id=answered_trans>Answered</span>:&nbsp;<span id="answered_count"></span>&nbsp;/&nbsp;<span id="answers_count"></span>
+                    <span id=answered_trans>{% trans "Answered" %}</span>:&nbsp;<span id="answered_count"></span>&nbsp;/&nbsp;<span id="answers_count"></span>
                 </div>
             </div>
             <div class="column2">
@@ -66,7 +67,7 @@
                     </div>
                     <div id="ending" class="hide-controls">
                         <a href="#" id="end_quiz" onclick="finish_competition();
-                                return false;"><span id=trans_finish>Finish</span></a>
+                                return false;"><span id=trans_finish>{% trans "Finish" %}</span></a>
                     </div>
                 </div>
             </div>
@@ -95,7 +96,6 @@
 </div>
 
 <script type="text/javascript">
-    var translations = {};
     var attempt_id = '';
     var questionset_url = "html_cache.zip";
     var current_selected_question = 0;
@@ -111,31 +111,12 @@
     var callback_question_id = 0;
     var timers = {};
     var images_url = "{% static 'bober_simple_competition/img' %}"
-    function loadTranslations() {
-        translations = {
-            "answered_trans": "Answered:",
-            "countdown_title": "Time left:",
-            "trans_finish": "Finish",
-            "trans_loading": "Loading",
-            "trans_complete": "Complete",
-            "confirm_exit": 'You have attempted to leave this page. Your last question answer will be saved automatically. Are you sure you want to exit this page?',
-            "out_of_time": 'Your are out of time for solving competition.',
-            "saved_msg": 'Your answer was successfully saved!',
-            "cleaned_msg": 'Your answer was successfully cleared!',
-            "clean_confirmation": 'Are you sure you want to clear answer?',
-            "questions_unanswered": 'Questions left unanswered:',
-            "confirm_finish": "Are you sure you want to finish the competition?",
-            "participation_thanks":'Thank you for your participation in competition!',
-            "finish_error": 'An error has occured. Please try to finish competition again.',
-        }
-    }
-    loadTranslations();
     
     // prevent refresh without saving
     function confirmExit() {
         if (enabledConfirmExit) {
             saveResponse(current_selected_question);
-            return translations["confirm_exit"];
+            return gettext('You have attempted to leave this page. Your last question answer will be saved automatically. Are you sure you want to exit this page?')
         }
     }
     window.onbeforeunload = confirmExit;
@@ -201,18 +182,6 @@
     }
 
     function loadQuestions(questionset_url) {
-        /*timers.loadQuestionTimer = new Date().getTime() / 1000;
-        progressbar = $("#progressbar")
-        progressLabel = $(".progress-label");
-        progressbar.progressbar({
-            "value": false,
-            "change": function() {
-                progressLabel.text(progressbar.progressbar("value") + "%");
-            },
-            "complete": function() {
-                progressLabel.text(translations["trans_complete"]);
-            }
-        });*/
         $("#questions").text(questionset_url);
         makePrevQuestionLink();
         JSZipUtils.getBinaryContent(questionset_url, function(err, zip_data) {
@@ -231,6 +200,7 @@
                     var mapped_answers = {};
                     var reverse_question_map = {};
                     var ordered_mapped_questions = [];
+                    $("#competition_title").text(user_data.competition_title);
                     for (var q_id in user_data.question_map){
                         var mapped_id = user_data.question_map[q_id];
                         reverse_question_map[mapped_id] = q_id;
@@ -381,7 +351,7 @@
         // GAPushEvent("CompetitionFinished", "timeout");
         enabledConfirmExit = false;
         cleanupLastQuestionCookie();
-        alert(translations["out_of_time"]);
+        alert(gettext("You are out of time for solving the competition."));
         window.close();
         window.location = '/';
     }
@@ -457,7 +427,7 @@
                 if (data["success"]) {
                     answers[question_id] = answer;
                     updateAnsweredQuestionCountDisplay();
-                    var msg = answer === '' ? translations["cleaned_msg"] : translations["saved_msg"];
+                    var msg = answer === '' ? gettext("Your answer was successfully cleared!") : gettext("Your answer was successfully saved!");
                     markQuestionAsAnswered(question_id, answer);
                     jQuery("#bottom_msg").empty().append(msg);
                     jQuery("#bottom_msg").fadeIn('fast', function() {
@@ -501,7 +471,7 @@
 
     function resetResponse() {
         if (controlsEnabled) {
-            if (confirm(translations['clean_confirmation'])) {
+            if (confirm(gettext("Are you sure you want to clear answer?"))) {
                 document.getElementById('naloga_' + current_selected_question).contentWindow.task.reloadAnswer("");
                 saveResponse(current_selected_question);
                 // GAPushEvent("CompetitionQuestionReset", "clicked");
@@ -540,9 +510,10 @@
             var count = updateAnsweredQuestionCount();
             if (count['count'] !== count['all']) {
                 var unanswered = count['all'] - count['count'];
-                confirm_msg += (translations["questions_unanswered"] + "{0}").format(unanswered);
+                var confirm_fmt = ngettext("You left %s question unanswered. ", "You left %s questions unanswered. ", unanswered)
+                confirm_msg += interpolate(confirm_fmt, [unanswered]);
             }
-            confirm_msg += translations["confirm_finish"];
+            confirm_msg += gettext("Are you sure you want to finish the competition?");
             if (confirm(confirm_msg)) {
                 // GAPushEvent("CompetitionFinished", "clicked");
                 disableEnableControls(false);
@@ -557,7 +528,7 @@
                     "success": function(data) {
                         if (data["success"]) {
                             redirect_url = data["redirect_url"];
-                            alert(translations["participation_thanks"]);
+                            alert(gettext("Thank you for participating in the competition"));
                         } else {
                             alert(data["error"]);
                         }
@@ -566,7 +537,7 @@
                         xhr.setRequestHeader("X-CSRFToken", jQuery.cookie('csrftoken'));
                     },
                     "error": function() {
-                        alert(translations["finish_error"])
+                        alert(gettext("An error has occured. Please try to finish competition again."))
                     },
                     "complete": function() {
                         disableEnableControls(true);

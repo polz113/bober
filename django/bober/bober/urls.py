@@ -4,10 +4,16 @@ from django.conf import settings
 from django.contrib.staticfiles import views
 from django.contrib import admin
 import bober_paper_submissions.urls
+import bober_simple_competition
 import bober_simple_competition.urls
 from django.views.generic import RedirectView
 
 admin.autodiscover()
+
+js_info_dict = {
+    'domain': 'django',
+    'packages': ('bober_simple_competition',),
+}
 
 urlpatterns = patterns('',
     # Examples:
@@ -18,7 +24,11 @@ urlpatterns = patterns('',
     url(r'^school_mentor/', include(bober_paper_submissions.urls)),
     url(r'^simple/', include(bober_simple_competition.urls)),
     url(r'^accounts/login/$', 'django.contrib.auth.views.login'),
+    url(r'^jsi18n/(?P<packages>\S+?)/$', 'django.views.i18n.javascript_catalog', 
+        kwargs = {'domain': 'django'}),
+    # url(r'^jsi18n/$', 'django.views.i18n.javascript_catalog', js_info_dict),
 )
+
 
 if settings.DEBUG:
     urlpatterns += [

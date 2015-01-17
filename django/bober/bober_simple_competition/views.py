@@ -197,6 +197,8 @@ def competition_resources(request, competition_questionset_id, resource_path):
 def competition_data(request, competition_questionset_id):
     user = request.user
     access_code = request.session['access_code']
+    competition_questionset = CompetitionQuestionSet.objects.get(
+        id=competition_questionset_id)
     try:
         attempt = Attempt.objects.filter(user=user.profile,
             access_code=access_code,
@@ -209,8 +211,7 @@ def competition_data(request, competition_questionset_id):
             answers.append({ 'q': a.randomized_question_id, 'a': str(val)})
     except Exception, e:
         finish = timezone.now() + datetime.timedelta(
-            seconds = CompetitionQuestionSet.objects.get(
-                id=competition_questionset_id).competition.duration)
+            seconds = competition_questionset.competition.duration)
         attempt = Attempt(user=user.profile,
             competitionquestionset_id = competition_questionset_id,
             access_code=access_code,
@@ -222,6 +223,7 @@ def competition_data(request, competition_questionset_id):
     request.session.access_code = attempt.access_code
     data = dict()
     data['attempt_id'] = attempt.id
+    data['competition_title'] = competition_questionset.questionset.name
     data['question_map'] = attempt.competitionquestionset.questionset.question_mapping(attempt.random_seed)
     data['random_seeds'] = {}
     r = random.Random(attempt.random_seed)
