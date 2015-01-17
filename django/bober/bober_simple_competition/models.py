@@ -335,8 +335,10 @@ class Question(models.Model):
             for i in items:
                 url = i.get(url_property, None)
                 if url is not None:
-                    resource_set.add({'type': item_type, 'url': url})
-        resource_list = list(resource_set)
+                    resource_set.add((item_type, url))
+        resource_list = [
+            {'type': item_type, 'url': url} for item_type, url in resource_set
+        ]
         index_dict['task'] = [
             {'type': "html", "url": "index.html"}] + resource_list
         if regenerate_manifest:
