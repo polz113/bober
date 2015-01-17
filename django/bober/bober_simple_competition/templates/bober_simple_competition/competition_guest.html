@@ -1,12 +1,13 @@
 {% extends "base.html" %}
 {% load i18n %}
 
-{% block title %}{% trans "Enter access code" %}{% endblock %}
+{% block title %}{% trans "Compete as a guest" %}{% endblock %}
 
-{% block headline %}{% trans "Enter access code" %}{% endblock %}
+{% block headline %}{% trans "Compete as a guest" %}{% endblock %}
 
 {% block content %}
-
-<meta http-equiv="REFRESH" content="0;url={% url "competition_registration_guest" competition_questionset_id=competition_questionset_id accesscode=code %}">
+{% trans "If you are not redirected automatically, click on the link below." %}
+<a href="{% url "competition_registration" competition_questionset_id=competition_questionset_id %}?access_code={{code}}">Compete</a>
+<meta http-equiv="REFRESH" content="0;url={% url "competition_registration" competition_questionset_id=competition_questionset_id %}?access_code={{code}}">
 
 {% endblock %}

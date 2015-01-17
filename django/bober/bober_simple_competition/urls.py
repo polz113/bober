@@ -34,12 +34,10 @@ urlpatterns = patterns('',
     #   2.2 competitor
     #     2.2.0 register as competitor using a code
     url(r'^compete/(?P<competition_questionset_id>[\d]+)/$', views.competition_registration, name="competition_registration"),
-	#     2.2.0 register as guest using a code :: GUEST
-    url(r'^compete/(?P<competition_questionset_id>[\d]+)/(?P<accesscode>[\d]+)/$', views.competition_registration_guest, name="competition_registration_guest"),    
     #     2.2.1 get question page
     url(r'^compete/(?P<competition_questionset_id>[\d]+)/resources/competition.html$', views.competition_index, name="competition_index"),
 	#     2.2.1.1 get question page as guest :: GUEST
-    url(r'^compete/guest/(?P<competition_questionset_id>[\d]+)/$', views.competition_guest, name="competition_guest"),    
+    url(r'^guest/(?P<competition_questionset_id>[\d]+)/$', views.competition_guest, name="competition_guest"),    
     #     2.2.2 get question resources
     url(r'^compete/(?P<competition_questionset_id>[\d]+)/resources/(?P<resource_path>.*)', views.competition_resources, name="competition_resources"),
     #     2.2.3 get question data (existing answers, attempt_id, randomised_question map)

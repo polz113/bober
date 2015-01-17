@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-01-15 22:07+0000\n"
+"POT-Creation-Date: 2015-01-16 21:02+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -47,9 +47,28 @@ msgstr ""
 msgid "Clear Answer"
 msgstr ""
 
+#: bober_simple_competition/templates/base.html:100
+msgid "In Cooperation With"
+msgstr ""
+
 #: bober_simple_competition/templates/bober_simple_competition/attempt_results.html:4
 #: bober_simple_competition/templates/bober_simple_competition/attempt_results.html:6
 msgid "Results"
+msgstr ""
+
+#: bober_simple_competition/templates/bober_simple_competition/attempt_results.html:13
+#: bober_simple_competition/templates/bober_simple_competition/competition_attempt_list.html:15
+msgid "Question"
+msgstr ""
+
+#: bober_simple_competition/templates/bober_simple_competition/attempt_results.html:15
+#: bober_simple_competition/templates/bober_simple_competition/competition_attempt_list.html:17
+msgid "Correct Answer"
+msgstr ""
+
+#: bober_simple_competition/templates/bober_simple_competition/attempt_results.html:17
+#: bober_simple_competition/templates/bober_simple_competition/competition_attempt_list.html:19
+msgid "Wrong Answer"
 msgstr ""
 
 #: bober_simple_competition/templates/bober_simple_competition/basic_registration.html:5
@@ -84,9 +103,9 @@ msgstr ""
 #: bober_simple_competition/templates/bober_simple_competition/basic_registration.html:11
 #: bober_simple_competition/templates/bober_simple_competition/code_format_create.html:13
 #: bober_simple_competition/templates/bober_simple_competition/competition_code_create.html:13
-#: bober_simple_competition/templates/bober_simple_competition/competition_create.html:16
-#: bober_simple_competition/templates/bober_simple_competition/competition_registration.html:13
-#: bober_simple_competition/templates/bober_simple_competition/user_registration.html:13
+#: bober_simple_competition/templates/bober_simple_competition/competition_create.html:32
+#: bober_simple_competition/templates/bober_simple_competition/competition_registration.html:24
+#: bober_simple_competition/templates/bober_simple_competition/user_registration.html:28
 msgid "Submit"
 msgstr ""
 
@@ -125,16 +144,25 @@ msgstr ""
 
 #: bober_simple_competition/templates/bober_simple_competition/competition_create.html:4
 #: bober_simple_competition/templates/bober_simple_competition/competition_create.html:6
-#: bober_simple_competition/templates/bober_simple_competition/competition_list.html:19
+#: bober_simple_competition/templates/bober_simple_competition/competition_list.html:29
 msgid "Create competition"
 msgstr ""
 
-#: bober_simple_competition/templates/bober_simple_competition/competition_create.html:9
+#: bober_simple_competition/templates/bober_simple_competition/competition_create.html:24
+#: bober_simple_competition/templates/bober_simple_competition/competition_create.html:53
+msgid "Show More"
+msgstr ""
+
+#: bober_simple_competition/templates/bober_simple_competition/competition_create.html:37
 msgid "Create code format for admin users (teachers)"
 msgstr ""
 
-#: bober_simple_competition/templates/bober_simple_competition/competition_create.html:10
+#: bober_simple_competition/templates/bober_simple_competition/competition_create.html:41
 msgid "Create code format for competitors"
+msgstr ""
+
+#: bober_simple_competition/templates/bober_simple_competition/competition_create.html:57
+msgid "Show Less"
 msgstr ""
 
 #: bober_simple_competition/templates/bober_simple_competition/competition_list.html:4
@@ -145,11 +173,11 @@ msgstr ""
 msgid "Competitions in progress"
 msgstr ""
 
-#: bober_simple_competition/templates/bober_simple_competition/competition_list.html:11
+#: bober_simple_competition/templates/bober_simple_competition/competition_list.html:14
 msgid "codes"
 msgstr ""
 
-#: bober_simple_competition/templates/bober_simple_competition/competition_list.html:12
+#: bober_simple_competition/templates/bober_simple_competition/competition_list.html:15
 msgid "attempts"
 msgstr ""
 
