@@ -164,7 +164,7 @@ def competition_registration(request, competition_questionset_id, access_code=No
         "bober_simple_competition/competition_registration.html", locals())        
 
 #     2.2.1 get question page
-@login_required
+# @login_required
 def competition_index(request, competition_questionset_id):
     return render_to_response("bober_simple_competition/competition_index.html", locals())
 
