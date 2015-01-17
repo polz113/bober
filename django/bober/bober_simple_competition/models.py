@@ -243,7 +243,11 @@ class Question(models.Model):
                 self.accepted_answers.split(',')]
         return manifest
     @classmethod
-    def from_zip(cls, f):
+    def from_zip(cls, f, identifier = '-1',
+        language = None,
+        regenerate_modules = True, 
+        regenerate_manifest = True,
+        remove_correct_answer_class = True):
         z = zipfile.ZipFile(f)
     @classmethod
     def from_dir(cls, dirname, identifier = '-1',
@@ -320,7 +324,7 @@ class Question(models.Model):
         if len(accepted_answers) > 0:
             index_dict['acceptedAnswers'] = accepted_answers
         # find all bitmaps and .svgs
-        resource_list = []
+        resource_set = set()
         imgs = index_soup.find_all('img')
         objs = index_soup.find_all('object')
         scripts = index_soup.find_all('script')
@@ -331,8 +335,10 @@ class Question(models.Model):
             for i in items:
                 url = i.get(url_property, None)
                 if url is not None:
-                    resource_list.append({'type': item_type, 'url': url})
-        index_dict['task'] = [{'type': "html", "url": "index.html"}] + resource_list
+                    resource_set.add({'type': item_type, 'url': url})
+        resource_list = list(resource_set)
+        index_dict['task'] = [
+            {'type': "html", "url": "index.html"}] + resource_list
         if regenerate_manifest:
             manifest.update(index_dict)
         if regenerate_modules:
