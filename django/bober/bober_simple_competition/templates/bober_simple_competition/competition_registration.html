@@ -7,7 +7,7 @@
 
 {% block content %}
 <br>
-<form action="" method="post" class="form_compete_table">
+<form action="" method="post" id="competition_registration" class="form_compete_table">
 {% csrf_token %}
 {% for i in form %}
 	<div class="form_compete_row">
@@ -26,4 +26,7 @@
 	</div>
 {% endfor %}
 </form>
+{% load staticfiles %}
+<script src='{% static "js/autoSubmit.js" %}'></script>
+
 {% endblock %}

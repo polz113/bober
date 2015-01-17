@@ -17,6 +17,8 @@
 			  <div class="competition_questionset">
 				  {% for j in i.competitionquestionset_set.all %}
 					<a href="{% url 'competition_registration' competition_questionset_id=j.id %}">{{j.questionset.name}}</a>
+					&nbsp;&nbsp;					
+					<a href="{% url 'competition_guest' competition_questionset_id=j.id %}">{% trans "Try it!" %}</a>
 				  {% endfor %}
 			  </div>
 		</div>

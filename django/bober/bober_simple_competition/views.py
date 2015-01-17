@@ -14,6 +14,7 @@ import code_based_auth.models
 from django.core.urlresolvers import reverse
 import datetime
 import json
+from random import randint
 import random
 import string
 
@@ -157,15 +158,40 @@ def competition_registration(request, competition_questionset_id):
             return redirect('competition_index', 
                 competition_questionset_id = competition_questionset_id)
         except:
-            form = MinimalCompetitionRegistrationForm()
+            form = MinimalCompetitionRegistrationForm()         
     return render(request,
         "bober_simple_competition/competition_registration.html", locals())
+        
+@login_required
+def competition_registration_guest(request, competition_questionset_id, accesscode=None):
+    if request.method == 'POST':
+        form = MinimalCompetitionRegistrationForm(request.POST)
+        if form.is_valid():
+            request.session['access_code'] = form.cleaned_data['access_code']
+            return redirect('competition_index', 
+                competition_questionset_id = competition_questionset_id)
+    else:
+        try:
+            form = MinimalCompetitionRegistrationForm(request.GET)
+            request.session['access_code'] = form.cleaned_data['access_code']
+            return redirect('competition_index', 
+                competition_questionset_id = competition_questionset_id)
+        except:
+            form = MinimalCompetitionRegistrationForm()
+            form.fields['access_code'].initial = accesscode            
+    return render(request,
+        "bober_simple_competition/competition_registration.html", locals())        
 
 #     2.2.1 get question page
 @login_required
 def competition_index(request, competition_questionset_id):
     return render_to_response("bober_simple_competition/competition_index.html", locals())
 
+#	2.2.1.1 get question page as guest
+def competition_guest(request, competition_questionset_id):
+	code = randint(123456789,987654321)
+	return render_to_response("bober_simple_competition/competition_guest.html", locals())
+	
 def safe_media_redirect(resource_path):
     response = HttpResponse()
     response['Content-Type'] = ''
