@@ -142,7 +142,7 @@ def disqualify_attempt(request, competition_slug, attempt_id):
 
 # 2.2 competitor
 #     2.2.1 get question page
-@login_required
+# @login_required
 def competition_registration(request, competition_questionset_id, access_code=None):
     if request.method == 'POST':
         form = MinimalCompetitionRegistrationForm(request.POST)
@@ -191,15 +191,18 @@ def competition_resources(request, competition_questionset_id, resource_path):
     return safe_media_redirect(os.path.join(cache_dir, resource_path)) 
 
 # 2.2.3 get question data (existing answers, attempt_id, randomised_question map)
-@login_required
+# @login_required
 @ensure_csrf_cookie
 def competition_data(request, competition_questionset_id):
-    user = request.user
+    try:
+        user_profile = request.user.profile
+    except:
+        user_profile = None
     access_code = request.session['access_code']
     competition_questionset = CompetitionQuestionSet.objects.get(
         id=competition_questionset_id)
     try:
-        attempt = Attempt.objects.filter(user=user.profile,
+        attempt = Attempt.objects.filter(user=user_profile,
             access_code=access_code,
             competitionquestionset_id = competition_questionset_id)[0]
         answers = []
@@ -211,7 +214,7 @@ def competition_data(request, competition_questionset_id):
     except Exception, e:
         finish = timezone.now() + datetime.timedelta(
             seconds = competition_questionset.competition.duration)
-        attempt = Attempt(user=user.profile,
+        attempt = Attempt(user=user_profile,
             competitionquestionset_id = competition_questionset_id,
             access_code=access_code,
             finish = finish,
@@ -232,7 +235,7 @@ def competition_data(request, competition_questionset_id):
     return HttpResponse(json.dumps(data), content_type="application/json")
 
 # 2.2.4 get remaining time
-@login_required
+# @login_required
 def time_remaining(request, competition_questionset_id, attempt_id):
     attempt = Attempt.objects.get(id=attempt_id)
     now = timezone.now()
@@ -285,7 +288,7 @@ def finish_competition(request, competition_questionset_id, attempt_id):
     return HttpResponse(json.dumps(data), content_type="application/json")
 
 # 2.2.7 view results
-@login_required
+# @login_required
 def attempt_results(request, competition_questionset_id, attempt_id):
     attempt = Attempt.objects.get(id=attempt_id)
     object_list = attempt.latest_answers()

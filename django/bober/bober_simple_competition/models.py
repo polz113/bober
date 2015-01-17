@@ -70,6 +70,7 @@ class Competition(models.Model):
     competitor_code_generator = ForeignKey(CodeGenerator, related_name='competitor_code_competition_set')
     questionsets = ManyToManyField('QuestionSet', through='CompetitionQuestionSet')
     start = DateTimeField()
+    guest_admin_code = ForeignKey(Code, null=True)
     # duration in seconds
     duration = IntegerField(default=60*60) # 60s * 60 = 1h.
     end = DateTimeField()
@@ -405,7 +406,7 @@ class Attempt(models.Model):
             self.start, self.finish)
     access_code = CodeField()
     competitionquestionset = ForeignKey('CompetitionQuestionSet')
-    user = ForeignKey('Profile')
+    user = ForeignKey('Profile', null=True, blank=True)
     invalidated_by = ForeignKey('Profile', null=True, blank=True, related_name='invalidated_set')
     random_seed = IntegerField()
     start = DateTimeField(auto_now_add = True)
