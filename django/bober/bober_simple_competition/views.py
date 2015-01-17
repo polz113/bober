@@ -159,7 +159,6 @@ def competition_registration(request, competition_questionset_id, access_code=No
             return redirect('competition_index', 
                 competition_questionset_id = competition_questionset_id)
         except Exception, e:
-            print e
             form = MinimalCompetitionRegistrationForm()
     return render(request,
         "bober_simple_competition/competition_registration.html", locals())        
