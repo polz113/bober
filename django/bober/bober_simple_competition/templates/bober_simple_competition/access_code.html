@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Enter access code" %}{% endblock %}
+
+{% block headline %}{% trans "Enter access code" %}{% endblock %}
+
+{% block content %}
+<br>
+<form action="" method="post" id="accesss_code" class="form_compete_table">
+{% csrf_token %}
+{% for i in form %}
+	<div class="form_compete_row">
+		<div class="form_compete_column bold_text">
+			{{i.label}}:
+		</div>
+		<div class="form_compete_column">
+			{{i}}
+		</div>
+		<div class="form_compete_column">
+			&nbsp;
+		</div>
+		<div class="form_compete_column">
+			<input type="submit" value='{% trans "Submit" %}' class="button"/>
+		</div>			
+	</div>
+{% endfor %}
+</form>
+{% load staticfiles %}
+<script src='{% static "js/autoSubmit.js" %}'></script>
+
+{% endblock %}

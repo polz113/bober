@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Edit user" %}{% endblock %}
+
+{% block headline %}{% trans "Edit user" %}{% endblock %}
+
+{% block content %}
+<form action="" method="post" id="profile_form" class="form_compete_table">
+{% csrf_token %}
+<table>
+{{form}}
+</table>
+<input type="submit" value='{% trans "Submit" %}' class="button"/>
+</form>
+{% endblock %}

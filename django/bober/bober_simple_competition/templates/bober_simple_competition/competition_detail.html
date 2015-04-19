@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Competition" %}{% endblock %}
+
+{% block headline %}{{object.slug}}{% endblock %}
+
+{% block content %}
+<a href="{% url "competition_code_list" competition_slug=object.slug %}">{% trans "codes" %}</a>
+<a href="{% url "competition_attempt_list" competition_slug=object.slug %}">{% trans "attempts" %}</a>
+
+<div class="competition_questionset">
+{% for j in object.competitionquestionset_set.all %}
+    <a href="{% url 'competition_registration' competition_questionset_id=j.id %}">{{j.questionset.name}}</a>
+					&nbsp;&nbsp;					
+    <a href="{% url 'competition_guest' competition_questionset_id=j.id %}">{% trans "Compete as guest" %}</a>
+{% endfor %}
+</div>
+{% endblock %}
+

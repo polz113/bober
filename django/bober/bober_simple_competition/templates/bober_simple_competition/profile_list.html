@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Users" %}{% endblock %}
+
+{% block headline %}{% trans "Users" %}{% endblock %}
+
+{% block content %}
+<ul>
+{% for i in object_list %}
+<li><a href={% url "profile_update" pk=i.pk %} >{{i}}</a></li>
+{% endfor %}
+</ul>
+{% endblock %}
