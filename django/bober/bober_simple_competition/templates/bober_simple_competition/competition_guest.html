@@ -6,8 +6,12 @@
 {% block headline %}{% trans "Compete as a guest" %}{% endblock %}
 
 {% block content %}
+{% if code == None %}
+{% trans "Guest access not allowed." %}
+<a href="{% url "competition_registration" competition_questionset_id=competition_questionset_id %}">{% trans "Compete using a code" %}</a>
+{% else %}
 {% trans "If you are not redirected automatically, click on the link below." %}
-<a href="{% url "competition_registration" competition_questionset_id=competition_questionset_id %}?access_code={{code}}">Compete</a>
+<a href="{% url "competition_registration" competition_questionset_id=competition_questionset_id %}?access_code={{code}}">{% trans "Compete" %}</a>
 <meta http-equiv="REFRESH" content="0;url={% url "competition_registration" competition_questionset_id=competition_questionset_id %}?access_code={{code}}">
-
+{% endif %}
 {% endblock %}

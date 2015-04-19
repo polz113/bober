@@ -6,18 +6,25 @@
 {% block headline %}{% trans "Codes" %}{% endblock %}
 
 {% block content %}
+<a href={% url "competition_detail" slug=competition_slug %}>{% trans "Back to competition" %}</a>
+<h1>{% trans "Current code"%}</h1>
+{{access_code}}
 <h1>{% trans "Admin codes" %}</h1>
+{% if can_create_administrator_codes %}
 <a href="{% url "competition_code_create" competition_slug=competition_slug user_type='admin' %}">{% trans "Generate code" %}</a>
+{% endif %}
 <ul>
-{% for i in competition.administrator_code_generator.codes.all %}
-<li>{{i}}</li>
+{% for i in admin_codes %}
+<li><a href={% url "access_code" next=request.get_full_path %}?access_code={{i|urlencode}}>{{i}}</a><ul>{% for k in i.user_set.all %}<li>{{k}}</li>{% endfor %}</ul></li>
 {% endfor %}
 </ul>
 <h1>{% trans "Competitor codes" %}</h1>
+{% if can_create_competitor_codes %}
 <a href="{% url "competition_code_create" competition_slug=competition_slug user_type='competitor' %}">{% trans "Generate code" %}</a>
+{% endif %}
 <ul>
-{% for i in competition.competitor_code_generator.codes.all %}
-<li>{{i}}</li>
+{% for i in competitor_codes %}
+<li><a href={% url "access_code" next=request.get_full_path %}?access_code={{i|urlencode}}>{{i}}</a></li>
 {% endfor %}
 </ul>
 {% endblock %}

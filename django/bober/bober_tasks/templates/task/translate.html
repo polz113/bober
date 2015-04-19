@@ -1,4 +1,5 @@
 {% extends "main.html" %}
+{% load staticfiles %}
 {% block pageTitle %}Prevajanje - New task{% endblock pageTitle %}
 {% block content %}
     <style type="text/css" media="screen">
@@ -7,17 +8,11 @@
             margin-left: 10px;
         }
     </style>
-
-
     <style type="text/css" media="screen">
         .content_category {
             margin-right: 1px;
         }
     </style>
-
-
-
-
 
     <div class="row-fluid">
     <div class="span6 disabled">
@@ -239,8 +234,8 @@
         <legend>Language</legend>
         <select class="answerLanguage span10" name="language" {% if language_disabled %}disabled{% endif %}>
             {% for lang in all_languages %}
-                <option value="{{ lang.value_short }}"
-                        {% if lang.value_short  == task_translation.language_locale %}selected{% endif %}>{{ lang.value }}</option>
+                <option value="{{ lang.0 }}"
+                        {% if lang.0  == task_translation.language_locale %}selected{% endif %}>{{ lang.1 }}</option>
             {% endfor %}
         </select>
     </fieldset>
@@ -461,9 +456,9 @@
     <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
 
 
-    <script type="text/javascript" src="/resources/js/tinymce/tinymce.min.js"></script>
-    <script type="text/javascript" src="/resources/js/ajaxupload.js" charset="utf-8"></script>
-    <script type="text/javascript" src="/resources/js/editor.js"></script>
+    <script type="text/javascript" src="{% static "js/tinymce/tinymce.min.js" %}" ></script>
+    <script type="text/javascript" src="{% static "js/ajaxupload.js" %}" charset="utf-8"></script>
+    <script type="text/javascript" src="{% static "js/editor.js" %}"></script>
 
 
 

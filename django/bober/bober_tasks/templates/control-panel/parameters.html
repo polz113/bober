@@ -102,37 +102,6 @@
                     {% endfor %}
                 </table>
             </form>
-
-            <!-- Languages -->
-            <form id="languages" action="" method="post">
-                <legend>
-                    {% trans "Languages" %}
-                    <a class="btn btn-primary btn-mini control-panel-label" href="{% url "control_panel.new_language" %} ">
-                        <i class="icon icon-plus icon-white"></i> {% trans "New" %}
-                    </a>
-                </legend>
-
-                <table class="table table-condensed table-striped">
-                    <tr>
-                        <th>{% trans "Language" %}</th>
-                        <th>{% trans "Acronym" %}</th>
-                        <th>{% trans "Actions" %}</th>
-                    </tr>
-                    {% for language in languages %}
-                        <tr>
-                            <td>{{language.value}}</td>
-                            <td>{{language.value_short}}</td>
-                            <td>
-                                <a class="btn btn-mini" href="{% url "control_panel.edit_language" language.id %} ">
-                                    <i class="icon icon-edit"></i> {% trans "Edit" %}
-                                </a>
-                                <a class="btn btn-mini" href="{% url "control_panel.delete_language" language.id %} ">
-                                    <i class="icon icon-trash "></i> {% trans "Delete" %}</a>
-                            </td>
-                        </tr>
-                    {% endfor %}
-                </table>
-            </form>
         </div>
     </div>
 {% endblock control-panel-content %}

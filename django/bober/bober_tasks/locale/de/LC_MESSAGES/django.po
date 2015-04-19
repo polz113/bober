@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-01-16 21:02+0000\n"
+"POT-Creation-Date: 2013-08-07 18:15+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,343 +18,318 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: bober_tasks/forms.py:16
+#: forms.py:16
 msgid "First name"
 msgstr ""
 
-#: bober_tasks/forms.py:17
+#: forms.py:17
 msgid "Last name"
 msgstr ""
 
-#: bober_tasks/forms.py:18 bober_tasks/templates/control-panel/users.html:32
+#: forms.py:18 templates/control-panel/users.html:32
 msgid "Email"
 msgstr ""
 
-#: bober_tasks/forms.py:19
+#: forms.py:19
 msgid "Password"
 msgstr ""
 
-#: bober_tasks/forms.py:20
+#: forms.py:20
 msgid "Confirm password"
 msgstr ""
 
-#: bober_tasks/templates/control-panel/control-panel.html:7
-#: bober_tasks/templates/control-panel/control-panel.html:36
-#: bober_tasks/templates/main.html:32
-msgid "Control Panel"
-msgstr ""
-
-#: bober_tasks/templates/control-panel/control-panel.html:17
-msgid "Parameters settings"
-msgstr ""
-
-#: bober_tasks/templates/control-panel/control-panel.html:18
-#: bober_tasks/templates/control-panel/parameters.html:15
-msgid "Age Groups"
-msgstr ""
-
-#: bober_tasks/templates/control-panel/control-panel.html:19
-#: bober_tasks/templates/control-panel/parameters.html:47
-msgid "Categories"
-msgstr ""
-
-#: bober_tasks/templates/control-panel/control-panel.html:20
-#: bober_tasks/templates/control-panel/edit-difficultys.html:5
-#: bober_tasks/templates/control-panel/parameters.html:80
-msgid "Difficulty Levels"
-msgstr ""
-
-#: bober_tasks/templates/control-panel/control-panel.html:21
-#: bober_tasks/templates/control-panel/edit-language.html:5
-#: bober_tasks/templates/control-panel/parameters.html:109
-msgid "Languages"
-msgstr ""
-
-#: bober_tasks/templates/control-panel/control-panel.html:25
-msgid "Users settings"
-msgstr ""
-
-#: bober_tasks/templates/control-panel/control-panel.html:26
-#: bober_tasks/templates/control-panel/users.html:5
-msgid "User Management"
-msgstr ""
-
-#: bober_tasks/templates/control-panel/edit-age-group.html:5
-msgid "Edit Age Group"
-msgstr ""
-
-#: bober_tasks/templates/control-panel/edit-age-group.html:9
-#: bober_tasks/templates/control-panel/edit-category.html:9
-#: bober_tasks/templates/control-panel/edit-difficultys.html:9
-#: bober_tasks/templates/control-panel/edit-language.html:9
-#: bober_tasks/templates/control-panel/edit-user.html:9
-msgid "Back"
-msgstr ""
-
-#: bober_tasks/templates/control-panel/edit-category.html:5
-msgid "Edit Category"
-msgstr ""
-
-#: bober_tasks/templates/control-panel/edit-user.html:5
-#: bober_tasks/templates/control-panel/edit-user.html:15
-msgid "User"
-msgstr ""
-
-#: bober_tasks/templates/control-panel/edit-user.html:18
-#: bober_tasks/templates/control-panel/edit-user.html:28
-#: bober_tasks/templates/user/profile.html:39
-#: bober_tasks/templates/user/profile.html:63
-msgid "Save"
-msgstr ""
-
-#: bober_tasks/templates/control-panel/edit-user.html:23
-msgid "User Profile Settings"
-msgstr ""
-
-#: bober_tasks/templates/control-panel/edit-user.html:31
-msgid "You can choose among next languages:"
-msgstr ""
-
-#: bober_tasks/templates/control-panel/edit-user.html:43
-msgid "User Permissions"
-msgstr ""
-
-#: bober_tasks/templates/control-panel/parameters.html:5
-msgid "Parameters Settings"
-msgstr ""
-
-#: bober_tasks/templates/control-panel/parameters.html:17
-#: bober_tasks/templates/control-panel/parameters.html:49
-#: bober_tasks/templates/control-panel/parameters.html:82
-#: bober_tasks/templates/control-panel/parameters.html:111
-msgid "New"
-msgstr ""
-
-#: bober_tasks/templates/control-panel/parameters.html:24
-#: bober_tasks/templates/index.html:29
-msgid "Age Group"
-msgstr ""
-
-#: bober_tasks/templates/control-panel/parameters.html:25
-#: bober_tasks/templates/control-panel/parameters.html:58
-#: bober_tasks/templates/control-panel/parameters.html:89
-#: bober_tasks/templates/control-panel/parameters.html:119
-#: bober_tasks/templates/control-panel/users.html:35
-msgid "Actions"
-msgstr ""
-
-#: bober_tasks/templates/control-panel/parameters.html:33
-#: bober_tasks/templates/control-panel/parameters.html:67
-#: bober_tasks/templates/control-panel/parameters.html:96
-#: bober_tasks/templates/control-panel/parameters.html:127
-#: bober_tasks/templates/control-panel/users.html:52
-msgid "Edit"
-msgstr ""
-
-#: bober_tasks/templates/control-panel/parameters.html:36
-#: bober_tasks/templates/control-panel/parameters.html:69
-#: bober_tasks/templates/control-panel/parameters.html:99
-#: bober_tasks/templates/control-panel/parameters.html:130
-#: bober_tasks/templates/control-panel/users.html:53
-msgid "Delete"
-msgstr ""
-
-#: bober_tasks/templates/control-panel/parameters.html:55
-#: bober_tasks/templates/control-panel/parameters.html:118
-msgid "Acronym"
-msgstr ""
-
-#: bober_tasks/templates/control-panel/parameters.html:56
-#: bober_tasks/templates/index.html:26 bober_tasks/templates/index.html:57
-msgid "Category"
-msgstr ""
-
-#: bober_tasks/templates/control-panel/parameters.html:57
-#: bober_tasks/templates/index.html:32 bober_tasks/templates/index.html:59
-#: bober_tasks/templates/task/list.html:37
-msgid "Description"
-msgstr ""
-
-#: bober_tasks/templates/control-panel/parameters.html:88
-msgid "Difficulty level"
-msgstr ""
-
-#: bober_tasks/templates/control-panel/parameters.html:117
-#: bober_tasks/templates/index.html:35 bober_tasks/templates/index.html:60
-msgid "Language"
-msgstr ""
-
-#: bober_tasks/templates/control-panel/users.html:11
-msgid "Display:"
-msgstr ""
-
-#: bober_tasks/templates/control-panel/users.html:31
-msgid "Username"
-msgstr ""
-
-#: bober_tasks/templates/control-panel/users.html:33
-msgid "Interface"
-msgstr ""
-
-#: bober_tasks/templates/control-panel/users.html:34
-msgid "Group"
-msgstr ""
-
-#: bober_tasks/templates/index.html:13 bober_tasks/templates/task/list.html:14
-msgid "New task"
-msgstr ""
-
-#: bober_tasks/templates/index.html:20
-msgid "Display"
-msgstr ""
-
-#: bober_tasks/templates/index.html:23
-msgid "Interaction Type"
-msgstr ""
-
-#: bober_tasks/templates/index.html:42 bober_tasks/templates/index.html:70
-#: bober_tasks/templates/index.html:79 bober_tasks/templates/index.html:87
-#: bober_tasks/templates/index.html:100 bober_tasks/templates/index.html:113
-#: bober_tasks/templates/index.html:121
-#: bober_tasks/templates/task/list.html:24
-msgid "Search"
-msgstr ""
-
-#: bober_tasks/templates/index.html:48
-msgid "Advanced"
-msgstr ""
-
-#: bober_tasks/templates/index.html:55 bober_tasks/templates/task/list.html:35
-msgid "Title"
-msgstr ""
-
-#: bober_tasks/templates/index.html:56
-msgid "Type"
-msgstr ""
-
-#: bober_tasks/templates/index.html:58
-msgid "Age"
-msgstr ""
-
-#: bober_tasks/templates/index.html:149
-msgid "Select"
-msgstr ""
-
-#: bober_tasks/templates/index.html:208
-#: bober_tasks/templates/task/list.html:99
-msgid "Field cannot be empty"
-msgstr ""
-
-#: bober_tasks/templates/main.html:29
-#: bober_tasks/templates/user/profile.html:9
-msgid "Home"
-msgstr ""
-
-#: bober_tasks/templates/main.html:45
-msgid "Logout"
-msgstr ""
-
-#: bober_tasks/templates/task/details.html:5
-#: bober_tasks/templates/task/display.html:5
+#: templates/display-task.html:5 templates/display.html:5
 msgid "Displaying task"
 msgstr ""
 
-#: bober_tasks/templates/task/history.html:36
-msgid "Author does not exist"
+#: templates/index.html:13
+msgid "New Question"
 msgstr ""
 
-#: bober_tasks/templates/task/history.html:72
-msgid "Are you sure you want to delete this task?"
+#: templates/index.html:20
+msgid "Display"
 msgstr ""
 
-#: bober_tasks/templates/task/list.html:8
-msgid "List of tasks in language "
+#: templates/index.html:23
+msgid "Interaction Type"
 msgstr ""
 
-#: bober_tasks/templates/task/list.html:10
-msgid "Change language"
+#: templates/index.html:26 templates/index.html.py:57
+#: templates/control-panel/parameters.html:56
+msgid "Category"
 msgstr ""
 
-#: bober_tasks/templates/task/list.html:40
-msgid "Last edit"
+#: templates/index.html:29 templates/control-panel/parameters.html:24
+msgid "Age Group"
 msgstr ""
 
-#: bober_tasks/templates/user/profile.html:5
+#: templates/index.html:32 templates/index.html.py:59
+#: templates/control-panel/parameters.html:57
+msgid "Description"
+msgstr ""
+
+#: templates/index.html:35 templates/index.html.py:60
+#: templates/control-panel/parameters.html:117
+msgid "Language"
+msgstr ""
+
+#: templates/index.html:42 templates/index.html.py:70 templates/index.html:79
+#: templates/index.html.py:87 templates/index.html:100
+#: templates/index.html.py:113 templates/index.html:121
+msgid "Search"
+msgstr ""
+
+#: templates/index.html:48
+msgid "Advanced"
+msgstr ""
+
+#: templates/index.html:55
+msgid "Title"
+msgstr ""
+
+#: templates/index.html:56
+msgid "Type"
+msgstr ""
+
+#: templates/index.html:58
+msgid "Age"
+msgstr ""
+
+#: templates/index.html:148
+msgid "Select"
+msgstr ""
+
+#: templates/index.html:214
+msgid "Field cannot be empty"
+msgstr ""
+
+#: templates/main.html:29 templates/profile.html:9
+msgid "Home"
+msgstr ""
+
+#: templates/main.html:32 templates/control-panel/control-panel.html:7
+#: templates/control-panel/control-panel.html:36
+msgid "Control Panel"
+msgstr ""
+
+#: templates/main.html:45
+msgid "Logout"
+msgstr ""
+
+#: templates/profile.html:5
 msgid "My Profile"
 msgstr ""
 
-#: bober_tasks/templates/user/profile.html:16
+#: templates/profile.html:16
 msgid "My Profile Settings   "
 msgstr ""
 
-#: bober_tasks/templates/user/profile.html:46
+#: templates/profile.html:39 templates/profile.html.py:63
+#: templates/control-panel/edit-user.html:18
+#: templates/control-panel/edit-user.html:28
+msgid "Save"
+msgstr ""
+
+#: templates/profile.html:46
 msgid "Language settings"
 msgstr ""
 
-#: bober_tasks/templates/user/profile.html:51
+#: templates/profile.html:51
 msgid "Interface language"
 msgstr ""
 
-#: bober_tasks/templates/user/show.html:5
+#: templates/task-list.html:36
+msgid "Author does not exist"
+msgstr ""
+
+#: templates/task-list.html:72
+msgid "Are you sure you want to delete this task?"
+msgstr ""
+
+#: templates/show-user.html:5
 msgid "Displaying user"
 msgstr ""
 
-#: bober_tasks/views/index.py:157
-msgid "No search field filled."
+#: templates/control-panel/control-panel.html:17
+msgid "Parameters settings"
 msgstr ""
 
-#: bober_tasks/views/users.py:16
+#: templates/control-panel/control-panel.html:18
+#: templates/control-panel/parameters.html:15
+msgid "Age Groups"
+msgstr ""
+
+#: templates/control-panel/control-panel.html:19
+#: templates/control-panel/parameters.html:47
+msgid "Categories"
+msgstr ""
+
+#: templates/control-panel/control-panel.html:20
+#: templates/control-panel/edit-difficultys.html:5
+#: templates/control-panel/parameters.html:80
+msgid "Difficulty Levels"
+msgstr ""
+
+#: templates/control-panel/control-panel.html:21
+#: templates/control-panel/edit-language.html:5
+#: templates/control-panel/parameters.html:109
+msgid "Languages"
+msgstr ""
+
+#: templates/control-panel/control-panel.html:25
+msgid "Users settings"
+msgstr ""
+
+#: templates/control-panel/control-panel.html:26
+#: templates/control-panel/users.html:5
+msgid "User Management"
+msgstr ""
+
+#: templates/control-panel/edit-age-group.html:5
+msgid "Edit Age Group"
+msgstr ""
+
+#: templates/control-panel/edit-age-group.html:9
+#: templates/control-panel/edit-category.html:9
+#: templates/control-panel/edit-difficultys.html:9
+#: templates/control-panel/edit-language.html:9
+#: templates/control-panel/edit-user.html:9
+msgid "Back"
+msgstr ""
+
+#: templates/control-panel/edit-category.html:5
+msgid "Edit Category"
+msgstr ""
+
+#: templates/control-panel/edit-user.html:5
+#: templates/control-panel/edit-user.html:15
+msgid "User"
+msgstr ""
+
+#: templates/control-panel/edit-user.html:23
+msgid "User Profile Settings"
+msgstr ""
+
+#: templates/control-panel/edit-user.html:31
+msgid "You can choose among next languages:"
+msgstr ""
+
+#: templates/control-panel/edit-user.html:43
+msgid "User Permissions"
+msgstr ""
+
+#: templates/control-panel/parameters.html:5
+msgid "Parameters Settings"
+msgstr ""
+
+#: templates/control-panel/parameters.html:17
+#: templates/control-panel/parameters.html:49
+#: templates/control-panel/parameters.html:82
+#: templates/control-panel/parameters.html:111
+msgid "New"
+msgstr ""
+
+#: templates/control-panel/parameters.html:25
+#: templates/control-panel/parameters.html:58
+#: templates/control-panel/parameters.html:89
+#: templates/control-panel/parameters.html:119
+#: templates/control-panel/users.html:35
+msgid "Actions"
+msgstr ""
+
+#: templates/control-panel/parameters.html:33
+#: templates/control-panel/parameters.html:67
+#: templates/control-panel/parameters.html:96
+#: templates/control-panel/parameters.html:127
+#: templates/control-panel/users.html:52
+msgid "Edit"
+msgstr ""
+
+#: templates/control-panel/parameters.html:36
+#: templates/control-panel/parameters.html:69
+#: templates/control-panel/parameters.html:99
+#: templates/control-panel/parameters.html:130
+#: templates/control-panel/users.html:53
+msgid "Delete"
+msgstr ""
+
+#: templates/control-panel/parameters.html:55
+#: templates/control-panel/parameters.html:118
+msgid "Acronym"
+msgstr ""
+
+#: templates/control-panel/parameters.html:88
+msgid "Difficulty level"
+msgstr ""
+
+#: templates/control-panel/users.html:11
+msgid "Display:"
+msgstr ""
+
+#: templates/control-panel/users.html:31
+msgid "Username"
+msgstr ""
+
+#: templates/control-panel/users.html:33
+msgid "Interface"
+msgstr ""
+
+#: templates/control-panel/users.html:34
+msgid "Group"
+msgstr ""
+
+#: views/users.py:16
 msgid "You have been logged out."
 msgstr ""
 
-#: bober_tasks/views/users.py:24
+#: views/users.py:24
 msgid "You are already logged in."
 msgstr ""
 
-#: bober_tasks/views/users.py:47
+#: views/users.py:47
 msgid "You have been successfully logged in!"
 msgstr ""
 
-#: bober_tasks/views/users.py:53
+#: views/users.py:53
 msgid "The username or password are incorrect."
 msgstr ""
 
-#: bober_tasks/views/users.py:55
+#: views/users.py:55
 msgid "Please fill the form below."
 msgstr ""
 
-#: bober_tasks/views/users.py:108
+#: views/users.py:106
 msgid "You have been successfully registered."
 msgstr ""
 
-#: bober_tasks/views/users.py:129
+#: views/users.py:127
 msgid "Passwords have to be the same!"
 msgstr ""
 
-#: bober_tasks/views/users.py:138
+#: views/users.py:136
 msgid "Your profile has been updated!"
 msgstr ""
 
-#: bober_tasks/views/users.py:142
+#: views/users.py:140
 msgid "Form is not valid!"
 msgstr ""
 
-#: bober_tasks/views/users.py:158
+#: views/users.py:156
 msgid "Your interface language has been changed."
 msgstr ""
 
-#: bober_tasks/views/users.py:179
+#: views/users.py:177
 msgid "User settings are updated."
 msgstr ""
 
-#: bober_tasks/views/users.py:186
+#: views/users.py:184
 msgid "User profile is updated."
 msgstr ""
 
-#: bober_tasks/views/users.py:196
+#: views/users.py:194
 msgid "User is deleted!"
 msgstr ""
 
-#: bober_tasks/views/users.py:198
+#: views/users.py:196
 msgid "User cannot be deleted! User is still active."
 msgstr ""

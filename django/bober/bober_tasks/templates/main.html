@@ -1,5 +1,5 @@
 {% load i18n %}
-
+{% load staticfiles %}
 {% load active_tag %}
 
 <!DOCTYPE html>
@@ -28,7 +28,6 @@
                     <li class="{% add_active request "index" %}">
                         <a href="{% url "index" %} ">{% trans "Home" %}</a>
                     </li>
-                    <li class="{% add_active request "control_panel.users" %}{% add_active request "control_panel.parameters" %}">
                         <a href="{% url "control_panel.parameters" %} ">{% trans "Control Panel" %}</a>
                     </li>
                 </ul>
@@ -36,18 +35,16 @@
 
             {% if user.is_authenticated %}
                 <div class="pull-right btn-group no-print">
-                    <a class="btn" href="{% url "users.profile" %} ">
                         <i class="icon icon-user"></i>
                         {{ request.user }}
-                    </a>
-                    <a class="btn" href="{% url "users.logout" %} ">
+                    <a class="btn" href="{% url "django.contrib.auth.views.logout" %} ">
                         <i class="icon icon-off"></i>
                         {% trans "Logout" %}
                     </a>
                 </div>
             {% else %}
                 <div class="pull-right btn-group no-print">
-                    <a class="btn" href="{% url "users.login" %} ">
+                    <a class="btn" href="{% url "django.contrib.auth.views.login" %} ">
                         <i class="icon icon-off"></i>
                         Login
                     </a>

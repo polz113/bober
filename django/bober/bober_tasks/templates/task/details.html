@@ -1,6 +1,6 @@
 {% extends "main.html" %}
 {% load to_char %}
-
+{% load staticfiles %}
 {% load i18n %}
 {% block pageTitle %}{% trans "Displaying task" %}{% endblock pageTitle %}
 {% block content %}
@@ -171,5 +171,5 @@
 {% endblock content %}
 {% block script %}
 
-    <script type="text/javascript" src="/resources/js/task_form.js"></script>
+    <script type="text/javascript" src="{% static "js/task_form.js" %}"></script>
 {% endblock script %}

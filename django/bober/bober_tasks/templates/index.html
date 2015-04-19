@@ -119,7 +119,7 @@
                         <div class="input-append">
                             <select id="langsearch" name="l" class="span1 send selectpicker" multiple title='{% trans "Search" %}...' data-selected-text-format="count">
                                 {% for l in all_languages %}
-                                    <option>{{ l.value_short }}</option>
+                                    <option>{{ l.0 }}</option>
                                 {% endfor %}
                             </select>
                         <select name="lc" class="span1 selectpicker">

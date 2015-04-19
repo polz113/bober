@@ -1,4 +1,5 @@
 {% extends "main.html" %}
+{% load staticfiles %}
 {% block pageTitle %}Prevajanje - New task{% endblock pageTitle %}
 {% block content %}
 <script type="text/javascript" charset="utf-8">
@@ -34,7 +35,8 @@
     <span class="grey">{{ task_translation.language_locale.value }}</span>
 </h1>
     <div class="row-fluid">
-    <form action="/translation/save" method="POST">
+    <form action="{% url "tasks.translation_save" %}" method="POST">
+    {% csrf_token %}
     <div class="span12 well metadata">
         <div class="row-fluid">
         <div class="span12">
@@ -151,10 +153,10 @@
 
 
     <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
-    <script type="text/javascript" src="/resources/js/tinymce/tinymce.min.js"></script>
-    <script type="text/javascript" src="/resources/js/ajaxupload.js" charset="utf-8"></script>
-    <script type="text/javascript" src="/resources/js/editor.js"></script>
-    <!-- script type="text/javascript" src="/resources/js/validate.js"></script-->
+    <script type="text/javascript" src="{% static "js/tinymce/tinymce.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "js/ajaxupload.js" %}" charset="utf-8"></script>
+    <script type="text/javascript" src="{% static "js/editor.js" %}"></script>
+    <!-- script type="text/javascript" src="{% static "js/validate.js"></script-->
 
 
 {% endblock content %}

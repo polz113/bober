@@ -6,6 +6,7 @@
 {% block headline %}{% trans "Create code format" %}{% endblock %}
 
 {% block content %}
+{% if created %}{% trans "Code format successfully created!" %}{% endif %}
 <form action="" method="post">{% csrf_token %}
 <table>
 {{form}}

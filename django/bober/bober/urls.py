@@ -6,6 +6,8 @@ from django.contrib import admin
 import bober_paper_submissions.urls
 import bober_simple_competition
 import bober_simple_competition.urls
+import bober_tasks
+import bober_tasks.urls
 from django.views.generic import RedirectView
 
 admin.autodiscover()
@@ -21,9 +23,10 @@ urlpatterns = patterns('',
     # url(r'^blog/', include('blog.urls')),
     url(r'^$', RedirectView.as_view(url='simple/')),
     url(r'^admin/', include(admin.site.urls)),
+    url('', include('django.contrib.auth.urls')),
     url(r'^school_mentor/', include(bober_paper_submissions.urls)),
     url(r'^simple/', include(bober_simple_competition.urls)),
-    url(r'^accounts/login/$', 'django.contrib.auth.views.login'),
+    url(r'^tasks/', include(bober_tasks.urls)),
     url(r'^jsi18n/(?P<packages>\S+?)/$', 'django.views.i18n.javascript_catalog', 
         kwargs = {'domain': 'django'}),
     # url(r'^jsi18n/$', 'django.views.i18n.javascript_catalog', js_info_dict),

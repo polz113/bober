@@ -119,31 +119,34 @@ class CodeFormat(models.Model):
         hash_params = dict()
         challenge = bytes()
         # collect the hashes, calculate challenge
-        for i, component in enumerate(format_components):
-            hashes = set()
-            if component.hash_format == 'a' or not component.part_separator:
-                h = split_parts[i]
-                if component.hash_format == 'a':
-                    challenge += h
-                hashes.add(h)
-            else:
-                s = split_parts[i].split(component.part_separator)
-                if len(s) > component.max_parts:
-                    return False
-                for h in s:
+        try:
+            for i, component in enumerate(format_components):
+                hashes = set()
+                if component.hash_format == 'a' or not component.part_separator:
+                    h = split_parts[i]
+                    if component.hash_format == 'a':
+                        challenge += h
                     hashes.add(h)
-            hash_params[component.name] = (_HASH_FUNCTIONS[component.hash_format], 
-                component.hash_bits, component.hash_algorithm, hashes)
-        # calculate the hashes for components
-        for k, values in components.iteritems():
-            fn, bits, algorithm, hashes = hash_params[k]
-            if len(values) < 1:
-                return False
-            for value in values:
-                h = fn(salt + challenge,
-                    value, bits, algorithm)
-                if h not in hashes:
+                else:
+                    s = split_parts[i].split(component.part_separator)
+                    if len(s) > component.max_parts:
+                        return False
+                    for h in s:
+                        hashes.add(h)
+                hash_params[component.name] = (_HASH_FUNCTIONS[component.hash_format], 
+                    component.hash_bits, component.hash_algorithm, hashes)
+            # calculate the hashes for components
+            for k, values in parts.iteritems():
+                fn, bits, algorithm, hashes = hash_params[k]
+                if len(values) < 1:
                     return False
+                for value in values:
+                    h = fn(salt + challenge,
+                        value, bits, algorithm)
+                    if h not in hashes:
+                        return False
+        except Exception, e:
+            return False
         return True
                 
     def code_from_parts(self, salt, parts):
@@ -188,9 +191,9 @@ class Code(models.Model):
     @property
     def parts(self):
         parts = defaultdict(list)
-        for i in self.parts.order_by('name', 'ordering'):
+        for i in self.code_parts.order_by('name', 'ordering'):
             parts[i.name].append(i.value)
-        return dict(components)
+        return dict(parts)
     @parts.setter
     def parts(self, parts_dict):
         self.code_parts.all().delete()

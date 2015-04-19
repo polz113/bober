@@ -25,8 +25,9 @@ class Command(BaseCommand):
             except Exception, e:
                 print "Error:", e
                 pass
-        print slug 
+        print "created", slug 
         question_set, created = QuestionSet.objects.get_or_create(name = name, slug = slug)
+        print "filling questionset"
         for q in questions:
             q_dict = Question.objects.filter(id = q.id).values_list()[0]
             print q_dict

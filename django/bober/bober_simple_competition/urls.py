@@ -8,9 +8,11 @@ urlpatterns = patterns('',
     # Examples:
     # url(r'^blog/', include('blog.urls')),
     url(r'^$', views.index, name="index"),
-    # 1. login
+    # 1. login / enter access code
+    url(r'^access_code/(?P<next>.*)$', views.access_code, name="access_code"),
     # 2. pick competition
     url(r'^competitions/$', views.CompetitionListView.as_view(), name="competition_list"),
+    url(r'^competitions/(?P<slug>[\w-]+)/$', views.CompetitionDetailView.as_view(), name="competition_detail"),
     #   2.1 teacher, admin (for this competition)
     #     2.1.1 create, list codes for competition
     url(r'^competitions/(?P<competition_slug>[\w-]+)/codes$', views.competition_code_list, name="competition_code_list"),
@@ -30,7 +32,7 @@ urlpatterns = patterns('',
     #     2.1.4 mark attempts as invalid
     #           all attempts with codes created or distributed by
     #           the current user can be accessed 
-    url(r'^competitions/(?P<competition_slug>[\w-]+)/attempts/(?P<attempt_id>\d+)/disqualify$', views.disqualify_attempt, name="disqualify_attempt"),
+    url(r'^competitions/(?P<competition_slug>[\w-]+)/attempts/(?P<attempt_id>\d+)/invalidate$', views.invalidate_attempt, name="invalidate_attempt"),
     #   2.2 competitor
     #     2.2.0 register as competitor using a code
     url(r'^compete/(?P<competition_questionset_id>[\d]+)/$', views.competition_registration, name="competition_registration"),
@@ -55,15 +57,15 @@ urlpatterns = patterns('',
     # 4. register as user
     url(r'^registration/$', views.user_registration, name="user_registration"),
     # 5. edit user data
-    url(r'^users/$', views.user_list, name="user_list"),
+    url(r'^users/$', views.ProfileListView.as_view(), name="profile_list"),
     #   5.1 merge users
     #    any users registered with codes created or distributed
     #    by the current user can be merged
-    url(r'^user_merge/$', views.user_merge, name="user_merge"),
+    url(r'^user_merge/$', views.user_merge, name="profile_merge"),
     #   5.2 edit users
     #    the data for users registered with codes created or distributed
     #    by the current user can be edited
-    url(r'^users/(?P<user_id>\d+)/$', views.user_edit, name="user_edit"),
+    url(r'^users/(?P<pk>\d+)/$', views.ProfileUpdate.as_view(), name="profile_update"),
     #   5.3 get certificates, other files
     url(r'^users/(?P<user_id>\d+)/files$', views.user_files, name="user_files"),
     # 6. import question(s)

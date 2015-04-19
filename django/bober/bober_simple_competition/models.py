@@ -4,6 +4,7 @@ from django.db.models import FileField, BooleanField
 from django.db.models import DateTimeField
 from django.db.models import ForeignKey, ManyToManyField, OneToOneField
 from django.db.models import FileField, BinaryField, CommaSeparatedIntegerField
+from django.db.models import signals
 from django.contrib.auth.models import User
 from django.core.files.base import ContentFile, File
 from code_based_auth.models import Code, CodeField, CodeGenerator
@@ -38,6 +39,11 @@ def ensure_dir_exists(fname):
     except:
         pass
 
+USER_ROLES = (
+    ('competitor', 'Competitor'),
+    ('admin', 'Administrator'),
+)
+
 COMPETITOR_PRIVILEGES = (
     ('attempt', 'Participate in the competition'),
     ('attempt_before_start', 'Attempt competition before start'),
@@ -45,8 +51,14 @@ COMPETITOR_PRIVILEGES = (
 )
 
 ADMIN_PRIVILEGES = (
-    ('create_admin_codes', _('Create admin codes')),
+    ('create_admin_codes', _('Create administrator codes')),
+    ('create_competitor_codes', _('Create comeptitor codes')),
+    ('view_all_attempts', _('View all attempts for this competition')),
+    ('view_all_admin_codes', _('View all administrator codes for this competition')),
+    ('view_all_competitor_codes', _('View all competitor codes for this competition')),
     ('use_question_sets', _('Use question sets for new competitions')),
+    ('modify_competition', _('Modify this competition')),
+    ('modify_users', _('Modify users competing using codes created by the recipient of this code')),
     ('use_questions', _('Use questions for new question sets')),
 )
     #   2. can create codes for competing
@@ -65,12 +77,12 @@ class Competition(models.Model):
         s = self.slug
         s += ": " + ", ".join([i.slug for i in self.questionsets.all()])
         return s
-    slug = SlugField()
+    slug = SlugField(unique=True)
     administrator_code_generator = ForeignKey(CodeGenerator, related_name='administrator_code_competition_set')
     competitor_code_generator = ForeignKey(CodeGenerator, related_name='competitor_code_competition_set')
     questionsets = ManyToManyField('QuestionSet', through='CompetitionQuestionSet')
     start = DateTimeField()
-    guest_admin_code = ForeignKey(Code, null=True)
+    guest_code = ForeignKey(Code, null=True, blank=True)
     # duration in seconds
     duration = IntegerField(default=60*60) # 60s * 60 = 1h.
     end = DateTimeField()
@@ -186,6 +198,143 @@ class Resource(models.Model):
     def as_base64(self):
         return base64.b64encode(self.as_bytes())
 
+def _question_from_dirlike(cls, identifier = '-1',
+        language = None,
+        regenerate_modules = True, 
+        regenerate_manifest = True,
+        remove_correct_answer_class = True,
+        my_open=None, my_path=None, my_close=None):
+    question = None
+    if language is None:
+        language = settings.LANGUAGE_CODE.split('-')[0]
+    try:
+        f = my_open(my_path('Manifest.json'))
+        manifest = json.load(f)
+    except Exception, e:
+        manifest = {'id': identifier, 
+            'language': language}
+        regenerate_manifest = True
+    try:
+        my_close(f)
+    except:
+        pass
+    identifier = manifest['id']
+    language = manifest['language']
+    # get properties from database into question_dict
+    try:
+        question = cls.objects.filter(identifier=identifier)
+        q1 = question.filter(language = language)
+        if len(q1) == 1:
+            question = q1
+        elif len(question) < 1:
+            raise ObjectDoesNotExist
+        if len(question) > 1:
+            raise MultipleObjectsReturned
+        question_dict = question.values()[0]
+        question_dict['id'] = question_dict.pop('identifier')
+        question = question[0]
+        resource_list = []
+        for resource in question.resource_set.all():
+            resource_list.append({'url': resource.url, 'type': resource.resource_type})
+        question_dict['task'] = resource_list
+    except ObjectDoesNotExist:
+        question = None
+        regenerate_modules = True
+    # read index
+    f = my_open(my_path('index.html'))
+    index_str = f.read()
+    my_close(f)
+    index_dict = {}
+    # get properties from index
+    index_dict = {}
+    index_soup = BeautifulSoup(index_str)
+    try:
+        index_dict['title'] = unicode(index_soup.title.contents[0]).strip()
+    except:
+        pass
+    try:
+        index_dict['version'] = index_soup.find('meta', {'name':'revision'}).attrs['content']
+    except:
+        pass
+    try:
+        index_dict['country'] = index_soup.find('meta', {'name':'geo.country'}).attrs['content'].upper()
+    except:
+        pass
+    # all correct answers should be marked by the class "answer_accepted"
+    answers = index_soup.select('input[name="answer"]')
+    accepted_answers = []
+    for a in answers:
+        class_list = []
+        for c in a.get("class", []):
+            if c == 'answer_accepted':
+                accepted_answers.append(a['value'])
+            else:
+                class_list.append(c)
+        if len(class_list):
+            a['class'] = class_list
+        else:
+            del a['class']
+    if len(accepted_answers) > 0:
+        index_dict['acceptedAnswers'] = accepted_answers
+    # find all bitmaps and .svgs
+    resource_set = set()
+    imgs = index_soup.find_all('img')
+    objs = index_soup.find_all('object')
+    scripts = index_soup.find_all('script')
+    for items, item_type, url_property in [
+        (imgs, 'image', 'src'), 
+        (objs, 'image', 'data'), 
+        (scripts, 'javascript', 'src')]:
+        for i in items:
+            url = i.get(url_property, None)
+            if url is not None:
+                resource_set.add((item_type, url))
+    resource_list = [
+        {'type': item_type, 'url': url} for item_type, url in resource_set
+    ]
+    index_dict['task'] = [
+        {'type': "html", "url": "index.html"}] + resource_list
+    if regenerate_manifest:
+        manifest.update(index_dict)
+    if regenerate_modules:
+        manifest['task'] = index_dict['task']
+    if question is None:
+        print "creating question", manifest['title'], type(manifest['title'])
+        question = cls(country = manifest['country'], 
+            slug = slugify(manifest['title']) + '-' + manifest['id'], 
+            identifier = manifest['id'], title = manifest['title'],
+            version = manifest['version'], authors = manifest['authors'],
+            accepted_answers = ",".join(manifest['acceptedAnswers']))
+        question.save()
+    else:
+        question.country = manifest['country']
+        question.slug = slugify(manifest['title'] + '-' + manifest['id'])
+        question.title = manifest['title']
+        question.version = manifest['version']
+        question.authors = manifest['authors']
+        question.accepted_answers = ",".join(manifest['acceptedAnswers'])
+        question.save()
+    resource_list = manifest['task']
+    modules_list = []
+    # remove existing resources
+    question.resource_set.all().delete()
+    for i in resource_list:
+        try:
+            fname = my_path(i['url'])
+            f = my_open(fname)
+            data = f.read()
+            my_close(f)
+            r = Resource(question = question,
+                relative_url = i['url'],
+                file = None,
+                mimetype = mimetypes.guess_type(i['url'])[0],
+                resource_type = i['type'],
+                data = data)
+            r.save()
+        except Exception, e:
+            modules_list.append(i)
+    return question
+
 class Question(models.Model):
     def __unicode__(self):
         return self.title
@@ -244,141 +393,24 @@ class Question(models.Model):
         return manifest
     @classmethod
     def from_zip(cls, f, identifier = '-1',
-        language = None,
-        regenerate_modules = True, 
-        regenerate_manifest = True,
-        remove_correct_answer_class = True):
+            language = None,
+            regenerate_modules = True, 
+            regenerate_manifest = True,
+            remove_correct_answer_class = True):
         z = zipfile.ZipFile(f)
+        kwargs['my_open']=z.open
+        kwargs['my_path']=lambda *x: '/'.join(x)
+        kwargs['my_close']=lambda x: None
+        retval = __question_from_dirlike(cls, *args, **kwargs)
+        z.close()
+        return retval
+
     @classmethod
-    def from_dir(cls, dirname, identifier = '-1',
-        language = None,
-        regenerate_modules = True, 
-        regenerate_manifest = True,
-        remove_correct_answer_class = True):
-        question = None
-        # get initial values for language, id
-        if language is None:
-            language = settings.LANGUAGE_CODE.split('-')[0]
-        try:
-            with open(os.path.join(dirname, 'Manifest.json')) as f:
-                manifest = json.load(f)
-        except Exception, e:
-            manifest = {'id': identifier, 
-                'language': language}
-            regenerate_manifest = True
-        identifier = manifest['id']
-        language = manifest['language']
-        # get properties from database into question_dict
-        try:
-            question = cls.objects.filter(identifier=identifier)
-            q1 = question.filter(language = language)
-            if len(q1) == 1:
-                question = q1
-            elif len(question) < 1:
-                raise ObjectDoesNotExist
-            if len(question) > 1:
-                raise MultipleObjectsReturned
-            question_dict = question.values()[0]
-            question_dict['id'] = question_dict.pop('identifier')
-            question = question[0]
-            resource_list = []
-            for resource in question.resource_set.all():
-                resource_list.append({'url': resource.url, 'type': resource.resource_type})
-            question_dict['task'] = resource_list
-        except ObjectDoesNotExist:
-            question = None
-            regenerate_modules = True
-        # read index
-        with open(os.path.join(dirname, 'index.html')) as f:
-            index_str = f.read()
-        index_dict = {}
-        # get properties from index
-        index_dict = {}
-        index_soup = BeautifulSoup(index_str)
-        try:
-            index_dict['title'] = unicode(index_soup.title.contents[0]).strip()
-        except:
-            pass
-        try:
-            index_dict['version'] = index_soup.find('meta', {'name':'revision'}).attrs['content']
-        except:
-            pass
-        try:
-            index_dict['country'] = index_soup.find('meta', {'name':'geo.country'}).attrs['content'].upper()
-        except:
-            pass
-        # all correct answers should be marked by the class "answer_accepted"
-        answers = index_soup.select('input[name="answer"]')
-        accepted_answers = []
-        for a in answers:
-            class_list = []
-            for c in a.get("class", []):
-                if c == 'answer_accepted':
-                    accepted_answers.append(a['value'])
-                else:
-                    class_list.append(c)
-            if len(class_list):
-                a['class'] = class_list
-            else:
-                del a['class']
-        if len(accepted_answers) > 0:
-            index_dict['acceptedAnswers'] = accepted_answers
-        # find all bitmaps and .svgs
-        resource_set = set()
-        imgs = index_soup.find_all('img')
-        objs = index_soup.find_all('object')
-        scripts = index_soup.find_all('script')
-        for items, item_type, url_property in [
-            (imgs, 'image', 'src'), 
-            (objs, 'image', 'data'), 
-            (scripts, 'javascript', 'src')]:
-            for i in items:
-                url = i.get(url_property, None)
-                if url is not None:
-                    resource_set.add((item_type, url))
-        resource_list = [
-            {'type': item_type, 'url': url} for item_type, url in resource_set
-        ]
-        index_dict['task'] = [
-            {'type': "html", "url": "index.html"}] + resource_list
-        if regenerate_manifest:
-            manifest.update(index_dict)
-        if regenerate_modules:
-            manifest['task'] = index_dict['task']
-        if question is None:
-            question = cls(country = manifest['country'], 
-                slug = slugify(manifest['title']) + '-' + manifest['id'], 
-                identifier = manifest['id'], title = manifest['title'],
-                version = manifest['version'], authors = manifest['authors'],
-                accepted_answers = ",".join(manifest['acceptedAnswers']))
-            question.save()
-        else:
-            question.country = manifest['country']
-            question.slug = slugify(manifest['title'] + '-' + manifest['id'])
-            question.title = manifest['title']
-            question.version = manifest['version']
-            question.authors = manifest['authors']
-            question.accepted_answers = ",".join(manifest['acceptedAnswers'])
-            question.save()
-        resource_list = manifest['task']
-        modules_list = []
-        # remove existing resources
-        question.resource_set.all().delete()
-        for i in resource_list:
-            try:
-                fname = os.path.join(dirname, i['url'])
-                with open(fname) as f:
-                    data = f.read()
-                r = Resource(question = question,
-                    relative_url = i['url'],
-                    file = None,
-                    mimetype = mimetypes.guess_type(i['url'])[0],
-                    resource_type = i['type'],
-                    data = data)
-                r.save()
-            except Exception, e:
-                modules_list.append(i)
-        return question
+    def from_dir(cls, dirname, *args, **kwargs):
+        kwargs['my_open']=open
+        kwargs['my_path']=lambda *x: os.path.join(dirname, *x)
+        kwargs['my_close']=lambda x: x.close()
+        return _question_from_dirlike(cls, *args, **kwargs)
 
 class Answer(models.Model):
     def __unicode__(self):
@@ -405,6 +437,10 @@ class Answer(models.Model):
             return None
         return str(self.value) in self.question.accepted_answers.split(',')
 
+class AttemptInvalidation(models.Model):
+    by = ForeignKey('Profile')
+    reason = TextField(blank=True)
+
 class Attempt(models.Model):
     def __unicode__(self):
         return "{}: {} - {}: {} ({} - {})".format(self.user,
@@ -415,7 +451,7 @@ class Attempt(models.Model):
     access_code = CodeField()
     competitionquestionset = ForeignKey('CompetitionQuestionSet')
     user = ForeignKey('Profile', null=True, blank=True)
-    invalidated_by = ForeignKey('Profile', null=True, blank=True, related_name='invalidated_set')
+    invalidated_by = ForeignKey('AttemptInvalidation', null=True, blank=True)
     random_seed = IntegerField()
     start = DateTimeField(auto_now_add = True)
     finish = DateTimeField(null=True, blank=True)
@@ -448,16 +484,38 @@ class Attempt(models.Model):
                 if n_found >= n_questions:
                     return answers
         return answers
- 
+
+def superiors(profile, codegen, known):
+    for c in profile.received_codes.filter(codegenerator = codegen):#,
+        #    code_parts__name='administrator_privileges',
+        #    code_parts__value='edit_users').unique():
+        for o in c.owner_set.all():
+            if o not in known:
+                s1 = superiors(o, codegen, known)
+                known = s1.union(known)
+                known.add(o)
+    return known
+
 class Profile(models.Model):
     def __unicode__(self):
         return unicode(self.user)
     user = models.OneToOneField(User)
-    registration_code = CodeField(null=True, blank=True)
+    managed_users = models.ManyToManyField(User, related_name='managers', null=True, blank=True)
+    #first_competition = models.ForeignKey(Competition, null=True, blank=True)
+    #registration_code = CodeField(null=True, blank=True)
     created_codes = ManyToManyField(Code, null=True, blank=True,
         related_name='owner_set')
     received_codes = ManyToManyField(Code, null=True, blank=True,
         related_name='user_set')
     merged_with = ForeignKey(User, null = True, blank=True, related_name='merged_set')
     vcard = models.TextField(blank=True)
-    
+        
+def create_profile(sender, instance=None, **kwargs):
+    try:
+        p = instance.profile
+    except Profile.DoesNotExist:
+        p = Profile()
+        p.user = instance
+        p.save()
+
+signals.post_save.connect(create_profile, sender=User)

@@ -9,16 +9,9 @@
 <br>
 <form action="" method="post" class="form_register_table">
 {% csrf_token %}
-{% for i in registration_form %}
-	<div class="form_register_row">
-		<div class="form_register_column bold_text">
-			{{i.label}}:
-		</div>
-		<div class="form_register_column">
-			{{i}}
-		</div>
-	</div>
-{% endfor %}
+<table>
+{{registration_form}}
+</table>
 <br>
 <div class="form_register_row">
 	<div class="form_register_column">

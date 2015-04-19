@@ -7,5 +7,7 @@
 
 {% block content %}
 <a href="{% url "competition_list" %}" class="button">{% trans "Competitions" %}</a>
-<a href="{% url "user_registration" %}" class="button">{% trans "Registration" %}</a>
+{% if not request.user.is_authenticated %}
+<a href="{% url "django.contrib.auth.views.login" %}" class="button">{% trans "Login" %}</a>
+{% endif %}
 {% endblock %}

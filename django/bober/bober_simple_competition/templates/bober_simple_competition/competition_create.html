@@ -1,61 +1,85 @@
 {% extends "base.html" %}
 {% load i18n %}
-
+{% load static %}
+{% load admin_static %}
+{% static 'admin' %}
 {% block title %}{% trans "Create competition" %}{% endblock %}
 
 {% block headline %}{% trans "Create competition" %}{% endblock %}
-
+{% block extrahead %}
+<link rel="stylesheet" type="text/css" href="{% static "admin/css/base.css" %}" />
+<link rel="stylesheet" type="text/css" href="{% static "admin/css/changelists.css" %}" />
+<link rel="stylesheet" type="text/css" href="{% static "admin/css/forms.css" %}" />
+<script type="text/javascript" src="{% url 'admin:jsi18n' %}"></script>
+<script type="text/javascript">window.__admin_media_prefix__ = "{% filter escapejs %}{% static "admin/" %}{% endfilter %}";</script>
+<!--[if lte IE 7]><link rel="stylesheet" type="text/css" href="{% block stylesheet_ie %}{% static "admin/css/ie.css" %}{% endblock %}" /><![endif]-->
+{% if LANGUAGE_BIDI %}<link rel="stylesheet" type="text/css" href="{% block stylesheet_rtl %}{% static "admin/css/rtl.css" %}{% endblock %}" />{% endif %}
+<script type="text/javascript" src="{% static "admin/js/core.js" %}"></script>
+<script type="text/javascript" src="{% static "admin/js/admin/RelatedObjectLookups.js" %}"></script>
+<script type="text/javascript" src="{% static "admin/js/jquery.js" %}"></script>
+<script type="text/javascript" src="{% static "admin/js/jquery.init.js" %}"></script>
+<script type="text/javascript" src="{% static "admin/js/actions.js" %}"></script>
+<script type="text/javascript" src="{% static "admin/js/inlines.js" %}"></script>
+{{form.media}}
+{% endblock %}
 {% block content %}
 <br>
-<div class="form_table toLeft">
-	<form action="" method="post">
-	{% csrf_token %}
-	{% for i in form %}
-		<div class="form_row">
-			<div class="form_column bold_text">
-				{{i.label}}:
-			</div>
-			<div class="form_column">
-				{{i}}
-			</div>
-		</div>
-	{% endfor %}
-	<br>
-	<a href='#' id='display1' onmousedown='javascript:toggle(1);' onclick='return false;'> {% trans "Show More" %}</a>
-	<br>
-	<div id='body1' style='display: none;'>
-		<table>
-		{{formset}}
-		</table>
-	</div>
-
+<form action="" method="post">
+{% csrf_token %}
+{{ form.non_field_errors }}
+<div id="normal_form_fields" class="form_table toLeft">
+<table>
+<tr><th><label for="{{ form.slug.id_for_label }}">{{form.slug.label}}:</label></th><td>
+{{ form.slug.errors }}{{ form.slug }}</td></tr>
+<tr> <th><label for="{{ form.start.id_for_label }}">{{form.start.label}}:</label></th><td>
+{{ form.start.errors }}{{ form.start }}</td></tr>
+<tr> <th><label for="{{ form.duration.id_for_label }}">{{form.duration.label}}:</label></th><td>
+{{ form.duration.errors }}{{ form.duration }}</td></tr>
+<tr><th><label for="{{ form.end.id_for_label }}">{{form.end.label}}:</label></th><td>
+{{ form.end.errors }}{{ form.end }}</td></tr>
+</table>
+</div>
+<div id='questionsets'>
+{% trans "Question sets" %}
+    <table>
+        {{formset}}
+    </table>
+</div>
+<a id="toggle_extended_form_fields1">{% trans "Show more" %}</a>
+<div id="extended_form_fields1">
+<table>
+<tr><th><label for="{{ form.competitor_code_format.id_for_label }}">{{form.competitor_code_format.label}}:</label></th><td>{{ form.competitor_code_format.errors }}{{ form.competitor_code_format }}</td></tr>
+<tr><th><label for="{{ form.admin_code_format.id_for_label }}">{{form.admin_code_format.label}}:</label></th><td>
+{{ form.admin_code_format.errors }}{{ form.admin_code_format }}</td></tr>
+<tr><th><label for="{{ form.competitor_salt.id_for_label }}">{{form.competitor_salt.label}}:</label></th><td>
+{{ form.competitor_salt.errors }}{{ form.competitor_salt }}</td></tr>
+<tr><th><label for="{{ form.admin_salt.id_for_label }}">{{form.admin_salt.label}}:</label></th><td>
+{{ form.admin_salt.errors }}{{ form.admin_salt }}</td></tr>
+</table>
+<a href="{% url 'code_format_create' user_type='admin' %}" class="button">
+    {% trans "Create code format for admin users (teachers)" %}
+</a><br/>
+<a href="{% url 'code_format_create' user_type='competitor' %}" class="button">
+  {% trans "Create code format for competitors" %}
+</a>
+</div>
 	<input type="submit" value='{% trans "Submit" %}' />
 	</form>
-
-	<br>
-	<a href="{% url 'code_format_create' user_type='admin' %}" class="button">
-		{% trans "Create code format for admin users (teachers)" %}
-	</a>
-	<br><br>
-	<a href="{% url 'code_format_create' user_type='competitor' %}" class="button">
-		{% trans "Create code format for competitors" %}
-	</a>
-	<br>
 </div>
 
 
 <script type="text/javascript">
-function toggle(id) {
-var ele = document.getElementById('body'+id);
-var text = document.getElementById('display'+id);
-if(ele.style.display == 'block') {
-	ele.style.display = 'none';
-	text.innerHTML = '{% trans "Show More" %}';
-}
-else {
-	ele.style.display = 'block';
-	text.innerHTML = '{% trans "Show Less" %}';
-}
-}
+$ = django.jQuery;
+$('#extended_form_fields1').css('visibility','hidden');
+$('#toggle_extended_form_fields1').click(function(){
+  if ( $('#extended_form_fields1').css('visibility') == 'hidden' ){
+    $('#extended_form_fields1').css('visibility','visible');
+    $('#toggle_extended_form_fields1').text('{% trans "Show less" %}');
+  } else {
+    $('#extended_form_fields1').css('visibility','hidden');
+    $('#toggle_extended_form_fields1').text('{% trans "Show more" %}');
+  }
+});
+
 </script>
 {% endblock %}

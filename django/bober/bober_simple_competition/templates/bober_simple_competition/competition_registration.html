@@ -1,32 +1,20 @@
 {% extends "base.html" %}
 {% load i18n %}
 
-{% block title %}{% trans "Enter access code" %}{% endblock %}
+{% block title %}{% trans "Registration" %}{% endblock %}
 
-{% block headline %}{% trans "Enter access code" %}{% endblock %}
+{% block headline %}{% trans "Registration" %}{% endblock %}
 
 {% block content %}
 <br>
+<a href="{% url 'django.contrib.auth.views.login' %}">{% trans "Login" %}</a>
+<br>
 <form action="" method="post" id="competition_registration" class="form_compete_table">
 {% csrf_token %}
-{% for i in form %}
-	<div class="form_compete_row">
-		<div class="form_compete_column bold_text">
-			{{i.label}}:
-		</div>
-		<div class="form_compete_column">
-			{{i}}
-		</div>
-		<div class="form_compete_column">
-			&nbsp;
-		</div>
-		<div class="form_compete_column">
-			<input type="submit" value='{% trans "Submit" %}' class="button"/>
-		</div>			
-	</div>
-{% endfor %}
+<table>
+{{form}}
+</table>
+<input type="submit" value='{% trans "Submit" %}' class="button"/>
 </form>
 {% load staticfiles %}
-<script src='{% static "js/autoSubmit.js" %}'></script>
-
 {% endblock %}
