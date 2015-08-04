@@ -1,6 +1,6 @@
-{% load i18n %}{% load staticfiles %}<!DOCTYPE html>
+{% load i18n %}{% load staticfiles %}
+<!DOCTYPE html>
 <html lang="en">
-
 <head>
 
     <meta charset="utf-8">
@@ -11,12 +11,10 @@
 
     <title>{% block title %}Bober title{% endblock %}</title>
     {% block extrahead %}{% endblock %}
-    <!-- Bootstrap Core CSS -->
-    <link href="{% static "css/bootstrap.min.css" %}" rel="stylesheet">
+    <!-- Template CSS-->
+    <link href="{% static "css/style.css" %}" rel="stylesheet">
+    <link href="{% static "css/stylePrint.css" %}" rel="stylesheet">
 
-    <!-- Custom CSS -->
-    <link href="{% static "css/heroic-features.css" %}" rel="stylesheet">
-    <link href="{% static "css/custom.css" %}" rel="stylesheet">
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -26,98 +24,79 @@
     <![endif]-->
 
 </head>
-
 <body>
+    <div class='stripe1'>
+        <!--[if lt IE 9]>
+	    <div class="iegoo">
+		<p>You are using an outdated browser. To be able to use all of the site's functions, download and install one of the following browsers: <br />
+		<a href='http://www.google.com/chrome/'>Google Chrome</a> or <a href='http://www.mozilla-europe.org/'>Mozilla Firefox</a>
+		</p>
+	    </div>
+        <![endif]-->
+    </div>
+	<div class='stripe2'></div>
+    <div class='wrapper'>
 
-    <!-- Navigation -->
-    <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-        <div class="container">
-            <!-- Brand and toggle get grouped for better mobile display -->
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a class="navbar-brand" href="/">Bober</a>
+    	<div class='header'>
+
+    		<a href='/' class='logo'><img src='{% static "img/logo.png" %}' alt='Bober' /></a>
+
+    		<ul class='nav'>
+				<li><a class="navbar-brand" href="/">Bober</a></li>
                 {% if request.user.is_authenticated %}
                 <a href="{% url "django.contrib.auth.views.logout" %}">{% trans "logout" %} {{request.user}}</a>
                 {% endif %}
-            </div>
-            <!-- Collect the nav links, forms, and other content for toggling -->
-			<!-- MENU -->
-			<!--
-            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                <ul class="nav navbar-nav">
-                    <li>
-                        <a href="#">About</a>
-                    </li>
-                    <li>
-                        <a href="#">Services</a>
-                    </li>
-                    <li>
-                        <a href="#">Contact</a>
-                    </li>
-                </ul>
-            </div>
-			-->
-            <!-- /.navbar-collapse -->
-        </div>
-        <!-- /.container -->
-    </nav>
+    		</ul><!--.nav-->
 
-    <!-- Page Content -->
-    <div class="container">
+    	</div><!--.header-->
 
-        <!-- Title -->
-        <div class="row">
-            <div class="col-lg-12">
-				<!-- Content title -->
+    	<div class='content'>
+    		<div></div>
+    		<!-- 
+    		<ul class='sidebar'>
+    			<li><a href='/'></a></li>
+    		</ul>
+    		 -->
+			
+    		<div class='text'>
+
                 <h3>{% block headline %}Bober{% endblock %}</h3>
-            </div>
-        </div>
-        <!-- /.row -->
 
-        <!-- Page Features -->
-        <div class="row text-center">
-		{% block content %}
-		Glodaglodagloda
-		{% endblock %}
-        </div>
-        <!-- /.row -->
+    		</div><!--.text-->
+    		
+    		<div class='text'>
+    		{% block content %}
+			Glodaglodagloda
+			{% endblock %}
+			</div><!--.text-->
 
+            <div class='logo_transparent'></div>
 
+    		<!-- <div class='clear'></div> -->
 
-        <!-- Footer -->
-        <footer>
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="footer_logos">
-						<a href="http://www.acm.si/" target="_blank">
-							<img src='{% static "logo/acm.png" %}'>
-						</a>
-						<span class="footer_logo_in_cooperation">
-							{% trans "In Cooperation With" %}
-						</span>
-						<a href="http://www.fri.uni-lj.si/" target="_blank">
-							<img src='{% static "logo/ul_fri.png" %}'>
-						</a>
-                    </div>
-					<p>Copyright &copy; 2015 </p>
-                </div>
-            </div>
-        </footer>
+    	</div><!--.content-->
 
+    </div><!--.wrapper-->
+
+    <div class="footer">
+		<a href="http://www.acm.si/" target="_blank">
+		<img src='{% static "logo/acm.png" %}'>
+		</a>
+		<span class="footer_logo_in_cooperation">
+		{% trans "In Cooperation With" %}
+		</span>
+		<a href="http://www.fri.uni-lj.si/" target="_blank">
+		<img src='{% static "logo/ul_fri.png" %}'>
+		</a>
+		<p>Copyright &copy; 2015 </p>
     </div>
-    <!-- /.container -->
-
+    
     <!-- jQuery -->
     <script src="{% static "js/jquery.js" %}"></script>
 
     <!-- Bootstrap Core JavaScript -->
     <script src="{% static "js/bootstrap.min.js" %}"></script>
-
+    
 </body>
 
 </html>
