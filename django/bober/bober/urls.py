@@ -3,6 +3,7 @@ from django.conf.urls.static import static
 from django.conf import settings
 from django.contrib.staticfiles import views
 from django.contrib import admin
+import django.contrib.auth.urls
 import bober_paper_submissions.urls
 import bober_simple_competition
 import bober_simple_competition.urls
@@ -30,6 +31,7 @@ urlpatterns = patterns('',
     url(r'^jsi18n/(?P<packages>\S+?)/$', 'django.views.i18n.javascript_catalog', 
         kwargs = {'domain': 'django'}),
     # url(r'^jsi18n/$', 'django.views.i18n.javascript_catalog', js_info_dict),
+	url('^accounts/', include('django.contrib.auth.urls'))
 )
 
 
