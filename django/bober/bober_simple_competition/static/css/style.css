@@ -27,7 +27,7 @@ p {
 /*-------global--------------------------------------------------------------------------*/
 
 body{
-	font-family: 'calibri', tahoma, verdana, arial, sans-serif;
+	font-family: verdana,arial,helvetica,sans-serif;
 	font-size: 14px;
 	color: #018301;
 	/* background-color: #40910e; */
@@ -95,7 +95,7 @@ form input{
 	padding: 1px 0;
 	float: left;
 	width: 300px;
-	border-radius: 8px;
+	border-radius: 2px;
 	border: 1px inset rgb(237, 250, 237); /*for IE 7, 8*/
 	border: 1px inset rgba(46, 167, 46, 0.2);
 	background-color: rgb(241, 247, 236); /*for IE 7, 8*/
@@ -227,8 +227,10 @@ form button{
 	margin: 20px;
 		-webkit-box-shadow: 0 0 4px rgba(0, 0, 0, 0.2), inset 0 0 50px rgba(0, 0, 0, 0.1);
 		-moz-box-shadow: 0 0 4px rgba(0, 0, 0, 0.2), inset 0 0 50px rgba(0, 0, 0, 0.1);
-		box-shadow: 0 0 20px rgba(0, 0, 0, 0.2), inset 0 0 50px rgba(0, 0, 0, 0.1);
-	border-radius: 10px;
+		box-shadow: 0 0 15px rgba(0, 0, 0, 0.2), inset 0 0 50px rgba(0, 0, 0, 0.1);
+		padding-left: 2%;
+		padding-top: 1%;
+		padding-bottom: 1%;
 }
 .wrapper .content .text ul{
 	list-style: disc;

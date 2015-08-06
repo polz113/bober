@@ -27,7 +27,7 @@ p {
 /*-------global--------------------------------------------------------------------------*/
 
 body{
-	font-family: 'Georgia Pro', georgia, serif;
+	font-family: verdana,arial,helvetica,sans-serif;
 	font-size: 11pt;
 	color: #018301;
 	background-color: white;
@@ -92,7 +92,7 @@ form input{
 	padding: 1px 0;
 	float: left;
 	width: 300px;
-	border-radius: 8px;
+	border-radius: 2px;
 	border: 1px inset rgb(191, 191, 191); /*for IE 7, 8*/
 	/*border: 1px inset rgba(0, 0, 0, 0.2);*/
 	background-color: rgb(241, 247, 236); /*for IE 7, 8*/
@@ -203,7 +203,6 @@ form button{
 	float: right;
 	width: 634px;
 	margin: 20px;
-	border-radius: 10px;
 }
 .wrapper .content .text ul{
 	list-style: disc;
@@ -273,4 +272,32 @@ p.bottom_text{
 .footer_logo_in_cooperation {
 	color: #000;
 	vertical-align: center;
+}
+
+/*----------buttons---------------------------------------------------*/
+.btn {
+  -webkit-border-radius: 5;
+  -moz-border-radius: 5;
+  border-radius: 5px;
+  font-family: verdana,arial,helvetica,sans-serif;
+  color: #ffffff;
+  background: #44e;
+  padding: 5px 8px 5px 8px;
+  text-decoration: none;
+}
+
+.btn:hover {
+  background: #33e;
+  text-decoration: none;
+}
+
+/*----------Competition list------------------------------------------*/
+.competitionlist {
+	padding: 0.5%;
+}
+.questionsets {
+	padding-left:2%;
+}
+.questionsets:before{
+	content: "• ";
 }
