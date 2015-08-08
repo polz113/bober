@@ -45,9 +45,14 @@ USER_ROLES = (
 )
 
 COMPETITOR_PRIVILEGES = (
-    ('attempt', 'Participate in the competition'),
-    ('attempt_before_start', 'Attempt competition before start'),
-    ('results_before_end', 'See results before official end of competition'),
+    ('attempt', _('Participate in the competition')),
+    ('attempt_before_start', _('Attempt competition before start')),
+    ('results_before_end', _('See results before official end of competition')),
+)
+
+CODE_EFFECTS = (
+    ('user_manage', _('Allow the code owner to manage the personal profile of anyone who uses the code')),
+    ('user_manage_recursive', _('Allow the code owner to manage the personal profile of anyone who uses this code or any code created using this code')),
 )
 
 ADMIN_PRIVILEGES = (
