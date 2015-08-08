@@ -136,7 +136,13 @@ class CodeFormatForm(forms.Form):
     competitor_privilege_hash = forms.ChoiceField(
         initial = code_based_auth.models.DEFAULT_HASH_ALGORITHM,
         choices = code_based_auth.models.HASH_ALGORITHMS)
-   
+    code_effects_bits = forms.IntegerField()
+    code_effects_format = forms.ChoiceField(
+        choices = code_based_auth.models.CODE_COMPONENT_FORMATS)
+    code_effects_hash = forms.ChoiceField(
+        initial = code_based_auth.models.DEFAULT_HASH_ALGORITHM,
+        choices = code_based_auth.models.HASH_ALGORITHMS)
+
 class CompetitorCodeFormatForm(CodeFormatForm):
     questionset_bits = forms.IntegerField()
     questionset_format = forms.ChoiceField(

@@ -51,8 +51,8 @@ COMPETITOR_PRIVILEGES = (
 )
 
 CODE_EFFECTS = (
-    ('user_manage', _('Allow the code owner to manage the personal profile of anyone who uses the code')),
-    ('user_manage_recursive', _('Allow the code owner to manage the personal profile of anyone who uses this code or any code created using this code')),
+    ('let_manage', _('Allow the creator to manage the profile of anyone using this code')),
+    ('let_manage_recursive', _('Allow the creator and their managers to manage the profile of anyone using this code')),
 )
 
 ADMIN_PRIVILEGES = (
@@ -63,7 +63,7 @@ ADMIN_PRIVILEGES = (
     ('view_all_competitor_codes', _('View all competitor codes for this competition')),
     ('use_question_sets', _('Use question sets for new competitions')),
     ('modify_competition', _('Modify this competition')),
-    ('modify_users', _('Modify users competing using codes created by the recipient of this code')),
+    # ('modify_users', _('Modify users competing using codes created by the recipient of this code')),
     ('use_questions', _('Use questions for new question sets')),
 )
     #   2. can create codes for competing

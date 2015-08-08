@@ -99,16 +99,27 @@ def competition_code_create(request, competition_slug, user_type='admin'):
     access_code = request.session['access_code']
     competition = Competition.objects.get(slug=competition_slug)
     admin_codegen = competition.administrator_code_generator
+    competitor_privilege_choices = filter(
+        lambda x: admin_codegen.code_matches(access_code,
+            {'competitor_privileges': [x[0]]}),
+        COMPETITOR_PRIVILEGES)
+    admin_privilege_choices = list()
     if user_type == 'admin':
         if not admin_codegen.code_matches(access_code,
                 {'admin_privileges': ['create_admin_codes']}):
             raise PermissionDenied;
+        admin_privilege_choices = filter(
+            lambda x: admin_codegen.code_matches(access_code,
+                {'admin_privileges': [x[0]]}),
+            ADMIN_PRIVILEGES)
         generator = admin_codegen
         class FormClass(forms.Form):
             competitor_privileges = forms.MultipleChoiceField(
-                choices = COMPETITOR_PRIVILEGES, required = False)
+                choices = competitor_privilege_choices, required = False)
             admin_privileges = forms.MultipleChoiceField(
-                choices = ADMIN_PRIVILEGES, required = False)
+                choices = admin_privilege_choices, required = False)
+            code_effects = forms.MultipleChoiceField(
+                choices = CODE_EFFECTS, required = False)
     else:
         generator = competition.competitor_code_generator
         if not admin_codegen.code_matches(access_code, 
@@ -116,11 +127,13 @@ def competition_code_create(request, competition_slug, user_type='admin'):
             raise PermissionDenied;
         class FormClass(forms.Form):
             competitor_privileges = forms.MultipleChoiceField(
-                choices = COMPETITOR_PRIVILEGES, required = False)
+                choices = competitor_privilege_choices, required = False)
             competition_questionset = \
                 forms.ModelChoiceField(
                     queryset=CompetitionQuestionSet.objects.filter(
                         competition_id=competition.id))
+            code_effects = forms.MultipleChoiceField(
+                choices = CODE_EFFECTS, required = False)
     if request.method == 'POST':
         form = FormClass(request.POST)
         if form.is_valid():
@@ -157,6 +170,13 @@ def code_format_create(request, user_type='admin'):
                     'hash_format': 'a',
                     'hash_algorithm': 'noop',
                     'max_parts': 1,
+                },
+                {
+                    'name': 'code_effects',
+                    'hash_bits': form.cleaned_data['code_effects_bits'],
+                    'hash_format': form.cleaned_data['code_effects_format'],
+                    'hash_algorithm': form.cleaned_data['code_effects_hash'],
+                    'max_parts': len(CODE_EFFECTS),
                 },
                 {
                     'name': 'competitor_privileges',
@@ -578,7 +598,8 @@ def competition_create(request):
             competition.save()
             master_code = competition.administrator_code_generator.create_code({
                 'admin_privileges': [i[0] for i in ADMIN_PRIVILEGES],
-                'competitor_privileges': [i[0] for i in COMPETITOR_PRIVILEGES]
+                'competitor_privileges': [i[0] for i in COMPETITOR_PRIVILEGES],
+                'code_effects': [i[0] for i in CODE_EFFECTS]
             })
             master_code.save()
             request.user.profile.received_codes.add(master_code)
