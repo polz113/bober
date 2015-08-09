@@ -7,14 +7,14 @@
 
 {% block content %}
 <br>
-<a href="{% url 'django.contrib.auth.views.login' %}">{% trans "Login" %}</a>
+<a href="{% url 'django.contrib.auth.views.login' %}" class="btn">{% trans "Login" %}</a>
 <br>
 <form action="" method="post" id="competition_registration" class="form_compete_table">
 {% csrf_token %}
 <table>
 {{form}}
 </table>
-<input type="submit" value='{% trans "Submit" %}' class="btn"/>
+<input type="submit" value='{% trans "Create new account" %}' class="btn"/>
 </form>
 {% load staticfiles %}
 {% endblock %}
