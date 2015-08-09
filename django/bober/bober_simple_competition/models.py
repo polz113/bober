@@ -55,6 +55,7 @@ COMPETITOR_PRIVILEGES = (
 CODE_EFFECTS = (
     ('let_manage', _('Allow the creator to manage the profile of anyone using this code')),
     ('let_manage_recursive', _('Allow the creator and their managers to manage the profile of anyone using this code')),
+    ('new_attempt', _('Start a new attempt every time this code is used')),
 )
 
 ADMIN_PRIVILEGES = (

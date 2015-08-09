@@ -224,7 +224,7 @@ def competition_attempt_list(request, competition_slug):
         competitionquestionset__competition = competition)
     if not competition.administrator_code_generator.code_matches(access_code,
             {'admin_privileges': ['view_all_attempts']}):
-        print "filtering", access_code
+        # print "filtering", access_code
         if competition.competitor_code_generator.code_matches(access_code,
                     {'competitor_privileges': ['results_before_end']}) \
                 or competition.administrator_code_generator.code_matches(access_code,
@@ -232,7 +232,7 @@ def competition_attempt_list(request, competition_slug):
                 or competition.end < timezone.now():
             values = competition.competitor_code_generator.codes.filter(
                 owner_set = request.user.profile).values_list('value', flat=True)
-            print "  values:", values
+            # print "  values:", values
             object_list = object_list.filter(
                 Q(user=request.user.profile) | Q(access_code__in=values))
         else:
@@ -304,6 +304,7 @@ def competition_guest(request, competition_questionset_id):
     if guest_code is not None:
         code = guest_code.value
         request.session["access_code"] = code
+        print "using code:", code
     else:
         code = None
     # code = ''.join([random.choice(string.digits) for _ in xrange(9)])
@@ -344,9 +345,14 @@ def _can_attempt(request, competition_questionset):
         access_allowed |= competition.start < timezone.now() and \
             codegen.code_matches(
                 access_code, {'competitor_privileges':['attempt']})
-        guest_code = competition.guest_code
-        access_allowed |= guest_code.value == access_code
+        guest_code = competition_questionset.guest_code
+        # access_allowed |= guest_code.value == access_code
+        access_allowed &= codegen.code_matches(
+            access_code, {'competition_questionset':[
+                str(competition_questionset.id) + "." + \
+                    str(competition_questionset.name)]})
     except Exception, e:
+        print e
         pass
     return access_allowed
 
@@ -376,6 +382,12 @@ def competition_data(request, competition_questionset_id):
     if not _can_attempt(request, competition_questionset):
         raise PermissionDenied
     try:
+        competition = competition_questionset.competition
+        codegen = competition.competitor_code_generator
+        
+        if codegen.code_matches(
+                access_code, {'code_effects':['new_attempt']}):
+            raise Exception()
         attempt = Attempt.objects.filter(user=user_profile,
             access_code=access_code,
             competitionquestionset_id = competition_questionset_id)[0]
