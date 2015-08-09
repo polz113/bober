@@ -18,13 +18,15 @@ class BasicProfileForm(forms.ModelForm):
     class Meta:
         model = Profile
         exclude = ('user', 'created_codes', 'received_codes',
-            'vcard', 'merged_with', 'managed_users')
+            'vcard', 'merged_with', 'managed_profiles', 'used_codes',
+            'update_used_codes_timestamp', 'update_managers_timestamp')
     password = forms.CharField(widget = forms.PasswordInput, required=False)
     def __init__(self, *args, **kwargs):
         _fields = ('first_name', 'last_name', 'email')
         instance = kwargs.get('instance', None)
         _initial = kwargs.get('initial', {})
-        _initial.update(model_to_dict(instance.user, _fields) if instance is not None else {})
+        _initial.update(
+            model_to_dict(instance.user, _fields) if instance is not None else {})
         kwargs['instance'] = instance
         kwargs['initial'] = _initial
         super(BasicProfileForm, self).__init__(*args, **kwargs)
@@ -67,14 +69,10 @@ class CodeRegistrationForm(BasicProfileForm):
         elif self.cleaned_data['register_as'] == 'competitor':
             codegen = competition.competitor_code_generator
         try:
-            # since the codes might not be synchronized between nodes, this
-            # might as well fail. The managers for a user can be recreated later.
+            # comment out the following 2 lines to improve performance; 
+            # the managers can be update later
             code = codegen.codes.get(value = self.cleaned_data["access_code"])
-            for o in code.owner_set.all():
-                o.managed_users.add(profile.user)
-                for s in superiors(o, 
-                        competition.administrator_code_generator, set()):
-                    s.managed_users.add(profile.user)
+            self.update_managers(codes = [code])
         except Exception, e:
             print e
             pass
@@ -117,7 +115,6 @@ class CompetitionCreateForm(forms.ModelForm):
         widgets = {
             'start': widgets.AdminSplitDateTime(),
             'end': widgets.AdminSplitDateTime(),
-
         }
     competitor_code_format = forms.ModelChoiceField(
         queryset = code_based_auth.models.CodeFormat.objects.filter(

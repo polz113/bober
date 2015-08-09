@@ -300,14 +300,14 @@ def competition_index(request, competition_questionset_id):
 def competition_guest(request, competition_questionset_id):
     competition_questionset = CompetitionQuestionSet.objects.get(
         id=competition_questionset_id)
-    guest_code = competition_questionset.competition.guest_code
+    guest_code = competition_questionset.guest_code
     if guest_code is not None:
-        code = guest_access_code.value
+        code = guest_code.value
         request.session["access_code"] = code
     else:
         code = None
-	# code = ''.join([random.choice(string.digits) for _ in xrange(9)])
-	return render_to_response("bober_simple_competition/competition_guest.html", locals())
+    # code = ''.join([random.choice(string.digits) for _ in xrange(9)])
+    return render_to_response("bober_simple_competition/competition_guest.html", locals())
 
 #   nginx and Apache support access control to static files by an application.
 #   Access is granted by setting a header. The name of the header is different
@@ -386,8 +386,9 @@ def competition_data(request, competition_questionset_id):
                 val = ''
             answers.append({ 'q': a.randomized_question_id, 'a': str(val)})
     except Exception, e:
+        competition = competition_questionset.competition
         finish = timezone.now() + datetime.timedelta(
-            seconds = competition_questionset.competition.duration)
+            seconds = competition.duration)
         attempt = Attempt(user=user_profile,
             competitionquestionset_id = competition_questionset_id,
             access_code=access_code,
@@ -508,13 +509,13 @@ class ProfileListView(LoginRequiredMixin, ListView):
         print c
         return c
     def get_queryset(self):
-        return self.request.user.profile.managed_users.all() 
+        return self.request.user.profile.managed_profiles.all() 
 
 class ProfileDetail(LoginRequiredMixin, DetailView):
     model = Profile
     def get(self, request):
         try:
-            f = self.request.user.profile.managed_users.get(id=self.object.id)
+            f = self.request.user.profile.managed_profiles.get(id=self.object.id)
         except:
             return PermissionDenied
         return super(ProfileDetail, self).get(request)
@@ -525,15 +526,10 @@ class ProfileUpdate(LoginRequiredMixin, UpdateView):
     success_url = reverse_lazy('profile_list')
     def form_valid(self, form):
         try:
-            f = self.request.user.profile.managed_users.get(id=form.instance.id)
+            f = self.request.user.profile.managed_profiles.get(id=form.instance.id)
         except:
             return PermissionDenied
         return super(ProfileUpdate, self).form_valid(form)
-
-@login_required
-def user_list(request, competition_id = None):
-    object_list = request.user.profile.managed_users.all()
-    return render_to_response("bober_simple_competition/user_list.html", locals())
 
 # 5.1 merge users
 #  any users registered with codes created or distributed

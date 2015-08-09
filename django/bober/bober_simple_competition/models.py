@@ -13,6 +13,7 @@ from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 from django.utils.text import slugify
 from django.utils.translation import ugettext as _
+from django.utils import timezone
 import random
 import os
 import json
@@ -20,6 +21,7 @@ import base64
 import zipfile
 from bs4 import BeautifulSoup
 import mimetypes
+
 
 # Create your models here.
 VERIFICATION_FUNCTION_TYPES = (
@@ -87,7 +89,6 @@ class Competition(models.Model):
     competitor_code_generator = ForeignKey(CodeGenerator, related_name='competitor_code_competition_set')
     questionsets = ManyToManyField('QuestionSet', through='CompetitionQuestionSet')
     start = DateTimeField()
-    guest_code = ForeignKey(Code, null=True, blank=True)
     # duration in seconds
     duration = IntegerField(default=60*60) # 60s * 60 = 1h.
     end = DateTimeField()
@@ -98,6 +99,7 @@ class CompetitionQuestionSet(models.Model):
     name = models.CharField(max_length=256, null=True, blank=True)
     questionset = models.ForeignKey('QuestionSet')
     competition = models.ForeignKey('Competition')
+    guest_code = ForeignKey(Code, null=True, blank=True)
 
 class QuestionSet(models.Model):
     def __unicode__(self):
@@ -490,31 +492,99 @@ class Attempt(models.Model):
                     return answers
         return answers
 
-def superiors(profile, codegen, known):
-    for c in profile.received_codes.filter(codegenerator = codegen):#,
-        #    code_parts__name='administrator_privileges',
-        #    code_parts__value='edit_users').unique():
-        for o in c.owner_set.all():
-            if o not in known:
-                s1 = superiors(o, codegen, known)
-                known = s1.union(known)
-                known.add(o)
-    return known
 
 class Profile(models.Model):
     def __unicode__(self):
         return unicode(self.user)
     user = models.OneToOneField(User)
-    managed_users = models.ManyToManyField(User, related_name='managers', null=True, blank=True)
+    managed_profiles = models.ManyToManyField('Profile', related_name='managers', null=True, blank=True)
+    # managed_users = models.ManyToManyField(User, related_name='managers', null=True, blank=True)
     #first_competition = models.ForeignKey(Competition, null=True, blank=True)
     #registration_code = CodeField(null=True, blank=True)
     created_codes = ManyToManyField(Code, null=True, blank=True,
         related_name='owner_set')
     received_codes = ManyToManyField(Code, null=True, blank=True,
+        related_name='recipient_set')
+    used_codes = ManyToManyField(Code, null=True, blank=True,
         related_name='user_set')
     merged_with = ForeignKey(User, null = True, blank=True, related_name='merged_set')
+    update_used_codes_timestamp = DateTimeField(null=True, blank=True)
+    update_managers_timestamp = DateTimeField(null=True, blank=True)
     vcard = models.TextField(blank=True)
-        
+
+    def __superiors(self, codegen, known):
+        for c in self.received_codes.filter(format = codegen.format,
+                salt = codegen.salt):
+            for o in c.owner_set.all():
+                if o not in known:
+                    s1 = superiors(o, codegen, known)
+                    known = s1.union(known)
+                    known.add(o)
+        return known
+
+    def update_used_codes(self):
+        if self.update_used_codes_timestamp is None:
+            attempts = self.attempt_set.all()
+        else:
+            attempts = self.attempt_set.filter(
+                start__gte = self.update_used_codes_timestamp)
+            self.update_used_codes_timestamp = timezone.now()
+        for a in attempts:
+            try:
+                codegen = a.competitionquestionset.competition.competitor_code_generator
+                codes = Code.objects.filter(
+                    value = a.access_code, 
+                    salt = codegen.salt,
+                    format = codegen.format
+                )
+                for c in codes:
+                    used_codes.add(c)
+            except Exception, e:
+                print e
+                pass
+
+    def update_managers(self, codes = None):
+        if codes is None:
+            update_managers_timestamp = timezone.now()
+            codes = self.used_codes
+        for c in codes:
+            if c.format.code_matches(c.salt,
+                c.value, {'code_effects': ['let_manage']}):
+                    for u in c.owner_set:
+                        u.managed_profiles.add(self)
+            if c.format.code_matches(c.salt,
+                c.value, {'code_effects': ['let_manage_recursive']}):
+                    competitions = Competition.objects.filter(
+                        competitor_code_generator__salt = c.salt,
+                        competitor_code_generator__format = c.format).unique()
+                    for u in c.owner_set:
+                        u.managed_profiles.add(self)
+                        for competition in competitions:
+                            for superior in superiors(u,
+                                    competition.administrator_code_generator):
+                                superior.managed_profiles.add(self)
+
+    def update_managed_profiles(self, codes = None):
+        if codes is None:
+            codes = Code.objects.filter(owner_set = self).unique()
+        for c in codes:
+            if c.format.code_matches(c.salt,
+                c.value, {'code_effects': ['let_manage']}):
+                    for u in c.user_set:
+                        u.managers.add(self.user)
+            if c.format.code_matches(c.salt,
+                c.value, {'code_effects': ['let_manage_recursive']}):
+                    competitions = Competition.objects.filter(
+                        competitor_code_generator__salt = c.salt,
+                        competitor_code_generator__format = c.format).unique()
+                    for u in c.user_set:
+                        u.managers.add(self.user)
+                        for competition in competitions:
+                            for superior in u.__superiors(
+                                    competition.administrator_code_generator):
+                                u.managers.add(superior)
+
+ 
 def create_profile(sender, instance=None, **kwargs):
     try:
         p = instance.profile

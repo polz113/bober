@@ -10,5 +10,7 @@
 {% if not request.user.is_authenticated %}
 <a href="{% url "django.contrib.auth.views.login" %}" class="btn">{% trans "Login" %}</a>
 <a href="{% url "user_registration" %}" class="btn">{% trans "Register" %}</a>
+{% else %}
+<a href="{% url "profile_list" %}" class="btn">{% trans "Managed users" %}</a>
 {% endif %}
 {% endblock %}

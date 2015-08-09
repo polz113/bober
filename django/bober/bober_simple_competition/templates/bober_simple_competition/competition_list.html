@@ -16,9 +16,11 @@
 			<a href='{% url "competition_attempt_list" competition_slug=i.slug %}' class="btn">{% trans "attempts" %}</a>
 			<div class="questionsets">
 				  {% for j in i.competitionquestionset_set.all %}
-					<a href="{% url 'competition_registration' competition_questionset_id=j.id %}">{{j.questionset.name}}</a>
+				<div>
+					<a href="{% url 'competition_registration' competition_questionset_id=j.id %}">{{j.name}} - {{j.questionset.name}}</a>
 					&nbsp;&nbsp;					
 					<a href="{% url 'competition_guest' competition_questionset_id=j.id %}">{% trans "Compete as guest" %}</a>
+				</div>
 				  {% endfor %}
 			</div>
 	</div>

@@ -6,6 +6,29 @@
 {% block headline %}{% trans "Edit user" %}{% endblock %}
 
 {% block content %}
+{{ object }}
+{{ object.pk }}
+<div>
+{% for c in object.used_codes.all %}
+{{c}}<br/>
+{% endfor %}
+</div>
+<div>
+{% for c in object.received_codes.all %}
+{{c}}<br/>
+{% endfor %}
+</div>
+<div>
+{% for c in object.created_codes.all %}
+{{c}}<br/>
+{% endfor %}
+</div>
+
+<div>
+{% for a in object.attempt_list.all %}
+{{a}}<br/>
+{% endfor %}
+</div>
 <form action="" method="post" id="profile_form" class="form_compete_table">
 {% csrf_token %}
 <table>
