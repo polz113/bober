@@ -130,6 +130,7 @@ class CodeFormat(models.Model):
                 else:
                     s = split_parts[i].split(component.part_separator)
                     if len(s) > component.max_parts:
+                        # print "max parts exceeded", component, s
                         return False
                     for h in s:
                         hashes.add(h)
@@ -139,6 +140,7 @@ class CodeFormat(models.Model):
             for k, values in parts.iteritems():
                 fn, bits, algorithm, hashes = hash_params[k]
                 if len(values) < 1:
+                    # print "values below 1"
                     return False
                 for value in values:
                     h = fn(salt + challenge,
@@ -146,6 +148,7 @@ class CodeFormat(models.Model):
                     if h not in hashes:
                         return False
         except Exception, e:
+            # print e
             return False
         return True
                 

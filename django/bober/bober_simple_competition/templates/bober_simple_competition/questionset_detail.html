@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load static %}
+{% load admin_static %}
+{% static 'admin' %}
+{% block title %}{% trans "Question set" %}{% endblock %}
+
+{% block headline %}{% trans "Question set" %}{% endblock %}
+{% block content %}
+  {{object.name}}
+  ({{object.slug}})
+  <ul>
+  {% for q in object.questions.all %}
+    <li>{{q}}</li>
+  {%endfor%}
+  </ul>
+  <a href="{% url 'questionset_update' pk=object.pk %}" class="button">
+    {% trans "Edit questionset" %}
+  </a><br/>
+
+{% endblock %}

@@ -1,20 +1,24 @@
 {% extends "base.html" %}
 {% load i18n %}
-
+{% load static %}
+{% load admin_static %}
+{% static 'admin' %}
 {% block title %}{% trans "Competition" %}{% endblock %}
 
-{% block headline %}{{object.slug}}{% endblock %}
-
+{% block headline %}{% trans "Competition" %}{% endblock %}
+{% block extrahead %}
+{% endblock %}
 {% block content %}
-<a href="{% url "competition_code_list" competition_slug=object.slug %}">{% trans "codes" %}</a>
-<a href="{% url "competition_attempt_list" competition_slug=object.slug %}">{% trans "attempts" %}</a>
-
-<div class="competition_questionset">
-{% for j in object.competitionquestionset_set.all %}
-    <a href="{% url 'competition_registration' competition_questionset_id=j.id %}">{{j.questionset.name}}</a>
-					&nbsp;&nbsp;					
-    <a href="{% url 'competition_guest' competition_questionset_id=j.id %}">{% trans "Compete as guest" %}</a>
+<h1>{{object.slug}}</h1>
+<a href='{% url "competition_code_list" competition_slug=object.slug %}' class="btn">{% trans "codes" %}</a>
+<a href='{% url "competition_attempt_list" competition_slug=object.slug %}' class="btn">{% trans "attempts" %}</a>
+<a href='{% url "competition_update" slug=object.slug %}' class="btn">{% trans "edit" %}</a>
+<div id='questionsets'>
+{% trans "Question sets" %}
+<ul>
+{% for qs in object.questionsets.all %}
+  <li>{{qs}}</li>
 {% endfor %}
+</ul>
 </div>
 {% endblock %}
-

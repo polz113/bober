@@ -11,8 +11,9 @@ urlpatterns = patterns('',
     # 1. login / enter access code
     url(r'^access_code/(?P<next>.*)$', views.access_code, name="access_code"),
     # 2. pick competition
-    url(r'^competitions/$', views.CompetitionListView.as_view(), name="competition_list"),
-    url(r'^competitions/(?P<slug>[\w-]+)/$', views.CompetitionDetailView.as_view(), name="competition_detail"),
+    url(r'^competitions/$', views.CompetitionList.as_view(), name="competition_list"),
+    url(r'^competitions/(?P<slug>[\w-]+)/$', views.CompetitionDetail.as_view(), name="competition_detail"),
+    url(r'^competitions/(?P<slug>[\w-]+)/update$', views.CompetitionUpdate.as_view(), name="competition_update"),
     #   2.1 teacher, admin (for this competition)
     #     2.1.1 create, list codes for competition
     url(r'^competitions/(?P<competition_slug>[\w-]+)/codes$', views.competition_code_list, name="competition_code_list"),
@@ -71,12 +72,19 @@ urlpatterns = patterns('',
     # 6. import question(s)
     url(r'^question_import/$', views.question_import, name="question_import"),
     # 7. create questionset from questions
-    url(r'^questionset_create/$', views.questionset_create, name="questionset_create"),
+    url(r'^questionset/$', views.QuestionSetList.as_view()),
+    url(r'^questionset/create$', views.QuestionSetCreate.as_view(),
+        name="questionset_create"),
+    url(r'^questionset/(?P<pk>\d+)/update$', views.QuestionSetUpdate.as_view(),
+        name="questionset_update"),
+    url(r'^questionset/(?P<pk>\d+)/delete$', views.QuestionSetDelete.as_view()),
+    url(r'^questionset/(?P<pk>\d+)/$', views.QuestionSetDetail.as_view(), 
+        name="questionset_detail"),
     #   all questions for competitions you have admin access to can be used
     # 8. create competition (from multiple questionsets)
     #   all questionsets for competitions you have admin access to can be used.
     #   Also, newly created questionsets can be used.
-    url(r'^competition_create/$', views.competition_create, name="competition_create"),
+    url(r'^competition_create/$', views.CompetitionCreate.as_view(), name="competition_create"),
     url(r'^code_format_create/(?P<user_type>\w+)/$', views.code_format_create, name="code_format_create"),
     # shortcut for registering and competing immediately 
     url(r'^immediate_competition/$', views.immediate_competition, name="immediate_competition"),

@@ -11,6 +11,7 @@ from code_based_auth.models import Code, CodeField, CodeGenerator
 from taggit.managers import TaggableManager
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
+from django.core.urlresolvers import reverse
 from django.utils.text import slugify
 from django.utils.translation import ugettext as _
 from django.utils import timezone
@@ -85,6 +86,8 @@ class Competition(models.Model):
         s = self.slug
         s += ": " + ", ".join([i.slug for i in self.questionsets.all()])
         return s
+    def get_absolute_url(self):
+        return reverse('competition_detail', kwargs={'slug': str(self.slug)})
     slug = SlugField(unique=True)
     administrator_code_generator = ForeignKey(CodeGenerator, related_name='administrator_code_competition_set')
     competitor_code_generator = ForeignKey(CodeGenerator, related_name='competitor_code_competition_set')
@@ -105,10 +108,12 @@ class CompetitionQuestionSet(models.Model):
 class QuestionSet(models.Model):
     def __unicode__(self):
         return u"{}: {}".format(self.name, ",".join([unicode(i) for i in self.questions.all()]))
+    def get_absolute_url(self):
+        return reverse('questionset_detail', kwargs={'pk': str(self.id)})
     slug = SlugField(unique=True)
     name = CharField(max_length = 255)
     questions = ManyToManyField('Question')
-    resource_caches = ManyToManyField('ResourceCache')
+    resource_caches = ManyToManyField('ResourceCache', null=True, blank=True)
     def question_mapping(self, random_seed):
         q = self.questions.order_by('identifier').values_list('identifier')
         d = dict()
@@ -503,11 +508,12 @@ class Profile(models.Model):
     #first_competition = models.ForeignKey(Competition, null=True, blank=True)
     #registration_code = CodeField(null=True, blank=True)
     created_codes = ManyToManyField(Code, null=True, blank=True,
-        related_name='owner_set')
+        related_name='creator_set')
     received_codes = ManyToManyField(Code, null=True, blank=True,
         related_name='recipient_set')
     used_codes = ManyToManyField(Code, null=True, blank=True,
         related_name='user_set')
+    question_sets = ManyToManyField(QuestionSet, null=True, blank=True)
     merged_with = ForeignKey(User, null = True, blank=True, related_name='merged_set')
     update_used_codes_timestamp = DateTimeField(null=True, blank=True)
     update_managers_timestamp = DateTimeField(null=True, blank=True)

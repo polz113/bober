@@ -22,10 +22,11 @@ class CategoryForm(forms.ModelForm):
   description = forms.CharField(required=True)
   class Meta:
       model = Category
+      exclude = []
 
 class DifficultyForm(forms.ModelForm):
   value = forms.CharField(required=True)
   class Meta:
       model = DifficultyLevel
-
+      exclude = []
 

@@ -3,6 +3,7 @@ from django.forms.models import inlineformset_factory, model_to_dict, fields_for
 # from django.forms.models import model_to_dict, fields_for_model
 from bober_simple_competition.models import *
 from django.utils.translation import ugettext as _
+from extra_views import InlineFormSet
 import code_based_auth.models
 from django.contrib.admin import widgets
 
@@ -111,7 +112,7 @@ class CompetitionCreateForm(forms.ModelForm):
         model = Competition
         exclude = ('administrator_code_generator', 
             'competitor_code_generator',
-            'questionsets', 'guest_code')
+            'questionsets')
         widgets = {
             'start': widgets.AdminSplitDateTime(),
             'end': widgets.AdminSplitDateTime(),
@@ -124,6 +125,15 @@ class CompetitionCreateForm(forms.ModelForm):
             components__name = 'admin_privileges').distinct())
     admin_salt = forms.CharField()
     competitor_salt = forms.CharField()
+
+class CompetitionUpdateForm(forms.ModelForm):
+    class Meta:
+        model = Competition
+        exclude = ['questionsets']
+        widgets = {
+            'start': widgets.AdminSplitDateTime(),
+            'end': widgets.AdminSplitDateTime(),
+        }
 
 class CodeFormatForm(forms.Form):
     code_id_bits = forms.IntegerField(initial=32)
@@ -157,6 +167,74 @@ class AdminCodeFormatForm(CodeFormatForm):
         initial = code_based_auth.models.DEFAULT_HASH_ALGORITHM,
         choices = code_based_auth.models.HASH_ALGORITHMS)
  
-CompetitionFormSet = inlineformset_factory(Competition, 
-    CompetitionQuestionSet, fields='__all__')
+class CompetitionQuestionSetCreateForm(forms.ModelForm):
+    class Meta:
+        model = CompetitionQuestionSet
+        exclude = ('guest_code',)
+    create_guest_code = forms.BooleanField(required=False)
+    def save(self, *args, **kwargs):
+        retval = super(CompetitionQuestionSetCreateForm,self).save(*args, **kwargs)
+        if self.cleaned_data['create_guest_code'] and \
+                self.instance.guest_code is None:
+            generator = self.instance.competition.competitor_code_generator
+            code_data = {
+                'competitor_privileges':[
+                    'attempt', 'results_before_end'
+                ],
+                'code_effects': ['new_attempt'],
+                'competition_questionset': [
+                    str(self.instance.id) + "." + \
+                        str(self.instance.name)]
+            }
+            c = generator.create_code(code_data)
+            self.instance.guest_code = c
+        return retval 
 
+class CompetitionQuestionSetUpdateForm(forms.ModelForm):
+    class Meta:
+        model = CompetitionQuestionSet
+        exclude = []
+    create_guest_code = forms.BooleanField(required=False)
+    def save(self, *args, **kwargs):
+        retval = super(CompetitionQuestionSetUpdateForm,self).save(*args, **kwargs)
+        if self.cleaned_data['create_guest_code'] and \
+                self.instance.guest_code is None:
+            print "Generating code!"
+            generator = self.instance.competition.competitor_code_generator
+            code_data = {
+                'competitor_privileges':[
+                    'attempt', 'results_before_end'
+                ],
+                'code_effects': ['new_attempt'],
+                'competition_questionset': [
+                    str(self.instance.id) + "." + \
+                        str(self.instance.name)]
+            }
+            c = generator.create_code(code_data)
+            self.instance.guest_code = c
+            self.instance.save()
+        return retval
+
+class QuestionSetForm(forms.ModelForm):
+    class Meta:
+        model = QuestionSet
+        exclude = ['resource_caches']
+    def save(self, *args, **kwargs):
+        retval = super(QuestionSetForm, self).save(*args, **kwargs)
+        self.instance.rebuild_caches()
+        return retval
+
+class CompetitionQuestionSetCreateInline(InlineFormSet):
+    model = CompetitionQuestionSet
+    form_class = CompetitionQuestionSetCreateForm
+    can_delete = False
+
+class CompetitionQuestionSetUpdateInline(InlineFormSet):
+    model = CompetitionQuestionSet
+    form_class = CompetitionQuestionSetUpdateForm
+
+CompetitionCreateFormSet = inlineformset_factory(Competition,
+    CompetitionQuestionSet, form = CompetitionQuestionSetCreateForm, can_delete = False)
+
+CompetitionUpdateFormSet = inlineformset_factory(Competition, 
+    CompetitionQuestionSet, form = CompetitionQuestionSetUpdateForm, fields='__all__')

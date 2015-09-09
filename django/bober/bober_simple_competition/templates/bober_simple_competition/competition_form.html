@@ -3,9 +3,9 @@
 {% load static %}
 {% load admin_static %}
 {% static 'admin' %}
-{% block title %}{% trans "Create competition" %}{% endblock %}
+{% block title %}{% trans "Edit competition" %}{% endblock %}
 
-{% block headline %}{% trans "Create competition" %}{% endblock %}
+{% block headline %}{% trans "Edit competition" %}{% endblock %}
 {% block extrahead %}
 <link rel="stylesheet" type="text/css" href="{% static "admin/css/base.css" %}" />
 <link rel="stylesheet" type="text/css" href="{% static "admin/css/changelists.css" %}" />
@@ -41,13 +41,20 @@
 </div>
 <div id='questionsets'>
 {% trans "Question sets" %}
+{% for inline in inlines %}
     <table>
-        {{formset}}
+{{inline}}
     </table>
+{% endfor %}
 </div>
 <a id="toggle_extended_form_fields1">{% trans "Show more" %}</a>
 <div id="extended_form_fields1">
 <table>
+{% if form.competitor_code_generator %}
+<tr><th><label for="{{ form.competitor_code_generator.id_for_label }}">{{form.competitor_code_generator.label}}:</label></th><td>{{ form.competitor_code_generator.errors }}{{ form.competitor_code_generator }}</td></tr>{% endif %}
+{% if form.administrator_code_generator %}
+<tr><th><label for="{{ form.administrator_code_generator.id_for_label }}">{{form.administrator_code_generator.label}}:</label></th><td>{{ form.administrator_code_generator.errors }}{{ form.administrator_code_generator }}</td></tr>{% endif %}
+{% if form.competitor_code_format %}
 <tr><th><label for="{{ form.competitor_code_format.id_for_label }}">{{form.competitor_code_format.label}}:</label></th><td>{{ form.competitor_code_format.errors }}{{ form.competitor_code_format }}</td></tr>
 <tr><th><label for="{{ form.admin_code_format.id_for_label }}">{{form.admin_code_format.label}}:</label></th><td>
 {{ form.admin_code_format.errors }}{{ form.admin_code_format }}</td></tr>
@@ -62,6 +69,9 @@
 <a href="{% url 'code_format_create' user_type='competitor' %}" class="button">
   {% trans "Create code format for competitors" %}
 </a>
+{% else %}
+</table>
+{% endif %}
 </div>
 	<input type="submit" value='{% trans "Submit" %}' />
 	</form>

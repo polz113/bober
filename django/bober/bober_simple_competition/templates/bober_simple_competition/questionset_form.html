@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load static %}
+{% load admin_static %}
+{% static 'admin' %}
+{% block title %}{% trans "Question set" %}{% endblock %}
+
+{% block headline %}{% trans "Question set" %}{% endblock %}
+{% block content %}
+<form action="" method="post">
+{%csrf_token%}
+<table>
+  {{form}}
+</table>
+<input type="submit" value='{% trans "Submit" %}' />
+</form> 
+{% endblock %}
