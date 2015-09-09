@@ -1,28 +1,16 @@
 {% extends "base.html" %}
 {% load i18n %}
-
+{% load static %}
 {% block title %}{% trans "Edit user" %}{% endblock %}
 
 {% block headline %}{% trans "Edit user" %}{% endblock %}
-
+{% block extrahead %}
+<script type="text/javascript" src="{% static "admin/js/jquery.js" %}"></script>
+<script type="text/javascript" src="{% static "admin/js/jquery.init.js" %}"></script>
+{% endblock %}
 {% block content %}
-{{ object }}
-{{ object.pk }}
-<div>
-{% for c in object.used_codes.all %}
-{{c}}<br/>
-{% endfor %}
-</div>
-<div>
-{% for c in object.received_codes.all %}
-{{c}}<br/>
-{% endfor %}
-</div>
-<div>
-{% for c in object.created_codes.all %}
-{{c}}<br/>
-{% endfor %}
-</div>
+{{ object }} [{{ object.pk }}]
+
 
 <div>
 {% for a in object.attempt_list.all %}
@@ -35,5 +23,52 @@
 {{form}}
 </table>
 <input type="submit" value='{% trans "Submit" %}' class="btn"/>
+
+<br><br>
+{% trans "Codes" %}
+<br>
+<a id="toggle_extended_form_fields1">{% trans "Show codes" %}</a>
+<div id="extended_form_fields1">
+	<div><br>
+		{% trans "Used codes" %}<hr>
+		<ul>
+		{% for c in object.used_codes.all %}
+		<li>{{c}}</li>
+		{% endfor %}
+		</ul>
+	</div>
+	
+	<div><br>
+		{% trans "Received codes" %}<hr>
+		<ul>
+		{% for c in object.received_codes.all %}
+		<li>{{c}}</li>
+		{% endfor %}
+		</ul>
+	</div>
+	
+	<div><br>
+		{% trans "Created codes" %}<hr>
+		<ul>
+		{% for c in object.created_codes.all %}
+		<li>{{c}}</li>
+		{% endfor %}
+		</ul>
+	</div>
+</div>
 </form>
+<script type="text/javascript">
+$ = django.jQuery;
+$('#extended_form_fields1').css('visibility','hidden');
+$('#toggle_extended_form_fields1').click(function(){
+  if ( $('#extended_form_fields1').css('visibility') == 'hidden' ){
+    $('#extended_form_fields1').css('visibility','visible');
+    $('#toggle_extended_form_fields1').text('{% trans "Hide codes" %}');
+  } else {
+    $('#extended_form_fields1').css('visibility','hidden');
+    $('#toggle_extended_form_fields1').text('{% trans "Show codes" %}');
+  }
+});
+
+</script>
 {% endblock %}
