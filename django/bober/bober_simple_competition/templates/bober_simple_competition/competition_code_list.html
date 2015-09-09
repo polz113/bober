@@ -13,7 +13,7 @@
 {{access_code}}
 <h1>{% trans "Admin codes" %}</h1>
 {% if can_create_administrator_codes %}
-<a href="{% url "competition_code_create" competition_slug=competition_slug user_type='admin' %}">{% trans "Generate code" %}</a>
+<a href="{% url "competition_code_create" competition_slug=competition_slug user_type='admin' %}" class="btn">{% trans "Generate code" %}</a>
 {% endif %}
 <ul>
 {% for i in admin_codes %}
@@ -22,7 +22,7 @@
 </ul>
 <h1>{% trans "Competitor codes" %}</h1>
 {% if can_create_competitor_codes %}
-<a href="{% url "competition_code_create" competition_slug=competition_slug user_type='competitor' %}">{% trans "Generate code" %}</a>
+<a href="{% url "competition_code_create" competition_slug=competition_slug user_type='competitor' %}" class="btn">{% trans "Generate code" %}</a>
 {% endif %}
 <ul>
 {% for i in competitor_codes %}
