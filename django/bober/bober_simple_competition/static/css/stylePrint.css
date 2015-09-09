@@ -301,3 +301,10 @@ p.bottom_text{
 .questionsets:before{
 	content: "• ";
 }
+
+/*----------Long text that breaks-------------------------------------*/
+.longTextBreak {
+	word-break: break-all;
+}
+
+
