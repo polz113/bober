@@ -6,6 +6,7 @@ from django.utils.translation import ugettext as _
 from extra_views import InlineFormSet
 import code_based_auth.models
 from django.contrib.admin import widgets
+from django.forms import ModelForm, TextInput
 
 class ProfileForm(forms.ModelForm):
     class Meta:
@@ -18,14 +19,19 @@ class MinimalAccessCodeForm(forms.Form):
 class BasicProfileForm(forms.ModelForm):
     class Meta:
         model = Profile
-        exclude = ('user', 'created_codes', 'received_codes',
-            'vcard', 'merged_with', 'managed_profiles', 'used_codes',
-            'update_used_codes_timestamp', 'update_managers_timestamp')
+        
+        """exclude = ('user', 'created_codes', 'received_codes',
+            'vcard', 'question_sets', 'managed_profiles', 'used_codes',
+            'update_used_codes_timestamp', 'update_managers_timestamp')"""
+        fields = ('merged_with',);
+        widgets = {
+				'merged_with': TextInput(),
+        }
     password = forms.CharField(widget = forms.PasswordInput, required=False)
     def __init__(self, *args, **kwargs):
         _fields = ('first_name', 'last_name', 'email')
         instance = kwargs.get('instance', None)
-        _initial = kwargs.get('initial', {})
+        _initial = kwargs.get('initial', {'merged_with':'test'})
         _initial.update(
             model_to_dict(instance.user, _fields) if instance is not None else {})
         kwargs['instance'] = instance
