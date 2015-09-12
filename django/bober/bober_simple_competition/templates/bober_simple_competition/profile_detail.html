@@ -9,9 +9,9 @@
 {% endblock %}
 {% block content %}
 <div>
-{{object.first_name}}<br/>
-{{object.last_name}}<br/>
-{{ object.email }} [{{ object.pk }}]<br/>
+{{object.user.first_name}}<br/>
+{{object.user.last_name}}<br/>
+{{object.user.email}}<br/>
 </div>
 
 <div>
