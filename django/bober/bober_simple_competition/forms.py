@@ -6,6 +6,7 @@ from django.utils.translation import ugettext as _
 from extra_views import InlineFormSet
 import code_based_auth.models
 from django.contrib.admin import widgets
+import autocomplete_light
 from django.forms import ModelForm, TextInput
 
 class ProfileForm(forms.ModelForm):
@@ -16,7 +17,7 @@ class ProfileForm(forms.ModelForm):
 class MinimalAccessCodeForm(forms.Form):
     access_code = forms.CharField(label=_('Access code'), max_length=256)
 
-class BasicProfileForm(forms.ModelForm):
+class BasicProfileForm(autocomplete_light.ModelForm):
     class Meta:
         model = Profile
         
@@ -24,21 +25,22 @@ class BasicProfileForm(forms.ModelForm):
             'vcard', 'question_sets', 'managed_profiles', 'used_codes',
             'update_used_codes_timestamp', 'update_managers_timestamp')"""
         fields = ('merged_with',);
-        widgets = {
-				'merged_with': TextInput(),
-        }
+        #widgets = {
+        #    'merged_with': autocomplete_light.TextWidget('ProfileAutocomplete', 
+        #        attrs={'class':'modern-style'}),
+        #}
     password = forms.CharField(widget = forms.PasswordInput, required=False)
     def __init__(self, *args, **kwargs):
         _fields = ('first_name', 'last_name', 'email')
         instance = kwargs.get('instance', None)
-        _initial = kwargs.get('initial', {'merged_with':'test'})
+        _initial = kwargs.get('initial', {})
         _initial.update(
             model_to_dict(instance.user, _fields) if instance is not None else {})
-        kwargs['instance'] = instance
         kwargs['initial'] = _initial
-        super(BasicProfileForm, self).__init__(*args, **kwargs)
+        retval = super(BasicProfileForm, self).__init__(*args, **kwargs)
         self.fields.update(fields_for_model(User, _fields))
-
+        print self.initial
+        return retval
     def save(self, *args, **kwargs):
         if self.instance.id is not None:
             u = self.instance.user

@@ -10,7 +10,9 @@ import bober_simple_competition.urls
 import bober_tasks
 import bober_tasks.urls
 from django.views.generic import RedirectView
+import autocomplete_light
 
+autocomplete_light.autodiscover()
 admin.autodiscover()
 
 js_info_dict = {
@@ -24,6 +26,7 @@ urlpatterns = patterns('',
     # url(r'^blog/', include('blog.urls')),
     url(r'^$', RedirectView.as_view(url='simple/')),
     url(r'^admin/', include(admin.site.urls)),
+    url(r'^autocomplete/', include('autocomplete_light.urls')),
     url('', include('django.contrib.auth.urls')),
     url(r'^school_mentor/', include(bober_paper_submissions.urls)),
     url(r'^simple/', include(bober_simple_competition.urls)),
