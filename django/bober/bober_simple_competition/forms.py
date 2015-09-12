@@ -22,7 +22,6 @@ class MinimalAccessCodeForm(forms.Form):
 class BasicProfileForm(forms.ModelForm):
     class Meta:
         model = Profile
-        
         """exclude = ('user', 'created_codes', 'received_codes',
             'vcard', 'question_sets', 'managed_profiles', 'used_codes',
             'update_used_codes_timestamp', 'update_managers_timestamp')"""
@@ -49,7 +48,10 @@ class BasicProfileForm(forms.ModelForm):
         unordered_fields.update(fields_for_model(User, _fields))
         self.fields = OrderedDict()
         for k in ['first_name', 'last_name', 'email', 'password', 'merged_with']:
-            self.fields[k] = unordered_fields.pop(k)
+            try:
+                self.fields[k] = unordered_fields.pop(k)
+            except:
+                pass
         # add the fields not listed above at the end
         self.fields.update(unordered_fields)
     def save(self, *args, **kwargs):
@@ -81,6 +83,19 @@ class ProfileEditForm(BasicProfileForm):
     pass
 
 class CodeRegistrationForm(BasicProfileForm):
+    class Meta:
+        model = Profile
+        """exclude = ('user', 'created_codes', 'received_codes',
+            'vcard', 'question_sets', 'managed_profiles', 'used_codes',
+            'update_used_codes_timestamp', 'update_managers_timestamp')"""
+        fields = []
+        widgets = {
+            # the autocomplete: off is supposed to preven firefox from filling in the form
+            # with the current username
+            'merged_with': autocomplete_light.ChoiceWidget('ManagedUsersAutocomplete', 
+                attrs={'class':'modern-style', 'autocomplete': 'off'}),
+        #    'merged_with': django_widgets.Select()
+        }
     access_code = forms.CharField(label=_('Access code'), max_length=256)
     register_as = forms.ChoiceField(choices=USER_ROLES)
     competition = forms.ModelChoiceField(Competition.objects.all())

@@ -596,13 +596,15 @@ class ProfileListView(LoginRequiredMixin, ListView):
     template_name = 'bober_simple_competition/profile_list.html'
     def get_context_data(self, **kwargs):
         c = super(ProfileListView, self).get_context_data(**kwargs)
-        print c
+        # print c
         return c
     def get_queryset(self):
         return self.request.user.profile.managed_profiles.filter(merged_with=None) 
 
 class ProfileDetail(LoginRequiredMixin, DetailView):
     model = Profile
+    def get_queryset(self):
+        return self.request.user.profile.managed_profiles.all() 
 #    def get(self, request):
 #        try:
 #            f = self.request.user.profile.managed_profiles.get(id=self.object.id)
@@ -620,24 +622,16 @@ class ProfileUpdate(LoginRequiredMixin, UpdateView):
     model = Profile
     form_class = ProfileEditForm
     success_url = reverse_lazy('profile_list')
-    def __valid_managed_profiles(self):
-        try:
-            choices = self.request.user.profile.managed_profiles.all()
-        except Exception, e:
-            print e
-            choices = Profile.objects.none()
-        return choices
-
+    def get_queryset(self):
+        return self.request.user.profile.managed_profiles.all()
     def get_form(self, form_class):
         form = super(UpdateView, self).get_form(form_class)
-        form.fields['merged_with'].queryset = self.__valid_managed_profiles()
+        form.fields['merged_with'].queryset = self.get_queryset()
         return form
     def form_valid(self, form):
-        if (form.instance not in self.__valid_managed_profiles()):
-            return PermissionDenied
         if (form.instance.merged_with is not None
                 and form.instance.merged_with \
-                    not in self.__valid_managed_profiles()):
+                    not in self.get_queryset()):
             print "merged_with user not managed"
             return PermissionDenied
         return super(ProfileUpdate, self).form_valid(form)
@@ -658,9 +652,13 @@ def question_import(request):
 
 class QuestionSetList(LoginRequiredMixin, ListView):
     model = QuestionSet
+    def get_queryset(self):
+        return self.request.user.profile.question_sets.all() 
 
 class QuestionSetDetail(LoginRequiredMixin, DetailView):
     model = QuestionSet
+    def get_queryset(self):
+        return self.request.user.profile.question_sets.all() 
 
 class QuestionSetCreate(LoginRequiredMixin, CreateView):
     model = QuestionSet
@@ -669,9 +667,13 @@ class QuestionSetCreate(LoginRequiredMixin, CreateView):
 class QuestionSetUpdate(LoginRequiredMixin, UpdateView):
     model = QuestionSet
     form_class = QuestionSetForm
+    def get_queryset(self):
+        return self.request.user.profile.question_sets.all() 
         
 class QuestionSetDelete(LoginRequiredMixin, DeleteView):
     model = QuestionSet
+    def get_queryset(self):
+        return self.request.user.profile.question_sets.all() 
 
 # shortcut for registering and competing immediately 
 def immediate_competition(request):
