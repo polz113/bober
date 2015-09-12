@@ -502,6 +502,8 @@ class Attempt(models.Model):
 class Profile(models.Model):
     def __unicode__(self):
         return unicode(self.user)
+    def get_absolute_url(self):
+        return reverse('competition_detail', kwargs={'pk': str(self.pk)})
     user = models.OneToOneField(User)
     managed_profiles = models.ManyToManyField('Profile', related_name='managers', null=True, blank=True)
     # managed_users = models.ManyToManyField(User, related_name='managers', null=True, blank=True)
