@@ -209,23 +209,6 @@ class CompetitionQuestionSetCreateForm(forms.ModelForm):
         model = CompetitionQuestionSet
         exclude = ('guest_code',)
     create_guest_code = forms.BooleanField(required=False)
-    def save(self, *args, **kwargs):
-        retval = super(CompetitionQuestionSetCreateForm,self).save(*args, **kwargs)
-        if self.cleaned_data['create_guest_code'] and \
-                self.instance.guest_code is None:
-            generator = self.instance.competition.competitor_code_generator
-            code_data = {
-                'competitor_privileges':[
-                    'attempt', 'results_before_end'
-                ],
-                'code_effects': ['new_attempt'],
-                'competition_questionset': [
-                    str(self.instance.id) + "." + \
-                        str(self.instance.name)]
-            }
-            c = generator.create_code(code_data)
-            self.instance.guest_code = c
-        return retval 
 
 class CompetitionQuestionSetUpdateForm(forms.ModelForm):
     class Meta:
@@ -244,8 +227,7 @@ class CompetitionQuestionSetUpdateForm(forms.ModelForm):
                 ],
                 'code_effects': ['new_attempt'],
                 'competition_questionset': [
-                    str(self.instance.id) + "." + \
-                        str(self.instance.name)]
+                    self.instance.slug_str()]
             }
             c = generator.create_code(code_data)
             self.instance.guest_code = c

@@ -90,7 +90,24 @@ class CompetitionCreate(LoginRequiredMixin, CreateWithInlinesView):
         master_code.save()
         self.request.user.profile.received_codes.add(master_code)
         self.request.user.profile.created_codes.add(master_code)
-        return super(CompetitionCreate, self).forms_valid(form, inlines)
+        retval = super(CompetitionCreate, self).forms_valid(form, inlines)
+        for i in inlines:
+            for f in i:
+                if f.cleaned_data.get('create_guest_code', False) and \
+                        hasattr(f.instance, 'guest_code') and \
+                        f.instance.guest_code is None:
+                    f.instance.save()
+                    code_data = {
+                        'competitor_privileges':[
+                            'attempt', 'results_before_end'
+                        ],
+                        'code_effects': ['new_attempt'],
+                        'competition_questionset': [f.instance.slug_str()]
+                    }
+                    c = competitor_codegen.create_code(code_data)
+                    f.instance.guest_code = c
+                    f.instance.save()
+        return retval
     def get_initial(self):
         return {
             'admin_code_format':
@@ -123,11 +140,11 @@ class CompetitionUpdate(LoginRequiredMixin, UpdateWithInlinesView):
                 if not f.empty_permitted and f.is_valid():
                     if f.cleaned_data['create_guest_code'] and \
                             f.instance.guest_code is None:
-                        print "Creating guest code!"
+                        # print "Creating guest code!"
                         f.save()
                         self.request.user.profile.created_codes.add(
                             f.instance.guest_code)
-                    print f.instance, f.cleaned_data['create_guest_code']
+                    # print f.instance, f.cleaned_data['create_guest_code']
         return retval
 def access_code(request, next):
     qd = QueryDict(dict(), mutable=True)
@@ -366,9 +383,6 @@ def competition_registration(request, competition_questionset_id):
     return render(request, 
         "bober_simple_competition/competition_registration.html",
         locals())
-
-
-    form = CompetitionRegistrationForm()
 #     2.2.1 get question page
 # @login_required
 @access_code_required
@@ -428,8 +442,7 @@ def _can_attempt(request, competition_questionset):
         # access_allowed |= guest_code.value == access_code
         access_allowed &= codegen.code_matches(
             access_code, {'competition_questionset':[
-                str(competition_questionset.id) + "." + \
-                    str(competition_questionset.name)]})
+                competition_questionset.slug_str()]})
     except Exception, e:
         print e
         pass

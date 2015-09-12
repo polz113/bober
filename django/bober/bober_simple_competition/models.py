@@ -100,6 +100,8 @@ class Competition(models.Model):
 class CompetitionQuestionSet(models.Model):
     def __unicode__(self):
         return u"{}: {} ({})".format(self.id, self.name, self.questionset.slug)
+    def slug_str(self):
+        return unicode(self.id) + '.' + self.questionset.slug
     name = models.CharField(max_length=256, null=True, blank=True)
     questionset = models.ForeignKey('QuestionSet')
     competition = models.ForeignKey('Competition')
