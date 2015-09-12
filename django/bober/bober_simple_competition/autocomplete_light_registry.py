@@ -2,10 +2,17 @@ import autocomplete_light
 from models import Profile, Question
 
 class ManagedUsersAutocomplete(autocomplete_light.AutocompleteModelBase):
-    search_fields = ['^user__first_name', 
+    search_fields = [
+        'user__first_name', 
         'user__last_name',
         'user__email',
-        'user__username']
+        'user__username',
+        # TODO add the functionality below
+        #'^former_profile_set__user__first_name',
+        #'^former_profile_set__user__last_name',
+        #'^former_profile_set__user__email_name',
+        #'^former_profile_set__user__username',
+    ]
     model = Profile
     attrs={
         'placeholder': '',

@@ -599,17 +599,23 @@ class ProfileListView(LoginRequiredMixin, ListView):
         print c
         return c
     def get_queryset(self):
-        return self.request.user.profile.managed_profiles.all() 
+        return self.request.user.profile.managed_profiles.filter(merged_with=None) 
 
 class ProfileDetail(LoginRequiredMixin, DetailView):
     model = Profile
-    def get(self, request):
-        try:
-            f = self.request.user.profile.managed_profiles.get(id=self.object.id)
-        except:
-            return PermissionDenied
-        return super(ProfileDetail, self).get(request)
+#    def get(self, request):
+#        try:
+#            f = self.request.user.profile.managed_profiles.get(id=self.object.id)
+#        except:
+#            return PermissionDenied
+#        return super(ProfileDetail, self).get(request)
 
+# 5.1 merge users
+#  any users registered with codes created or distributed
+#  by the current user can be merged
+# 5.2 edit users
+#  the data for users registered with codes created or distributed
+#  by the current user can be edited
 class ProfileUpdate(LoginRequiredMixin, UpdateView):
     model = Profile
     form_class = ProfileEditForm
@@ -636,25 +642,9 @@ class ProfileUpdate(LoginRequiredMixin, UpdateView):
             return PermissionDenied
         return super(ProfileUpdate, self).form_valid(form)
 
-# 5.1 merge users
-#  any users registered with codes created or distributed
-#  by the current user can be merged
-@login_required
-def user_merge(request):
-    pass
-    return render_to_response("bober_simple_competition/user_merge.html", locals())
-
-# 5.2 edit users
-#  the data for users registered with codes created or distributed
-#  by the current user can be edited
-@login_required
-def user_edit(request, user_id):
-    
-    return render_to_response("bober_simple_competition/user_edit.html", locals())
-
 #   5.3 get certificates, other files
 @login_required
-def user_files(request):
+def user_files(request, user_id):
     pass
     return render_to_response("bober_simple_competition/user_files.html", locals())
 

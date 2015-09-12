@@ -12,6 +12,6 @@
 <a href="{% url "user_registration" %}" class="btn">{% trans "Register" %}</a>
 {% else %}
 <a href="{% url "profile_list" %}" class="btn">{% trans "Managed users" %}</a>
-<a href="{% url "profile_update" pk=request.user.profile.pk %}" class="btn">{% trans "My profile" %}</a>
+<a href="{% url "profile_detail" pk=request.user.profile.pk %}" class="btn">{% trans "My profile" %}</a>
 {% endif %}
 {% endblock %}

@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load static %}
+{% block title %}{% trans "Edit user" %}{% endblock %}
+
+{% block headline %}{% trans "Edit user" %}{% endblock %}
+{% block extrahead %}
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.js" type="text/javascript"></script>
+{% endblock %}
+{% block content %}
+{{ object }} [{{ object.pk }}]
+
+
+<div>
+{% trans "Former profiles"%}
+{% for p in object.former_profile_set.all %}
+{{p}}<br/>
+{% endfor %}
+</div>
+
+<div>
+{% trans "Attempts" %}
+{% for a in object.attempt_list.all %}
+{{a}}<br/>
+{% endfor %}
+</div>
+<br><br>
+{% trans "Codes" %}
+<br>
+<a id="toggle_extended_form_fields1">{% trans "Show codes" %}</a>
+<div id="extended_form_fields1" class="longTextBreak">
+	<div><br>
+		{% trans "Used codes" %}<hr>
+		<ul>
+		{% for c in object.used_codes.all %}
+		<li>{{c}}</li>
+		{% endfor %}
+		</ul>
+	</div>
+	
+	<div><br>
+		{% trans "Received codes" %}<hr>
+		<ul>
+		{% for c in object.received_codes.all %}
+		<li>{{c}}</li>
+		{% endfor %}
+		</ul>
+	</div>
+	
+	<div><br>
+		{% trans "Created codes" %}<hr>
+		<ul>
+		{% for c in object.created_codes.all %}
+		<li>{{c}}</li>
+		{% endfor %}
+		</ul>
+	</div>
+</div>
+</form>
+<script type="text/javascript">
+$('#extended_form_fields1').css('visibility','hidden');
+$('#toggle_extended_form_fields1').click(function(){
+  if ( $('#extended_form_fields1').css('visibility') == 'hidden' ){
+    $('#extended_form_fields1').css('visibility','visible');
+    $('#toggle_extended_form_fields1').text('{% trans "Hide codes" %}');
+  } else {
+    $('#extended_form_fields1').css('visibility','hidden');
+    $('#toggle_extended_form_fields1').text('{% trans "Show codes" %}');
+  }
+});
+
+</script>
+{% endblock %}

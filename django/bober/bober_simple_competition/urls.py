@@ -59,14 +59,14 @@ urlpatterns = patterns('',
     url(r'^registration/$', views.user_registration, name="user_registration"),
     # 5. edit user data
     url(r'^users/$', views.ProfileListView.as_view(), name="profile_list"),
+    url(r'^users/(?P<pk>\d+)/$', views.ProfileDetail.as_view(), name="profile_detail"),
     #   5.1 merge users
     #    any users registered with codes created or distributed
     #    by the current user can be merged
-    url(r'^user_merge/$', views.user_merge, name="profile_merge"),
     #   5.2 edit users
     #    the data for users registered with codes created or distributed
     #    by the current user can be edited
-    url(r'^users/(?P<pk>\d+)/$', views.ProfileUpdate.as_view(), name="profile_update"),
+    url(r'^users/(?P<pk>\d+)/update$', views.ProfileUpdate.as_view(), name="profile_update"),
     #   5.3 get certificates, other files
     url(r'^users/(?P<user_id>\d+)/files$', views.user_files, name="user_files"),
     # 6. import question(s)

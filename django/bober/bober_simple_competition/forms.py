@@ -71,6 +71,9 @@ class BasicProfileForm(forms.ModelForm):
         u.save()
         if self.instance.id is None:
             self.instance = u.profile
+        if self.instance.merged_with is not None:
+            for p in self.instance.former_profile_set.all():
+                p.merged_with = self.instance.merged_with
         profile = super(BasicProfileForm, self).save(*args,**kwargs)
         return profile 
 
