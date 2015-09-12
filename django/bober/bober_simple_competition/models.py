@@ -311,6 +311,14 @@ def _question_from_dirlike(cls, identifier = '-1',
         manifest.update(index_dict)
     if regenerate_modules:
         manifest['task'] = index_dict['task']
+    default_manifest_values = {
+        'country': 'SI',
+        'version': '0.1',
+        'authors': ''
+    }
+    for k, v in default_manifest_values.iteritems():
+        if k not in manifest:
+            manifest[k] = v
     if question is None:
         print "creating question", manifest['title'], type(manifest['title'])
         question = cls(country = manifest['country'], 
