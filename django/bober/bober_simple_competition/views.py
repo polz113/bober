@@ -614,10 +614,25 @@ class ProfileUpdate(LoginRequiredMixin, UpdateView):
     model = Profile
     form_class = ProfileEditForm
     success_url = reverse_lazy('profile_list')
-    def form_valid(self, form):
+    def __valid_managed_profiles(self):
         try:
-            f = self.request.user.profile.managed_profiles.get(id=form.instance.id)
-        except:
+            choices = self.request.user.profile.managed_profiles.all()
+        except Exception, e:
+            print e
+            choices = Profile.objects.none()
+        return choices
+
+    def get_form(self, form_class):
+        form = super(UpdateView, self).get_form(form_class)
+        form.fields['merged_with'].queryset = self.__valid_managed_profiles()
+        return form
+    def form_valid(self, form):
+        if (form.instance not in self.__valid_managed_users()):
+            return PermissionDenied
+        if (form.instance.merged_with is not None
+                and form.instance.merged_with \
+                    not in self.__valid_managed_users()):
+            print "merged_with user not managed"
             return PermissionDenied
         return super(ProfileUpdate, self).form_valid(form)
 

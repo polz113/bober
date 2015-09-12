@@ -514,7 +514,8 @@ class Profile(models.Model):
     used_codes = ManyToManyField(Code, null=True, blank=True,
         related_name='user_set')
     question_sets = ManyToManyField(QuestionSet, null=True, blank=True)
-    merged_with = ForeignKey(User, null = True, blank=True, related_name='merged_set')
+    merged_with = ForeignKey('Profile', null = True, blank=True, related_name='former_profile_set')
+    # merged_with = ForeignKey(User, null = True, blank=True, related_name='merged_set')
     update_used_codes_timestamp = DateTimeField(null=True, blank=True)
     update_managers_timestamp = DateTimeField(null=True, blank=True)
     vcard = models.TextField(blank=True)

@@ -1,7 +1,7 @@
 import autocomplete_light
 from models import Profile, Question
 
-class ProfileAutocomplete(autocomplete_light.AutocompleteModelBase):
+class ManagedUsersAutocomplete(autocomplete_light.AutocompleteModelBase):
     search_fields = ['^user__first_name', 
         'user__last_name',
         'user__email',
@@ -18,5 +18,5 @@ class ProfileAutocomplete(autocomplete_light.AutocompleteModelBase):
         except Exception, e:
             # print e
             self.choices = Profile.objects.none()
-        return super(ProfileAutocomplete, self).choices_for_request()
-autocomplete_light.register(ProfileAutocomplete)
+        return super(ManagedUsersAutocomplete, self).choices_for_request()
+autocomplete_light.register(ManagedUsersAutocomplete)
