@@ -1,11 +1,13 @@
 from django import forms
+from collections import OrderedDict
 from django.forms.models import inlineformset_factory, model_to_dict, fields_for_model
 # from django.forms.models import model_to_dict, fields_for_model
 from bober_simple_competition.models import *
 from django.utils.translation import ugettext as _
 from extra_views import InlineFormSet
 import code_based_auth.models
-from django.contrib.admin import widgets
+from django.contrib.admin import widgets as admin_widgets
+import django.forms.extras.widgets as django_widgets
 import autocomplete_light
 from django.forms import ModelForm, TextInput
 
@@ -17,7 +19,7 @@ class ProfileForm(forms.ModelForm):
 class MinimalAccessCodeForm(forms.Form):
     access_code = forms.CharField(label=_('Access code'), max_length=256)
 
-class BasicProfileForm(autocomplete_light.ModelForm):
+class BasicProfileForm(forms.ModelForm):
     class Meta:
         model = Profile
         
@@ -25,11 +27,15 @@ class BasicProfileForm(autocomplete_light.ModelForm):
             'vcard', 'question_sets', 'managed_profiles', 'used_codes',
             'update_used_codes_timestamp', 'update_managers_timestamp')"""
         fields = ('merged_with',);
-        #widgets = {
-        #    'merged_with': autocomplete_light.TextWidget('ProfileAutocomplete', 
-        #        attrs={'class':'modern-style'}),
-        #}
-    password = forms.CharField(widget = forms.PasswordInput, required=False)
+        widgets = {
+            # the autocomplete: off is supposed to preven firefox from filling in the form
+            # with the current username
+            'merged_with': autocomplete_light.ChoiceWidget('ManagedUsersAutocomplete', 
+                attrs={'class':'modern-style', 'autocomplete': 'off'}),
+        #    'merged_with': django_widgets.Select()
+        }
+    password = forms.CharField(required=False, 
+        widget = forms.PasswordInput(attrs={'autocomplete': 'off'}))
     def __init__(self, *args, **kwargs):
         _fields = ('first_name', 'last_name', 'email')
         instance = kwargs.get('instance', None)
@@ -37,10 +43,15 @@ class BasicProfileForm(autocomplete_light.ModelForm):
         _initial.update(
             model_to_dict(instance.user, _fields) if instance is not None else {})
         kwargs['initial'] = _initial
-        retval = super(BasicProfileForm, self).__init__(*args, **kwargs)
-        self.fields.update(fields_for_model(User, _fields))
-        print self.initial
-        return retval
+        super(BasicProfileForm, self).__init__(*args, **kwargs)
+        # reorder fields
+        unordered_fields = self.fields
+        unordered_fields.update(fields_for_model(User, _fields))
+        self.fields = OrderedDict()
+        for k in ['first_name', 'last_name', 'email', 'password', 'merged_with']:
+            self.fields[k] = unordered_fields.pop(k)
+        # add the fields not listed above at the end
+        self.fields.update(unordered_fields)
     def save(self, *args, **kwargs):
         if self.instance.id is not None:
             u = self.instance.user
@@ -122,8 +133,8 @@ class CompetitionCreateForm(forms.ModelForm):
             'competitor_code_generator',
             'questionsets')
         widgets = {
-            'start': widgets.AdminSplitDateTime(),
-            'end': widgets.AdminSplitDateTime(),
+            'start': admin_widgets.AdminSplitDateTime(),
+            'end': admin_widgets.AdminSplitDateTime(),
         }
     competitor_code_format = forms.ModelChoiceField(
         queryset = code_based_auth.models.CodeFormat.objects.filter(
@@ -139,8 +150,8 @@ class CompetitionUpdateForm(forms.ModelForm):
         model = Competition
         exclude = ['questionsets']
         widgets = {
-            'start': widgets.AdminSplitDateTime(),
-            'end': widgets.AdminSplitDateTime(),
+            'start': admin_widgets.AdminSplitDateTime(),
+            'end': admin_widgets.AdminSplitDateTime(),
         }
 
 class CodeFormatForm(forms.Form):

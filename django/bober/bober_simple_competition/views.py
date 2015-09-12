@@ -627,11 +627,11 @@ class ProfileUpdate(LoginRequiredMixin, UpdateView):
         form.fields['merged_with'].queryset = self.__valid_managed_profiles()
         return form
     def form_valid(self, form):
-        if (form.instance not in self.__valid_managed_users()):
+        if (form.instance not in self.__valid_managed_profiles()):
             return PermissionDenied
         if (form.instance.merged_with is not None
                 and form.instance.merged_with \
-                    not in self.__valid_managed_users()):
+                    not in self.__valid_managed_profiles()):
             print "merged_with user not managed"
             return PermissionDenied
         return super(ProfileUpdate, self).form_valid(form)

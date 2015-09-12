@@ -8,7 +8,7 @@ class ManagedUsersAutocomplete(autocomplete_light.AutocompleteModelBase):
         'user__username']
     model = Profile
     attrs={
-        'placeholder': 'Obupaj!',
+        'placeholder': '',
         'data-autocomplete-minimum-characters': 1,
     }
 
@@ -19,4 +19,5 @@ class ManagedUsersAutocomplete(autocomplete_light.AutocompleteModelBase):
             # print e
             self.choices = Profile.objects.none()
         return super(ManagedUsersAutocomplete, self).choices_for_request()
+
 autocomplete_light.register(ManagedUsersAutocomplete)
