@@ -435,11 +435,11 @@ def _can_attempt(request, competition_questionset):
         codegen = competition.competitor_code_generator
         access_allowed |= codegen.code_matches(
             access_code, {'competitor_privileges':['attempt_before_start']})
+        print "competition started:", competition.start < timezone.now()
         access_allowed |= competition.start < timezone.now() and \
             codegen.code_matches(
                 access_code, {'competitor_privileges':['attempt']})
-        guest_code = competition_questionset.guest_code
-        # access_allowed |= guest_code.value == access_code
+        print "access_allowed before competition_questionset", access_allowed 
         access_allowed &= codegen.code_matches(
             access_code, {'competition_questionset':[
                 competition_questionset.slug_str()]})

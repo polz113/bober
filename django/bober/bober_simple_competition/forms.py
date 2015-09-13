@@ -190,7 +190,7 @@ class CodeFormatForm(forms.Form):
 class CompetitorCodeFormatForm(CodeFormatForm):
     questionset_bits = forms.IntegerField()
     questionset_format = forms.ChoiceField(
-        initial = 'r',
+        initial = 'a',
         choices = code_based_auth.models.CODE_COMPONENT_FORMATS)
     questionset_hash = forms.ChoiceField(
         initial = 'noop',

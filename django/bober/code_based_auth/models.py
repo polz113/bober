@@ -7,7 +7,7 @@ CODE_COMPONENT_FORMATS = (
     ('i', 'decimal'),
     ('w', 'words'),
     ('r', 'raw no hash'),
-    ('a', 'match any'),
+    ('a', 'match exact'),
 )
 
 HASH_ALGORITHMS = tuple(
@@ -16,7 +16,8 @@ HASH_ALGORITHMS = tuple(
 
 DEFAULT_HASH_BITS = 32
 DEFAULT_HASH_ALGORITHM = 'sha512'
-DEFAULT_SEPARATOR = "-"
+DEFAULT_SEPARATOR = "*"
+DEFAULT_PART_SEPARATOR = "+"
 
 # TODO load words from a file or database
 DEFAULT_WORDS = ['Beaver', 'Tree', 'Brook', 'Stream']
@@ -95,7 +96,7 @@ class CodeComponent(models.Model):
     hash_algorithm = models.CharField(max_length = 16,
         choices = HASH_ALGORITHMS, null=True, blank=True)
     max_parts = models.IntegerField(default=1)
-    part_separator = models.CharField(max_length=1, default='+')
+    part_separator = models.CharField(max_length=1, default=DEFAULT_PART_SEPARATOR)
 
 class CodeFormat(models.Model):
     def __unicode__(self):
