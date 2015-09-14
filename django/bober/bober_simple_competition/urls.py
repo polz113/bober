@@ -9,7 +9,7 @@ urlpatterns = patterns('',
     # url(r'^blog/', include('blog.urls')),
     url(r'^$', views.index, name="index"),
     # 1. login / enter access code
-    url(r'^access_code/(?P<next>.*)$', views.access_code, name="access_code"),
+    url(r'^access_code//*(?P<next>.*)$', views.access_code, name="access_code"),
     # 2. pick competition
     url(r'^competitions/$', views.CompetitionList.as_view(), name="competition_list"),
     url(r'^competitions/(?P<slug>[\w-]+)/$', views.CompetitionDetail.as_view(), name="competition_detail"),

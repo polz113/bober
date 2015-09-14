@@ -146,14 +146,18 @@ class CompetitionUpdate(LoginRequiredMixin, UpdateWithInlinesView):
                             f.instance.guest_code)
                     # print f.instance, f.cleaned_data['create_guest_code']
         return retval
+
 def access_code(request, next):
     qd = QueryDict(dict(), mutable=True)
     qd.update(request.GET)
     qd.update(request.POST)
-    form = MinimalAccessCodeForm(qd)
+    if len(qd):
+        form = MinimalAccessCodeForm(qd)
+    else:
+        form = MinimalAccessCodeForm()
     if form.is_valid():
         request.session['access_code'] = form.cleaned_data['access_code']
-        return HttpResponseRedirect(next)
+        return HttpResponseRedirect('/' + next)
     return render(request, 'bober_simple_competition/access_code.html', locals())
 
 @login_required
