@@ -6,6 +6,9 @@
 {% block headline %}{% trans "Competition attempts" %}{% endblock %}
 
 {% block content %}
+<a href={% url "competition_list" %}>{% trans "Back to competitions" %}</a>
+&nbsp;&nbsp;
+<a href={% url "competition_detail" slug=competition_slug %}>{% trans "Competition details" %}</a>
 <div class="attempts_list">
 	{% for i in object_list %}
 		<div class="attempt">

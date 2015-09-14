@@ -9,6 +9,8 @@
 {% block extrahead %}
 {% endblock %}
 {% block content %}
+<a href={% url "competition_list" %}>{% trans "Back to competitions" %}</a>
+&nbsp;&nbsp;
 <h1>{{object.slug}}</h1>
 <a href='{% url "competition_code_list" competition_slug=object.slug %}' class="btn">{% trans "codes" %}</a>
 <a href='{% url "competition_attempt_list" competition_slug=object.slug %}' class="btn">{% trans "attempts" %}</a>

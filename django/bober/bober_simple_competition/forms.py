@@ -77,6 +77,7 @@ class BasicProfileForm(forms.ModelForm):
             for p in self.instance.former_profile_set.all():
                 p.merged_with = self.instance.merged_with
         profile = super(BasicProfileForm, self).save(*args,**kwargs)
+        profile.managed_profiles.add(profile)
         return profile 
 
 class ProfileEditForm(BasicProfileForm):

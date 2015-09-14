@@ -10,7 +10,7 @@
 <div class="competitions_list">
 {% for i in object_list %}
 	<div class="competitionlist">
-			<big><strong>{{i.slug}}</strong></big>
+			<a href={% url "competition_detail" slug=i.slug %}><big><strong>{{i.slug}}</strong></big></a>
 			&nbsp;
 			<a href='{% url "competition_code_list" competition_slug=i.slug %}' class="btn">{% trans "codes" %}</a>
 			<a href='{% url "competition_attempt_list" competition_slug=i.slug %}' class="btn">{% trans "attempts" %}</a>
@@ -18,8 +18,8 @@
 				  {% for j in i.competitionquestionset_set.all %}
 				<div>
 					<a href="{% url 'competition_registration' competition_questionset_id=j.id %}">{{j.name}} - {{j.questionset.name}}</a>
-					&nbsp;&nbsp;					
-					<a href="{% url 'competition_guest' competition_questionset_id=j.id %}">{% trans "Compete as guest" %}</a>
+					&nbsp;&nbsp;
+					{% if j.guest_code %}<a href="{% url 'competition_guest' competition_questionset_id=j.id %}">{% trans "Compete as guest" %}</a>{% endif %}
 				</div>
 				  {% endfor %}
 			</div>

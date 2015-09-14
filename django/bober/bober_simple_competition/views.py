@@ -176,7 +176,7 @@ def competition_code_list(request, competition_slug):
             Q(creator_set=request.user.profile) | Q(recipient_set=request.user.profile) | Q(user_set=request.user.profile))
     can_create_administrator_codes = admin_codegen.code_matches(
         access_code, {'admin_privileges': ['create_admin_codes']})
-    print access_code, can_create_administrator_codes
+    # print access_code, can_create_administrator_codes
     can_create_competitor_codes = admin_codegen.code_matches(
         access_code, {'admin_privileges': ['create_competitor_codes']})
     return render_to_response("bober_simple_competition/competition_code_list.html", locals())
@@ -454,7 +454,7 @@ def competition_resources(request, competition_questionset_id, resource_path):
         id=competition_questionset_id)
     if _can_attempt(request, cq):
         cache_dir = "caches/" + str(cq.questionset.id) + "-" + cq.questionset.slug
-        print "redirect to ", os.path.join(cache_dir, resource_path)
+        # print "redirect to ", os.path.join(cache_dir, resource_path)
         return safe_media_redirect(os.path.join(cache_dir, resource_path))
     raise PermissionDenied 
 
@@ -617,7 +617,7 @@ class ProfileListView(LoginRequiredMixin, ListView):
 class ProfileDetail(LoginRequiredMixin, DetailView):
     model = Profile
     def get_queryset(self):
-        return self.request.user.profile.managed_profiles.all() 
+        return self.request.user.profile.managed_profiles.all()
 #    def get(self, request):
 #        try:
 #            f = self.request.user.profile.managed_profiles.get(id=self.object.id)
