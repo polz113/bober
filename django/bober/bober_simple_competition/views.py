@@ -653,6 +653,7 @@ class ProfileUpdate(LoginRequiredMixin, UpdateView):
             return PermissionDenied
         return super(ProfileUpdate, self).form_valid(form)
 
+
 #   5.3 get certificates, other files
 @login_required
 def user_files(request, user_id):

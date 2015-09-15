@@ -508,7 +508,7 @@ class Attempt(models.Model):
                     return answers
         return answers
 
-
+        
 class Profile(models.Model):
     def __unicode__(self):
         return unicode(self.user)
