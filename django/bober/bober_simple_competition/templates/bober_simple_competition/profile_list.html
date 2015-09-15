@@ -5,7 +5,6 @@
 {% block headline %}{% trans "Users" %}{% endblock %}
 {% block extrahead %}
 <link rel="stylesheet" href="{{ STATIC_URL }}django_tables2/themes/paleblue/css/screen.css" />
-{% include 'autocomplete_light/static.html' %}
 {% endblock %}
 {% block content %}
 {% render_table object_list %}
