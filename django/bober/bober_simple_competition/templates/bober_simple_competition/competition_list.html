@@ -1,10 +1,12 @@
 {% extends "base.html" %}
 {% load i18n %}
-
+{% load render_table from django_tables2 %}
 {% block title %}{% trans "Competition" %}{% endblock %}
 
 {% block headline %}{% trans "Competitions in progress" %}{% endblock %}
-
+{% block extrahead %}
+<link rel="stylesheet" href="{{ STATIC_URL }}django_tables2/themes/paleblue/css/screen.css" />
+{% endblock %}
 {% block content %}
 <br>
 <div class="competitions_list">
@@ -14,14 +16,8 @@
 			&nbsp;
 			<a href='{% url "competition_code_list" competition_slug=i.slug %}' class="btn">{% trans "codes" %}</a>
 			<a href='{% url "competition_attempt_list" competition_slug=i.slug %}' class="btn">{% trans "attempts" %}</a>
-			<div class="questionsets">
-				  {% for j in i.competitionquestionset_set.all %}
-				<div>
-					<a href="{% url 'competition_registration' competition_questionset_id=j.id %}">{{j.name}} - {{j.questionset.name}}</a>
-					&nbsp;&nbsp;
-					{% if j.guest_code %}<a href="{% url 'competition_guest' competition_questionset_id=j.id %}">{% trans "Compete as guest" %}</a>{% endif %}
-				</div>
-				  {% endfor %}
+			<div style="max-width: 95%; width: 90%;">
+			{% render_table i.competitionquestionset_set.all %}
 			</div>
 	</div>
 	{% endfor %}
