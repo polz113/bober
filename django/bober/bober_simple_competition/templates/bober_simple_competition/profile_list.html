@@ -6,12 +6,12 @@
 {% block headline %}{% trans "Users" %}{% endblock %}
 
 {% block content %}
-<ul>
+<table style="line-height:2;">
 {% for i in object_list %}
-<li>
-  <a href={% url "profile_detail" pk=i.pk %} >{{i}}</a> 
-  <a href={% url "profile_update" pk=i.pk %} class="btn" >{% trans "Update profile" %}</a> 
-</li>
+<tr>
+<td style="width: 45%;"><a href={% url "profile_detail" pk=i.pk %} >{{i}}</a></td>
+<td style="width: 45%;"><a href={% url "profile_update" pk=i.pk %} class="btn" >{% trans "Update profile" %}</a> </td>
+</tr>
 {% endfor %}
-</ul>
+</table>
 {% endblock %}
