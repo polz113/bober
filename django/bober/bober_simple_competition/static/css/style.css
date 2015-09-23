@@ -31,7 +31,7 @@ body{
 	font-size: 14px;
 	color: #018301;
 	/* background-color: #40910e; */
-	background-image: url('/bober-static/img/background.jpg');
+	/* background-image: url('/bober-static/img/background.jpg'); */
 	background-size: 80px 80px !important;
 	background-repeat: repeat;
 	/*background-attachment: fixed; */
@@ -257,17 +257,6 @@ form button{
 	display: block; /*for IE 7, 8*/
 	margin-bottom: 3px; /*for IE 7, 8*/
 }
-
-
-.wrapper .content .logo_transparent{
-	background: url('/bober-static/img/logo_transparent.png') center top no-repeat;
-	background-size: 20%;
-	height: 107px;
-	padding-bottom: 15px;
-	clear: both;
-	
-}
-
 
 
 span.star{

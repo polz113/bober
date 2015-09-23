@@ -2,8 +2,8 @@ from django.conf.urls import patterns, include, url
 from bober_tasks.views import *
 
 # Uncomment the next two lines to enable the admin:
-from django.contrib import admin
-admin.autodiscover()
+# from django.contrib import admin
+# admin.autodiscover()
 
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
