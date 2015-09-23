@@ -58,7 +58,8 @@ urlpatterns = patterns('',
     # 4. register as user
     url(r'^registration/$', views.user_registration, name="user_registration"),
     # 5. edit user data
-    url(r'^users/$', views.ProfileListView.as_view(), name="profile_list"),
+    # url(r'^users/$', views.ProfileListView.as_view(), name="profile_list"),
+    url(r'^users/$', views.ProfileTableView.as_view(), name="profile_list"),
     url(r'^users/(?P<pk>\d+)/$', views.ProfileDetail.as_view(), name="profile_detail"),
     #   5.1 merge users
     #    any users registered with codes created or distributed

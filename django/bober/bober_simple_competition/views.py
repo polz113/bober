@@ -18,6 +18,8 @@ from braces.views import LoginRequiredMixin
 import code_based_auth.models
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.utils.six.moves.urllib.parse import urlparse, urlunparse
+import django_tables2 as tables
+from django_tables2 import SingleTableView
 import datetime
 import json
 import random
@@ -617,6 +619,22 @@ class ProfileListView(LoginRequiredMixin, ListView):
         return c
     def get_queryset(self):
         return self.request.user.profile.managed_profiles.filter(merged_with=None) 
+
+class ProfileTable(tables.Table):
+    class Meta:
+        model = Profile
+        fields = ('first_name', 'last_name', 'email', 'username', 'vcard', 'id')
+        attrs = {"class": "paleblue"}
+    first_name = tables.Column(order_by='user.first_name')
+    last_name = tables.Column(order_by='user.last_name')
+    email = tables.Column(order_by='user.email')
+    username = tables.Column(order_by='user.username')
+    id = tables.CheckBoxColumn()
+class ProfileTableView(LoginRequiredMixin, SingleTableView):
+    table_class = ProfileTable
+    template_name = 'bober_simple_competition/profile_table_list.html'
+    def get_queryset(self):
+        return self.request.user.profile.managed_profiles.filter(merged_with=None)
 
 class ProfileDetail(LoginRequiredMixin, DetailView):
     model = Profile

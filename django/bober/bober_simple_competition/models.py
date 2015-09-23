@@ -531,7 +531,18 @@ class Profile(models.Model):
     update_used_codes_timestamp = DateTimeField(null=True, blank=True)
     update_managers_timestamp = DateTimeField(null=True, blank=True)
     vcard = models.TextField(blank=True)
-
+    @property
+    def first_name(self):
+        return self.user.first_name
+    @property
+    def last_name(self):
+        return self.user.last_name
+    @property
+    def email(self):
+        return self.user.email
+    @property
+    def username(self):
+        return self.user.username
     def __superiors(self, codegen, known):
         for c in self.received_codes.filter(format = codegen.format,
                 salt = codegen.salt):
