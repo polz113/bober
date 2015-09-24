@@ -6,26 +6,61 @@
 {% block headline %}{{object}}[{{object.pk}}]{% endblock %}
 {% block extrahead %}
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.js" type="text/javascript"></script>
+<link rel="stylesheet" href="{{ STATIC_URL }}django_tables2/themes/paleblue/css/screen.css" />
 {% endblock %}
+
 {% block content %}
-<div>
-{{object.user.first_name}}<br/>
-{{object.user.last_name}}<br/>
-{{object.user.email}}<br/>
+<div style="margin:1%";>
+<a href="{% url "index" %}" class="btn">{% trans "Back to Menu" %}</a>
 </div>
-
 <div>
-{% trans "Former profiles"%}
-{% for p in object.former_profile_set.all %}
-{{p}}<br/>
-{% endfor %}
+<table class="paleblue">
+<thead>
+<th colspan="2">{% trans "Profile Details"%}</th>
+</thead>
+<tr>
+<td><b>{% trans "First Name" %}:</b> </td>
+<td>{{object.user.first_name}}</td>
+</tr>
+<tr>
+<td><b>{% trans "Last Name" %}:</b> </td>
+<td>{{object.user.last_name}}</td>
+</tr>
+<tr>
+<td><b>{% trans "Email" %}:</b> </td>
+<td>{{object.user.email}}</td>
+</tr>
+</table>	
 </div>
-
+<br>
 <div>
-{% trans "Attempts" %}
-{% for a in object.attempt_list.all %}
-{{a}}<br/>
-{% endfor %}
+	<table class="paleblue">
+	<thead>
+	<th>{% trans "Former profiles"%}</th>
+	</thead>
+	<tbody>
+	{% for p in object.former_profile_set.all %}
+	<tr class="{% if forloop.counter|divisibleby:2 %}even{% else %}odd{% endif %}">
+		<td>{{p}}</td>
+	</tr>
+	{% endfor %}
+	</tbody>
+	</table>
+</div>
+<br>
+<div>
+	<table class="paleblue">
+	<thead>
+	<th>{% trans "Attempts" %}</th>
+	</thead>
+	<tbody>
+	{% for a in object.attempt_list.all %}
+	<tr class="{% if forloop.counter|divisibleby:2 %}even{% else %}odd{% endif %}">
+		<td>{{a}}</td>
+	</tr>
+	{% endfor %}
+	</tbody>
+	</table>
 </div>
 <br><br>
 {% trans "Codes" %}
