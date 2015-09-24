@@ -9,7 +9,7 @@ from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
 urlpatterns = patterns('',
     # Index
-    url(r'^$', index, name="index"),
+    #url(r'^$', index, name="index"),
     # Translation
     url(r'^new/([a-z]+)?$', new_task, name="tasks.new"),
     url(r'^edit/(\d+)$', edit_task, name="tasks.edit"),
