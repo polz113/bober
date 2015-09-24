@@ -7,6 +7,9 @@
 <link rel="stylesheet" href="{{ STATIC_URL }}django_tables2/themes/paleblue/css/screen.css" />
 {% endblock %}
 {% block content %}
+<div style="margin:1%";>
+<a href="{% url "index" %}" class="btn">{% trans "Back to Menu" %}</a>
+</div>
 <form action="" method="get">
 {{filter.form.as_p}}
 <input type="submit">
