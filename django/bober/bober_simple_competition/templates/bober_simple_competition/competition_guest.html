@@ -6,6 +6,9 @@
 {% block headline %}{% trans "Compete as a guest" %}{% endblock %}
 
 {% block content %}
+<div style="margin:1%";>
+<a href="{% url "index" %}" class="btn">{% trans "Back to Menu" %}</a>
+</div>
 {% if code == None %}
 {% trans "Guest access not allowed." %}
 <a href="{% url "competition_registration" competition_questionset_id=competition_questionset_id %}">{% trans "Compete using a code" %}</a>
@@ -13,5 +16,5 @@
 {% trans "If you are not redirected automatically, click on the link below." %}
 <a href="{% url "competition_registration" competition_questionset_id=competition_questionset_id %}?access_code={{code}}">{% trans "Compete" %}</a>
 <meta http-equiv="REFRESH" content="0;url={% url "competition_index" competition_questionset_id=competition_questionset_id %}?access_code={{code}}">
-{% endif %}ssss
+{% endif %}
 {% endblock %}
