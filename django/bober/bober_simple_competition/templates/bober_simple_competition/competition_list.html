@@ -8,30 +8,45 @@
 <link rel="stylesheet" href="{{ STATIC_URL }}django_tables2/themes/paleblue/css/screen.css" />
 {% endblock %}
 {% block content %}
-<br>
+<div style="margin:1%";>
+<a href="/" class="btn">{% trans "Back to Menu" %}</a>
+</div>
 <div class="competitions_list">
-{% for i in object_list %}
-	<div class="competitionlist">
-			<a href={% url "competition_detail" slug=i.slug %}><big><strong>{{i.slug}}</strong></big></a>
-			&nbsp;
-			<a href='{% url "competition_code_list" competition_slug=i.slug %}' class="btn">{% trans "codes" %}</a>
-			<a href='{% url "competition_attempt_list" competition_slug=i.slug %}' class="btn">{% trans "attempts" %}</a>
+	<table class="paleblue">
+	<thead>
+	<tr>
+	<th colspan="2" style="width: 50%; height: 5%;">{% trans "Competition Name" %}</th>
+	<th colspan="2" style="width: 50%; height: 5%;">{% trans "Options" %}</th>
+	</tr>
+	</thead>
+	<tbody>
+	{% for i in object_list %}
+			<tr style="text-transform: uppercase;">
+			<td colspan="2"><a href={% url "competition_detail" slug=i.slug %}>{{i.slug}}</a></td>
+			<td style="width:25%;"><a href='{% url "competition_code_list" competition_slug=i.slug %}'>{% trans "codes" %}</a></td>
+			<td style="width:25%;"><a href='{% url "competition_attempt_list" competition_slug=i.slug %}' >{% trans "attempts" %}</a></td>
+			</tr>
 			<div class="questionsets">
 			{% for j in i.competitionquestionset_set.all %}
-				<div>
-					<a href="{% url 'competition_registration' competition_questionset_id=j.id %}">{{j.name}} - {{j.questionset.name}}</a>
-					&nbsp;&nbsp;
--					{% if j.guest_code %}<a href="{% url 'competition_guest' competition_questionset_id=j.id %}">{% trans "Compete as guest" %}</a>{% endif %}
--				</div>
--				  {% endfor %}
- 			</div>
-	</div>
+				<tr class="{% if forloop.counter|divisibleby:2 %}even{% else %}odd{% endif %}" style="height: 5%; font-style: italic;">
+					<td style="width:25%; text-align: center;"><a href="{% url 'competition_registration' competition_questionset_id=j.id %}">{{j.name}}</a></td>
+					<td style="width:25%; text-align: center;"><a href="{% url 'competition_registration' competition_questionset_id=j.id %}">{{j.questionset.name}}</a></td>
+					{% if j.guest_code %}
+					<td colspan="2" style="text-align: center;"><a href="{% url 'competition_guest' competition_questionset_id=j.id %}">{% trans "Compete as guest" %}</a></td>
+					{% else %}
+					<td colspan="2"></td>
+					{% endif %}
+				</tr>
+				  {% endfor %}
+			<tr><td colspan="4"></td></tr>
 	{% endfor %}
+	</tbody>
+	</table>
+</div>
+<div class="toLeft">
+	<br>
+	<a href="{% url "competition_create" %}" class="btn">{% trans "Create competition" %}</a>
+	<br>
 </div>
 
-<br>
-<div class="toLeft">
-<br>
-<a href="{% url "competition_create" %}" class="btn">{% trans "Create competition" %}</a>
-</div>
 {% endblock %}
