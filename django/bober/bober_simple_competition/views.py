@@ -3,6 +3,8 @@ from django.shortcuts import render_to_response, redirect, resolve_url
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, QueryDict, HttpResponseRedirect
 from bober_simple_competition.forms import *
+from bober_simple_competition import tables
+from bober_simple_competition import filters
 from django.contrib.auth import authenticate, login
 from django.core.serializers.json import DjangoJSONEncoder
 from django.core.exceptions import PermissionDenied
@@ -15,11 +17,10 @@ from django.conf import settings
 from django import forms
 from django.db.models import Q
 from braces.views import LoginRequiredMixin
+from django_tables2 import SingleTableView
 import code_based_auth.models
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.utils.six.moves.urllib.parse import urlparse, urlunparse
-import django_tables2 as tables
-from django_tables2 import SingleTableView
 import datetime
 import json
 import random
@@ -42,6 +43,17 @@ class AccessCodeRequiredMixin(object):
         view = super(AccessCodeRequiredMixin, cls).as_view(**initkwargs)
         return access_code_required(view)
 
+class FilteredSingleTableView(SingleTableView):
+  filter_class = None
+
+  def get_table_data(self):
+    self.filter = self.filter_class(self.request.GET, queryset =super(FilteredSingleTableView, self).get_table_data() )
+    return self.filter
+
+  def get_context_data(self, **kwargs):
+    context = super(FilteredSingleTableView, self).get_context_data(**kwargs)
+    context['filter'] = self.filter
+    return context
 # Create your views here.
 
 def index(request):
@@ -620,18 +632,9 @@ class ProfileListView(LoginRequiredMixin, ListView):
     def get_queryset(self):
         return self.request.user.profile.managed_profiles.filter(merged_with=None) 
 
-class ProfileTable(tables.Table):
-    class Meta:
-        model = Profile
-        fields = ('first_name', 'last_name', 'email', 'username', 'vcard', 'id')
-        attrs = {"class": "paleblue"}
-    first_name = tables.Column(order_by='user.first_name')
-    last_name = tables.Column(order_by='user.last_name')
-    email = tables.Column(order_by='user.email')
-    username = tables.Column(order_by='user.username')
-    id = tables.CheckBoxColumn()
-class ProfileTableView(LoginRequiredMixin, SingleTableView):
-    table_class = ProfileTable
+class ProfileTableView(LoginRequiredMixin, FilteredSingleTableView):
+    table_class = tables.ProfileTable
+    filter_class = filters.ProfileFilter
     template_name = 'bober_simple_competition/profile_table_list.html'
     def get_queryset(self):
         return self.request.user.profile.managed_profiles.filter(merged_with=None)

@@ -7,5 +7,9 @@
 <link rel="stylesheet" href="{{ STATIC_URL }}django_tables2/themes/paleblue/css/screen.css" />
 {% endblock %}
 {% block content %}
+<form action="" method="get">
+{{filter.form.as_p}}
+<input type="submit">
+</form>
 {% render_table table %}
 {% endblock %}
