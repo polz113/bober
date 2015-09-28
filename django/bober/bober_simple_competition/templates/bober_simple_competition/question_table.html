@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Questions" %}{% endblock %}
+
+{% block headline %}{% trans "Questions" %}{% endblock %}
+
+{% block content %}
+<ul>
+{% for i in object_list %}
+<li><a href={% url "question_detail" pk=i.pk %} >{{i}}</a></li>
+{% endfor %}
+</ul>
+{% endblock %}
