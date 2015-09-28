@@ -1,5 +1,5 @@
 from django.db import models
-from django.db.models import SlugField, CharField, TextField, IntegerField
+from django.db.models import SlugField, CharField, TextField, IntegerField, FloatField
 from django.db.models import FileField, BooleanField
 from django.db.models import DateTimeField
 from django.db.models import ForeignKey, ManyToManyField, OneToOneField
@@ -15,6 +15,7 @@ from django.core.urlresolvers import reverse
 from django.utils.text import slugify
 from django.utils.translation import ugettext as _
 from django.utils import timezone
+from . import graders
 import random
 import os
 import json
@@ -25,9 +26,11 @@ import mimetypes
 
 
 # Create your models here.
-VERIFICATION_FUNCTION_TYPES = (
-    (0, 'internal'),
-    (1, 'javascript'),
+GRADER_FUNCTION_TYPES = (
+    (0, 'none'),
+    (1, 'javascript_gostisa'),
+    (2, 'javascript_france'),
+    (16, 'python'),
 )
 
 CACHE_FORMATS = (
@@ -55,6 +58,7 @@ COMPETITOR_PRIVILEGES = (
 
 CODE_EFFECTS = (
     ('let_manage', _('Allow the creator to manage the profile of anyone using this code')),
+    ('let_invalidate', _('Allow the creator to invalidate any attempt using this code')),
     ('let_manage_recursive', _('Allow the creator and their managers to manage the profile of anyone using this code')),
     ('new_attempt', _('Start a new attempt every time this code is used')),
 )
@@ -96,6 +100,13 @@ class Competition(models.Model):
     # duration in seconds
     duration = IntegerField(default=60*60) # 60s * 60 = 1h.
     end = DateTimeField()
+    def grade_attempts(self, grade_runtime_managers=None):
+        if grader_runtime_manager is None:
+            grader_runtime_manager = graders.RuntimeManager()
+            grader_runtime_manager.start_runtimes()
+        for cq in self.competition_question_set_set.all():
+            for attempt in cq.attempt_set.all():
+                attempt.grade_answers(grader_runtime_manager)
 
 class CompetitionQuestionSet(models.Model):
     def __unicode__(self):
@@ -368,12 +379,15 @@ class Question(models.Model):
     tags = TaggableManager()
     version = CharField(max_length = 255, default='0')
     verification_function_type = IntegerField(
-        choices=VERIFICATION_FUNCTION_TYPES, default=0)
+        choices=GRADER_FUNCTION_TYPES, default=0)
     verification_function = TextField(default="", blank=True)
     license = TextField(default="Creative commons CC-By")
     language = CharField(max_length=7, choices=settings.LANGUAGES)
     authors = TextField(default="Various")
-    accepted_answers = CommaSeparatedIntegerField(max_length = 255, blank=True, null=True)
+    min_score = FloatField(default=-1)
+    none_score = FloatField(default=0)
+    max_score = FloatField(default=1)
+    # accepted_answers = CommaSeparatedIntegerField(max_length = 255, blank=True, null=True)
     def index(self):
         for u in ['index.html', 'index.htm']:
             try:
@@ -447,7 +461,8 @@ class Answer(models.Model):
     attempt = ForeignKey('Attempt')
     randomized_question_id = IntegerField()
     timestamp = DateTimeField(auto_now = True)
-    value = IntegerField(null = True)
+    value = TextField(blank=True, null = True)
+    score = FloatField(null=True)
     @property
     def question(self):
         return Question.objects.get(identifier=self.question_id)
@@ -455,10 +470,6 @@ class Answer(models.Model):
     def question_id(self):
         return self.attempt.reverse_question_id(
             self.randomized_question_id)
-    def correct(self):
-        if self.value is None:
-            return None
-        return str(self.value) in self.question.accepted_answers.split(',')
 
 class AttemptInvalidation(models.Model):
     by = ForeignKey('Profile')
@@ -493,6 +504,15 @@ class Attempt(models.Model):
         return self.reverse_question_mapping()[randomized_question_id]
     def question_mapping(self):
         return self.questionset.question_mapping(self.random_seed)
+    def grade_answers(self, grader_runtime_manager=None):
+        if grader_runtime_manager is None:
+            grader_runtime_manager = graders.RuntimeManager()
+            grader_runtime_manager.start_runtimes()
+        for a in self.latest_answers():
+            q = a.question
+            grader = grader_runtime_manager.get_grader(q.verification_function, q.verification_function_type)
+            a.score = grader(a.value, self.random_seed, q)
+            a.save()
     def latest_answers(self):
         # get only the latest answers
         answered_questions = set()
@@ -526,6 +546,7 @@ class Profile(models.Model):
     used_codes = ManyToManyField(Code, null=True, blank=True,
         related_name='user_set')
     question_sets = ManyToManyField(QuestionSet, null=True, blank=True)
+    questions = ManyToManyField(Question, null=True, blank=True)
     merged_with = ForeignKey('Profile', null = True, blank=True, related_name='former_profile_set')
     # merged_with = ForeignKey(User, null = True, blank=True, related_name='merged_set')
     update_used_codes_timestamp = DateTimeField(null=True, blank=True)

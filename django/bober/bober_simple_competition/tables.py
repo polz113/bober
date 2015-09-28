@@ -1,6 +1,6 @@
 import django_tables2 as dt2
 
-from bober_simple_competition.models import Profile
+from bober_simple_competition.models import Profile, Question
 
 class ProfileTable(dt2.Table):
     class Meta:
@@ -12,3 +12,8 @@ class ProfileTable(dt2.Table):
     email = dt2.Column(accessor='user.email')
     username = dt2.Column(accessor='user.username')
     select = dt2.CheckBoxColumn(accessor='id')
+
+class QuestionTable(dt2.Table):
+    class Meta:
+        model = Question
+        fields = ('identifier', 'title', 'country', 'license', 'language')

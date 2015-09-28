@@ -14,7 +14,7 @@
     <li>{{q}}</li>
   {%endfor%}
   </ul>
-  <a href="{% url 'questionset_update' pk=object.pk %}" class="button">
+  <a href="{% url 'questionset_update' slug=object.slug %}" class="button">
     {% trans "Edit questionset" %}
   </a><br/>
 

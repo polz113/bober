@@ -4,9 +4,9 @@
 {% load admin_static %}
 {% static 'admin' %}
 {% block title %}{% trans "Edit competition" %}{% endblock %}
+
 {% block headline %}{% trans "Edit competition" %}{% endblock %}
 {% block extrahead %}
-
 <link rel="stylesheet" type="text/css" href="{% static "admin/css/base.css" %}" />
 <link rel="stylesheet" type="text/css" href="{% static "admin/css/changelists.css" %}" />
 <link rel="stylesheet" type="text/css" href="{% static "admin/css/forms.css" %}" />
@@ -20,93 +20,63 @@
 <script type="text/javascript" src="{% static "admin/js/jquery.init.js" %}"></script>
 <script type="text/javascript" src="{% static "admin/js/actions.js" %}"></script>
 <script type="text/javascript" src="{% static "admin/js/inlines.js" %}"></script>
-<link rel="stylesheet" href="{{ STATIC_URL }}django_tables2/themes/paleblue/css/screen.css" />
 {{form.media}}
 {% endblock %}
 {% block content %}
-<div style="margin:1%";>
-<a href="{% url "index" %}" class="btn">{% trans "Back to Menu" %}</a>
-</div>
+<br>
 <form action="" method="post">
 {% csrf_token %}
 {{ form.non_field_errors }}
 <div id="normal_form_fields" class="form_table toLeft">
-	<table class="paleblue">
-	<tbody>
-	<tr>
-		<td>
-			<label for="{{ form.slug.id_for_label }}">{{form.slug.label}}:</label>
-		</td>
-		<td>
-		{{ form.slug.errors }}{{ form.slug }}
-		</td>
-	</tr>
-	<tr>
-		<td>
-			<label for="{{ form.start.id_for_label }}">{{form.start.label}}:</label>
-		</td>
-		<td>
-		{{ form.start.errors }}{{ form.start }}
-		</td>
-	</tr>
-	<tr> 
-		<td>
-			<label for="{{ form.duration.id_for_label }}">{{form.duration.label}}:</label>
-		</td>
-		<td>
-		{{ form.duration.errors }}{{ form.duration }}
-		</td>
-	</tr>
-	<tr>
-		<td>
-			<label for="{{ form.end.id_for_label }}">{{form.end.label}}:</label>
-		</td>
-		<td>
-		{{ form.end.errors }}{{ form.end }}
-		</td>
-	</tr>
-	</tbody>
-	</table>
+<table>
+<tr><th><label for="{{ form.slug.id_for_label }}">{{form.slug.label}}:</label></th><td>
+{{ form.slug.errors }}{{ form.slug }}</td></tr>
+<tr> <th><label for="{{ form.start.id_for_label }}">{{form.start.label}}:</label></th><td>
+{{ form.start.errors }}{{ form.start }}</td></tr>
+<tr> <th><label for="{{ form.duration.id_for_label }}">{{form.duration.label}}:</label></th><td>
+{{ form.duration.errors }}{{ form.duration }}</td></tr>
+<tr><th><label for="{{ form.end.id_for_label }}">{{form.end.label}}:</label></th><td>
+{{ form.end.errors }}{{ form.end }}</td></tr>
+</table>
 </div>
-<br>
 <div id='questionsets'>
-	{% trans "Question sets" %}
-	{% for inline in inlines %}
-		<table>
-	{{inline}}
-		</table>
-	{% endfor %}
+{% trans "Question sets" %}
+{% for inline in inlines %}
+    <table>
+{{inline}}
+    </table>
+{% endfor %}
 </div>
 <a id="toggle_extended_form_fields1">{% trans "Show more" %}</a>
 <div id="extended_form_fields1">
-	<table>
-	{% if form.competitor_code_generator %}
-	<tr><th><label for="{{ form.competitor_code_generator.id_for_label }}">{{form.competitor_code_generator.label}}:</label></th><td>{{ form.competitor_code_generator.errors }}{{ form.competitor_code_generator }}</td></tr>{% endif %}
-	{% if form.administrator_code_generator %}
-	<tr><th><label for="{{ form.administrator_code_generator.id_for_label }}">{{form.administrator_code_generator.label}}:</label></th><td>{{ form.administrator_code_generator.errors }}{{ form.administrator_code_generator }}</td></tr>{% endif %}
-	{% if form.competitor_code_format %}
-	<tr><th><label for="{{ form.competitor_code_format.id_for_label }}">{{form.competitor_code_format.label}}:</label></th><td>{{ form.competitor_code_format.errors }}{{ form.competitor_code_format }}</td></tr>
-	<tr><th><label for="{{ form.admin_code_format.id_for_label }}">{{form.admin_code_format.label}}:</label></th><td>
-	{{ form.admin_code_format.errors }}{{ form.admin_code_format }}</td></tr>
-	<tr><th><label for="{{ form.competitor_salt.id_for_label }}">{{form.competitor_salt.label}}:</label></th><td>
-	{{ form.competitor_salt.errors }}{{ form.competitor_salt }}</td></tr>
-	<tr><th><label for="{{ form.admin_salt.id_for_label }}">{{form.admin_salt.label}}:</label></th><td>
-	{{ form.admin_salt.errors }}{{ form.admin_salt }}</td></tr>
-	</table>
-	<a href="{% url 'code_format_create' user_type='admin' %}" class="btn">
-		{% trans "Create code format for admin users (teachers)" %}
-	</a><br/>
-	<a href="{% url 'code_format_create' user_type='competitor' %}" class="btn">
-	  {% trans "Create code format for competitors" %}
-	</a>
-	{% else %}
-	</table>
-	{% endif %}
+<table>
+{% if form.competitor_code_generator %}
+<tr><th><label for="{{ form.competitor_code_generator.id_for_label }}">{{form.competitor_code_generator.label}}:</label></th><td>{{ form.competitor_code_generator.errors }}{{ form.competitor_code_generator }}</td></tr>{% endif %}
+{% if form.administrator_code_generator %}
+<tr><th><label for="{{ form.administrator_code_generator.id_for_label }}">{{form.administrator_code_generator.label}}:</label></th><td>{{ form.administrator_code_generator.errors }}{{ form.administrator_code_generator }}</td></tr>{% endif %}
+{% if form.competitor_code_format %}
+<tr><th><label for="{{ form.competitor_code_format.id_for_label }}">{{form.competitor_code_format.label}}:</label></th><td>{{ form.competitor_code_format.errors }}{{ form.competitor_code_format }}</td></tr>
+<tr><th><label for="{{ form.admin_code_format.id_for_label }}">{{form.admin_code_format.label}}:</label></th><td>
+{{ form.admin_code_format.errors }}{{ form.admin_code_format }}</td></tr>
+<tr><th><label for="{{ form.competitor_salt.id_for_label }}">{{form.competitor_salt.label}}:</label></th><td>
+{{ form.competitor_salt.errors }}{{ form.competitor_salt }}</td></tr>
+<tr><th><label for="{{ form.admin_salt.id_for_label }}">{{form.admin_salt.label}}:</label></th><td>
+{{ form.admin_salt.errors }}{{ form.admin_salt }}</td></tr>
+</table>
+<a href="{% url 'code_format_create' user_type='admin' %}" class="button">
+    {% trans "Create code format for admin users (teachers)" %}
+</a><br/>
+<a href="{% url 'code_format_create' user_type='competitor' %}" class="button">
+  {% trans "Create code format for competitors" %}
+</a>
+{% else %}
+</table>
+{% endif %}
 </div>
 	<input type="submit" value='{% trans "Submit" %}' />
 	</form>
+</div>
 
-<br>
 
 <script type="text/javascript">
 $ = django.jQuery;

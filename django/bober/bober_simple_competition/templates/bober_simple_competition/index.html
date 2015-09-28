@@ -12,5 +12,7 @@
 {% else %}
 <a href="{% url "profile_list" %}" class="btn">{% trans "Managed users" %}</a>
 <a href="{% url "profile_detail" pk=request.user.profile.pk %}" class="btn">{% trans "My profile" %}</a>
+<a href="{% url "questionset_list" %}" class="btn">{% trans "Question sets" %}</a>
+<a href="{% url "question_list" %}" class="btn">{% trans "Questions" %}</a>
 {% endif %}
 {% endblock %}

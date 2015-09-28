@@ -12,12 +12,12 @@ urlpatterns = patterns('',
     url(r'^access_code//*(?P<next>.*)$', views.access_code, name="access_code"),
     # 2. pick competition
     url(r'^competitions/$', views.CompetitionList.as_view(), name="competition_list"),
-    url(r'^competitions/(?P<slug>[\w-]+)/$', views.CompetitionDetail.as_view(), name="competition_detail"),
-    url(r'^competitions/(?P<slug>[\w-]+)/update$', views.CompetitionUpdate.as_view(), name="competition_update"),
+    url(r'^competitions/(?P<slug>[\w\-_]+)/$', views.CompetitionDetail.as_view(), name="competition_detail"),
+    url(r'^competitions/(?P<slug>[\w\-_]+)/update$', views.CompetitionUpdate.as_view(), name="competition_update"),
     #   2.1 teacher, admin (for this competition)
     #     2.1.1 create, list codes for competition
-    url(r'^competitions/(?P<competition_slug>[\w-]+)/codes$', views.competition_code_list, name="competition_code_list"),
-    url(r'^competitions/(?P<competition_slug>[\w-]+)/codes/(?P<user_type>[\w]+)/create/$', views.competition_code_create, name="competition_code_create"),
+    url(r'^competitions/(?P<competition_slug>[\w\-_]+)/codes$', views.competition_code_list, name="competition_code_list"),
+    url(r'^competitions/(?P<competition_slug>[\w\-_]+)/codes/(?P<user_type>[\w]+)/create/$', views.competition_code_create, name="competition_code_create"),
     #           codes can have the following permissions:
     #           1. can create admin codes for this competition
     #           2. can create teacher codes for this competition
@@ -27,13 +27,16 @@ urlpatterns = patterns('',
     #           6. can view results before official end
     #           7. can use questionset to create new competitions
     #     2.1.2 distribute codes to registered and other users
-    url(r'^competitions/(?P<competition_slug>[\w-]+)/send_codes$', views.send_codes, name="send_codes"),
+    url(r'^competitions/(?P<competition_slug>[\w\-_]+)/send_codes$', views.send_codes, name="send_codes"),
     #     2.1.3 view results
-    url(r'^competitions/(?P<competition_slug>[\w-]+)/attempts/$', views.competition_attempt_list, name="competition_attempt_list"),
+    url(r'^competitions/(?P<competition_slug>[\w\-_]+)/attempts/$', views.competition_attempt_list, name="competition_attempt_list"),
     #     2.1.4 mark attempts as invalid
     #           all attempts with codes created or distributed by
     #           the current user can be accessed 
-    url(r'^competitions/(?P<competition_slug>[\w-]+)/attempts/(?P<attempt_id>\d+)/invalidate$', views.invalidate_attempt, name="invalidate_attempt"),
+    url(r'^competitions/(?P<competition_slug>[\w\-_]+)/attempts/(?P<attempt_id>\d+)/invalidate$', views.invalidate_attempt, name="invalidate_attempt"),
+    #     2.1.5 
+    url(r'^competitions/(?P<competition_slug>[\w\-_]+)/use_questionset$', views.use_questionsets, name="use_questionsets"),
+    url(r'^competitions/(?P<competition_slug>[\w\-_]+)/use_questionset/(?P<competition_questionset_id>[\d]+)$', views.use_questionsets, name="use_questionset"),
     #   2.2 competitor
     #     2.2.0 register as competitor using a code
     url(r'^compete/(?P<competition_questionset_id>[\d]+)/$', views.competition_registration, name="competition_registration"),
@@ -71,15 +74,21 @@ urlpatterns = patterns('',
     #   5.3 get certificates, other files
     url(r'^users/(?P<user_id>\d+)/files$', views.user_files, name="user_files"),
     # 6. import question(s)
-    url(r'^question_import/$', views.question_import, name="question_import"),
+    url(r'^question/$', views.QuestionList.as_view(), name="question_list"),
+    # TODO: figure out a way to have safe checkers
+    #url(r'^question/import$', views.QuestionImport.as_view(), name="question_import"),
+    #url(r'^question/create$', views.QuestionCreate.as_view(), name="question_create"),
+    #url(r'^question/(?P<pk>\d+)/update$', views.QuestionUpdate.as_view(), name="question_update"),
+    url(r'^question/(?P<pk>\d+)/$', views.QuestionDetail.as_view(), name="question_detail"),
+    url(r'^question/(?P<pk>\d+)/solution$', views.QuestionSolution.as_view(), name="question_import"),
     # 7. create questionset from questions
-    url(r'^questionset/$', views.QuestionSetList.as_view()),
-    url(r'^questionset/create$', views.QuestionSetCreate.as_view(),
+    url(r'^questionset/$', views.QuestionSetList.as_view(), name="questionset_list"),
+    url(r'^questionset_create/$', views.QuestionSetCreate.as_view(),
         name="questionset_create"),
-    url(r'^questionset/(?P<pk>\d+)/update$', views.QuestionSetUpdate.as_view(),
+    url(r'^questionset/(?P<slug>[\w\-_]+)/update$', views.QuestionSetUpdate.as_view(),
         name="questionset_update"),
-    url(r'^questionset/(?P<pk>\d+)/delete$', views.QuestionSetDelete.as_view()),
-    url(r'^questionset/(?P<pk>\d+)/$', views.QuestionSetDetail.as_view(), 
+    url(r'^questionset/(?P<slug>[\w\-_]+)/delete$', views.QuestionSetDelete.as_view()),
+    url(r'^questionset/(?P<slug>[\w\-_]+)/$', views.QuestionSetDetail.as_view(), 
         name="questionset_detail"),
     #   all questions for competitions you have admin access to can be used
     # 8. create competition (from multiple questionsets)

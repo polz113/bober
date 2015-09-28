@@ -10,20 +10,19 @@
 &nbsp;&nbsp;
 <a href={% url "competition_detail" slug=competition_slug %}>{% trans "Competition details" %}</a>
 <div class="attempts_list">
-	{% for i in object_list %}
-		<div class="attempt">
-			<span class="attempt_info">{{i}}</span>
-			{% for j in i.latest_answers %}
-				<div class="attempt_answers_info">
-					<div class="attempt_question">{% trans "Question" %}: {{j.question}}</div>
-					{% if j.correct %} 
-					<span class="correct_answer">{% trans "Correct Answer" %} :)</span>
-					{% else %} 
-					<span class="wrong_answer">{% trans "Wrong Answer" %} :(</span>
-					{% endif %}
-				</div>
-			{% endfor %}
-		</div>
-	{% endfor %}
+    {% for i in object_list %}
+        <div class="attempt">
+            <span class="attempt_info">{{i}}</span>
+            {% for j in i.latest_answers %}
+                <div class="attempt_answers_info">
+                    <div class="attempt_question">{% trans "Question" %}: {{j.question}}</div>
+                    {% if j.score == None %}<span class="correct_answer">{% trans "Not graded yet" %} ?</span>
+                    {% elif j.score < j.question.none_score %}<span class="wrong_answer">{% trans "Wrong Answer" %} ({{j.score}})</span>
+                    {% else %}<span class="correct_answer">{% trans "Correct" %} ({{j.score}})</span>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        </div>
+    {% endfor %}
 </div>
 {% endblock %}

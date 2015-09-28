@@ -81,7 +81,7 @@ class CompetitionCreate(LoginRequiredMixin, CreateWithInlinesView):
     #    return context
 
     def forms_valid(self, form, inlines):
-        print "Creating new competition after retval!"
+        # print "Creating new competition after retval!"
         admin_codegen = code_based_auth.models.CodeGenerator(
             unique_code_component = 'code_id',
             format = form.cleaned_data['admin_code_format'],
@@ -338,7 +338,6 @@ def competition_attempt_list(request, competition_slug):
         competitionquestionset__competition = competition)
     if not competition.administrator_code_generator.code_matches(access_code,
             {'admin_privileges': ['view_all_attempts']}):
-        # print "filtering", access_code
         if competition.competitor_code_generator.code_matches(access_code,
                     {'competitor_privileges': ['results_before_end']}) \
                 or competition.administrator_code_generator.code_matches(access_code,
@@ -351,6 +350,11 @@ def competition_attempt_list(request, competition_slug):
                 Q(user=request.user.profile) | Q(access_code__in=values))
         else:
             object_list = object_list.none()
+    runtime_manager = None
+    for attempt in object_list:
+        if runtime_manager is None:
+            runtime_manager = graders.RuntimeManager()
+        attempt.grade_answers(runtime_manager)
     return render(request, 
         "bober_simple_competition/competition_attempt_list.html", locals())
 
@@ -362,7 +366,34 @@ def invalidate_attempt(request, competition_slug, attempt_id):
     attempt = Attempt.objects.get(id=attempt.id)
     attempt.invalidated_by = request.user.profile
     return render_to_response("bober_simple_competition/invalidate_attempt.html", locals())
-
+# 2.1.5 use questionsets
+@login_required
+@access_code_required
+def use_questionsets(request, competition_slug, competition_questionset_id=None):
+    access_code = request.session['access_code']
+    competition = Competition.objects.get(slug=competition_slug)
+    codegen = competition.administrator_code_generator
+    can_use_questionsets = codegen.code_matches(access_code, {
+        'admin_privileges': ['use_question_sets']})
+    can_use_questions = codegen.code_matches(access_code, {
+        'admin_privileges': ['use_questions']})
+    if competition_questionset_id is not None:
+        cqs = CompetitionQuestionSet.objects.get(id=competition_questionset_id)
+        questionsets = [cqs.questionset]
+    else:
+        questionsets = c.questionsets.all()
+    if request.method == 'POST':
+        for qs in questionsets:
+            if can_use_questionsets:
+                request.profile.question_sets.add(qs)
+            if can_use_questions:
+                for q in qs.questions.all():
+                    request.profile.questions.add(q)
+        success = True
+    else:
+        success = False
+    return render(request,
+        "bober_simple_competition/use_questionset.html", locals())
 # 2.2 competitor
 #     2.2.1 get question page
 # @login_required
@@ -415,7 +446,7 @@ def competition_guest(request, competition_questionset_id):
     if guest_code is not None:
         code = guest_code.value
         request.session["access_code"] = code
-        print "using code:", code
+        # print "using code:", code
     else:
         code = None
     # code = ''.join([random.choice(string.digits) for _ in xrange(9)])
@@ -453,11 +484,11 @@ def _can_attempt(request, competition_questionset):
         codegen = competition.competitor_code_generator
         access_allowed |= codegen.code_matches(
             access_code, {'competitor_privileges':['attempt_before_start']})
-        print "competition started:", competition.start < timezone.now()
+        # print "competition started:", competition.start < timezone.now()
         access_allowed |= competition.start < timezone.now() and \
             codegen.code_matches(
                 access_code, {'competitor_privileges':['attempt']})
-        print "access_allowed before competition_questionset", access_allowed 
+        # print "access_allowed before competition_questionset", access_allowed 
         access_allowed &= codegen.code_matches(
             access_code, {'competition_questionset':[
                 competition_questionset.slug_str()]})
@@ -597,8 +628,10 @@ def attempt_results(request, competition_questionset_id, attempt_id):
     competition = attempt.competitionquestionset.competition
     codegen = competition.competitor_code_generator
     access_code = request.session['access_code']
-    if not (competition.end < timezone.now() or codegen.code_matches(
-        access_code, {'competitor_privileges':['results_before_end']})):
+    if codegen.code_matches(
+            access_code, {'competitor_privileges':['results_before_end']}):
+        attempt.grade_answers()
+    elif competition.end > timezone.now():
         raise PermissionDenied
     object_list = attempt.latest_answers()
     return render(request, "bober_simple_competition/attempt_results.html", locals())
@@ -670,7 +703,7 @@ class ProfileUpdate(LoginRequiredMixin, UpdateView):
         if (form.instance.merged_with is not None
                 and form.instance.merged_with \
                     not in self.get_queryset()):
-            print "merged_with user not managed"
+            # print "merged_with user not managed"
             return PermissionDenied
         return super(ProfileUpdate, self).form_valid(form)
 
@@ -682,11 +715,30 @@ def user_files(request, user_id):
     return render_to_response("bober_simple_competition/user_files.html", locals())
 
 # 6. import question(s)
-@login_required
-def question_import(request):
-    pass
-    return render_to_response("bober_simple_competition/question_import.html", locals())
+class QuestionImport(LoginRequiredMixin, DetailView):
+    template_name = "bober_simple_competition/question_import.html"
 
+class QuestionSolution(LoginRequiredMixin, DetailView):
+    template_name = "bober_simple_competition/question_solution.html"
+
+class QuestionList(LoginRequiredMixin, ListView):
+    model = Question
+    template_name = 'bober_simple_competition/question_list.html'
+    def get_queryset(self):
+        return self.request.user.profile.questions.all()
+
+class QuestionTableView(LoginRequiredMixin, FilteredSingleTableView):
+    table_class = tables.QuestionTable
+    filter_class = filters.ProfileFilter
+    template_name = 'bober_simple_competition/question_table_list.html'
+    def get_queryset(self):
+        return self.request.user.profile.questions.filter(merged_with=None)
+
+class QuestionDetail(LoginRequiredMixin, DetailView):
+    model = Question
+    def get_queryset(self):
+        return self.request.user.profile.managed_profiles.all()
+#
 # 7. create questionset from questions
 
 class QuestionSetList(LoginRequiredMixin, ListView):
@@ -727,3 +779,5 @@ def immediate_competition(request):
         form = ImmediateCompetitionForm()
     return render(request,
         "bober_simple_competition/immediate_competition.html", locals())
+
+
