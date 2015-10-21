@@ -98,6 +98,14 @@ class Competition(models.Model):
         return s
     def get_absolute_url(self):
         return reverse('competition_detail', kwargs={'slug': str(self.slug)})
+    def clean(self):
+        if self.shortened_code_bits is not None and self.shortened_code_bits > 0:
+            errors = dict()
+            if self.shortened_hash_format is None:
+                errors['shortened_hash_format'] = _('Pick a hash format!')
+            if self.shortened_hash_algorithm is None:
+                errors['shortened_hash_algorithm'] = _('Pick a hash algorithm!')
+            raise ValidationError
     slug = SlugField(unique=True)
     administrator_code_generator = ForeignKey(CodeGenerator, related_name='administrator_code_competition_set')
     competitor_code_generator = ForeignKey(CodeGenerator, related_name='competitor_code_competition_set')
@@ -108,9 +116,10 @@ class Competition(models.Model):
     end = DateTimeField()
     shortened_code_bits = IntegerField(null=True, blank=True)
     shortened_code_hash_format = CharField(max_length=2, null=True, blank=True,
-        choices = CODE_COMPONENT_FORMATS)
+        choices = CODE_COMPONENT_FORMATS, default=DEFAULT_COMPONENT_FORMAT)
     shortened_code_hash_algorithm = models.CharField(max_length = 16,
-        choices = HASH_ALGORITHMS, null=True, blank=True)
+        choices = HASH_ALGORITHMS, null=True, blank=True,
+        default=DEFAULT_HASH_ALGORITHM)
     def grade_attempts(self, grade_runtime_managers=None):
         if grader_runtime_manager is None:
             grader_runtime_manager = graders.RuntimeManager()
