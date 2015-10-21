@@ -5,15 +5,21 @@ from collections import defaultdict
 CODE_COMPONENT_FORMATS = (
     ('h', 'hex'),
     ('i', 'decimal'),
+    ('l', 'letters and digits'),
+    ('L', 'case-insensitive letters and digits'),
     ('w', 'words'),
+    ('W', 'case-insensitive words'),
     ('r', 'raw no hash'),
     ('a', 'match exact'),
 )
+
+CASE_INSENSITIVE_FORMATS = ['h', 'l', 'L', 'W']
 
 HASH_ALGORITHMS = tuple(
     [(i, i) for i in list(hashlib.algorithms)] + [('noop', 'No hash')]
 )
 
+DEFAULT_COMPONENT_FORMAT = 'h'
 DEFAULT_HASH_BITS = 32
 DEFAULT_HASH_ALGORITHM = 'sha512'
 DEFAULT_SEPARATOR = "*"
@@ -21,6 +27,11 @@ DEFAULT_PART_SEPARATOR = "+"
 
 # TODO load words from a file or database
 DEFAULT_WORDS = ['Beaver', 'Tree', 'Brook', 'Stream']
+LOWERCASE_LETTERS = 'abcdefghijklmnopqrstuvwxyz'
+UPPERCASE_LETTERS = LOWERCASE_LETTERS.upper()
+DIGITS = "0123456789"
+LOWERCASE_LETTERS_AND_DIGITS = LOWERCASE_LETTERS + DIGITS
+LETTERS_AND_DIGITS = LOWERCASE_LETTERS + UPPERCASE_LETTERS + DIGITS
 
 def long_hash(salt, data, bits, algorithm = DEFAULT_HASH_ALGORITHM):
     h = hashlib.new(algorithm)
@@ -41,15 +52,16 @@ def hex_hash(salt, data, bits, algorithm = DEFAULT_HASH_ALGORITHM):
 def decimal_hash(salt, data, bits, algorithm = DEFAULT_HASH_ALGORITHM):
     return str(long_hash(salt, data, bits, algorithm))[:-1]
 
-def words_hash(salt, data, bits, algorithm = DEFAULT_HASH_ALGORITHM, 
-    words=DEFAULT_WORDS):
-    i = long_hash(salt, data, bits, algorithm)
-    base = len(words)
-    digest = ""
-    while i > 0:
-        digest += words[i % base]
-        i = i / base
-    return digest
+def words_hash_create(words = DEFAULT_WORDS):
+    def words_hash(salt, data, bits, algorithm = DEFAULT_HASH_ALGORITHM):
+        i = long_hash(salt, data, bits, algorithm)
+        base = len(words)
+        digest = ""
+        while i > 0:
+            digest += words[i % base]
+            i = i / base
+        return digest
+    return words_hash
 
 # Warning! This hash function rounds the bits down to 8!
 def raw_hash(salt, data, bits, algorithm):
@@ -61,10 +73,13 @@ def empty_hash(salt, data, bits, algorithm):
 def noop_hash(salt, data, bits, algorithm):
     return data
 
-_HASH_FUNCTIONS = {
+HASH_FUNCTIONS = {
     'h': hex_hash,
     'i': decimal_hash,
-    'w': words_hash,
+    'w': words_hash_create(),
+    'W': words_hash_create([w.lower() for w in DEFAULT_WORDS]),
+    'l': words_hash_create(LETTERS_AND_DIGITS),
+    'c': words_hash_create(LOWERCASE_LETTERS_AND_DIGITS),
     'r': raw_hash,
     'a': noop_hash,
 } 
@@ -125,6 +140,8 @@ class CodeFormat(models.Model):
                 hashes = set()
                 if component.hash_format == 'a' or not component.part_separator:
                     h = split_parts[i]
+                    if component.hash_format in CASE_INSENSITIVE_FORMATS:
+                        h = h.lower()
                     if component.hash_format == 'a':
                         challenge += h
                     hashes.add(h)
@@ -134,8 +151,10 @@ class CodeFormat(models.Model):
                         # print "max parts exceeded", component, s
                         return False
                     for h in s:
+                        if component.hash_format in CASE_INSENSITIVE_FORMATS:
+                            h = h.lower()
                         hashes.add(h)
-                hash_params[component.name] = (_HASH_FUNCTIONS[component.hash_format], 
+                hash_params[component.name] = (HASH_FUNCTIONS[component.hash_format], 
                     component.hash_bits, component.hash_algorithm, hashes)
             # calculate the hashes for components
             for k, values in parts.iteritems():
@@ -172,7 +191,9 @@ class CodeFormat(models.Model):
             else:
                 for value in values:
                     # print "V:", value, i, component
-                    hash_list.append(_HASH_FUNCTIONS[component.hash_format](
+                    if hash_format in CASE_INSENSITIVE_FORMATS:
+                        value = value.lower()
+                    hash_list.append(HASH_FUNCTIONS[component.hash_format](
                         salt + challenge, 
                         value, component.hash_bits, component.hash_algorithm))
             hashed_components.append(component.part_separator.join(hash_list))
