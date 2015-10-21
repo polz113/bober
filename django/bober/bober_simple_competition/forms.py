@@ -6,7 +6,6 @@ from bober_simple_competition.models import *
 from django.utils.translation import ugettext as _
 from extra_views import InlineFormSet
 import code_based_auth.models
-from django.contrib.admin import widgets as admin_widgets
 import django.forms.extras.widgets as django_widgets
 import autocomplete_light
 from django.forms import ModelForm, TextInput
@@ -152,8 +151,8 @@ class CompetitionCreateForm(forms.ModelForm):
             'competitor_code_generator',
             'questionsets')
         widgets = {
-            'start': admin_widgets.AdminSplitDateTime(),
-            'end': admin_widgets.AdminSplitDateTime(),
+            'start': forms.DateInput(attrs={'class': 'datepicker'}),
+            'end': forms.DateInput(attrs={'class': 'datepicker'}),
         }
     competitor_code_format = forms.ModelChoiceField(
         queryset = code_based_auth.models.CodeFormat.objects.filter(
@@ -169,8 +168,8 @@ class CompetitionUpdateForm(forms.ModelForm):
         model = Competition
         exclude = ['questionsets']
         widgets = {
-            'start': admin_widgets.AdminSplitDateTime(),
-            'end': admin_widgets.AdminSplitDateTime(),
+            'start': forms.DateInput(attrs={'class': 'datepicker'}),
+            'end': forms.DateInput(attrs={'class': 'datepicker'}),
         }
 
 class CodeFormatForm(forms.Form):

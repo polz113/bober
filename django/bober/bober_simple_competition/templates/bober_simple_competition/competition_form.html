@@ -29,14 +29,7 @@
 {{ form.non_field_errors }}
 <div id="normal_form_fields" class="form_table toLeft">
 <table>
-<tr><th><label for="{{ form.slug.id_for_label }}">{{form.slug.label}}:</label></th><td>
-{{ form.slug.errors }}{{ form.slug }}</td></tr>
-<tr> <th><label for="{{ form.start.id_for_label }}">{{form.start.label}}:</label></th><td>
-{{ form.start.errors }}{{ form.start }}</td></tr>
-<tr> <th><label for="{{ form.duration.id_for_label }}">{{form.duration.label}}:</label></th><td>
-{{ form.duration.errors }}{{ form.duration }}</td></tr>
-<tr><th><label for="{{ form.end.id_for_label }}">{{form.end.label}}:</label></th><td>
-{{ form.end.errors }}{{ form.end }}</td></tr>
+{{form}}
 </table>
 </div>
 <div id='questionsets'>

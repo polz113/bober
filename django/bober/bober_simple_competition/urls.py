@@ -9,15 +9,19 @@ urlpatterns = patterns('',
     # url(r'^blog/', include('blog.urls')),
     url(r'^$', views.index, name="index"),
     # 1. login / enter access code
-    url(r'^access_code//*(?P<next>.*)$', views.access_code, name="access_code"),
+    url(r'^access_code/*(?P<next>.*)$', views.access_code, name="access_code"),
     # 2. pick competition
     url(r'^competitions/$', views.CompetitionList.as_view(), name="competition_list"),
-    url(r'^competitions/(?P<slug>[\w\-_]+)/$', views.CompetitionDetail.as_view(), name="competition_detail"),
-    url(r'^competitions/(?P<slug>[\w\-_]+)/update$', views.CompetitionUpdate.as_view(), name="competition_update"),
+    url(r'^competitions/(?P<slug>[\w\-_]+)/$', 
+        views.CompetitionDetail.as_view(), name="competition_detail"),
+    url(r'^competitions/(?P<slug>[\w\-_]+)/update$', 
+        views.CompetitionUpdate.as_view(), name="competition_update"),
     #   2.1 teacher, admin (for this competition)
     #     2.1.1 create, list codes for competition
-    url(r'^competitions/(?P<competition_slug>[\w\-_]+)/codes$', views.competition_code_list, name="competition_code_list"),
-    url(r'^competitions/(?P<competition_slug>[\w\-_]+)/codes/(?P<user_type>[\w]+)/create/$', views.competition_code_create, name="competition_code_create"),
+    url(r'^competitions/(?P<competition_slug>[\w\-_]+)/codes$', 
+        views.competition_code_list, name="competition_code_list"),
+    url(r'^competitions/(?P<competition_slug>[\w\-_]+)/codes/(?P<user_type>[\w]+)/create/$', 
+        views.competition_code_create, name="competition_code_create"),
     #           codes can have the following permissions:
     #           1. can create admin codes for this competition
     #           2. can create teacher codes for this competition
@@ -27,35 +31,55 @@ urlpatterns = patterns('',
     #           6. can view results before official end
     #           7. can use questionset to create new competitions
     #     2.1.2 distribute codes to registered and other users
-    url(r'^competitions/(?P<competition_slug>[\w\-_]+)/send_codes$', views.send_codes, name="send_codes"),
+    url(r'^competitions/(?P<competition_slug>[\w\-_]+)/send_codes$', 
+        views.send_codes, name="send_codes"),
     #     2.1.3 view results
-    url(r'^competitions/(?P<competition_slug>[\w\-_]+)/attempts/$', views.competition_attempt_list, name="competition_attempt_list"),
+    url(r'^competitions/(?P<competition_slug>[\w\-_]+)/attempts/$', 
+        views.competition_attempt_list, name="competition_attempt_list"),
+    url(r'^competitions/(?P<competition_slug>[\w\-_]+)/attempts/regrade$', 
+        views.competition_attempt_list, {'regrade':True}, name="competition_attempt_list"),
     #     2.1.4 mark attempts as invalid
     #           all attempts with codes created or distributed by
     #           the current user can be accessed 
-    url(r'^competitions/(?P<competition_slug>[\w\-_]+)/attempts/(?P<attempt_id>\d+)/invalidate$', views.invalidate_attempt, name="invalidate_attempt"),
+    url(r'^competitions/(?P<competition_slug>[\w\-_]+)/attempts/(?P<competition_questonset_id>\d+)/(?P<attempt_id>\d+)/invalidate$', 
+        views.competition_attempt_list, {'regrade':True}, name="attempt_invalidate"),
     #     2.1.5 
-    url(r'^competitions/(?P<competition_slug>[\w\-_]+)/use_questionset$', views.use_questionsets, name="use_questionsets"),
-    url(r'^competitions/(?P<competition_slug>[\w\-_]+)/use_questionset/(?P<competition_questionset_id>[\d]+)$', views.use_questionsets, name="use_questionset"),
+    url(r'^competitions/(?P<competition_slug>[\w\-_]+)/questionsets/use$', 
+        views.use_questionsets, name="use_questionsets"),
+    url(r'^competitions/(?P<competition_slug>[\w\-_]+)/questionsets/(?P<competition_questionset_id>[\d]+)$', 
+        views.use_questionsets, name="use_questionset"),
     #   2.2 competitor
     #     2.2.0 register as competitor using a code
-    url(r'^compete/(?P<competition_questionset_id>[\d]+)/$', views.competition_registration, name="competition_registration"),
+    url(r'^compete/(?P<competition_questionset_id>[\d]+)/$', 
+        views.competition_registration, name="competition_registration"),
     #     2.2.1 get question page
-    url(r'^compete/(?P<competition_questionset_id>[\d]+)/resources/competition.html$', views.competition_index, name="competition_index"),
+    url(r'^compete/(?P<competition_questionset_id>[\d]+)/resources/competition.html$', 
+        views.competition_index, name="competition_index"),
 	#     2.2.1.1 get question page as guest :: GUEST
-    url(r'^guest/(?P<competition_questionset_id>[\d]+)/$', views.competition_guest, name="competition_guest"),    
+    url(r'^guest/(?P<competition_questionset_id>[\d]+)/$', 
+        views.competition_guest, name="competition_guest"),    
     #     2.2.2 get question resources
-    url(r'^compete/(?P<competition_questionset_id>[\d]+)/resources/(?P<resource_path>.*)', views.competition_resources, name="competition_resources"),
+    url(r'^compete/(?P<competition_questionset_id>\d+)/resources/(?P<resource_path>.*)', 
+        views.competition_resources, name="competition_resources"),
     #     2.2.3 get question data (existing answers, attempt_id, randomised_question map)
-    url(r'^compete/(?P<competition_questionset_id>[\d]+)/data.json$', views.competition_data, name="competition_data"),
+    url(r'^compete/(?P<competition_questionset_id>\d+)/data.json$', 
+        views.competition_data, name="competition_data"),
     #     2.2.4 get remaining time
-    url(r'^compete/(?P<competition_questionset_id>[\d]+)/attempts/(?P<attempt_id>\d+)/time_remaining.json$', views.time_remaining, name="time_remaining"),
+    url(r'^compete/(?P<competition_questionset_id>\d+)/attempts/(?P<attempt_id>\d+)/time_remaining.json$', 
+        views.time_remaining, name="time_remaining"),
     #     2.2.5 submit answer
-    url(r'^compete/(?P<competition_questionset_id>[\d]+)/attempts/(?P<attempt_id>\d+)/submit.json$', views.submit_answer, name="submit_answer"),
+    url(r'^compete/(?P<competition_questionset_id>\d+)/attempts/(?P<attempt_id>\d+)/submit.json$', 
+        views.submit_answer, name="submit_answer"),
     #     2.2.6 finish competition
-    url(r'^compete/(?P<competition_questionset_id>[\d]+)/attempts/(?P<attempt_id>\d+)/finish.json$', views.finish_competition, name="finish_competition"),
+    url(r'^compete/(?P<competition_questionset_id>\d+)/attempts/(?P<attempt_id>\d+)/finish.json$', 
+        views.finish_competition, name="finish_competition"),
     #     2.2.7 view results
-    url(r'^compete/(?P<competition_questionset_id>[\d]+)/attempts/(?P<attempt_id>\d+)/$', views.attempt_results, name="attempt_results"),
+    url(r'^compete/(?P<competition_questionset_id>\d+)/attempts/$', 
+        views.competition_attempt_list, {'regrade':True}, name="competition_attempt_list"),
+    url(r'^compete/(?P<competition_questionset_id>\d+)/attempts/regrade$', 
+        views.competition_attempt_list, {'regrade':True}, name="competition_attempt_list"),
+    url(r'^compete/(?P<competition_questionset_id>\d+)/attempts/(?P<attempt_id>\d+)/$', 
+        views.attempt_results, name="attempt_results"),
     # 3. create registration codes
     url(r'^registration_codes/$', views.registration_codes, name="registration_codes"),
     # 4. register as user
@@ -80,7 +104,10 @@ urlpatterns = patterns('',
     #url(r'^question/create$', views.QuestionCreate.as_view(), name="question_create"),
     #url(r'^question/(?P<pk>\d+)/update$', views.QuestionUpdate.as_view(), name="question_update"),
     url(r'^question/(?P<pk>\d+)/$', views.QuestionDetail.as_view(), name="question_detail"),
-    url(r'^question/(?P<pk>\d+)/solution$', views.QuestionSolution.as_view(), name="question_import"),
+    url(r'^question/(?P<pk>\d+)/resources/$', views.QuestionDetail.as_view(), name="question_text"),
+    url(r'^question/(?P<pk>\d+)/resources/(?P<resource_path>.*)$', views.QuestionDetail.as_view(), name="question_resource"),
+    url(r'^question/(?P<pk>\d+)/solution/$', views.QuestionSolution.as_view(), name="question_solution"),
+    url(r'^question/(?P<pk>\d+)/solution/(?P<resource_path>.*)$', views.QuestionDetail.as_view(), name="question_solution_resource"),
     # 7. create questionset from questions
     url(r'^questionset/$', views.QuestionSetList.as_view(), name="questionset_list"),
     url(r'^questionset_create/$', views.QuestionSetCreate.as_view(),

@@ -18,13 +18,15 @@ class NoneRuntime:
                 return question.max_score
             return question.min_score
         self.graders[s] = grader
+        return grader
     def start(self):
         pass
     def get_grader(self, s):
-        if s not in self.graders:
-            self.add_grader(s)
+        g = self.graders.get(s, None)
+        if g is None:
+            g = self.add_grader(s)
         # print self.graders, s
-        return self.graders[s]
+        return g
 
 class BondRuntime(NoneRuntime):
     def start(self):
@@ -36,6 +38,7 @@ class BondRuntime(NoneRuntime):
         b = bond.make_bond(lang)
         b.eval_block(source)
         self.graders[s] = self.b.callable(fn_name)
+        return grader
 
 class JSGostisaRuntime(BondRuntime):
     def add_grader(s):
@@ -52,6 +55,7 @@ class PythonExecRuntime(NoneRuntime):
         compiled = compile(s, '<string>', 'single')
         exec(compiled)
         self.graders[s] = eval(compiled.co_names[0])
+        return grader
 
 class PythonBondRuntime(NoneRuntime):
     def add_grader(self, s):

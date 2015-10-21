@@ -253,10 +253,15 @@ def competition_code_create(request, competition_slug, user_type='admin'):
         if form.is_valid():
             data = form.cleaned_data
             if 'competition_questionset' in data:
+                cqs = data['competition_questionset']
                 data['competition_questionset'] = [
-                    str(data['competition_questionset'].id) + "." + \
-                        str(data['competition_questionset'].name)
+                    str(cqs.id) + "." + \
+                        str(cqs.name)
                 ]
+            if cqs.competition.short_code_length:
+                short_code = cqs.competition.gen_short_code(
+                        code_len=cqs.competition.short_code_length, 
+                        data=data)
             c = generator.create_code(data)
             request.user.profile.created_codes.add(c)
             return redirect('competition_code_list',
@@ -331,7 +336,7 @@ def send_codes(request, competition_slug):
 # 2.1.3 view results
 @login_required
 @access_code_required
-def competition_attempt_list(request, competition_slug):
+def competition_attempt_list(request, competition_slug, regrade=False):
     competition = Competition.objects.get(slug=competition_slug)
     access_code = request.session['access_code']
     object_list = Attempt.objects.filter(
@@ -354,7 +359,7 @@ def competition_attempt_list(request, competition_slug):
     for attempt in object_list:
         if runtime_manager is None:
             runtime_manager = graders.RuntimeManager()
-        attempt.grade_answers(runtime_manager)
+        attempt.grade_answers(runtime_manager, regrade)
     return render(request, 
         "bober_simple_competition/competition_attempt_list.html", locals())
 

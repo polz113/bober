@@ -7,7 +7,7 @@ from django.db.models import FileField, BinaryField, CommaSeparatedIntegerField
 from django.db.models import signals
 from django.contrib.auth.models import User
 from django.core.files.base import ContentFile, File
-from code_based_auth.models import Code, CodeField, CodeGenerator
+from code_based_auth.models import Code, CodeField, CodeGenerator, CODE_COMPONENT_FORMATS, HASH_ALGORITHMS, HASH_FUNCTIONS
 from taggit.managers import TaggableManager
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
@@ -84,6 +84,12 @@ ADMIN_PRIVILEGES = (
     #       2.4 can use questionset to create new competitions
     #           'reuse_questions' in components['privileges']
 
+FEATURE_LEVELS = [
+    (0, _('Reduced functionality')),
+    (1, _('Basic features only')),
+    (10, _('Commonly used features')),
+    (128, _('All features')),
+]
 
 class Competition(models.Model):
     def __unicode__(self):
@@ -100,6 +106,11 @@ class Competition(models.Model):
     # duration in seconds
     duration = IntegerField(default=60*60) # 60s * 60 = 1h.
     end = DateTimeField()
+    shortened_code_bits = IntegerField(null=True, blank=True)
+    shortened_code_hash_format = CharField(max_length=2, null=True, blank=True,
+        choices = CODE_COMPONENT_FORMATS)
+    shortened_code_hash_algorithm = models.CharField(max_length = 16,
+        choices = HASH_ALGORITHMS, null=True, blank=True)
     def grade_attempts(self, grade_runtime_managers=None):
         if grader_runtime_manager is None:
             grader_runtime_manager = graders.RuntimeManager()
@@ -107,6 +118,9 @@ class Competition(models.Model):
         for cq in self.competition_question_set_set.all():
             for attempt in cq.attempt_set.all():
                 attempt.grade_answers(grader_runtime_manager)
+    def gen_shortened_code(code):
+        return HASH_FUNCTIONS[self.shortened_code_hash_format]('', str(code), 
+            self.shortened_code_bits, self.shortened_code_hash_algorithm)
 
 class CompetitionQuestionSet(models.Model):
     def __unicode__(self):
@@ -117,6 +131,11 @@ class CompetitionQuestionSet(models.Model):
     questionset = models.ForeignKey('QuestionSet')
     competition = models.ForeignKey('Competition')
     guest_code = ForeignKey(Code, null=True, blank=True)
+
+class ShortenedCode(models.Model):
+    competition_question_set = ForeignKey(CompetitionQuestionSet)
+    code = ForeignKey(Code)
+    short = models.CharField(max_length=256)
 
 class QuestionSet(models.Model):
     def __unicode__(self):
@@ -504,11 +523,16 @@ class Attempt(models.Model):
         return self.reverse_question_mapping()[randomized_question_id]
     def question_mapping(self):
         return self.questionset.question_mapping(self.random_seed)
-    def grade_answers(self, grader_runtime_manager=None):
+    def grade_answers(self, grader_runtime_manager=None, regrade=False):
         if grader_runtime_manager is None:
             grader_runtime_manager = graders.RuntimeManager()
             grader_runtime_manager.start_runtimes()
-        for a in self.latest_answers():
+        if regrade:
+            answers = self.answer_set.select_related('question').all()
+        else:
+            answers = self.answer_set.select_related('question').filter(score=None)
+        for a in answers:
+            print "regrading", a
             q = a.question
             grader = grader_runtime_manager.get_grader(q.verification_function, q.verification_function_type)
             a.score = grader(a.value, self.random_seed, q)
@@ -529,12 +553,14 @@ class Attempt(models.Model):
         return answers
 
         
+
 class Profile(models.Model):
     def __unicode__(self):
         return unicode(self.user)
     def get_absolute_url(self):
         return reverse('competition_detail', kwargs={'pk': str(self.pk)})
     user = models.OneToOneField(User)
+    feature_level = IntegerField(choices=FEATURE_LEVELS, default=1)
     managed_profiles = models.ManyToManyField('Profile', related_name='managers', null=True, blank=True)
     # managed_users = models.ManyToManyField(User, related_name='managers', null=True, blank=True)
     #first_competition = models.ForeignKey(Competition, null=True, blank=True)
