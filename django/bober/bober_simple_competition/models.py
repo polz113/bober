@@ -7,7 +7,7 @@ from django.db.models import FileField, BinaryField, CommaSeparatedIntegerField
 from django.db.models import signals
 from django.contrib.auth.models import User
 from django.core.files.base import ContentFile, File
-from code_based_auth.models import Code, CodeField, CodeGenerator, CODE_COMPONENT_FORMATS, HASH_ALGORITHMS, HASH_FUNCTIONS
+from code_based_auth.models import Code, CodeField, CodeGenerator, CODE_COMPONENT_FORMATS, HASH_ALGORITHMS, FORMAT_FUNCTIONS, DEFAULT_COMPONENT_FORMAT, DEFAULT_HASH_ALGORITHM
 from taggit.managers import TaggableManager
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
@@ -15,6 +15,7 @@ from django.core.urlresolvers import reverse
 from django.utils.text import slugify
 from django.utils.translation import ugettext as _
 from django.utils import timezone
+from django.core.exceptions import ValidationError
 from . import graders
 import random
 import os
@@ -54,13 +55,12 @@ COMPETITOR_PRIVILEGES = (
     ('attempt', _('Participate in the competition')),
     ('attempt_before_start', _('Attempt competition before start')),
     ('results_before_end', _('See results before official end of competition')),
+    ('new_attempt', _('Start a new attempt every time this code is used')),
 )
 
 CODE_EFFECTS = (
     ('let_manage', _('Allow the creator to manage the profile of anyone using this code')),
-    ('let_invalidate', _('Allow the creator to invalidate any attempt using this code')),
     ('let_manage_recursive', _('Allow the creator and their managers to manage the profile of anyone using this code')),
-    ('new_attempt', _('Start a new attempt every time this code is used')),
 )
 
 ADMIN_PRIVILEGES = (
@@ -98,14 +98,6 @@ class Competition(models.Model):
         return s
     def get_absolute_url(self):
         return reverse('competition_detail', kwargs={'slug': str(self.slug)})
-    def clean(self):
-        if self.shortened_code_bits is not None and self.shortened_code_bits > 0:
-            errors = dict()
-            if self.shortened_hash_format is None:
-                errors['shortened_hash_format'] = _('Pick a hash format!')
-            if self.shortened_hash_algorithm is None:
-                errors['shortened_hash_algorithm'] = _('Pick a hash algorithm!')
-            raise ValidationError
     slug = SlugField(unique=True)
     administrator_code_generator = ForeignKey(CodeGenerator, related_name='administrator_code_competition_set')
     competitor_code_generator = ForeignKey(CodeGenerator, related_name='competitor_code_competition_set')
@@ -114,12 +106,12 @@ class Competition(models.Model):
     # duration in seconds
     duration = IntegerField(default=60*60) # 60s * 60 = 1h.
     end = DateTimeField()
-    shortened_code_bits = IntegerField(null=True, blank=True)
-    shortened_code_hash_format = CharField(max_length=2, null=True, blank=True,
-        choices = CODE_COMPONENT_FORMATS, default=DEFAULT_COMPONENT_FORMAT)
-    shortened_code_hash_algorithm = models.CharField(max_length = 16,
-        choices = HASH_ALGORITHMS, null=True, blank=True,
-        default=DEFAULT_HASH_ALGORITHM)
+    def expand_competitor_code(self, short_code, competition_questionset):
+        sep = self.competitor_code_generator.format.separator
+        return competition_questionset.slug_str() + sep + short_code
+    def split_competitor_code(self, access_code):
+        sep = self.competitor_code_generator.format.separator
+        return access_code.split(sep)
     def grade_attempts(self, grade_runtime_managers=None):
         if grader_runtime_manager is None:
             grader_runtime_manager = graders.RuntimeManager()
@@ -127,24 +119,107 @@ class Competition(models.Model):
         for cq in self.competition_question_set_set.all():
             for attempt in cq.attempt_set.all():
                 attempt.grade_answers(grader_runtime_manager)
-    def gen_shortened_code(code):
-        return HASH_FUNCTIONS[self.shortened_code_hash_format]('', str(code), 
-            self.shortened_code_bits, self.shortened_code_hash_algorithm)
-
+    def admin_privilege_choices(self, access_code):
+        return filter(
+            lambda x: self.administrator_code_generator.code_matches(access_code,
+                {'admin_privileges': [x[0]]}),
+            ADMIN_PRIVILEGES)
+    def allowed_effect_choices(self, access_code):
+        return filter(
+            lambda x: self.administrator_code_generator.code_matches(access_code,
+                {'allowed_effects': [x[0]]}),
+            CODE_EFFECTS)
+    def competitor_privilege_choices(self, access_code):
+        return filter(
+        lambda x: self.administrator_code_generator.code_matches(access_code,
+            {'competitor_privileges': [x[0]]}),
+        COMPETITOR_PRIVILEGES)
+    def max_admin_code_data(self, access_code):
+        return {
+            'admin_privileges': 
+                [i[0] for i in self.admin_privilege_choices(access_code)],
+            'allowed_effects':
+                [i[0] for i in self.allowed_effect_choices(access_code)],
+            'competitor_privileges': 
+                [i[0] for i in self.competitor_privilege_choices(access_code)]
+            }
+    def max_competitor_code_data(self, access_code):
+        return {
+            'competitor_privileges': 
+                [i[0] for i in self.competitor_privilege_choices(access_code)]
+            }
+    def competitor_code_create(self, access_code, 
+            competition_questionset = None,
+            code_data = None):
+        if code_data is None:
+            code_data = self.max_competitor_code_data(access_code)
+        if competition_questionset is not None:
+            code_data['competition_questionset'] = [competition_questionset.slug_str()]
+        c = self.competitor_code_generator.create_code(code_data)
+        c.save()
+        return c
+    def master_code_create(self):
+        c = self.administrator_code_generator.create_code({
+            'admin_privileges': [i[0] for i in ADMIN_PRIVILEGES],
+            'competitor_privileges': [i[0] for i in COMPETITOR_PRIVILEGES],
+            'allowed_effects':  [i[0] for i in CODE_EFFECTS],
+        })
+        c.save()
+        return c
+    def admin_code_create(self, access_code, code_data = None):
+        if code_data is None:
+            code_data = self.max_admin_code_data(access_code)
+        c = self.administrator_code_generator.create_code(code_data)
+        c.save()
+        return c 
 class CompetitionQuestionSet(models.Model):
     def __unicode__(self):
         return u"{}: {} ({})".format(self.id, self.name, self.questionset.slug)
     def slug_str(self):
         return unicode(self.id) + '.' + self.questionset.slug
+    @classmethod
+    def get_by_slug(cls, slug):
+        return cls.objects.get(id=slug[:slug.find('.')])
     name = models.CharField(max_length=256, null=True, blank=True)
     questionset = models.ForeignKey('QuestionSet')
     competition = models.ForeignKey('Competition')
     guest_code = ForeignKey(Code, null=True, blank=True)
 
-class ShortenedCode(models.Model):
-    competition_question_set = ForeignKey(CompetitionQuestionSet)
+class CodeEffect(models.Model):
     code = ForeignKey(Code)
-    short = models.CharField(max_length=256)
+    effect = models.CharField(max_length = 64, choices=CODE_EFFECTS)
+    def apply(self, users=None):
+        def let_manage(profile):
+            for owner in self.code.owner_set:
+                owner.managed_profiles.add(profile)
+        def let_manage_recursive(profile):
+            competitions = Competition.objects.filter(
+            competitor_code_generator__salt = self.code.salt,
+            competitor_code_generator__format = self.code.format).unique()
+            for owner in self.code.owner_set:
+                owner.managed_profiles.add(profile)
+                for competition in competitions:
+                    for superior in superiors(owner,
+                            competition.administrator_code_generator):
+                        superior.managed_profiles.add(profile)
+        effects = {
+            'let_manage': let_manage,
+            'let_manage_recursive': let_manage_recursive
+        }
+        if users is None:
+            users = self.code.user_set.all()
+        # actually apply the effects
+        for user in users:
+            effects[self.effect](user)
+
+class ShortenedCode(models.Model):
+    class Meta:
+        unique_together = (('competition_questionset', 'short'),)
+    def __unicode__(self):
+        return u"{}: ({}) {}".format(self.short, self.competition_questionset, self.code)
+    competition_questionset = ForeignKey(CompetitionQuestionSet)
+    code = ForeignKey(Code, unique=True)
+    short = models.CharField(max_length=64)
 
 class QuestionSet(models.Model):
     def __unicode__(self):
@@ -629,11 +704,15 @@ class Profile(models.Model):
             except Exception, e:
                 print e
                 pass
-
-    def update_managers(self, codes = None):
+    def apply_code_effects(self, codes = None):
         if codes is None:
             update_managers_timestamp = timezone.now()
             codes = self.used_codes
+        for c in codes:
+            for effect in c.code_effect_set:
+                effect.apply(users=[self])
+
+    def update_managers(self, codes = None):
         for c in codes:
             if c.format.code_matches(c.salt,
                 c.value, {'code_effects': ['let_manage']}):

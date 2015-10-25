@@ -10,7 +10,7 @@ from django.core.serializers.json import DjangoJSONEncoder
 from django.core.exceptions import PermissionDenied
 from django.utils import timezone
 from django.template import RequestContext
-from django.views.generic import ListView, DetailView, CreateView, DeleteView, UpdateView, FormView
+from django.views.generic import ListView, DetailView, CreateView, DeleteView, UpdateView, FormView, TemplateView
 from extra_views import CreateWithInlinesView, UpdateWithInlinesView, InlineFormSet
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.conf import settings
@@ -96,12 +96,7 @@ class CompetitionCreate(LoginRequiredMixin, CreateWithInlinesView):
         competition.administrator_code_generator = admin_codegen
         competition.competitor_code_generator = competitor_codegen
         competition.save()
-        master_code = competition.administrator_code_generator.create_code({
-            'admin_privileges': [i[0] for i in ADMIN_PRIVILEGES],
-            'competitor_privileges': [i[0] for i in COMPETITOR_PRIVILEGES],
-            'code_effects': [i[0] for i in CODE_EFFECTS]
-        })
-        master_code.save()
+        master_code = competition.master_code_create()
         self.request.user.profile.received_codes.add(master_code)
         self.request.user.profile.created_codes.add(master_code)
         retval = super(CompetitionCreate, self).forms_valid(form, inlines)
@@ -113,9 +108,8 @@ class CompetitionCreate(LoginRequiredMixin, CreateWithInlinesView):
                     f.instance.save()
                     code_data = {
                         'competitor_privileges':[
-                            'attempt', 'results_before_end'
+                            'attempt', 'results_before_end', 'new_attempt'
                         ],
-                        'code_effects': ['new_attempt'],
                         'competition_questionset': [f.instance.slug_str()]
                     }
                     c = competitor_codegen.create_code(code_data)
@@ -161,16 +155,40 @@ class CompetitionUpdate(LoginRequiredMixin, UpdateWithInlinesView):
                     # print f.instance, f.cleaned_data['create_guest_code']
         return retval
 
+def _use_access_code(request, access_code,
+        defer_update_used_codes = False, 
+        defer_code_effects = False):
+    request.session['access_code'] = access_code
+    print access_code, defer_update_used_codes, defer_code_effects
+    try:
+        if not defer_update_used_codes:
+            code = Code.objects.get(value = access_code)
+            request.user.profile.used_codes.add(code)
+    except Exception, e:
+        print e
+        pass
+    try:
+        if not defer_code_effects:
+            profile = request.user.profile
+            for effect in code.codeeffect_set.all():
+                effect.apply(users=[profile])
+    except Exception, e:
+        print e
+        pass
+
 def access_code(request, next):
     qd = QueryDict(dict(), mutable=True)
     qd.update(request.GET)
     qd.update(request.POST)
     if len(qd):
-        form = MinimalAccessCodeForm(qd)
+        form = AccessCodeForm(qd)
     else:
-        form = MinimalAccessCodeForm()
+        form = AccessCodeForm()
     if form.is_valid():
-        request.session['access_code'] = form.cleaned_data['access_code']
+        defer_update = form.cleaned_data['defer_update_used_codes']
+        defer_effects = form.cleaned_data['defer_effects']
+        access_code = form.cleaned_data['access_code']
+        _use_access_code(request, access_code, defer_update, defer_effects)
         return HttpResponseRedirect('/' + next)
     return render(request, 'bober_simple_competition/access_code.html', locals())
 
@@ -207,33 +225,37 @@ def competition_code_list(request, competition_slug):
 # 5. can attempt competition before official start
 # 6. can view results before official end
 # 7. can use questionset to create new competitions
+class CodeCreate(LoginRequiredMixin, AccessCodeRequiredMixin, TemplateView):
+    template_name = "bober_simple_competition/competition_code_create.html"
+    def post():
+        pass
+    def get():
+        pass
 @login_required
 @access_code_required
 def competition_code_create(request, competition_slug, user_type='admin'):
     access_code = request.session['access_code']
     competition = Competition.objects.get(slug=competition_slug)
     admin_codegen = competition.administrator_code_generator
-    competitor_privilege_choices = filter(
-        lambda x: admin_codegen.code_matches(access_code,
-            {'competitor_privileges': [x[0]]}),
-        COMPETITOR_PRIVILEGES)
+    competitor_privilege_choices = competition.competitor_privilege_choices(
+        access_code)
+    allowed_effect_choices = competition.allowed_effect_choices(access_code)
     admin_privilege_choices = list()
     if user_type == 'admin':
         if not admin_codegen.code_matches(access_code,
                 {'admin_privileges': ['create_admin_codes']}):
             raise PermissionDenied;
-        admin_privilege_choices = filter(
-            lambda x: admin_codegen.code_matches(access_code,
-                {'admin_privileges': [x[0]]}),
-            ADMIN_PRIVILEGES)
+        admin_privilege_choices = competition.admin_privilege_choices(access_code)
         generator = admin_codegen
         class FormClass(forms.Form):
             competitor_privileges = forms.MultipleChoiceField(
                 choices = competitor_privilege_choices, required = False)
             admin_privileges = forms.MultipleChoiceField(
                 choices = admin_privilege_choices, required = False)
+            allowed_effects = forms.MultipleChoiceField(
+                choices = allowed_effect_choices, required = False)
             code_effects = forms.MultipleChoiceField(
-                choices = CODE_EFFECTS, required = False)
+                choices = allowed_effect_choices, required = False)
     else:
         generator = competition.competitor_code_generator
         if not admin_codegen.code_matches(access_code, 
@@ -247,21 +269,16 @@ def competition_code_create(request, competition_slug, user_type='admin'):
                     queryset=CompetitionQuestionSet.objects.filter(
                         competition_id=competition.id))
             code_effects = forms.MultipleChoiceField(
-                choices = CODE_EFFECTS, required = False)
+                choices = allowed_effect_choices, required = False)
     if request.method == 'POST':
         form = FormClass(request.POST)
         if form.is_valid():
             data = form.cleaned_data
             if 'competition_questionset' in data:
                 cqs = data['competition_questionset']
-                data['competition_questionset'] = [
-                    str(cqs.id) + "." + \
-                        str(cqs.name)
-                ]
-            if cqs.competition.short_code_length:
-                short_code = cqs.competition.gen_short_code(
-                        code_len=cqs.competition.short_code_length, 
-                        data=data)
+                data['competition_questionset'] = [cqs.slug_str()]
+            else:
+                cqs = None
             c = generator.create_code(data)
             request.user.profile.created_codes.add(c)
             return redirect('competition_code_list',
@@ -291,13 +308,6 @@ def code_format_create(request, user_type='admin'):
                     'max_parts': 1,
                 },
                 {
-                    'name': 'code_effects',
-                    'hash_bits': form.cleaned_data['code_effects_bits'],
-                    'hash_format': form.cleaned_data['code_effects_format'],
-                    'hash_algorithm': form.cleaned_data['code_effects_hash'],
-                    'max_parts': len(CODE_EFFECTS),
-                },
-                {
                     'name': 'competitor_privileges',
                     'hash_bits': form.cleaned_data['competitor_privilege_bits'],
                     'hash_format': form.cleaned_data['competitor_privilege_format'],
@@ -305,21 +315,30 @@ def code_format_create(request, user_type='admin'):
                     'max_parts': len(COMPETITOR_PRIVILEGES),
                 }]
             if user_type == 'admin':
-                code_components += [{
-                    'name': 'admin_privileges',
-                    'hash_bits': form.cleaned_data['admin_privilege_bits'],
-                    'hash_format': form.cleaned_data['admin_privilege_format'],
-                    'hash_algorithm': form.cleaned_data['admin_privilege_hash'],
-                    'max_parts': len(ADMIN_PRIVILEGES),
-                }]
+                code_components += [
+                    {
+                        'name': 'admin_privileges',
+                        'hash_bits': form.cleaned_data['admin_privilege_bits'],
+                        'hash_format': form.cleaned_data['admin_privilege_format'],
+                        'hash_algorithm': form.cleaned_data['admin_privilege_hash'],
+                        'max_parts': len(ADMIN_PRIVILEGES),
+                    },
+                    {
+                        'name': 'allowed_effects',
+                        'hash_bits': form.cleaned_data['code_effects_bits'],
+                        'hash_format': form.cleaned_data['code_effects_format'],
+                        'hash_algorithm': form.cleaned_data['code_effects_hash'],
+                        'max_parts': len(CODE_EFFECTS),
+                    },
+                ]
             else:
-                code_components += [{
+                code_components = [{
                     'name': 'competition_questionset',
                     'hash_bits': form.cleaned_data['questionset_bits'],
                     'hash_format': form.cleaned_data['questionset_format'],
                     'hash_algorithm': form.cleaned_data['questionset_hash'],
                     'max_parts': 1,
-                }]
+                }] + code_components
             f = code_based_auth.models.CodeFormat.from_components(code_components)
             created = True
     else:
@@ -437,6 +456,37 @@ def competition_registration(request, competition_questionset_id):
     return render(request, 
         "bober_simple_competition/competition_registration.html",
         locals())
+
+@login_required
+def compete_with_short_code(request, competition_slug):
+    competition = Competition.objects.get(slug=competition_slug)
+    class QuestionsetCodeForm(forms.Form):
+        questionset = forms.ModelChoiceField(
+            queryset = CompetitionQuestionSet.objects.filter(
+                competition = competition)) 
+        access_code = forms.CharField()
+    qd = QueryDict(dict(), mutable=True)
+    qd.update(request.GET)
+    qd.update(request.POST)
+    if len(qd):
+        form = QuestionsetCodeForm(qd)
+    else:
+        form = QuestionsetCodeForm()
+    if form.is_valid():
+        # defer_update = form.cleaned_data['defer_update_used_codes']
+        # defer_effects = form.cleaned_data['defer_effects']
+        cqs = form.cleaned_data['questionset']
+        access_code = competition.expand_competitor_code(
+            short_code = form.cleaned_data['access_code'],
+            competition_questionset = cqs)
+        _use_access_code(request, access_code, 
+            defer_update_used_codes=False, defer_code_effects=False)
+        return HttpResponseRedirect(reverse('competition_index', 
+            kwargs = {'competition_questionset_id': cqs.id}))
+    return render(request, 'bober_simple_competition/compete_with_short_code.html', locals())
+
+
+
 #     2.2.1 get question page
 # @login_required
 @access_code_required
@@ -531,7 +581,7 @@ def competition_data(request, competition_questionset_id):
         codegen = competition.competitor_code_generator
         
         if codegen.code_matches(
-                access_code, {'code_effects':['new_attempt']}):
+                access_code, {'competitor_privileges':['new_attempt']}):
             raise Exception()
         attempt = Attempt.objects.filter(user=user_profile,
             access_code=access_code,

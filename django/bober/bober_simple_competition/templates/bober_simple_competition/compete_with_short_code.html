@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Enter access code" %}{% endblock %}
+
+{% block headline %}{% trans "Enter access code" %}{% endblock %}
+
+{% block content %}
+<div style="margin:1%";>
+<a href="{% url "index" %}" class="btn">{% trans "Back to Menu" %}</a>
+</div>
+<form action="" method="post" id="accesss_code" class="form_compete_table">
+{% csrf_token %}
+<table>
+{{form}}
+</table>
+<div class="form_compete_column">
+  <input type="submit" value='{% trans "Submit" %}' class="btn"/>
+</div>			
+</form>
+{% load staticfiles %}
+<script src='{% static "js/autoSubmit.js" %}'></script>
+
+{% endblock %}

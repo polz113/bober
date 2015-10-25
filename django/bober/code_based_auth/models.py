@@ -10,7 +10,6 @@ CODE_COMPONENT_FORMATS = (
     ('w', 'words'),
     ('W', 'case-insensitive words'),
     ('r', 'raw no hash'),
-    ('a', 'match exact'),
 )
 
 CASE_INSENSITIVE_FORMATS = ['h', 'l', 'L', 'W']
@@ -32,56 +31,98 @@ UPPERCASE_LETTERS = LOWERCASE_LETTERS.upper()
 DIGITS = "0123456789"
 LOWERCASE_LETTERS_AND_DIGITS = LOWERCASE_LETTERS + DIGITS
 LETTERS_AND_DIGITS = LOWERCASE_LETTERS + UPPERCASE_LETTERS + DIGITS
+REDUCED_LETTERS = 'ghijklmnoprstuvz'
+ALNUM32 = '0123456789abcdef' + REDUCED_LETTERS
+ALNUM32_SEPARATORS = 'qwx'
 
-def long_hash(salt, data, bits, algorithm = DEFAULT_HASH_ALGORITHM):
+def str_hash(salt, s, algorithm = DEFAULT_HASH_ALGORITHM):
+    if algorithm == 'noop':
+        return s
     h = hashlib.new(algorithm)
     h.update(salt)
-    h.update(data)
-    digest = h.hexdigest()
+    h.update(s)
+    return h.digest()
+
+def str_last_bits(s, bits):
+    s_out = ""
+    if bits % 8 != 0 and len(s) > bits/8:
+        i = ord(s[-bits/8-1])
+        i = i & (2**(bits%8) -1)
+        s_out = chr(i)
+    return s_out + s[-bits/8]
+
+def split_by_bits(s, bits):
+    b = ceil(1.0 * bits / 8)
+    return [s[i:i+b] for i in xrange(0, len(s), b)]
+    
+def str_to_long(s):
+    l = 0
+    for c in s:
+        l = l * 256
+        l += ord(c)
+    return l
+
+def long_to_str(l):
     s = ""
-    if bits % 4 != 0:
-        i = int(digest[-bits/4-1], 16)
-        i = i & [0, 1, 3, 7][bits%4]
-        s = hex(i)[2:]
-    s += digest[-bits/4:]
-    return long(s, 16)
+    while l > 0:
+        c = chr(l % 256)
+        l = l / 256
+        s = c + s
+    return s
+
+def str_to_hex(s):
+    return s.encode('hex')
+
+def hex_to_str(s):
+    return s.decode('hex')
+
+def str_to_dec(s):
+    return str(str_to_long(s))
+
+def dec_to_str(s):
+    return long_to_str(long(s))
+
+def words_codecs(words=DEFAULT_WORDS, separator=" "):
+    val_words_dict = dict(((i, w) for i, w in enumerate(words)))
+    n_words = len(words)
+    def __str_to_words(s):
+        l = str_to_long(s)
+        res = ""
+        if l <= 0:
+            return words[0]
+        while l > 0:
+            w = words[l % n_words]
+            l = l / n_words
+            if res == "":
+                res = w
+            else:
+                res = w + separator + res
+        return res
+    def __words_to_str(s):
+        l = 0
+        while(s):
+            if separator:
+                word_end = find(s, separator)
+                if word_end == -1:
+                    word_end = len(s)
+            else:
+                word_end = 1
+                while s[:word_end] not in val_words_dict:
+                    word_end += 1    
+            word = s[:word_end]
+            l = l * n_words
+            l += val_words_dict.get(word, 0)
+        return long_to_str(l)
+    return (__str_to_words, __words_to_str)
  
-def hex_hash(salt, data, bits, algorithm = DEFAULT_HASH_ALGORITHM):
-    return hex(long_hash(salt, data, bits, algorithm))[2:-1]
-
-def decimal_hash(salt, data, bits, algorithm = DEFAULT_HASH_ALGORITHM):
-    return str(long_hash(salt, data, bits, algorithm))[:-1]
-
-def words_hash_create(words = DEFAULT_WORDS):
-    def words_hash(salt, data, bits, algorithm = DEFAULT_HASH_ALGORITHM):
-        i = long_hash(salt, data, bits, algorithm)
-        base = len(words)
-        digest = ""
-        while i > 0:
-            digest += words[i % base]
-            i = i / base
-        return digest
-    return words_hash
-
-# Warning! This hash function rounds the bits down to 8!
-def raw_hash(salt, data, bits, algorithm):
-    return data[:int(bits/8)]
-
-def empty_hash(salt, data, bits, algorithm):
-    return ''
-
-def noop_hash(salt, data, bits, algorithm):
-    return data
-
-HASH_FUNCTIONS = {
-    'h': hex_hash,
-    'i': decimal_hash,
-    'w': words_hash_create(),
-    'W': words_hash_create([w.lower() for w in DEFAULT_WORDS]),
-    'l': words_hash_create(LETTERS_AND_DIGITS),
-    'c': words_hash_create(LOWERCASE_LETTERS_AND_DIGITS),
-    'r': raw_hash,
-    'a': noop_hash,
+FORMAT_FUNCTIONS = {
+    'h': (str_to_hex, hex_to_str),
+    'i': (str_to_dec, dec_to_str),
+    'w': words_codecs(DEFAULT_WORDS, " "),
+    'W': words_codecs([w.lower() for w in DEFAULT_WORDS], " "),
+    'l': words_codecs(LETTERS_AND_DIGITS, ''),
+    'L': words_codecs(LOWERCASE_LETTERS_AND_DIGITS, ''),
+    'r': (lambda x: x, lambda x: x),
 } 
 
 class CodeField(models.CharField):
@@ -99,15 +140,16 @@ class CodeComponent(models.Model):
             part_desc = self.part_separator + str(self.max_parts)
         else:
             part_desc = ''
-        return u"{}:({},{}({}bit){})".format(
+        return u"{}:({},{}({}){})".format(
             self.name, self.hash_format, self.hash_algorithm,
-            self.hash_bits, part_desc)
+            self.hash_len, part_desc)
     code_format = models.ForeignKey('CodeFormat', related_name='components')
     ordering = models.PositiveIntegerField()
     name = models.CharField(max_length = 64)
     hash_format = models.CharField(max_length=2, 
         choices = CODE_COMPONENT_FORMATS)
-    hash_bits = models.PositiveIntegerField()
+    # hash_bits = models.PositiveIntegerField()
+    hash_len = models.PositiveIntegerField()
     hash_algorithm = models.CharField(max_length = 16,
         choices = HASH_ALGORITHMS, null=True, blank=True)
     max_parts = models.IntegerField(default=1)
@@ -134,38 +176,35 @@ class CodeFormat(models.Model):
         split_parts = code.split(self.separator)
         hash_params = dict()
         challenge = bytes()
-        # collect the hashes, calculate challenge
         try:
+            # collect the hashes, calculate challenge
+            hashes = defaultdict(set)
             for i, component in enumerate(format_components):
-                hashes = set()
-                if component.hash_format == 'a' or not component.part_separator:
-                    h = split_parts[i]
-                    if component.hash_format in CASE_INSENSITIVE_FORMATS:
-                        h = h.lower()
-                    if component.hash_format == 'a':
-                        challenge += h
-                    hashes.add(h)
+                h = split_parts[i]
+                if component.hash_format in CASE_INSENSITIVE_FORMATS:
+                    h = h.lower()
+                if component.max_parts == 1 and component.hash_algorithm == 'noop':
+                    challenge += h 
+                if not component.part_separator:
+                    h_len = component.hash_len
+                    split_hash = [h[i:i+h_len] for i in xrange(0, len(h), h_len)]
                 else:
-                    s = split_parts[i].split(component.part_separator)
-                    if len(s) > component.max_parts:
-                        # print "max parts exceeded", component, s
-                        return False
-                    for h in s:
-                        if component.hash_format in CASE_INSENSITIVE_FORMATS:
-                            h = h.lower()
-                        hashes.add(h)
-                hash_params[component.name] = (HASH_FUNCTIONS[component.hash_format], 
-                    component.hash_bits, component.hash_algorithm, hashes)
+                    split_hash = h.split(component.part_separator)
+                if len(split_hash) > component.max_parts:
+                    return False
+                for h in split_hash:
+                    hashes[component.name].add(h)
+                hash_params[component.name] = (FORMAT_FUNCTIONS[component.hash_format][0], 
+                    component.hash_algorithm, component.hash_len, hashes)
             # calculate the hashes for components
             for k, values in parts.iteritems():
-                fn, bits, algorithm, hashes = hash_params[k]
+                format_fn, algorithm, hash_len, hashes = hash_params[k]
                 if len(values) < 1:
-                    # print "values below 1"
                     return False
                 for value in values:
-                    h = fn(salt + challenge,
-                        value, bits, algorithm)
-                    if h not in hashes:
+                    h = format_fn(str_hash(salt + challenge,
+                            value, algorithm))[-hash_len:]
+                    if h not in hashes[k]:
                         return False
         except Exception, e:
             # print e
@@ -175,27 +214,25 @@ class CodeFormat(models.Model):
     def code_from_parts(self, salt, parts):
         salt = salt.encode('utf-8')
         format_components = self.components.order_by('ordering')
-        # 'a' means match any
-        unhashed_format_components = format_components.filter(hash_format='a')
         challenge = bytes()
+        unhashed_format_components = format_components.filter(
+            hash_algorithm='noop', max_parts=1)
         for i in unhashed_format_components:
             for value in parts.get(i.name, []):
-                challenge += value
+                s = FORMAT_FUNCTIONS[i.hash_format][0](value)
+                challenge += s[-i.hash_len:]
         hashed_components = list()
         for i, component in enumerate(format_components):
             hash_list = list()
             hash_format = component.hash_format
             values = parts.get(component.name, [])
-            if hash_format == 'a':
-                hash_list += values
-            else:
-                for value in values:
-                    # print "V:", value, i, component
-                    if hash_format in CASE_INSENSITIVE_FORMATS:
-                        value = value.lower()
-                    hash_list.append(HASH_FUNCTIONS[component.hash_format](
-                        salt + challenge, 
-                        value, component.hash_bits, component.hash_algorithm))
+            for value in values:
+                if hash_format in CASE_INSENSITIVE_FORMATS:
+                    value = value.lower()
+                h = str_hash(salt + challenge,
+                    value, component.hash_algorithm)
+                s = FORMAT_FUNCTIONS[component.hash_format][0](h)
+                hash_list.append(s[-component.hash_len:])
             hashed_components.append(component.part_separator.join(hash_list))
         return self.separator.join(hashed_components)
 
@@ -250,7 +287,7 @@ class CodeGenerator(models.Model):
         created_code = Code.create(salt=self.salt, format=self.format, 
             parts={})
         if self.unique_code_component:
-            parts[self.unique_code_component] = [str(created_code.id)]
+            parts[self.unique_code_component] = [long_to_str(created_code.id).encode('string_escape')]
         created_code.parts = parts
         created_code.save()
         self.codes.add(created_code)

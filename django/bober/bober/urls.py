@@ -10,6 +10,8 @@ import bober_simple_competition
 import bober_simple_competition.urls
 import bober_tasks
 import bober_tasks.urls
+import bober_si
+import bober_si.urls
 from django.views.generic import RedirectView
 import autocomplete_light
 
@@ -31,6 +33,7 @@ urlpatterns = patterns('',
     url(r'^autocomplete/', include('autocomplete_light.urls')),
     # url('', include('django.contrib.auth.urls')),
     url(r'^school_mentor/', include(bober_paper_submissions.urls)),
+    url(r'^simple/', include(bober_si.urls)),
     url(r'^simple/', include(bober_simple_competition.urls)),
     url(r'^tasks/', include(bober_tasks.urls)),
     url(r'^jsi18n/(?P<packages>\S+?)/$', 'django.views.i18n.javascript_catalog', 

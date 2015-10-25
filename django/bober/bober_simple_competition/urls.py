@@ -50,6 +50,8 @@ urlpatterns = patterns('',
         views.use_questionsets, name="use_questionset"),
     #   2.2 competitor
     #     2.2.0 register as competitor using a code
+    url(r'^competitions/(?P<competition_slug>[\d]+)/short$', 
+        views.compete_with_short_code, name="compete_with_short_code"),
     url(r'^compete/(?P<competition_questionset_id>[\d]+)/$', 
         views.competition_registration, name="competition_registration"),
     #     2.2.1 get question page

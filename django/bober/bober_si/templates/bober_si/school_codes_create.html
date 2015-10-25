@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Add School" %}{% endblock %}
+
+{% block headline %}{% trans "Add School" %}{% endblock %}
+
+{% block content %}
+<p>
+</p>
+<form method=POST action="?next_url={{next_url}}">
+{% csrf_token %}
+<table>
+{{form}}
+</table>
+<input type="submit" value="{% trans "Submit" %}" />
+</form>
+{% endblock %}

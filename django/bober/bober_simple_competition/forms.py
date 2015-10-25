@@ -15,8 +15,14 @@ class ProfileForm(forms.ModelForm):
         exclude = tuple()
         model = Profile
 
-class MinimalAccessCodeForm(forms.Form):
+class AccessCodeForm(forms.Form):
     access_code = forms.CharField(label=_('Access code'), max_length=256)
+    defer_update_used_codes = forms.BooleanField(
+            label=_('Update used codes later'), required = False,
+            initial = False)
+    defer_effects = forms.BooleanField(
+            label=_('Execute effects later'), required = False,
+            initial = False)
 
 class BasicProfileForm(forms.ModelForm):
     class Meta:
