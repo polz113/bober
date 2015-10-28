@@ -16,12 +16,13 @@ class School(models.Model):
         return u"{}, {} ({})".format(self.name, self.post, self.category)
     name = models.CharField(unique=True, max_length=255)
     category = models.CharField(choices=SCHOOL_CATEGORIES, max_length=24)
-    address = models.CharField(max_length=1024, blank=True)
+    address = models.CharField(max_length=1024, blank=True, null=True)
+    country_code = models.CharField(max_length = 2)
     postal_code = models.IntegerField(blank=True, null=True)
-    post = models.CharField(max_length=255, blank=True)
-    tax_number = models.CharField(max_length=12, blank=True)
-    identifier = models.CharField(max_length=20, blank=True)
-    headmaster = models.CharField(max_length=255, blank=True)
+    post = models.CharField(max_length=255, blank=True, null=True)
+    tax_number = models.CharField(max_length=12, blank=True, null=True)
+    identifier = models.CharField(max_length=20, blank=True, null=True)
+    headmaster = models.CharField(max_length=255, blank=True, null=True)
 
 class SchoolTeacherCode(models.Model):
     def __unicode__(self):

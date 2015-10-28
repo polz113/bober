@@ -276,7 +276,7 @@ class Language(models.Model):
 
 class Municipality(models.Model):
     def __unicode__(self):
-        return unicode(name)
+        return unicode(self.name)
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=255)
     country = models.ForeignKey(Country)

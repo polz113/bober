@@ -12,6 +12,7 @@ import bober_tasks
 import bober_tasks.urls
 import bober_si
 import bober_si.urls
+import password_reset.urls
 from django.views.generic import RedirectView
 import autocomplete_light
 
@@ -40,7 +41,8 @@ urlpatterns = patterns('',
         kwargs = {'domain': 'django'}),
     # url(r'^jsi18n/$', 'django.views.i18n.javascript_catalog', js_info_dict),
     url('^accounts/', include('django.contrib.auth.urls')),
-    url('', include('social.apps.django_app.urls', namespace='social'))
+    url('', include('social.apps.django_app.urls', namespace='social')),
+    url('', include('password_reset.urls'))
 )
 
 
