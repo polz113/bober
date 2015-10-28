@@ -7,11 +7,16 @@ from django.db import transaction
 from django.utils.text import slugify
 from bober_simple_competition.models import *
 import os
+from optparse import option_list
 
 class Command(BaseCommand):
+    args = "<dirname>"
+    help = "Add a whole questionset at a time"
+    def add_arguments(self, parser):
+        parser.add_argument('dirname', nargs='+', type=str)
     @transaction.atomic
     def handle(self, *args, **options):
-        dirname = unicode(args[0])
+        dirname = unicode(options.get('dirname', [args[0]])[0])
         questions = []
         split_path = os.path.split(dirname)
         name = split_path[1]

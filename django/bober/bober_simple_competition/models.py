@@ -441,7 +441,7 @@ def _question_from_dirlike(cls, identifier = '-1',
             slug = slugify(manifest['title']) + '-' + manifest['id'], 
             identifier = manifest['id'], title = manifest['title'],
             version = manifest['version'], authors = manifest['authors'],
-            accepted_answers = ",".join(manifest['acceptedAnswers']))
+            verification_function = ",".join(manifest['acceptedAnswers']))
         question.save()
     else:
         question.country = manifest['country']
