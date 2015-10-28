@@ -8,5 +8,7 @@ class OverviewForm(forms.Form):
     access_code = forms.CharField(label=_('Access code'), max_length=256)
 
 class SchoolCodesCreateForm(forms.Form):
-    school = forms.ModelChoiceField(label=_('School'), queryset=School.objects.all())
+    school = forms.ModelChoiceField(label=_('School'), queryset=School.objects.all(),
+        widget=autocomplete_light.ChoiceWidget('SchoolAutocomplete',
+            attrs={'class':'modern-style'}))
     

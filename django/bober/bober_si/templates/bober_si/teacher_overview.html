@@ -6,7 +6,7 @@
 {% block headline %}{% trans "Bober" %}{% endblock %}
 
 {% block content %}
-<p><a href="{% url 'profile_update' pk=user.pk %}">{% trans "Edit my profile" %}</a></p>
+<p><a href="{% url 'profile_update' pk=user.profile.pk %}">{% trans "Edit my profile" %}</a></p>
 <p>
 {% trans "Codes for each school" %}
 {{profile}}
