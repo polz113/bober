@@ -7,7 +7,7 @@ from django.db import transaction
 from django.utils.text import slugify
 from bober_simple_competition.models import *
 import os
-from optparse import option_list
+from optparse import make_option
 
 class Command(BaseCommand):
     args = "<dirname>"
