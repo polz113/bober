@@ -1,44 +1,63 @@
 {% extends "base.html" %}
 {% load i18n %}
 
-{% block title %}{% trans "Competition" %}{% endblock %}
-
-{% block headline %}{% trans "Bober" %}{% endblock %}
-
 {% block content %}
-<p><a href="{% url 'profile_update' pk=user.profile.pk %}">{% trans "Edit my profile" %}</a></p>
-<p>
-{% trans "Codes for each school" %}
-{{profile}}
-{% for school, codes in schools.iteritems %}
-<div>
-    {{school}}
-    <ul>{% for code in codes %}
-        <li>{{code.0.name}}: {{code.1}}</li>
-    {% endfor %}</ul>
-</div>
-{% endfor %}
-<a href="{% url 'school_codes_create' slug=competition.slug %}?next_url={{request.path}}">{% trans "Add school" %}</a>
-</p>
-<p>
-{% trans "Competition sheets for tasks on paper" %}
-</p>
-<p>
-{% trans "Result entry for tasks on paper" %}
-</p>
-<p>
-{% trans "Attempts by code" %}
-{% for school, cqsa in attempts.iteritems %}<div>
-    {% for cqs, attempts in cqsa %}<div>
-        {{cqs.name}}
-        <ul>{% for attempt in attempts %}
-            <li>{{attempt}}</li>
-        {% endfor %}<ul>
-    </div>{% endfor %}
-</div>{% endfor %}
 
-</p>
-<p>
-{% trans "Certificates of achievement" %}
-</p>
+<table id="sections">
+    <tr>
+        <th>
+            {% trans "Codes for each school" %}
+        </th>
+        <td>
+            {% for school, codes in schools.iteritems %}
+                <div class="school">
+                    <p>{{school}}</p>
+                    <ul>
+                        {% for code in codes %}
+                            <li>
+                                {{code.0.name}}: {{code.1}}
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endfor %}
+            <a href="{% url 'school_codes_create' slug=competition.slug %}?next_url={{request.path}}">{% trans "Add school" %}</a>
+        </td>
+    </tr>
+    <tr>
+        <th>
+            {%  trans "Competition on paper" %}
+        </th>
+        <td>
+            <p>
+                {% trans "Competition sheets" %}
+            </p>
+            <p>
+                {% trans "Result entry for tasks on paper" %}
+            </p>
+        </td>
+    </tr>
+    <tr>
+        <th>{% trans "Certificates" %}</th>
+        <td>
+            <p>{% trans "Certificates of achievement" %}</p>
+            <p>{% trans "Certificates for mentors" %}</p>
+        </td>
+    </tr>
+    <tr>
+        <th>{% trans "Results" %}</th>
+    </tr>
+</table>
+
+{% for school, cqsa in attempts.iteritems %}
+    {% for cqs, attempts in cqsa %}
+        {{cqs.name}}
+        <ul>
+            {% for attempt in attempts %}
+                <li>{{attempt}}</li>
+            {% endfor %}
+        </ul>
+    {% endfor %}
+{%  endfor %}
+
 {% endblock %}

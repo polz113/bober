@@ -1,3 +1,56 @@
+div.page-header {
+	height: 60px;
+	margin-top: 10px;
+	position: relative;
+	border: none;
+}
+
+div#logo {
+	position: relative;
+}
+
+div#profile {
+	position: absolute;
+	right: 20px;
+	top: 80px;
+}
+
+div#content {
+	border: solid 6px darkgreen;
+	border-radius: 5px;
+	padding: 50px 10px 10px 10px;
+}
+
+body {
+	font-size: 18px;
+	background: #eee;
+}
+
+div#content div.section {
+	padding-top: 30px;
+	clear: both;
+}
+
+table#sections th {
+	padding-right: 20px;
+	font-weight: bold;
+}
+
+div.school div.school p {
+	margin-bottom: 5px;
+}
+
+table#sections td, table#sections th {
+	vertical-align: top;
+	padding-bottom: 20px;
+}
+
+div.page-footer {
+	width: 100%;
+	text-align: right;
+	margin-top: 20px;
+}
+
 /*********/
 /* basic */
 /*********/
@@ -121,7 +174,7 @@ footer {
 /*********/
 /* forms */
 /*********/
- 
+
 /* regular form */
 .form_table{
 	margin-left: 2%;

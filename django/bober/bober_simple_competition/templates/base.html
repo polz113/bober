@@ -34,55 +34,36 @@
 
 	<div class='page-header'>
 
-		<a href='{% url "index" %}' class='logo'><img src='{% static "img/logo.png" %}' alt='{% trans "Beaver" %}' /></a>
+		<div id='logo'><a href='{% url "index" %}'><img src='{% static "img/logo.png" %}' alt='{% trans "Beaver" %}' /></a></div>
 
-		<ul class='nav'>
-				<!--<li><a class="navbar-brand" href="{% url "index" %}">{% trans "Beaver" %}</a></li>-->
-                {% if request.user.is_authenticated %}
-                <li><a class="navbar-brand" href="{% url "django.contrib.auth.views.logout" %}">{% trans "Logout" %} {{request.user}}</a></li>
-                {% endif %}
-    		</ul><!--.nav-->
+        {% if request.user.is_authenticated %}
+        <div id='profile'>
+            <a class="navbar-brand" href="{% url 'profile_update' pk=user.profile.pk %}">{% trans "Edit my profile" %}</a>
+            <a class="navbar-brand" href="{% url "django.contrib.auth.views.logout" %}">{% trans "Logout" %} {{request.user}}</a>
+        </div>
+        {% endif %}
 
     	</div><!--.header-->
 
-    	<div class='content'>
-    		<!-- 
-    		<ul class='sidebar'>
-    			<li><a href='/'></a></li>
-    		</ul>
-    		 -->
-			
-    		<div class='text'>
-
-                <h2>{% block headline %}Bober{% endblock %}</h2>
-
-    		</div><!--.text-->
-    		
-    		<div class='text'>
+    	<div id='content'>
     		{% block content %}
-			Glodaglodagloda
 		{% endblock %}
-		</div><!--.text-->
-
-
     	</div><!--.content-->
 
 
     <div class="page-footer">
-		<a href="http://www.acm.si/" target="_blank">
-		<img src='{% static "logo/acm.png" %}'>
-		</a>
-		<span class="footer_logo_in_cooperation">
-		{% trans "In Cooperation With" %}
-		</span>
+        <div>
 		<a href="http://www.fri.uni-lj.si/" target="_blank">
-		<img src='{% static "logo/ul_fri.png" %}'>
+		<img src='{% static "logo/ul_fri.png" %}' height="100">
 		</a>
-		<p>Copyright &copy; 2015 </p>
+        <a href="http://www.acm.si/" target="_blank">
+            <img src='{% static "logo/acm.png" %}' height="100">
+          		</a>
+        </div>
     </div>
-    
+
     </div><!--.wrapper-->
-    
+
 </body>
 
 </html>
