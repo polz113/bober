@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Code formats" %}{% endblock %}
+
+{% block headline %}{% trans "Code formats" %}{% endblock %}
+
+{% block content %}
+<a href="{% url "index" %}">{% trans "Back to index" %}<br/>
+<a href="{% url "competitor_code_format_list" %}">{% trans "Competitor code formats" %}</a><br/>
+<a href="{% url "competitor_code_format_create" %}" class="btn">{% trans "Create competitor code format" %}</a><br/>
+<a href="{% url "admin_code_format_list" %}">{% trans "Admin code formats" %}</a><br/>
+<a href="{% url "admin_code_format_create" %}" class="btn">{% trans "Create competitor code format" %}</a><br/>
+{% endblock %}

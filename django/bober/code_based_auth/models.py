@@ -197,6 +197,7 @@ class CodeFormat(models.Model):
                 hash_params[component.name] = (FORMAT_FUNCTIONS[component.hash_format][0], 
                     component.hash_algorithm, component.hash_len, hashes)
             # calculate the hashes for components
+            # print "hashes:", hashes, hash_params
             for k, values in parts.iteritems():
                 format_fn, algorithm, hash_len, hashes = hash_params[k]
                 if len(values) < 1:
@@ -204,10 +205,11 @@ class CodeFormat(models.Model):
                 for value in values:
                     h = format_fn(str_hash(salt + challenge,
                             value, algorithm))[-hash_len:]
+                    # print "h:", h
                     if h not in hashes[k]:
                         return False
         except Exception, e:
-            # print e
+            print e
             return False
         return True
                 

@@ -29,8 +29,8 @@
 			<div class="questionsets">
 			{% for j in i.competitionquestionset_set.all %}
 				<tr class="{% if forloop.counter|divisibleby:2 %}even{% else %}odd{% endif %}" style="height: 5%; font-style: italic;">
-					<td style="width:25%; text-align: center;"><a href="{% url 'competition_registration' competition_questionset_id=j.id %}">{{j.name}}</a></td>
-					<td style="width:25%; text-align: center;"><a href="{% url 'competition_registration' competition_questionset_id=j.id %}">{{j.questionset.name}}</a></td>
+					<td style="width:25%; text-align: center;"><a href="{% url 'questionset_registration' competition_questionset_id=j.id %}">{{j.name}}</a></td>
+					<td style="width:25%; text-align: center;"><a href="{% url 'questionset_registration' competition_questionset_id=j.id %}">{{j.questionset.name}}</a></td>
 					{% if j.guest_code %}
 					<td colspan="2" style="text-align: center;"><a href="{% url 'competition_guest' competition_questionset_id=j.id %}">{% trans "Compete as guest" %}</a></td>
 					{% else %}

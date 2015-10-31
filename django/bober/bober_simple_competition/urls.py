@@ -50,10 +50,10 @@ urlpatterns = patterns('',
         views.use_questionsets, name="use_questionset"),
     #   2.2 competitor
     #     2.2.0 register as competitor using a code
-    url(r'^competitions/(?P<competition_slug>[\d]+)/short$', 
-        views.compete_with_short_code, name="compete_with_short_code"),
+    url(r'^competitions/(?P<competition_slug>[\w\-_]+)/registration$', 
+        views.CompetitionRegistration.as_view(), name="competition_registration"),
     url(r'^compete/(?P<competition_questionset_id>[\d]+)/$', 
-        views.competition_registration, name="competition_registration"),
+        views.QuestionSetRegistration.as_view(), name="questionset_registration"),
     #     2.2.1 get question page
     url(r'^compete/(?P<competition_questionset_id>[\d]+)/resources/competition.html$', 
         views.competition_index, name="competition_index"),
@@ -84,8 +84,6 @@ urlpatterns = patterns('',
         views.attempt_results, name="attempt_results"),
     # 3. create registration codes
     url(r'^registration_codes/$', views.registration_codes, name="registration_codes"),
-    # 4. register as user
-    url(r'^registration/$', views.user_registration, name="user_registration"),
     # 5. edit user data
     # url(r'^users/$', views.ProfileListView.as_view(), name="profile_list"),
     url(r'^users/$', views.ProfileTableView.as_view(), name="profile_list"),
@@ -123,8 +121,24 @@ urlpatterns = patterns('',
     # 8. create competition (from multiple questionsets)
     #   all questionsets for competitions you have admin access to can be used.
     #   Also, newly created questionsets can be used.
-    url(r'^competition_create/$', views.CompetitionCreate.as_view(), name="competition_create"),
-    url(r'^code_format_create/(?P<user_type>\w+)/$', views.code_format_create, name="code_format_create"),
+    url(r'^competition_create/$', views.CompetitionCreate.as_view(),
+        name="competition_create"),
+    # handling code formats
+    url(r'^code_format/$', views.TemplateView.as_view(
+            template_name = "bober_simple_competition/codeformat_index.html"),
+        name="code_format_index"),
+    url(r'^code_format/admin/$', views.AdminCodeFormatList.as_view(),
+        name="admin_code_format_list"),
+    url(r'^code_format/competitor/$', views.CompetitorCodeFormatList.as_view(),
+        name="competitor_code_format_list"),
+    url(r'^code_format/admin/(?P<pk>\d+)$', views.CodeFormatDetail.as_view(),
+        name="admin_code_detail"),
+    url(r'^code_format/competitor/(?P<pk>\d+)$', views.CodeFormatDetail.as_view(),
+        name="competitor_code_detail"),
+    url(r'^code_format/admin/create$', views.AdminCodeFormatCreate.as_view(),
+        name="admin_code_format_create"),
+    url(r'^code_format/competitor/create$', views.CompetitorCodeFormatCreate.as_view(), 
+        name="competitor_code_format_create"),
     # shortcut for registering and competing immediately 
     url(r'^immediate_competition/$', views.immediate_competition, name="immediate_competition"),
 )

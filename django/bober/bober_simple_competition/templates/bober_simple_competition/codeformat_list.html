@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Code formats" %}{% endblock %}
+
+{% block headline %}{% trans "Code formats" %}{% endblock %}
+{% block content %}
+<a href="{% url "code_format_index" %}">{% trans "Back to code format index" %}</a>
+<ul>
+{% for i in object_list %}
+<li>{{i}}</li>
+{% endfor %}
+</ul>
+{% endblock %}

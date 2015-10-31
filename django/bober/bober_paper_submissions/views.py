@@ -5,16 +5,14 @@ from django.shortcuts import render_to_response, redirect
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from bober_paper_submissions.forms import JuniorResultForm
-import bober_competition.models
+import bober_si.models
 import bober_paper_submissions.models
-import cPickle
 
 # Create your views here.
 
 @login_required
 def school_mentor(request):
-    user = bober_competition.models.Users.objects.get(username=request.user.username)
-    seznam = user.competition_category_school_mentor_set.filter(competition_category_school__competition_category__class_to__lte = 5, competition_category_school__competition_category__level_of_education = 1)
+    
     if len(seznam) == 1:
         return redirect('junior_results', competition_category_school_mentor_id = seznam[0].id)
     #seznam = bober_competition.models.SchoolMentor.objects.all()
