@@ -38,7 +38,7 @@
 
         {% if request.user.is_authenticated %}
         <div id='profile'>
-            <a class="navbar-brand" href="{% url 'profile_update' pk=user.profile.pk %}">{% trans "Edit my profile" %}</a>
+            <a class="navbar-brand" href="{% url 'profile_update' pk=request.user.profile.pk %}">{% trans "Edit my profile" %}</a>
             <a class="navbar-brand" href="{% url "django.contrib.auth.views.logout" %}">{% trans "Logout" %} {{request.user}}</a>
         </div>
         {% endif %}
