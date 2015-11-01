@@ -9,10 +9,11 @@ from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
 urlpatterns = patterns('',
     # Index
-    #url(r'^$', index, name="index"),
+    url(r'^$', index, name="tasks_index"),
     # Translation
     url(r'^new/([a-z]+)?$', new_task, name="tasks.new"),
-    url(r'^edit/(\d+)$', edit_task, name="tasks.edit"),
+    url(r'^edit/(\d+)/resources/(\w.+)$', tasks_resource, name="tasks.resource"),
+    url(r'^edit/(\d+)/$', edit_task, name="tasks.edit"),
     url(r'^translation/save.?$', tasks_save_translation, name="tasks.translation_save"),
     url(r'^list/([a-z]+)$', tasks_list_language, name="tasks.list"),
     url(r'^history/(\d+)$', tasks_history, name="tasks.history"),

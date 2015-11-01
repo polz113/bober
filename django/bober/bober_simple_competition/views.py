@@ -837,12 +837,12 @@ class QuestionTableView(LoginRequiredMixin, FilteredSingleTableView):
     filter_class = filters.ProfileFilter
     template_name = 'bober_simple_competition/question_table_list.html'
     def get_queryset(self):
-        return self.request.user.profile.questions.filter(merged_with=None)
+        return self.request.user.profile.questions.all()
 
 class QuestionDetail(LoginRequiredMixin, DetailView):
     model = Question
     def get_queryset(self):
-        return self.request.user.profile.managed_profiles.all()
+        return self.request.user.profile.questions.all()
 #
 # 7. create questionset from questions
 
@@ -859,30 +859,21 @@ class QuestionSetDetail(LoginRequiredMixin, DetailView):
 class QuestionSetCreate(LoginRequiredMixin, CreateView):
     model = QuestionSet
     form_class = QuestionSetForm
+    def form_valid(self, form):
+        retval = super(QuestionSetCreate, self).form_valid(form)
+        self.request.user.created_question_sets.add(form.instance)
+        return retval
+    def get_success_url(self):
+        return reverse('questionset_list')
 
 class QuestionSetUpdate(LoginRequiredMixin, UpdateView):
     model = QuestionSet
     form_class = QuestionSetForm
     def get_queryset(self):
-        return self.request.user.profile.question_sets.all() 
+        return self.request.user.profile.created_question_sets.all() 
         
 class QuestionSetDelete(LoginRequiredMixin, DeleteView):
     model = QuestionSet
     def get_queryset(self):
-        return self.request.user.profile.question_sets.all() 
-
-# shortcut for registering and competing immediately 
-def immediate_competition(request):
-    # register competitor
-    if request.method == 'POST':
-        form = ImmediateCompetitionForm(request.POST)
-        if form.is_valid():
-            _use_access_code(form.cleaned_data['registration_code'])
-            return redirect('competition_index', 
-                competition_questionset_id = competition_questionset_id)
-    else:
-        form = ImmediateCompetitionForm()
-    return render(request,
-        "bober_simple_competition/immediate_competition.html", locals())
-
+        return self.request.user.profile.created_question_sets.all() 
 

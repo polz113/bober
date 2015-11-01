@@ -7,6 +7,7 @@ import views
 urlpatterns = patterns('',
     # Examples:
     # url(r'^blog/', include('blog.urls')),
+    url(r'^$', views.index, name="simple_index"),
     url(r'^$', views.index, name="index"),
     # 1. login / enter access code
     url(r'^access_code/*(?P<next>.*)$', views.access_code, name="access_code"),
@@ -140,5 +141,4 @@ urlpatterns = patterns('',
     url(r'^code_format/competitor/create$', views.CompetitorCodeFormatCreate.as_view(), 
         name="competitor_code_format_create"),
     # shortcut for registering and competing immediately 
-    url(r'^immediate_competition/$', views.immediate_competition, name="immediate_competition"),
 )

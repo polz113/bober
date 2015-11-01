@@ -656,6 +656,8 @@ class Profile(models.Model):
     used_codes = ManyToManyField(Code, null=True, blank=True,
         related_name='user_set')
     question_sets = ManyToManyField(QuestionSet, null=True, blank=True)
+    created_question_sets = ManyToManyField(QuestionSet, null=True, blank=True, 
+        related_name='creator_set')
     questions = ManyToManyField(Question, null=True, blank=True)
     merged_with = ForeignKey('Profile', null = True, blank=True, related_name='former_profile_set')
     # merged_with = ForeignKey(User, null = True, blank=True, related_name='merged_set')

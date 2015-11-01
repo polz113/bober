@@ -1,4 +1,3 @@
-
 tinymce.PluginManager.add('nalaganje_slik', function(editor, url) {
   function show() {
     window.picUrl = false;
@@ -41,11 +40,12 @@ tinymce.PluginManager.add('nalaganje_slik', function(editor, url) {
       
       
     new AjaxUpload('images', {
-      action: '/upload/'+task_translation_id,
+      action: task_upload_url,
       name: 'images',
+      data: {'csrfmiddlewaretoken': csrf_token},
       onSubmit: function(file, extension) {},
       onComplete: function(file, response) {
-        response = JSON.parse(response)
+        response = JSON.parse(response);
         window.picUrl  = response.filepath + response.filename;
         window.picName = response.filename;
         $('img#preview').attr('src', tinyMCEbaseURL+window.picUrl);

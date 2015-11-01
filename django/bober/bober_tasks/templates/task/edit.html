@@ -3,11 +3,13 @@
 {% block pageTitle %}Prevajanje - New task{% endblock pageTitle %}
 {% block content %}
 <script type="text/javascript" charset="utf-8">
+    task_upload_url = "{% url "tasks.upload" id %}"
     task_translation_id = "{{id}}";
+    csrf_token = "{{csrf_token}}";
     task_id = "{{task_translation.task_id}}";
     language = "{{task_translation.language_locale_id}}";
     version = "{{task_translation.version}}";
-    tinyMCEbaseURL = "/resources/task/{{task_translation.task_id}}/{{task_translation.language_locale_id}}/";
+    tinyMCEbaseURL = "{% url "tasks.edit" task_translation.id %}";
 </script>
 
     <div class="row">
@@ -29,7 +31,6 @@
             </div>
         </div>
     </div>
-
 <h1>
     {% if task_translation.title %} Edit {{ task_translation.title }}{% else %} New task {% endif %}
     <span class="grey">{{ task_translation.language_locale.value }}</span>

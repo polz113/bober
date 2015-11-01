@@ -15,6 +15,7 @@ import os
 from django.utils.translation import ugettext as _
 
 import StringIO
+from json import dumps as to_json
 from django.http import HttpResponse
 from bober_tasks import forms
 from django.contrib import auth, messages
@@ -89,7 +90,7 @@ def export_task_translation( request, task_translation ):
         #                            * relative savepath in zip file: if f. is picture, that will be in /Images/4/EN
 
         for resource in resources.all():
-            SOURCE_RELATIVE_PATH.append(os.path.join(SITE_ROOT, 'resources', 'task', str(task_translation.task_id) , task_translation.language_locale_id, 'resources', resource.filename))
+            SOURCE_RELATIVE_PATH.append(os.path.join(settings.MEDIA_ROOT, 'task', str(task_translation.task_id) , task_translation.language_locale, 'resources', resource.filename))
             SOURCE_RELATIVE_PATH_IN_ZIP_FILE.append("resources/" + resource.filename)
 
 
@@ -100,7 +101,7 @@ def export_task_translation( request, task_translation ):
         # ZIP archive filename, Open StringIO to grab in-memory ZIP contents, The zip compressor
         #zip_filename = "task-" + str(task.id) + "-" + task_translation.language_locale + "-v" + task_translation.version
         zip_filename = '%s-%d_%s_v%d' % (slugify(task_translation.title), 
-            task_translation.task_id, task_translation.language_locale_id, task_translation.version)
+            task_translation.task_id, task_translation.language_locale, task_translation.version)
         #zip_filename = task_translation.title
         s = StringIO.StringIO()
         zf = zipfile.ZipFile(s, "w")
@@ -131,18 +132,18 @@ def export_task_translation( request, task_translation ):
             zf.write(fpath, zip_path)
 
         # Static files
-        zf.write(os.path.join(SITE_ROOT, 'private', 'solution.html'),'solution.html')
-        zf.write(os.path.join(SITE_ROOT, 'private', 'Manifest.json'), 'Manifest.json')
-        zf.write(os.path.join(SITE_ROOT, 'private', 'index.html'), 'index.html')
-        #zf.write(path(SITE_ROOT, 'private', 'jquery.min.js'), path("lib", 'jquery.min.js'))
-        #zf.write(path(SITE_ROOT, 'private', 'functions.js'), path('lib', 'functions.js'))
+        zf.write(os.path.join(settings.MEDIA_ROOT, 'private', 'solution.html'),'solution.html')
+        zf.write(os.path.join(settings.MEDIA_ROOT, 'private', 'Manifest.json'), 'Manifest.json')
+        zf.write(os.path.join(settings.MEDIA_ROOT, 'private', 'index.html'), 'index.html')
+        #zf.write(path(MEDIA_ROOT, 'private', 'jquery.min.js'), path("lib", 'jquery.min.js'))
+        #zf.write(path(MEDIA_ROOT, 'private', 'functions.js'), path('lib', 'functions.js'))
 
 
         # Must close zip for all contents to be written
         zf.close()
 
         # Grab ZIP file from in-memory, make response with correct MIME-type
-        resp = HttpResponse(s.getvalue(), mimetype = "application/zip")
+        resp = HttpResponse(s.getvalue(), content_type = "application/zip")
         # ..and correct content-disposition
         resp['Content-Disposition'] = 'attachment; filename=%s' % zip_filename
         #if True: return render_to_response("api/task_interactive.html",  locals())
@@ -167,7 +168,7 @@ def edit_age_group( request, id ):
       form = forms.AgeGroupForm( request.POST, instance = ag )
       if form.is_valid():
         form.save()
-        return redirect( "/age-groups/" )
+        return redirect( "control_panel.age_groups" )
   else:
       form = forms.AgeGroupForm( instance = ag )
   return render_to_response("control-panel/edit-age-group.html", locals(), context_instance = RequestContext( request ) )
@@ -177,14 +178,14 @@ def new_age_group( request ):
       form = forms.AgeGroupForm( request.POST )
       if form.is_valid():
         form.save()
-        return redirect( "/age-groups/" )
+        return redirect( "control_panel.age_groups" )
   else:
       form = forms.AgeGroupForm()
   return render_to_response("control-panel/edit-age-group.html", locals(), context_instance = RequestContext( request ) )
 
 def delete_age_group( request, id ):
   AgeGroup.objects.get( id = id ).delete()
-  return redirect( "/age-groups/" )
+  return redirect( "control_panel.age_groups" )
 
 # Categories
 def edit_category( request, id ):
@@ -193,7 +194,7 @@ def edit_category( request, id ):
       form = forms.CategoryForm( request.POST, instance = category )
       if form.is_valid():
         form.save()
-        return redirect( "/categories/" )
+        return redirect( "control_panel.categories" )
   else:
       form = forms.CategoryForm( instance = category )
   return render_to_response("control-panel/edit-category.html", locals(), context_instance = RequestContext( request ) )
@@ -203,14 +204,14 @@ def new_category( request ):
       form = forms.CategoryForm( request.POST )
       if form.is_valid():
         form.save()
-        return redirect( "/categories/" )
+        return redirect( "control_panel.categories" )
   else:
       form = forms.CategoryForm()
   return render_to_response("control-panel/edit-category.html", locals(), context_instance = RequestContext( request ) )
 
 def delete_category( request, id ):
   Category.objects.filter( id = id ).delete()
-  return redirect( "/categories/" )
+  return redirect( "control_panel.categories" )
 
 # Difficulties
 def edit_difficulty( request, id ):
@@ -219,7 +220,7 @@ def edit_difficulty( request, id ):
       form = forms.DifficultyForm( request.POST, instance = difficulty )
       if form.is_valid():
         form.save()
-        return redirect( "/difficulty-levels/" )
+        return redirect( "control_panel.difficulty_levels" )
   else:
       form = forms.DifficultyForm( instance = difficulty )
   return render_to_response("control-panel/edit-difficultys.html", locals(), context_instance = RequestContext( request ) )
@@ -229,14 +230,14 @@ def new_difficulty( request ):
       form = forms.DifficultyForm( request.POST )
       if form.is_valid():
         form.save()
-        return redirect( "/difficulty-levels/" )
+        return redirect( "control_panel.difficulty_levels" )
   else:
       form = forms.DifficultyForm()
   return render_to_response("control-panel/edit-difficultys.html", locals(), context_instance = RequestContext( request ) )
 
 def delete_difficulty( request, id ):
   DifficultyLevel.objects.get( id = id ).delete()
-  return redirect( "/difficulty-levels/" )
+  return redirect( "control_panel.difficulty_levels" )
 
 # User management
 @login_required()
@@ -400,7 +401,7 @@ def index( request ):
 
     return render_to_response("index.html", locals(), context_instance = RequestContext( request ) )
 
-@login_required()
+@login_required
 def tasks_list_language(request, language_locale):
     language = language_locale
     languages = settings.LANGUAGES
@@ -417,9 +418,8 @@ def tasks_list_language(request, language_locale):
     return render_to_response("task/list.html", locals(), context_instance = RequestContext( request ) )
 
 
-@login_required()
+@login_required
 def tasks_upload(request, id=0):
-
     task_translation = TaskTranslation.objects.get(id = id)
 
     # Clean and add version information to filename (for conflict avoid)
@@ -431,14 +431,12 @@ def tasks_upload(request, id=0):
     file = filename +filetype
     urlpath = 'resources/'
     handle_uploaded_file(request.FILES.get('images'), file, task_translation)
-
     return HttpResponse(to_json({'status': 'ok', 'filename': file, 'filepath': urlpath }))
 
 
 def handle_uploaded_file(f,name, task_translation):
-    #save_path  = path( SITE_ROOT , 'taskresources', 'Image', task_id , task_language )
-    save_path  = os.path.join( SITE_ROOT , 'resources', 'task', str(task_translation.task_id) , task_translation.language_locale_id, 'resources' )
-
+    #save_path  = path( MEDIA_ROOT , 'taskresources', 'Image', task_id , task_language )
+    save_path  = os.path.join(settings.MEDIA_ROOT, 'task', str(task_translation.task_id) , task_translation.language_locale, 'resources' )
     # Check if upload folder of a specific task already exists and create it, if it doesn't.
     if not os.path.exists(save_path):
         os.makedirs(save_path)
@@ -501,7 +499,7 @@ def tasks_translate(request, id):
 
 
 
-        return redirect('/show/' + str(task.id) + '?language=' + str(language))
+        return redirect(reverse('/show/' + str(task.id) + '?language=' + str(language)))
 
     return render_to_response("task/translate.html", locals(), context_instance=RequestContext(request))
 
@@ -620,7 +618,7 @@ def new_task(request, language):
     task = Task()
     task.save()
     task_translation = TaskTranslation(task = task)
-    task_translation.language_locale_id = language
+    task_translation.language_locale = language
     task_translation.save()
 
     return redirect("tasks.edit", task_translation.id)
@@ -681,7 +679,7 @@ def tasks_save_translation(request):
             task = Task()
             task.save()
             task_translation = TaskTranslation(task = task)
-            task_translation.language_locale_id = request.POST['language']
+            task_translation.language_locale = request.POST['language']
             task_translation.save()
 
         task_translation.title = request.POST['title']
@@ -702,7 +700,7 @@ def tasks_save_translation(request):
 
 
 
-    return redirect('display_task', task_translation.id)
+    return redirect('tasks.display', task_translation.id)
 
 
 @login_required()
@@ -763,9 +761,9 @@ def task_detail(request, id):
 def tasks_resource(request, id, file):
     """Image path redirect for task display. Because images have relative paths for export."""
     task_translation = TaskTranslation.objects.get(id=id)
-    file_path = os.path.join( SITE_ROOT , 'resources', 'task', str(task_translation.task_id) , task_translation.language_locale_id, 'resources', file )
+    file_path = os.path.join(settings.MEDIA_ROOT, 'task', str(task_translation.task_id) , task_translation.language_locale, 'resources', file )
     image_data = open(file_path, "rb").read()
-    return HttpResponse(image_data, mimetype="image/png")
+    return HttpResponse(image_data, content_type="image/png")
 
 
 def get_age_groups(obj):
