@@ -106,6 +106,7 @@ class TeacherCodeRegistrationPasswordReset(FormView):
         user.save()
         user.profile.received_codes.add(code)
         u = authenticate(username = user.username, password=password)
+        login(self.request, u)
         return retval
     def get_success_url(self):
         return reverse('teacher_overview', kwargs={"slug":self.competition.slug})
