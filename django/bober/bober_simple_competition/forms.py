@@ -25,6 +25,9 @@ class AccessCodeForm(forms.Form):
             label=_('Execute effects later'), required = False,
             initial = False)
 
+class MinimalAccessCodeForm(forms.Form):
+    access_code = forms.CharField(label=_('Access code'), max_length=256)
+
 class BasicProfileForm(forms.ModelForm):
     class Meta:
         model = Profile

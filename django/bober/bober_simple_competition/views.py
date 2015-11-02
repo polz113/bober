@@ -305,9 +305,9 @@ def access_code(request, next):
     qd.update(request.GET)
     qd.update(request.POST)
     if len(qd):
-        form = AccessCodeForm(qd)
+        form = MinimalAccessCodeForm(qd)
     else:
-        form = AccessCodeForm()
+        form = MinimalAccessCodeForm()
     if form.is_valid():
         defer_update = form.cleaned_data.get('defer_update_used_codes', False)
         defer_effects = form.cleaned_data.get('defer_effects', False)
@@ -480,63 +480,6 @@ def use_questionsets(request, slug, competition_questionset_id=None):
     return render(request,
         "bober_simple_competition/use_questionset.html", locals())
 # 2.2 competitor
-#     2.2.1 get question page
-# @login_required
-# @access_code_required
-def competition_registration(request, competition_questionset_id):
-    if request.user.is_authenticated():
-        return redirect('competition_index',
-            competition_questionset_id = competition_questionset_id)
-    if request.method == "POST":
-        competition = CompetitionQuestionSet.objects.get(
-            id=competition_questionset_id).competition
-        d = QueryDict(dict(), mutable=True)
-        d.update(request.POST)
-        d['competition'] = competition.id
-        form = CompetitionRegistrationForm(d)
-        if form.is_valid():
-            # print form.cleaned_data
-            profile = form.save()
-            u = authenticate(username=profile.user.username,
-                password=form.cleaned_data['password'])
-            login(request, u)
-            _use_access_code(form.cleaned_data['access_code'])
-            return redirect('competition_index',
-                competition_questionset_id = competition_questionset_id)
-    return render(request, 
-        "bober_simple_competition/competition_registration.html",
-        locals())
-
-@login_required
-def compete_with_short_code(request, slug):
-    competition = Competition.objects.get(slug=slug)
-    class QuestionsetCodeForm(forms.Form):
-        questionset = forms.ModelChoiceField(
-            queryset = CompetitionQuestionSet.objects.filter(
-                competition = competition)) 
-        access_code = forms.CharField()
-    qd = QueryDict(dict(), mutable=True)
-    qd.update(request.GET)
-    qd.update(request.POST)
-    if len(qd):
-        form = QuestionsetCodeForm(qd)
-    else:
-        form = QuestionsetCodeForm()
-    if form.is_valid():
-        # defer_update = form.cleaned_data['defer_update_used_codes']
-        # defer_effects = form.cleaned_data['defer_effects']
-        cqs = form.cleaned_data['questionset']
-        access_code = competition.expand_competitor_code(
-            short_code = form.cleaned_data['access_code'],
-            competition_questionset = cqs)
-        _use_access_code(request, access_code, 
-            defer_update_used_codes=False, defer_code_effects=False)
-        return HttpResponseRedirect(reverse('competition_index', 
-            kwargs = {'competition_questionset_id': cqs.id}))
-    return render(request, 'bober_simple_competition/compete_with_short_code.html', locals())
-
-
-
 #     2.2.1 get question page
 # @login_required
 @access_code_required
@@ -817,6 +760,9 @@ class QuestionSetRegistration(CreateView):
         cqs = CompetitionQuestionSet.objects.get(id=kwargs['competition_questionset_id'])
         self.competitionquestionset = cqs
         return super(QuestionSetRegistration, self).dispatch(*args, **kwargs)
+    def get(self, request, *args, **kwargs):
+        if request.user.is_authenticated():
+            return redirect('access_code', next=self.get_success_url())
     def get_form(self, form_class=None):
         kwargs = self.get_form_kwargs()
         kwargs['competitionquestionset'] = self.competitionquestionset
