@@ -87,6 +87,7 @@ class TeacherCodeRegistrationPasswordReset(FormView):
         initial['hidden_code'] = self.request.GET.get('hidden_code', '')
         return initial
     def form_valid(self, form):
+        retval = super( TeacherCodeRegistrationPasswordReset, self).form_valid(form)
         email = form.cleaned_data['email']
         password = form.cleaned_data['password']
         code = self.competition.administrator_code_generator.codes.get(value=form.cleaned_data['hidden_code'])
@@ -100,12 +101,11 @@ class TeacherCodeRegistrationPasswordReset(FormView):
         try:
             user = User.objects.get(email = email)
         except:
-            user = User(username=username, email=username)
+            user = User(username=email, email=email)
         user.set_password(password)
-        print "Saving user"
         user.save()
         user.profile.received_codes.add(code)
         u = authenticate(username = user.username, password=password)
-        return super( TeacherCodeRegistrationPasswordReset, self).form_valid(form)
+        return retval
     def get_success_url(self):
         return reverse('teacher_overview', kwargs={"slug":self.competition.slug})
