@@ -9,6 +9,7 @@ from forms import OverviewForm, SchoolCodesCreateForm
 from bober_simple_competition.views import AccessCodeRequiredMixin, SmartCompetitionAccessCodeRequiredMixin
 from bober_simple_competition.models import Attempt
 from models import *
+from forms import *
 from braces.views import LoginRequiredMixin
 # Create your views here.
 
@@ -25,8 +26,11 @@ class TeacherOverview(SmartCompetitionAccessCodeRequiredMixin,
         schools = dict()
         attempts = dict()
         code_pairs = list()
-        for c in profile.schoolteachercode_set.order_by(
-                'school', 'code__value'):
+        for c in profile.schoolteachercode_set.filter(
+                    code__salt = competition.competitor_code_generator.salt,
+                    code__format = competition.competitor_code_generator.format, 
+                ).order_by(
+                    'school', 'code__value'):
             if c.school != school:
                 schools[c.school] = list()
                 attempts[c.school] = list()
@@ -69,3 +73,33 @@ class SchoolCodesCreate(LoginRequiredMixin, AccessCodeRequiredMixin, FormView):
         if self.next_url is None:
             return reverse('index')
         return self.next_url
+
+class TeacherCodeRegistrationPasswordReset(FormView):
+    form_class = TeacherCodeRegistrationPasswordResetForm
+    template_name="bober_si/teacher_registration_password_reset.html"
+    def dispatch(self, *args, **kwargs):
+        self.competition = Competition.objects.get(slug=kwargs['slug'])
+        return super(TeacherCodeRegistrationPasswordReset, self).dispatch(*args, **kwargs)
+    def get_initial(self):
+        initial = super( TeacherCodeRegistrationPasswordReset, self).get_initial()
+        initial['hidden_code'] = self.request.GET.get('hidden_code', '')
+        return initial
+    def form_valid(self, form):
+        email = form.cleaned_data['email']
+        password = form.cleaned_data['password']
+        code = self.competition.administrator_code_generator.codes.get(value=form.cleaned_data['hidden_code'])
+        #except:
+        #    code = None
+        if code is None:
+            raise PermissionDenied
+        try:
+            user = User.objects.get(email = email)
+        except:
+            user = User(username=username, email=username)
+        user.set_password(password)
+        print "Saving user"
+        user.save()
+        user.profile.received_codes.add(code)
+        u = authenticate(username = user.username, password=password)
+    def get_success_url(self):
+        return reverse('competition_overview', kwargs={"slug":self.competition.slug})

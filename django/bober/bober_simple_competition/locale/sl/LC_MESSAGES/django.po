@@ -249,9 +249,12 @@ msgid "Competitor code formats"
 msgstr "Formati kod tekmovalcev"
 
 #: bober_simple_competition/templates/bober_simple_competition/codeformat_index.html:11
-#: bober_simple_competition/templates/bober_simple_competition/codeformat_index.html:13
 msgid "Create competitor code format"
 msgstr "Ustvari format kode za tekmovalce"
+
+#: bober_simple_competition/templates/bober_simple_competition/codeformat_index.html:13
+msgid "Create administrator code format"
+msgstr "Ustvari format kode za administratorje"
 
 #: bober_simple_competition/templates/bober_simple_competition/codeformat_index.html:12
 msgid "Admin code formats"

@@ -210,9 +210,9 @@ class AdminCodeFormatCreate(FormView, LoginRequiredMixin):
             },
             {
                 'name': 'allowed_effects',
-                'hash_len': form.cleaned_data['code_effects_length'],
-                'hash_format': form.cleaned_data['code_effects_format'],
-                'hash_algorithm': form.cleaned_data['code_effects_hash'],
+                'hash_len': form.cleaned_data['allowed_effects_length'],
+                'hash_format': form.cleaned_data['allowed_effects_format'],
+                'hash_algorithm': form.cleaned_data['allowed_effects_hash'],
                 'max_parts': len(CODE_EFFECTS),
             },
         ]

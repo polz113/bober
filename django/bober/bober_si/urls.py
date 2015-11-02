@@ -11,4 +11,6 @@ urlpatterns = patterns('',
         views.TeacherOverview.as_view(), name="teacher_overview"),
     url(r'^competitions/(?P<slug>[\w\-_]+)/school_codes_create$', 
         views.SchoolCodesCreate.as_view(), name="school_codes_create"),
+    url(r'^competitions/(?P<slug>[\w\-_]+)/teacher_registration$', 
+        views.TeacherCodeRegistrationPasswordReset.as_view(), name="teacher_registration"),
 )

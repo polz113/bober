@@ -11,4 +11,8 @@ class SchoolCodesCreateForm(forms.Form):
     school = forms.ModelChoiceField(label=_('School'), queryset=School.objects.all(),
         widget=autocomplete_light.ChoiceWidget('SchoolAutocomplete',
             attrs={'class':'modern-style'}))
-    
+
+class TeacherCodeRegistrationPasswordResetForm(forms.Form):
+    email = forms.EmailField(label=_('email'))
+    password = forms.CharField(label=_('password'), widget=forms.PasswordInput)
+    hidden_code = forms.CharField(label=_('hidden_code'), widget=forms.HiddenInput)
