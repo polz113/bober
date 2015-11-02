@@ -186,6 +186,8 @@
         makePrevQuestionLink();
         JSZipUtils.getBinaryContent(questionset_url, function(err, zip_data) {
             if(err) {
+                alert(gettext("Error loading questions") + " (" + err + ")");
+                window.location.href='../'
                 throw err; // or handle err
             }
             var zip = new JSZip(zip_data);
@@ -196,6 +198,10 @@
                 "type": "GET",
                 "dataType": "JSON",
                 "cache": false,
+                "error": function(jqXHR, textStatus, errorThrown){
+                    alert(gettext("Error loading competition data") + " (" + errorThrown + ")");
+                    window.location.href='../'
+                },
                 "success": function(user_data) {
                     var mapped_answers = {};
                     var reverse_question_map = {};
