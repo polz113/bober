@@ -108,6 +108,7 @@ class QuestionSetRegistrationForm(forms.ModelForm):
             self.cleaned_data['password'] = self.cleaned_data.get('access_code', '')
         if len(self.cleaned_data.get('email', '')) < 1:
             self.cleaned_data['email'] = self.cleaned_data['username']
+        return cleaned_data
     def clean_access_code(self):
         full_code = self.questionset_slug + self.codegen.format.separator + self.cleaned_data['access_code']
         if not self.codegen.code_matches(full_code, 

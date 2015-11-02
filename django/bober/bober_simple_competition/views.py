@@ -251,8 +251,8 @@ class CompetitorCodeFormatCreate(FormView, LoginRequiredMixin):
         f = code_based_auth.models.CodeFormat.from_components(code_components)
         return super(CompetitorCodeFormatCreate, self).form_valid(form)
 
-class CompetitionUpdate(UpdateWithInlinesView,
-        SmartCompetitionAccessCodeRequiredMixin):
+class CompetitionUpdate(SmartCompetitionAccessCodeRequiredMixin,
+            UpdateWithInlinesView):
     model = Competition
     form_class = CompetitionUpdateForm
     inlines = [CompetitionQuestionSetUpdateInline,]
