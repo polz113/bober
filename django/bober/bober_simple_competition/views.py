@@ -324,8 +324,8 @@ def competition_code_list(request, slug):
         access_code = request.session['access_code']
     except KeyError:
         access_code = ""
-    admin_codes = admin_codegen.codes.all()
-    competitor_codes = competition.competitor_code_generator.codes.all()
+    admin_codes = admin_codegen.codes.all().distinct()
+    competitor_codes = competition.competitor_code_generator.codes.all().distinct()
     if not admin_codegen.code_matches(
             access_code, {'admin_privileges': ['view_all_admin_codes']}):
         admin_codes = admin_codes.filter(
