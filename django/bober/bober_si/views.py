@@ -5,9 +5,11 @@ from django.utils.translation import ugettext as _
 from django.views.generic import TemplateView, FormView
 from django.core.urlresolvers import reverse
 from django.core.exceptions import PermissionDenied
+from django.contrib.auth import authenticate, login
 from forms import OverviewForm, SchoolCodesCreateForm
 from bober_simple_competition.views import AccessCodeRequiredMixin, SmartCompetitionAccessCodeRequiredMixin
 from bober_simple_competition.models import Attempt
+from django.contrib.auth.models import User
 from models import *
 from forms import *
 from braces.views import LoginRequiredMixin
@@ -88,6 +90,9 @@ class TeacherCodeRegistrationPasswordReset(FormView):
         email = form.cleaned_data['email']
         password = form.cleaned_data['password']
         code = self.competition.administrator_code_generator.codes.get(value=form.cleaned_data['hidden_code'])
+        code = Code.objects.get(salt = self.competition.administrator_code_generator.salt,
+            format = self.competition.administrator_code_generator.format, 
+            value = form.cleaned_data['hidden_code'])
         #except:
         #    code = None
         if code is None:
@@ -101,5 +106,6 @@ class TeacherCodeRegistrationPasswordReset(FormView):
         user.save()
         user.profile.received_codes.add(code)
         u = authenticate(username = user.username, password=password)
+        return super( TeacherCodeRegistrationPasswordReset, self).form_valid(form)
     def get_success_url(self):
-        return reverse('competition_overview', kwargs={"slug":self.competition.slug})
+        return reverse('teacher_overview', kwargs={"slug":self.competition.slug})
