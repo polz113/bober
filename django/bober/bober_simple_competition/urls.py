@@ -19,9 +19,9 @@ urlpatterns = patterns('',
         views.CompetitionUpdate.as_view(), name="competition_update"),
     #   2.1 teacher, admin (for this competition)
     #     2.1.1 create, list codes for competition
-    url(r'^competitions/(?P<competition_slug>[\w\-_]+)/codes$', 
+    url(r'^competitions/(?P<slug>[\w\-_]+)/codes$', 
         views.competition_code_list, name="competition_code_list"),
-    url(r'^competitions/(?P<competition_slug>[\w\-_]+)/codes/(?P<user_type>[\w]+)/create/$', 
+    url(r'^competitions/(?P<slug>[\w\-_]+)/codes/(?P<user_type>[\w]+)/create/$', 
         views.competition_code_create, name="competition_code_create"),
     #           codes can have the following permissions:
     #           1. can create admin codes for this competition
@@ -32,26 +32,26 @@ urlpatterns = patterns('',
     #           6. can view results before official end
     #           7. can use questionset to create new competitions
     #     2.1.2 distribute codes to registered and other users
-    url(r'^competitions/(?P<competition_slug>[\w\-_]+)/send_codes$', 
+    url(r'^competitions/(?P<slug>[\w\-_]+)/send_codes$', 
         views.send_codes, name="send_codes"),
     #     2.1.3 view results
-    url(r'^competitions/(?P<competition_slug>[\w\-_]+)/attempts/$', 
+    url(r'^competitions/(?P<slug>[\w\-_]+)/attempts/$', 
         views.competition_attempt_list, name="competition_attempt_list"),
-    url(r'^competitions/(?P<competition_slug>[\w\-_]+)/attempts/regrade$', 
+    url(r'^competitions/(?P<slug>[\w\-_]+)/attempts/regrade$', 
         views.competition_attempt_list, {'regrade':True}, name="competition_attempt_list"),
     #     2.1.4 mark attempts as invalid
     #           all attempts with codes created or distributed by
     #           the current user can be accessed 
-    url(r'^competitions/(?P<competition_slug>[\w\-_]+)/attempts/(?P<competition_questonset_id>\d+)/(?P<attempt_id>\d+)/invalidate$', 
+    url(r'^competitions/(?P<slug>[\w\-_]+)/attempts/(?P<competition_questonset_id>\d+)/(?P<attempt_id>\d+)/invalidate$', 
         views.competition_attempt_list, {'regrade':True}, name="attempt_invalidate"),
     #     2.1.5 
-    url(r'^competitions/(?P<competition_slug>[\w\-_]+)/questionsets/use$', 
+    url(r'^competitions/(?P<slug>[\w\-_]+)/questionsets/use$', 
         views.use_questionsets, name="use_questionsets"),
-    url(r'^competitions/(?P<competition_slug>[\w\-_]+)/questionsets/(?P<competition_questionset_id>[\d]+)$', 
+    url(r'^competitions/(?P<slug>[\w\-_]+)/questionsets/(?P<competition_questionset_id>[\d]+)$', 
         views.use_questionsets, name="use_questionset"),
     #   2.2 competitor
     #     2.2.0 register as competitor using a code
-    url(r'^competitions/(?P<competition_slug>[\w\-_]+)/registration$', 
+    url(r'^competitions/(?P<slug>[\w\-_]+)/registration$', 
         views.CompetitionRegistration.as_view(), name="competition_registration"),
     url(r'^compete/(?P<competition_questionset_id>[\d]+)/$', 
         views.QuestionSetRegistration.as_view(), name="questionset_registration"),

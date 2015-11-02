@@ -8,14 +8,14 @@
 {% block content %}
 <a href={% url "competition_list" %}>{% trans "Back to competitions" %}</a>
 &nbsp;&nbsp;
-<a href={% url "competition_detail" slug=competition_slug %}>{% trans "Competition details" %}</a>
+<a href={% url "competition_detail" slug=slug %}>{% trans "Competition details" %}</a>
 <h1>{% trans "Current code"%}</h1>
 <div class="longTextBreak">
 {{access_code}}
 </div>
 <h1>{% trans "Admin codes" %}</h1>
 {% if can_create_administrator_codes %}
-<a href="{% url "competition_code_create" competition_slug=competition_slug user_type='admin' %}" class="btn">{% trans "Generate code" %}</a>
+<a href="{% url "competition_code_create" slug=slug user_type='admin' %}" class="btn">{% trans "Generate code" %}</a>
 {% endif %}
 <ul>
 {% for i in admin_codes %}
@@ -24,7 +24,7 @@
 </ul>
 <h1>{% trans "Competitor codes" %}</h1>
 {% if can_create_competitor_codes %}
-<a href="{% url "competition_code_create" competition_slug=competition_slug user_type='competitor' %}" class="btn">{% trans "Generate code" %}</a>
+<a href="{% url "competition_code_create" slug=slug user_type='competitor' %}" class="btn">{% trans "Generate code" %}</a>
 {% endif %}
 <ul>
 {% for i in competitor_codes %}

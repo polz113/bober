@@ -6,14 +6,14 @@ from django.views.generic import TemplateView, FormView
 from django.core.urlresolvers import reverse
 from django.core.exceptions import PermissionDenied
 from forms import OverviewForm, SchoolCodesCreateForm
-from bober_simple_competition.views import AccessCodeRequiredMixin
+from bober_simple_competition.views import AccessCodeRequiredMixin, SmartCompetitionAccessCodeRequiredMixin
 from bober_simple_competition.models import Attempt
 from models import *
 from braces.views import LoginRequiredMixin
 # Create your views here.
 
-class TeacherOverview(LoginRequiredMixin, 
-        AccessCodeRequiredMixin, TemplateView):
+class TeacherOverview(SmartCompetitionAccessCodeRequiredMixin, 
+        TemplateView):
     template_name="bober_si/teacher_overview.html"
     def get_context_data(self, **kwargs):
         context = super(TeacherOverview, self).get_context_data(**kwargs)
