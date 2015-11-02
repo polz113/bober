@@ -41,7 +41,7 @@
             <a class="navbar-brand" href="{% url 'profile_update' pk=request.user.profile.pk %}">{% trans "Edit my profile" %}</a>
             <a class="navbar-brand" href="{% url "django.contrib.auth.views.logout" %}">{% trans "Logout" %} {{request.user}}</a>
         {% endif %}
-        <!-- {% get_current_language as LANGUAGE_CODE %}
+        {% get_current_language as LANGUAGE_CODE %}
         {% get_available_languages as LANGUAGES %}
         <div id="lang">
             <form action="{% url "django.views.i18n.set_language" %}" method="post">
@@ -54,7 +54,7 @@
                 </select>
                 <input type="submit" value="Go" />
             </form>
-        </div> -->
+        </div>
 
         </div>
         </div><!--.header-->

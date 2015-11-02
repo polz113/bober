@@ -103,7 +103,7 @@ msgstr "pregled"
 
 #: bober_si/templates/bober_simple_competition/competition_detail.html:17
 msgid "attempts"
-msgstr "poizkusi"
+msgstr "seznam poizkusov"
 
 #: bober_si/templates/bober_simple_competition/competition_detail.html:18
 msgid "edit"

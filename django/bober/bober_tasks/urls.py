@@ -49,7 +49,7 @@ urlpatterns = patterns('',
     url(r'^difficulty-levels/delete/(\d+)?$', delete_difficulty, name="control_panel.delete_difficulty"),
 
     # International
-    url(r'^i18n/', include('django.conf.urls.i18n'), name="i18n"),
+    # url(r'^i18n/', include('django.conf.urls.i18n'), name="i18n"),
 
     # API
     url(r'^export/task/(\d+)/([A-Za-z]+)$', export_task_language, name="api.export_task"), #vrne zadnji prevod za doloceno nalogo

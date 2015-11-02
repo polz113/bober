@@ -42,9 +42,9 @@ urlpatterns = patterns('',
     # url(r'^jsi18n/$', 'django.views.i18n.javascript_catalog', js_info_dict),
     url('^accounts/', include('django.contrib.auth.urls')),
     url('', include('social.apps.django_app.urls', namespace='social')),
-    url('', include('password_reset.urls'))
+    url('', include('password_reset.urls')),
+    url(r'^i18n/', include('django.conf.urls.i18n'), name="i18n"),
 )
-
 
 if settings.DEBUG:
     urlpatterns += [
