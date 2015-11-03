@@ -35,16 +35,16 @@
 	<div class='page-header'>
 
 		<div id='logo'><a href='{% url "index" %}'><img src='{% static "img/logo.png" %}' alt='{% trans "Beaver" %}' /></a></div>
-
-        <div id='profile'>
-        {% if request.user.is_authenticated %}
-            <a class="navbar-brand" href="{% url 'profile_update' pk=request.user.profile.pk %}">{% trans "Edit my profile" %}</a>
-            <a class="navbar-brand" href="{% url "django.contrib.auth.views.logout" %}">{% trans "Logout" %} {{request.user}}</a>
-        {% endif %}
+        <div id="context_menu">
+            {% block context_menu %}
+            {% endblock %}
+            <div id='profile'>{% if request.user.is_authenticated %}
+            <a class="navbar-brand" href="{% url "django.contrib.auth.views.logout" %}">{% trans "Logout" %} {{request.user}}</a>{% endif %}
+            </div>
         <!--{% get_current_language as LANGUAGE_CODE %}
         {% get_available_languages as LANGUAGES %}
-        <div id="lang">
-            <form action="{% url "django.views.i18n.set_language" %}" method="post">
+            <div id="lang">
+                <form action="{% url "django.views.i18n.set_language" %}" method="post">
                 {% csrf_token %}
                 <input name="next" type="hidden" value="{{ request.get_full_path }}" />
                 <select name="language">
@@ -53,18 +53,14 @@
                     {% endfor %}
                 </select>
                 <input type="submit" value="Go" />
-            </form>
-        </div>-->
-
+                </form>
+            </div>-->
         </div>
-        </div><!--.header-->
-
-    	<div id='content'>
-    		{% block content %}
+    </div><!--.header-->
+    <div id='content'>
+        {% block content %}
 		{% endblock %}
-    	</div><!--.content-->
-
-
+    </div><!--.content-->
     <div class="page-footer">
         <div>
 		<a href="http://www.fri.uni-lj.si/" target="_blank">

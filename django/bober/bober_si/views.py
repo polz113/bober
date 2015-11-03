@@ -7,7 +7,7 @@ from django.core.urlresolvers import reverse
 from django.core.exceptions import PermissionDenied
 from django.contrib.auth import authenticate, login
 from forms import OverviewForm, SchoolCodesCreateForm
-from bober_simple_competition.views import AccessCodeRequiredMixin, SmartCompetitionAccessCodeRequiredMixin
+from bober_simple_competition.views import AccessCodeRequiredMixin, SmartCompetitionAdminCodeRequiredMixin
 from bober_simple_competition.models import Attempt
 from django.contrib.auth.models import User
 from models import *
@@ -15,7 +15,7 @@ from forms import *
 from braces.views import LoginRequiredMixin
 # Create your views here.
 
-class TeacherOverview(SmartCompetitionAccessCodeRequiredMixin, 
+class TeacherOverview(SmartCompetitionAdminCodeRequiredMixin, 
         TemplateView):
     template_name="bober_si/teacher_overview.html"
     def get_context_data(self, **kwargs):
@@ -49,7 +49,7 @@ class TeacherOverview(SmartCompetitionAccessCodeRequiredMixin,
         # print attempts
         return context
 
-class SchoolCodesCreate(LoginRequiredMixin, AccessCodeRequiredMixin, FormView):
+class SchoolCodesCreate(SmartCompetitionAdminCodeRequiredMixin, FormView):
     template_name="bober_si/school_codes_create.html"
     form_class = SchoolCodesCreateForm
     def dispatch(self, *args, **kwargs):

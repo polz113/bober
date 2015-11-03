@@ -9,7 +9,11 @@ div#logo {
 	position: relative;
 }
 
-div#profile {
+#context_menu > div{
+	display: inline;
+}
+
+div#context_menu {
 	position: absolute;
 	right: 20px;
 	top: 80px;
