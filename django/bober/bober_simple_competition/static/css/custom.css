@@ -20,14 +20,15 @@ div#context_menu {
 }
 
 div#content {
-	border: solid 6px darkgreen;
-	border-radius: 5px;
+	border: solid 2px #93E493;
+	border-radius: 6px;
 	padding: 50px 10px 10px 10px;
+	background: #F8F8F8;
 }
 
 body {
 	font-size: 18px;
-	background: #eee;
+	background: #f9f0df;
 }
 
 div#content div.section {
