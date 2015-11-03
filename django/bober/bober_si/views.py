@@ -104,6 +104,7 @@ class TeacherCodeRegistrationPasswordReset(FormView):
             user = User(username=email, email=email)
         user.set_password(password)
         user.save()
+        user.profile.managed_profiles.add(user.profile)
         user.profile.received_codes.add(code)
         u = authenticate(username = user.username, password=password)
         login(self.request, u)

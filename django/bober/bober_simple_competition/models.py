@@ -642,7 +642,7 @@ class Profile(models.Model):
     def __unicode__(self):
         return unicode(self.user)
     def get_absolute_url(self):
-        return reverse('competition_detail', kwargs={'pk': str(self.pk)})
+        return reverse('profile_detail', kwargs={'pk': str(self.pk)})
     user = models.OneToOneField(User)
     feature_level = IntegerField(choices=FEATURE_LEVELS, default=1)
     managed_profiles = models.ManyToManyField('Profile', related_name='managers', null=True, blank=True)

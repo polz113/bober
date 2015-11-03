@@ -13,7 +13,8 @@
 <table id="sections">
     <tr>
         <th>
-            {% trans "Codes for each school" %}
+            {% trans "Codes for each school" %}<br/>
+            <span style="font-weight: normal; font-size: 13px">(Kode, ki jih bodo tekmovalci<br/>uporabili za vstop v sistem.)</span>
         </th>
         <td>
             {% for school, codes in schools.iteritems %}
@@ -41,22 +42,22 @@
 ">{% trans "Competition sheets" %}</a>
             </p>
             <p>
-                {% trans "Result entry for tasks on paper" %}
+                {% trans "Result entry for tasks on paper" %} (še ni na voljo)
             </p>
         </td>
     </tr>
     <tr>
         <th>{% trans "Certificates" %}</th>
         <td>
-            <p>{% trans "Certificates of achievement" %}</p>
-            <p>{% trans "Certificates for mentors" %}</p>
+            <p>{% trans "Certificates of achievement" %} (še ni na voljo)</p>
+            <p>{% trans "Certificates for mentors" %} (še ni na voljo)</p>
         </td>
     </tr>
     <tr>
         <th>{% trans "Results" %}</th>
     </tr>
 </table>
-
+{% comment %}
 {% for school, cqsa in attempts.iteritems %}
     {% for cqs, attempts in cqsa %}
         {{cqs.name}}
@@ -67,5 +68,5 @@
         </ul>
     {% endfor %}
 {%  endfor %}
-
+{% endcomment %}
 {% endblock %}
