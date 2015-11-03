@@ -37,26 +37,36 @@ def access_code_required(function = None):
         return function(*args, **kwargs)
     return code_fn
 
-def smart_competition_access_code_required(function = None):
+def smart_competition_admin_code_required(function = None):
     def code_fn(*args, **kwargs):
         request = kwargs.get('request', args[0])
+        access_code = request.session.get('access_code', None)
         try:
             slug = kwargs['slug']
             competition = Competition.objects.get(slug=kwargs['slug'])
             codegen=competition.administrator_code_generator
-            codes = codegen.codes.filter(recipient_set__id = request.user.profile.id)
+            codes = [ ]
+            if access_code is not None:
+                codes = codegen.codes.filter(
+                    value = access_code).values_list('value', flat=True)
+            if len(codes) < 1 and access_code is not None and codegen.code_matches(
+                    access_code, { 'competitor_privileges': ['attempt'],}):
+                codes = [access_code]
             if len(codes) < 1:
-                codes = codegen.codes.filter(user_set__id = request.user.profile.id)
+                codes = codegen.codes.filter(
+                    recipient_set__id = request.user.profile.id).values_list('value', flat=True)
             if len(codes) < 1:
-                codes = codegen.codes.filter(creator_set__id = request.user.profile.id)
-            code = codes[0]
-            _use_access_code(request, code.value)
+                codes = codegen.codes.filter(
+                    user_set__id = request.user.profile.id).values_list('value', flat=True)
+            if len(codes) < 1:
+                codes = codegen.codes.filter(
+                    creator_set__id = request.user.profile.id).values_list('value', flat=True)
+            access_code = codes[0]
         except Exception, e:
             print e
-            codegen = None
-        try:
-            access_code = request.session['access_code']
-        except:
+        if access_code is not None:
+            _use_access_code(request, access_code)
+        else:
             next = request.get_full_path()
             return redirect('access_code', next=next)
         return function(*args, **kwargs)
@@ -68,11 +78,11 @@ class AccessCodeRequiredMixin(object):
         view = super(AccessCodeRequiredMixin, cls).as_view(**initkwargs)
         return access_code_required(view)
 
-class SmartCompetitionAccessCodeRequiredMixin(object):
+class SmartCompetitionAdminCodeRequiredMixin(object):
     @classmethod
     def as_view(cls, **initkwargs):
-        view = super(SmartCompetitionAccessCodeRequiredMixin, cls).as_view(**initkwargs)
-        return smart_competition_access_code_required(view)
+        view = super(SmartCompetitionAdminCodeRequiredMixin, cls).as_view(**initkwargs)
+        return smart_competition_admin_code_required(view)
 
 class FilteredSingleTableView(SingleTableView):
   filter_class = None
@@ -251,7 +261,7 @@ class CompetitorCodeFormatCreate(FormView, LoginRequiredMixin):
         f = code_based_auth.models.CodeFormat.from_components(code_components)
         return super(CompetitorCodeFormatCreate, self).form_valid(form)
 
-class CompetitionUpdate(SmartCompetitionAccessCodeRequiredMixin,
+class CompetitionUpdate(SmartCompetitionAdminCodeRequiredMixin,
             UpdateWithInlinesView):
     model = Competition
     form_class = CompetitionUpdateForm
@@ -349,7 +359,7 @@ def competition_code_list(request, slug):
 # 5. can attempt competition before official start
 # 6. can view results before official end
 # 7. can use questionset to create new competitions
-@smart_competition_access_code_required
+@smart_competition_admin_code_required
 def competition_code_create(request, slug, user_type='admin'):
     access_code = request.session['access_code']
     competition = Competition.objects.get(slug=slug)
@@ -413,9 +423,9 @@ def send_codes(request, slug):
     return render(request, "bober_simple_competition/send_codes.html", locals())
 
 # 2.1.3 view results
+#@smart_competition_admin_code_required
 #@login_required
-#@access_code_required
-@smart_competition_access_code_required
+@access_code_required
 def competition_attempt_list(request, slug, regrade=False):
     competition = Competition.objects.get(slug=slug)
     access_code = request.session['access_code']
@@ -454,7 +464,7 @@ def invalidate_attempt(request, slug, attempt_id):
 # 2.1.5 use questionsets
 #@login_required
 #@access_code_required
-@smart_competition_access_code_required
+@smart_competition_admin_code_required
 def use_questionsets(request, slug, competition_questionset_id=None):
     access_code = request.session['access_code']
     competition = Competition.objects.get(slug=slug)
