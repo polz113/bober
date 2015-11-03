@@ -13,7 +13,7 @@ SCHOOL_CATEGORIES = (
 
 class School(models.Model):
     def __unicode__(self):
-        return u"{}, {} ({})".format(self.name, self.post, self.category)
+        return u"{}, {}".format(self.name, self.post, self.category)
     name = models.CharField(unique=True, max_length=255)
     category = models.CharField(choices=SCHOOL_CATEGORIES, max_length=24)
     address = models.CharField(max_length=1024, blank=True, null=True)
