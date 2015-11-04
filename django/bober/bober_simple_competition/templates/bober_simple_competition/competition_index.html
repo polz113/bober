@@ -341,7 +341,7 @@
                     if (allData['errorCode'] && allData['errorCode'] === 9) {
                         onCompetitionNoTimeLeft();
                     } else {
-                        alert(allData['error']);
+                        alert("ku?" + allData['error']);
                     }
                 }
             }
@@ -353,7 +353,6 @@
     }
 
     function onCompetitionNoTimeLeft() {
-        return;
         // GAPushEvent("CompetitionFinished", "timeout");
         enabledConfirmExit = false;
         cleanupLastQuestionCookie();
@@ -442,10 +441,10 @@
                                     }, 5000);
                             });
                 } else {
-                    if (data['errorCode'] && data['errorCode'] === 999) {
+                    if (data['errorCode'] && data['errorCode'] === "out_of_time") {
                         onCompetitionNoTimeLeft();
                     } else {
-                        alert(data["error"]);
+                        alert(gettext("Problem saving response (") + data["errorCode"] + ")");
                     }
                 }
             },
@@ -536,7 +535,7 @@
                             redirect_url = data["redirect_url"];
                             alert(gettext("Thank you for participating in the competition"));
                         } else {
-                            alert(data["error"]);
+                            alert(data["errorCode"]);
                         }
                     },
                     "beforeSend": function(xhr, settings){

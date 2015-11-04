@@ -680,7 +680,7 @@ def submit_answer(request, competition_questionset_id, attempt_id):
         _check_attempt_and_code(request, attempt)
         now = timezone.now()
         if (attempt.finish - now).total_seconds() < 0:
-             raise Exception("out of time")
+             raise Exception("out_of_time")
         a = Answer(attempt_id = attempt_id,
             randomized_question_id = request.POST['q'],
             value = val, timestamp = now)
@@ -688,6 +688,7 @@ def submit_answer(request, competition_questionset_id, attempt_id):
         data['success'] = True
         # don't do a read before each write!
     except Exception, e:
+        print e
         data['error'] = True
         data['errorCode'] = str(e);
     return HttpResponse(json.dumps(data), content_type="application/json")
