@@ -7,8 +7,10 @@ urlpatterns = patterns('',
     # Examples:
     # url(r'^blog/', include('blog.urls')),
     # 2. pick competition
-    url(r'^competitions/(?P<slug>[\w\-_]+)/overview$', 
+    url(r'^competitions/(?P<slug>[\w\-_]+)/$', 
         views.TeacherOverview.as_view(), name="teacher_overview"),
+    url(r'^competitions/(?P<slug>[\w\-_]+)/detail$', 
+        views.TeacherOverview.as_view(), name="competition_detail"),
     url(r'^competitions/(?P<slug>[\w\-_]+)/school_codes_create$', 
         views.SchoolCodesCreate.as_view(), name="school_codes_create"),
     url(r'^competitions/(?P<slug>[\w\-_]+)/teacher_registration$', 

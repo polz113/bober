@@ -53,6 +53,9 @@ urlpatterns = patterns('',
     #     2.2.0 register as competitor using a code
     url(r'^competitions/(?P<slug>[\w\-_]+)/registration$', 
         views.CompetitionRegistration.as_view(), name="competition_registration"),
+    url(r'^compete/(?P<competition_questionset_id>[\d]+)/access_code/(?P<next>.*)$', 
+        views.competitionquestionset_access_code, 
+        name="competitionquestionset_access_code"),
     url(r'^compete/(?P<competition_questionset_id>[\d]+)/$', 
         views.QuestionSetRegistration.as_view(), name="questionset_registration"),
     #     2.2.1 get question page

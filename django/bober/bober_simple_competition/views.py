@@ -326,7 +326,7 @@ def access_code(request, next):
         return HttpResponseRedirect('/' + next)
     return render(request, 'bober_simple_competition/access_code.html', locals())
 
-def questionset_access_code(request, questionset_id, next):
+def competitionquestionset_access_code(request, competition_questionset_id, next):
     qd = QueryDict(dict(), mutable=True)
     qd.update(request.GET)
     qd.update(request.POST)
@@ -336,17 +336,18 @@ def questionset_access_code(request, questionset_id, next):
         form = MinimalAccessCodeForm()
     try:
         cqs = CompetitionQuestionSet.objects.get(
-            id=questionset_id)
+            id=competition_questionset_id)
         cqs_slug = cqs.slug_str()
         separator = cqs.competition.competitor_code_generator.format.separator
-    except:
+    except Exception, e:
+        print e
         cqs_slug = None
     if cqs_slug is not None and form.is_valid():
         defer_update = form.cleaned_data.get('defer_update_used_codes', False)
         defer_effects = form.cleaned_data.get('defer_effects', False)
         access_code = cqs_slug + separator + form.cleaned_data['access_code']
         _use_access_code(request, access_code, defer_update, defer_effects)
-        return HttpResponseRedirect('/' + next)
+        return redirect(next)
     return render(request, 'bober_simple_competition/access_code.html', locals())
 
 
@@ -798,8 +799,15 @@ class QuestionSetRegistration(CreateView):
     def get(self, request, *args, **kwargs):
         if request.user.is_authenticated():
             if 'access_code' in request.session:
-                return redirect(self.get_success_url())
-            return redirect('questionset_access_code', next=self.get_success_url())
+                access_code = request.session['access_code']
+                try:
+                    assert _can_attempt(self.request, self.competitionquestionset)
+                except:
+                    request.session.pop('access_code')
+            return redirect('competitionquestionset_access_code', 
+                competition_questionset_id = self.competitionquestionset.id, 
+                next=self.get_success_url())
+        return super(QuestionSetRegistration, self).get(request, *args, **kwargs)
     def get_form(self, form_class=None):
         kwargs = self.get_form_kwargs()
         kwargs['competitionquestionset'] = self.competitionquestionset
