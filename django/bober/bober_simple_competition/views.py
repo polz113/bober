@@ -772,6 +772,8 @@ class QuestionSetRegistration(CreateView):
         return super(QuestionSetRegistration, self).dispatch(*args, **kwargs)
     def get(self, request, *args, **kwargs):
         if request.user.is_authenticated():
+            if 'access_code' in request.session:
+                return redirect(self.get_success_url())
             return redirect('access_code', next=self.get_success_url())
     def get_form(self, form_class=None):
         kwargs = self.get_form_kwargs()
