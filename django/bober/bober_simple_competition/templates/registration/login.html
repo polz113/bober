@@ -9,9 +9,9 @@
       {% trans "Hello," %} {{ user.get_full_name|default:user.username }}!
    {% else %}
    <ul>
-     <li>
+<!--     <li>
        <a class="btn" href="{% url 'social:begin' 'facebook' %}?next={{ request.path }}">{% trans "Login with" %} Facebook</a>
-     </li>
+     </li> -->
      <li>
        <a class="btn" href="{% url 'social:begin' 'google-oauth2' %}?next={{ request.path }}">{% trans "Login with" %} Google</a>
      </li>

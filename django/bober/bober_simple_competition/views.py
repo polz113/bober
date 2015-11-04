@@ -639,7 +639,7 @@ def competition_data(request, competition_questionset_id):
     request.session['attempt_id'] = attempt.id
     data = dict()
     data['attempt_id'] = attempt.id
-    data['competition_title'] = competition_questionset.questionset.name
+    data['competition_title'] = competition_questionset.name
     data['question_map'] = attempt.competitionquestionset.questionset.question_mapping(attempt.random_seed)
     data['random_seeds'] = {}
     r = random.Random(attempt.random_seed)
