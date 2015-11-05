@@ -582,6 +582,7 @@ class AttemptInvalidation(models.Model):
 
 class Attempt(models.Model):
     def __unicode__(self):
+        return "XXX"
         return "{}: {} - {}: {} ({} - {})".format(self.user,
             self.competition.slug,
             self.questionset.name,
