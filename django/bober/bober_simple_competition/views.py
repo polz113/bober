@@ -103,6 +103,7 @@ def index(request):
 
 class CompetitionList(ListView):
     model = Competition
+    queryset = Competition.objects.all().order_by('-promoted')
 
 class CompetitionDetail(DetailView):
     model = Competition

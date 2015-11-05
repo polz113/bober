@@ -2,51 +2,28 @@
 {% load i18n %}
 {% load render_table from django_tables2 %}
 {% block title %}{% trans "Competition" %}{% endblock %}
-
 {% block headline %}{% trans "Competitions in progress" %}{% endblock %}
 {% block extrahead %}
-<link rel="stylesheet" href="{{ STATIC_URL }}django_tables2/themes/paleblue/css/screen.css" />
+<style>
+.promoted a {
+    font-size: 200%;
+}
+</style>
 {% endblock %}
 {% block content %}
 <div style="margin:1%";>
 <a href="{% url "index" %}" class="btn">{% trans "Back to Menu" %}</a>
 </div>
 <div class="competitions_list">
-	<table class="paleblue">
-	<thead>
-	<tr>
-	<th colspan="2" style="width: 50%; height: 5%;">{% trans "Competition Name" %}</th>
-	<th colspan="2" style="width: 50%; height: 5%;">{% trans "Options" %}</th>
-	</tr>
-	</thead>
-	<tbody>
-	{% for i in object_list %}
-			<tr style="text-transform: uppercase;">
-			<td colspan="2"><a href={% url "competition_detail" slug=i.slug %}>{{i.slug}}</a></td>
-			<td style="width:25%;"><a href='{% url "competition_code_list" slug=i.slug %}'>{% trans "codes" %}</a></td>
-			<td style="width:25%;"><a href='{% url "competition_attempt_list" slug=i.slug %}' >{% trans "attempts" %}</a></td>
-			</tr>
-			<div class="questionsets">
-			{% for j in i.competitionquestionset_set.all %}
-				<tr class="{% if forloop.counter|divisibleby:2 %}even{% else %}odd{% endif %}" style="height: 5%; font-style: italic;">
-					<td style="width:25%; text-align: center;"><a href="{% url 'questionset_registration' competition_questionset_id=j.id %}">{{j.name}}</a></td>
-					<td style="width:25%; text-align: center;"><a href="{% url 'questionset_registration' competition_questionset_id=j.id %}">{{j.questionset.name}}</a></td>
-					{% if j.guest_code %}
-					<td colspan="2" style="text-align: center;"><a href="{% url 'competition_guest' competition_questionset_id=j.id %}">{% trans "Compete as guest" %}</a></td>
-					{% else %}
-					<td colspan="2"></td>
-					{% endif %}
-				</tr>
-				  {% endfor %}
-			<tr><td colspan="4"></td></tr>
-	{% endfor %}
-	</tbody>
-	</table>
+<ul>
+{% for i in object_list %}<li {% if i.promoted %}class="promoted"{% endif %}><a href={% url "competition_detail" slug=i.slug %}>{{i.title}}</a></li>
+{% endfor %}
+</ul>
 </div>
-<div class="toLeft">
+<!--<div class="toLeft">
 	<br>
 	<a href="{% url "competition_create" %}" class="btn">{% trans "Create competition" %}</a>
 	<br>
-</div>
+</div> -->
 
 {% endblock %}
