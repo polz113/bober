@@ -591,6 +591,15 @@ def competition_resources(request, competition_questionset_id, resource_path):
         return safe_media_redirect(os.path.join(cache_dir, resource_path))
     raise PermissionDenied 
 
+@login_required
+def question_resources(request, pk, resource_path):
+    try:
+        q = request.user.profile.questions.get(pk=pk)
+    except:
+        raise PermissionDenied
+    resource_dir = 'resources/' + str(pk) + '/resources'
+    return safe_media_redirect(os.path.join(resource_dir, resource_path))
+
 # 2.2.3 get question data (existing answers, attempt_id, randomised_question map)
 # @login_required
 @access_code_required
