@@ -335,6 +335,8 @@ def competitionquestionset_access_code(request, competition_questionset_id, next
         form = MinimalAccessCodeForm(qd)
     else:
         form = MinimalAccessCodeForm()
+    if 'access_code' in request.session and 'access_code' not in qd:
+        qd['access_code'] = request.session['access_code']
     try:
         cqs = CompetitionQuestionSet.objects.get(
             id=competition_questionset_id)
@@ -343,11 +345,13 @@ def competitionquestionset_access_code(request, competition_questionset_id, next
     except Exception, e:
         print e
         cqs_slug = None
+    print "haha?"
     if cqs_slug is not None and form.is_valid():
         defer_update = form.cleaned_data.get('defer_update_used_codes', False)
         defer_effects = form.cleaned_data.get('defer_effects', False)
         access_code = cqs_slug + separator + form.cleaned_data['access_code']
         _use_access_code(request, access_code, defer_update, defer_effects)
+        print "    ", request.session['access_code']
         return redirect(next)
     return render(request, 'bober_simple_competition/access_code.html', locals())
 
@@ -812,8 +816,9 @@ class QuestionSetRegistration(CreateView):
                 access_code = request.session['access_code']
                 try:
                     assert _can_attempt(self.request, self.competitionquestionset)
-                except:
+                except Exception, e:
                     request.session.pop('access_code')
+                return redirect(self.get_success_url())
             return redirect('competitionquestionset_access_code', 
                 competition_questionset_id = self.competitionquestionset.id, 
                 next=self.get_success_url())

@@ -19,8 +19,8 @@
 <div id='questionsets'>
 {% trans "Question sets" %}
 <ul>
-{% for qs in object.questionsets.all %}
-  <li>{{qs}}</li>
+{% for cqs in object.competitionquestionset_set.all %}
+  <li>{{cqs.name}} <a class="btn" href="{% url 'questionset_registration' competition_questionset_id=cqs.id %}">{% trans "Compete" %}</a></li>
 {% endfor %}
 </ul>
 </div>

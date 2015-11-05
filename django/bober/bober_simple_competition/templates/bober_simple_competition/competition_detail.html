@@ -19,7 +19,7 @@
 {% trans "Question sets" %}
 <ul>
 {% for qs in object.questionsets.all %}
-  <li>{{qs}}</li>
+  <li>{{qs.name}}</li>
 {% endfor %}
 </ul>
 </div>
