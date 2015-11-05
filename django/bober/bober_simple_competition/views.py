@@ -697,7 +697,6 @@ def submit_answer(request, competition_questionset_id, attempt_id):
         data['success'] = True
         # don't do a read before each write!
     except Exception, e:
-        print e
         data['error'] = True
         data['errorCode'] = str(e);
     return HttpResponse(json.dumps(data), content_type="application/json")
