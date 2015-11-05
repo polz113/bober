@@ -99,7 +99,7 @@ class Competition(models.Model):
     def get_absolute_url(self):
         return reverse('competition_detail', kwargs={'slug': str(self.slug)})
     title = CharField(max_length=256, null=True, blank=True)
-    promoted = models.BooleanField()
+    promoted = models.BooleanField(default=False)
     slug = SlugField(unique=True)
     administrator_code_generator = ForeignKey(CodeGenerator, related_name='administrator_code_competition_set')
     competitor_code_generator = ForeignKey(CodeGenerator, related_name='competitor_code_competition_set')
@@ -176,7 +176,7 @@ class Competition(models.Model):
         return c 
 class CompetitionQuestionSet(models.Model):
     def __unicode__(self):
-        return u"{}: {} ({})".format(self.id, self.name, self.questionset.slug)
+        return u"{}".format(self.name)
     def slug_str(self):
         return unicode(self.id) + '.' + self.questionset.slug
     @classmethod

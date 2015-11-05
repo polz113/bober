@@ -807,7 +807,13 @@ class QuestionSetRegistration(CreateView):
     def dispatch(self, *args, **kwargs):
         cqs = CompetitionQuestionSet.objects.get(id=kwargs['competition_questionset_id'])
         self.competitionquestionset = cqs
+        self.competition = cqs.competition
         return super(QuestionSetRegistration, self).dispatch(*args, **kwargs)
+    def get_context_data(self, **kwargs):
+        context = super(QuestionSetRegistration, self).get_context_data(**kwargs)
+        context['competition'] = self.competition
+        context['competitionquestionset'] = self.competitionquestionset
+        return context
     def get(self, request, *args, **kwargs):
         if request.user.is_authenticated():
             if 'access_code' in request.session:
@@ -815,7 +821,7 @@ class QuestionSetRegistration(CreateView):
                 try:
                     assert _can_attempt(self.request, self.competitionquestionset)
                 except Exception, e:
-                #    print "No attempt for you!"
+                    # print "No attempt for you!"
                     request.session.pop('access_code')
                 return redirect(self.get_success_url())
             return redirect('competitionquestionset_access_code', 
@@ -840,7 +846,7 @@ class QuestionSetRegistration(CreateView):
 
 class CompetitionRegistration(QuestionSetRegistration):
     form_class = CompetitionRegistrationForm
-    # template_name = "bober_simple_competition/competition_registration.html"
+    template_name = "bober_simple_competition/competition_registration.html"
     def dispatch(self, *args, **kwargs):
         self.competition = Competition.objects.get(slug=kwargs['slug'])
         self.competitionquestionset = None
@@ -852,6 +858,9 @@ class CompetitionRegistration(QuestionSetRegistration):
         return f
     def get(self, request, *args, **kwargs):
         return super(QuestionSetRegistration, self).get(request, *args, **kwargs)
+    def form_valid(self, form):
+        self.competitionquestionset = form.cleaned_data['competition_questionset']
+        return super(CompetitionRegistration, self).form_valid(form)
  
 #   5.3 get certificates, other files
 @login_required

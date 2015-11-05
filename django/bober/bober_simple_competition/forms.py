@@ -3,7 +3,7 @@ from collections import OrderedDict
 from django.forms.models import inlineformset_factory, model_to_dict, fields_for_model
 # from django.forms.models import model_to_dict, fields_for_model
 from bober_simple_competition.models import *
-from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext_lazy as _
 from extra_views import InlineFormSet
 import code_based_auth.models
 import django.forms.extras.widgets as django_widgets
@@ -95,22 +95,29 @@ class ProfileEditForm(BasicProfileForm):
 class QuestionSetRegistrationForm(forms.ModelForm):
     class Meta:
         model = User
-        fields = ['first_name', 'last_name', 'username', 'email']
-        widgets = {'email': forms.HiddenInput()}
+        fields = ['first_name', 'last_name']
+    username = forms.CharField(required=False, widget=forms.HiddenInput())
     access_code = forms.CharField()
     def __init__(self, *args, **kwargs):
         cqs = kwargs.pop('competitionquestionset')
         self.questionset_slug = cqs.slug_str()
         self.codegen = cqs.competition.competitor_code_generator
-        return super(forms.ModelForm, self).__init__(*args, **kwargs)
+        retval = super(QuestionSetRegistrationForm, self).__init__(*args, **kwargs)
+        self._meta.fields += ['username', 'email']
+        return retval
     def clean(self):
+        if len(self.cleaned_data.get('username', '')) < 1:
+            self.cleaned_data['username'] = '.'.join([
+                slugify(self.cleaned_data.get('first_name', u'')),
+                slugify(self.cleaned_data.get('last_name', u'')),
+                slugify(self.cleaned_data.get('access_code', u''))])[:30]
+        if len(self.cleaned_data.get('email', '')) < 1:
+            self.cleaned_data['email'] = self.cleaned_data['username'] + '@bober.acm.si'
         cleaned_data = super(QuestionSetRegistrationForm, self).clean()
         if cleaned_data is None:
             cleaned_data = self.cleaned_data
         if not self.cleaned_data.get('password', None):
             self.cleaned_data['password'] = self.cleaned_data.get('access_code', '')
-        if len(self.cleaned_data.get('email', '')) < 1:
-            self.cleaned_data['email'] = self.cleaned_data['username']
         return cleaned_data
     def clean_access_code(self):
         full_code = self.questionset_slug + self.codegen.format.separator + self.cleaned_data['access_code']
@@ -119,9 +126,9 @@ class QuestionSetRegistrationForm(forms.ModelForm):
             raise ValidationError(_('Wrong access code'), code='access_code')
         self.cleaned_data['full_code'] = full_code
         return self.cleaned_data['access_code']
-    def clean_username(self):
-        validate_email(self.cleaned_data['username'])
-        return self.cleaned_data['username']
+    #def clean_username(self):
+    #    validate_email(self.cleaned_data['username'])
+    #    return self.cleaned_data['username']
     def save(self, *args, **kwargs):
         instance = super(QuestionSetRegistrationForm, self).save(*args,**kwargs)
         password = self.cleaned_data.get('password', '')
@@ -135,9 +142,9 @@ class CompetitionRegistrationForm(QuestionSetRegistrationForm):
     def __init__(self, *args, **kwargs):
         self.competition = kwargs.pop('competition')
         self.codegen = self.competition.competitor_code_generator
-        retval = super(forms.ModelForm, self).__init__(*args, **kwargs)
-        self.fields['competition_questionset'] = forms.ModelChoiceField(queryset = self.competition.competitionquestionset_set.all(), required=True)
-
+        retval = super(QuestionSetRegistrationForm, self).__init__(*args, **kwargs)
+        self.fields['competition_questionset'] = forms.ModelChoiceField(label=_("Group"), queryset = self.competition.competitionquestionset_set.all(), required=True)
+        self._meta.fields += ['username', 'email']
         return retval
     def clean_access_code(self):
         return self.cleaned_data['access_code']
@@ -154,7 +161,7 @@ class CompetitionRegistrationForm(QuestionSetRegistrationForm):
             self.cleaned_data['full_code'] = full_code
         else:
             self.errors['competition_questionset']=[_('This field is required')]
-        return super(QuestionSetRegistrationForm, self).clean()
+        return super(CompetitionRegistrationForm, self).clean()
 
 class CompetitorCodeForm(forms.Form):
     competitor_privileges = forms.MultipleChoiceField(
@@ -239,7 +246,6 @@ class CompetitionQuestionSetUpdateForm(forms.ModelForm):
         retval = super(CompetitionQuestionSetUpdateForm,self).save(*args, **kwargs)
         if self.cleaned_data['create_guest_code'] and \
                 self.instance.guest_code is None:
-            print "Generating code!"
             generator = self.instance.competition.competitor_code_generator
             code_data = {
                 'competitor_privileges':[
