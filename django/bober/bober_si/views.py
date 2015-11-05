@@ -85,7 +85,7 @@ class TeacherCodeRegistrationPasswordReset(FormView):
         return super(TeacherCodeRegistrationPasswordReset, self).dispatch(*args, **kwargs)
     def get(self, *args, **kwargs):
         try:
-            code = self.competition.administrator_code_generator.codes.get(value=form.cleaned_data['hidden_code'])
+            code = self.competition.administrator_code_generator.codes.get(value=self.request.GET['hidden_code'])
         except:
             response = render(self.request, 'bober_si/no_hidden_code.html')
             response.status_code = 403
