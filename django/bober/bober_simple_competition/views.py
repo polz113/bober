@@ -807,7 +807,13 @@ class QuestionSetRegistration(CreateView):
     def dispatch(self, *args, **kwargs):
         cqs = CompetitionQuestionSet.objects.get(id=kwargs['competition_questionset_id'])
         self.competitionquestionset = cqs
+        self.competition = cqs.competition
         return super(QuestionSetRegistration, self).dispatch(*args, **kwargs)
+    def get_context_data(self, **kwargs):
+        context = super(QuestionSetRegistration, self).get_context_data(**kwargs)
+        context['competition'] = self.competition
+        context['competitionquestionset'] = self.competitionquestionset
+        return context
     def get(self, request, *args, **kwargs):
         if request.user.is_authenticated():
             if 'access_code' in request.session:
@@ -840,7 +846,7 @@ class QuestionSetRegistration(CreateView):
 
 class CompetitionRegistration(QuestionSetRegistration):
     form_class = CompetitionRegistrationForm
-    # template_name = "bober_simple_competition/competition_registration.html"
+    template_name = "bober_simple_competition/competition_registration.html"
     def dispatch(self, *args, **kwargs):
         self.competition = Competition.objects.get(slug=kwargs['slug'])
         self.competitionquestionset = None

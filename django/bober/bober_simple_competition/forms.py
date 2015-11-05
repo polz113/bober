@@ -107,12 +107,12 @@ class QuestionSetRegistrationForm(forms.ModelForm):
         return retval
     def clean(self):
         if len(self.cleaned_data.get('email', '')) < 1:
-            self.cleaned_data['email'] = '.'.join([
+            self.cleaned_data['username'] = '.'.join([
                 slugify(self.cleaned_data['first_name']),
                 slugify(self.cleaned_data['last_name']),
-                slugify(self.cleaned_data['access_code'])])[:29-len('@boberacm.si')] + '@bober.acm.si'
-        if len(self.cleaned_data.get('username', '')) < 1:
-            self.cleaned_data['username'] = self.cleaned_data['email']
+                slugify(self.cleaned_data['access_code'])])[:30]
+        if len(self.cleaned_data.get('email', '')) < 1:
+            self.cleaned_data['email'] = self.cleaned_data['username'] + '@bober.acm.si'
         cleaned_data = super(QuestionSetRegistrationForm, self).clean()
         if cleaned_data is None:
             cleaned_data = self.cleaned_data
