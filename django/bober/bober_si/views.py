@@ -4,6 +4,7 @@ from django.utils.decorators import method_decorator
 from django.utils.translation import ugettext as _
 from django.views.generic import TemplateView, FormView
 from django.core.urlresolvers import reverse
+from django.http import HttpResponse
 from django.core.exceptions import PermissionDenied
 from django.contrib.auth import authenticate, login
 from forms import OverviewForm, SchoolCodesCreateForm
@@ -82,6 +83,14 @@ class TeacherCodeRegistrationPasswordReset(FormView):
     def dispatch(self, *args, **kwargs):
         self.competition = Competition.objects.get(slug=kwargs['slug'])
         return super(TeacherCodeRegistrationPasswordReset, self).dispatch(*args, **kwargs)
+    def get(self, *args, **kwargs):
+        try:
+            code = self.competition.administrator_code_generator.codes.get(value=form.cleaned_data['hidden_code'])
+        except:
+            response = render(self.request, 'bober_si/no_hidden_code.html')
+            response.status_code = 403
+            return response
+        return super(TeacherCodeRegistrationPasswordReset, self).get(*args, **kwargs)
     def get_initial(self):
         initial = super( TeacherCodeRegistrationPasswordReset, self).get_initial()
         initial['hidden_code'] = self.request.GET.get('hidden_code', '')
@@ -90,14 +99,12 @@ class TeacherCodeRegistrationPasswordReset(FormView):
         retval = super( TeacherCodeRegistrationPasswordReset, self).form_valid(form)
         email = form.cleaned_data['email']
         password = form.cleaned_data['password']
-        code = self.competition.administrator_code_generator.codes.get(value=form.cleaned_data['hidden_code'])
-        code = Code.objects.get(salt = self.competition.administrator_code_generator.salt,
-            format = self.competition.administrator_code_generator.format, 
-            value = form.cleaned_data['hidden_code'])
-        #except:
-        #    code = None
-        if code is None:
-            raise PermissionDenied
+        try:
+            code = self.competition.administrator_code_generator.codes.get(value=form.cleaned_data['hidden_code'])
+        except:
+            response = render(self.request, 'bober_si/no_hidden_code.html')
+            response.status_code = 403
+            return response
         try:
             user = User.objects.get(email = email)
         except:
