@@ -1,15 +1,14 @@
 {% extends "base.html" %}
 {% load i18n %}
 {% load static %}
+{% block extrahead %}
+{% endblock %}
 {% block context_menu %}
 {% if request.user.is_authenticated %}
     <a class="navbar-brand" href="{% url 'profile_update' pk=request.user.profile.pk %}">{% trans "Edit my profile" %}</a>
 {% endif %}
 {% endblock %}
 {% block content %}
-{% get_current_language as LANGUAGE_CODE %}
-{% get_available_languages as LANGUAGES %}
-{% get_current_language_bidi as LANGUAGE_BIDI %}
 <table id="sections">
     <tr>
         <th>
@@ -57,6 +56,9 @@
         <th>{% trans "Results" %}</th>
     </tr>
 </table>
+<div class="footnote">
+<a href="{% url 'competition_detail' slug=competition.slug %}">{% trans "Advanced details" %}</a>
+</div>
 {% comment %}
 {% for school, cqsa in attempts.iteritems %}
     {% for cqs, attempts in cqsa %}

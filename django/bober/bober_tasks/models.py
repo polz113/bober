@@ -70,7 +70,7 @@ class TaskTranslation(models.Model):
     body = models.TextField()
     solution = models.TextField()
     it_is_informatics = models.TextField(blank=True)
-    language_locale = models.CharField(max_length=8, blank=True,
+    language_locale = models.CharField(max_length=8, null=True, blank=True,
                                         choices=settings.LANGUAGES)
     task = models.ForeignKey('Task')
     author = models.ForeignKey(User, null = True)

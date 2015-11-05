@@ -343,9 +343,7 @@ def competitionquestionset_access_code(request, competition_questionset_id, next
         cqs_slug = cqs.slug_str()
         separator = cqs.competition.competitor_code_generator.format.separator
     except Exception, e:
-        print e
         cqs_slug = None
-    print "haha?"
     if cqs_slug is not None and form.is_valid():
         defer_update = form.cleaned_data.get('defer_update_used_codes', False)
         defer_effects = form.cleaned_data.get('defer_effects', False)
@@ -817,6 +815,7 @@ class QuestionSetRegistration(CreateView):
                 try:
                     assert _can_attempt(self.request, self.competitionquestionset)
                 except Exception, e:
+                #    print "No attempt for you!"
                     request.session.pop('access_code')
                 return redirect(self.get_success_url())
             return redirect('competitionquestionset_access_code', 
@@ -844,13 +843,16 @@ class CompetitionRegistration(QuestionSetRegistration):
     # template_name = "bober_simple_competition/competition_registration.html"
     def dispatch(self, *args, **kwargs):
         self.competition = Competition.objects.get(slug=kwargs['slug'])
+        self.competitionquestionset = None
         return super(QuestionSetRegistration, self).dispatch(*args, **kwargs)
     def get_form(self, form_class=None):
         kwargs = self.get_form_kwargs()
         kwargs['competition'] = self.competition
         f = form_class(**kwargs) 
         return f
-
+    def get(self, request, *args, **kwargs):
+        return super(QuestionSetRegistration, self).get(request, *args, **kwargs)
+ 
 #   5.3 get certificates, other files
 @login_required
 def user_files(request, user_id):

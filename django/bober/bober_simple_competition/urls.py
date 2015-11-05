@@ -13,7 +13,7 @@ urlpatterns = patterns('',
     url(r'^access_code/*(?P<next>.*)$', views.access_code, name="access_code"),
     # 2. pick competition
     url(r'^competitions/$', views.CompetitionList.as_view(), name="competition_list"),
-    url(r'^competitions/(?P<slug>[\w\-_]+)/$', 
+    url(r'^competitions/(?P<slug>[\w\-_]+)/detail$', 
         views.CompetitionDetail.as_view(), name="competition_detail"),
     url(r'^competitions/(?P<slug>[\w\-_]+)/update$', 
         views.CompetitionUpdate.as_view(), name="competition_update"),
@@ -51,6 +51,8 @@ urlpatterns = patterns('',
         views.use_questionsets, name="use_questionset"),
     #   2.2 competitor
     #     2.2.0 register as competitor using a code
+    url(r'^competitions/(?P<slug>[\w\-_]+)/$', 
+        views.CompetitionRegistration.as_view(), name="competition_registration"),
     url(r'^competitions/(?P<slug>[\w\-_]+)/registration$', 
         views.CompetitionRegistration.as_view(), name="competition_registration"),
     url(r'^compete/(?P<competition_questionset_id>[\d]+)/access_code/(?P<next>.*)$', 

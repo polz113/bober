@@ -10,6 +10,8 @@ class CompetitionQuestionSetInline(admin.TabularInline):
 class CompetitionAdmin(admin.ModelAdmin):
     inlines = [ CompetitionQuestionSetInline ]
 
+class QuestionSetAdmin(admin.ModelAdmin):
+    filter_horizontal = ['questions']
 # Define an inline admin descriptor for Employee model
 # which acts a bit like a singleton
 class ProfileInline(admin.StackedInline):
@@ -21,13 +23,14 @@ class ProfileInline(admin.StackedInline):
 class UserAdmin(UserAdmin):
     inlines = (ProfileInline, )
 
+
 # Re-register UserAdmin
 admin.site.unregister(User)
 admin.site.register(User, UserAdmin)
 
 
 admin.site.register(Competition, CompetitionAdmin)
-admin.site.register(QuestionSet)
+admin.site.register(QuestionSet, QuestionSetAdmin)
 admin.site.register(ResourceCache)
 admin.site.register(Resource)
 admin.site.register(Question)

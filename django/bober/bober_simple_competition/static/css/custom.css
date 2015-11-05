@@ -2,11 +2,15 @@
     font-size: 150%;
 }
 
+.footnote {
+    font-size: 40%;
+}
+
 div.competitions-list ul {
         list-style-type: none;
 }
     
-.promoted + :not(.promoted) {
+li.promoted {
         margin-bottom: 30px;
 }
 
