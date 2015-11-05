@@ -176,7 +176,7 @@ class Competition(models.Model):
         return c 
 class CompetitionQuestionSet(models.Model):
     def __unicode__(self):
-        return u"{}: {} ({})".format(self.id, self.name, self.questionset.slug)
+        return u"{}".format(self.name)
     def slug_str(self):
         return unicode(self.id) + '.' + self.questionset.slug
     @classmethod

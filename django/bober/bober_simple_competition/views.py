@@ -852,6 +852,9 @@ class CompetitionRegistration(QuestionSetRegistration):
         return f
     def get(self, request, *args, **kwargs):
         return super(QuestionSetRegistration, self).get(request, *args, **kwargs)
+    def form_valid(self, form):
+        self.competitionquestionset = form.cleaned_data['competition_questionset']
+        return super(CompetitionRegistration, self).form_valid(form)
  
 #   5.3 get certificates, other files
 @login_required
