@@ -821,7 +821,7 @@ class QuestionSetRegistration(CreateView):
                 try:
                     assert _can_attempt(self.request, self.competitionquestionset)
                 except Exception, e:
-                #    print "No attempt for you!"
+                    # print "No attempt for you!"
                     request.session.pop('access_code')
                 return redirect(self.get_success_url())
             return redirect('competitionquestionset_access_code', 
