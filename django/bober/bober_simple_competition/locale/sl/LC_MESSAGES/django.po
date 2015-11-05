@@ -578,6 +578,9 @@ msgstr "Ustvari format kode za tekmovalce"
 msgid "Try it!"
 msgstr "Tekmuj kot gost!"
 
+msgid "I am a teacher"
+msgstr "Sem učitelj"
+
 msgid ""
 "You have attempted to leave this page. Your last question answer will be "
 "saved automatically. Are you sure you want to exit this page?"
@@ -587,6 +590,9 @@ msgstr ""
 
 msgid "You are out of time for solving the competition."
 msgstr "Zmanjkalo vam je časa za tekmovanje."
+
+msgid "Thank you for participating in the competition"
+msgstr "Hvala, ker ste sodelovali na tekmovanju"
 
 msgid "Your answer was successfully saved!"
 msgstr "Odgovor je shranjen!"
