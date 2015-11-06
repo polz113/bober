@@ -10,11 +10,15 @@ class NoneRuntime:
     def __init__(self):
         self.graders = dict()
     def add_grader(self, s):
+        print [i.strip() for i in s.split(',')]
         accepted_set = set([i.strip() for i in s.split(',')])
+        #print accepted_set
         def grader(answer, token, question):
+            #print "accepted:", accepted_set, (answer,), answer in accepted_set
             if answer == '' or answer == None:
                 return question.none_score
             if answer in accepted_set:
+            #    print "correct!"
                 return question.max_score
             return question.min_score
         self.graders[s] = grader

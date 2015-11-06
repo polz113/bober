@@ -22,7 +22,11 @@ class CompetitionAdmin(admin.ModelAdmin):
         request._obj_ = obj
         return super(CompetitionAdmin, self).get_form(request, obj, **kwargs)
 
+class SchoolAdmin(admin.ModelAdmin):
+    model = School
+    search_fields = ['name']
+
 # Register your models here.
-admin.site.register(School)
+admin.site.register(School, SchoolAdmin)
 admin.site.register(SchoolTeacherCode)
 admin.site.register(SchoolCompetition, CompetitionAdmin)

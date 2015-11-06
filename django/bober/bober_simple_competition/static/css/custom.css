@@ -1,3 +1,25 @@
+#competition_registration input,
+#competition_registration select {
+   margin: 5px 0 5px 10px;
+}
+
+#competition_registration table + input {
+   margin-left: 170px;
+   margin-top: 20px;
+   min-width: 150px;
+   background: green;
+   font-weight: bold;
+   font-size: 18px;
+   color: white;
+   padding-top: 0;
+   padding-bottom: 0;
+}
+
+#competition_registration th {
+    text-align: right;
+    min-width: 140px;
+}
+
 .promoted a {
     font-size: 150%;
 }

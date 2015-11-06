@@ -190,8 +190,6 @@ msgstr "Napačen odgovor"
 
 #: bober_simple_competition/templates/bober_simple_competition/attempt_results.html:16
 #: bober_simple_competition/templates/bober_simple_competition/competition_attempt_list.html:21
-#, fuzzy
-#| msgid "Correct Answer"
 msgid "Correct"
 msgstr "Pravilen odgovor"
 
@@ -437,10 +435,8 @@ msgstr "Moji podatki"
 #: bober_simple_competition/templates/bober_simple_competition/question_list.html:6
 #: bober_simple_competition/templates/bober_simple_competition/question_table.html:4
 #: bober_simple_competition/templates/bober_simple_competition/question_table.html:6
-#, fuzzy
-#| msgid "Question"
 msgid "Questions"
-msgstr "Vprašanje"
+msgstr "Vprašanja"
 
 #: bober_simple_competition/templates/bober_simple_competition/profile_detail.html:19
 msgid "Profile Details"
@@ -463,26 +459,20 @@ msgid "Former profiles"
 msgstr "Bivši računi"
 
 #: bober_simple_competition/templates/bober_simple_competition/profile_detail.html:54
-#, fuzzy
-#| msgid "attempts"
 msgid "Attempts"
-msgstr "poizkusi"
+msgstr "Poizkusi"
 
 #: bober_simple_competition/templates/bober_simple_competition/profile_detail.html:68
 #: bober_simple_competition/templates/bober_simple_competition/profile_detail.html:106
 #: bober_simple_competition/templates/bober_simple_competition/profile_form.html:30
 #: bober_simple_competition/templates/bober_simple_competition/profile_form.html:68
-#, fuzzy
-#| msgid "Show More"
 msgid "Show codes"
 msgstr "Prikaži kode"
 
 #: bober_simple_competition/templates/bober_simple_competition/profile_detail.html:71
 #: bober_simple_competition/templates/bober_simple_competition/profile_form.html:33
-#, fuzzy
-#| msgid "Admin codes"
 msgid "Used codes"
-msgstr "Administratorske kode"
+msgstr "Uporabljene kode"
 
 #: bober_simple_competition/templates/bober_simple_competition/profile_detail.html:80
 #: bober_simple_competition/templates/bober_simple_competition/profile_form.html:42
@@ -491,15 +481,11 @@ msgstr "Prejete kode"
 
 #: bober_simple_competition/templates/bober_simple_competition/profile_detail.html:89
 #: bober_simple_competition/templates/bober_simple_competition/profile_form.html:51
-#, fuzzy
-#| msgid "Create code"
 msgid "Created codes"
 msgstr "Ustvarjene kode"
 
 #: bober_simple_competition/templates/bober_simple_competition/profile_detail.html:103
 #: bober_simple_competition/templates/bober_simple_competition/profile_form.html:65
-#, fuzzy
-#| msgid "Admin codes"
 msgid "Hide codes"
 msgstr "Skrij kode"
 
@@ -528,14 +514,10 @@ msgstr "Ustvari nabor vprašanj"
 #: bober_simple_competition/templates/bober_simple_competition/questionset_detail.html:8
 #: bober_simple_competition/templates/bober_simple_competition/questionset_form.html:6
 #: bober_simple_competition/templates/bober_simple_competition/questionset_form.html:8
-#, fuzzy
-#| msgid "Question"
 msgid "Question set"
 msgstr "Nabor vprašanj"
 
 #: bober_simple_competition/templates/bober_simple_competition/questionset_detail.html:18
-#, fuzzy
-#| msgid "Create question set"
 msgid "Edit questionset"
 msgstr "Uredi nabor vprašanj"
 

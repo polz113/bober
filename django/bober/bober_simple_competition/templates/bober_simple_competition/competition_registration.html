@@ -7,7 +7,6 @@
 
 {% block content %}
 <br>
-<a href="{% url 'competition_overview' slug=competition.slug %}" class="btn">{% trans "I am a teacher" %}</a>
 <br>
 <form action="" method="post" id="competition_registration" class="form_compete_table">
 {% csrf_token %}
@@ -16,5 +15,7 @@
 </table>
 <input type="submit" value='{% trans "Compete" %}' class="btn"/>
 </form>
-{% load staticfiles %}
+<p style="margin-top: 24px; margin-left: 180px;">
+<a style="font-size: 18px;" href="{% url 'competition_overview' slug=competition.slug %}" class="btn">Prijavi se kot učitelj</a>
+</p>{% load staticfiles %}
 {% endblock %}

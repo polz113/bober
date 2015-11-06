@@ -97,7 +97,7 @@ class QuestionSetRegistrationForm(forms.ModelForm):
         model = User
         fields = ['first_name', 'last_name']
     username = forms.CharField(required=False, widget=forms.HiddenInput())
-    access_code = forms.CharField()
+    access_code = forms.CharField(label=_('Access code'))
     def __init__(self, *args, **kwargs):
         cqs = kwargs.pop('competitionquestionset')
         self.questionset_slug = cqs.slug_str()

@@ -344,6 +344,7 @@ def _question_from_dirlike(cls, identifier = '-1',
     except Exception, e:
         manifest = {'id': identifier, 
             'language': language}
+        print " no manifest? ", e
         regenerate_manifest = True
     try:
         my_close(f)
@@ -451,7 +452,7 @@ def _question_from_dirlike(cls, identifier = '-1',
         question.title = manifest['title']
         question.version = manifest['version']
         question.authors = manifest['authors']
-        question.accepted_answers = ",".join(manifest['acceptedAnswers'])
+        question.verification_function = ",".join(manifest['acceptedAnswers'])
         question.save()
     resource_list = manifest['task']
     modules_list = []
@@ -619,7 +620,7 @@ class Attempt(models.Model):
         else:
             answers = self.answer_set.select_related('question').filter(score=None)
         for a in answers:
-            print "regrading", a
+        #    print "regrading", a
             q = a.question
             grader = grader_runtime_manager.get_grader(q.verification_function, q.verification_function_type)
             a.score = grader(a.value, self.random_seed, q)
