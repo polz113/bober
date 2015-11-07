@@ -11,7 +11,7 @@
 </div>
 <div class="competitions-list">
 <ul>
-{% for i in object_list %}<li {% if i.promoted %}class="promoted"{% endif %}><a href={% url "competition_registration" slug=i.slug %}>{{i.title}}</a></li>
+{% for i in object_list %}<li {% if i.promoted %}class="promoted"{% endif %}><a href={% url "competition_compete" slug=i.slug %}>{{i.title}}</a></li>
 {% endfor %}
 </ul>
 </div>

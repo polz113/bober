@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect, resolve_url
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.utils.translation import ugettext as _
@@ -19,19 +19,26 @@ from braces.views import LoginRequiredMixin
 class TeacherOverview(SmartCompetitionAdminCodeRequiredMixin, 
         TemplateView):
     template_name="bober_si/teacher_overview.html"
+    def dispatch(self, *args, **kwargs):
+        competition = SchoolCompetition.objects.get(slug=kwargs['slug'])
+        access_code = self.request.session['access_code']
+        if not competition.administrator_code_generator.code_matches(access_code,
+                {'admin_privileges': ['create_competitor_codes']}):
+            return redirect('competition_detail', slug = competition.slug)
+        self.competition = competition
+        return super(TeacherOverview, self).dispatch(*args, **kwargs)
     def get_context_data(self, **kwargs):
         context = super(TeacherOverview, self).get_context_data(**kwargs)
         profile = self.request.user.profile
         context['profile'] = profile 
-        competition = SchoolCompetition.objects.get(slug=kwargs['slug'])
-        context['competition'] = competition
+        context['competition'] = self.competition
         school = None
         schools = dict()
         attempts = dict()
         code_pairs = list()
         for c in profile.schoolteachercode_set.filter(
-                    code__salt = competition.competitor_code_generator.salt,
-                    code__format = competition.competitor_code_generator.format, 
+                    code__salt = self.competition.competitor_code_generator.salt,
+                    code__format = self.competition.competitor_code_generator.format, 
                 ).order_by(
                     'school', 'code__value'):
             if c.school != school:
@@ -39,7 +46,7 @@ class TeacherOverview(SmartCompetitionAdminCodeRequiredMixin,
                 attempts[c.school] = list()
             school = c.school
             code = c.code.value
-            sep = competition.competitor_code_generator.format.separator
+            sep = self.competition.competitor_code_generator.format.separator
             split_code = code.split(sep)
             cqs_slug = split_code[0]
             cqs = CompetitionQuestionSet.get_by_slug(cqs_slug)

@@ -105,6 +105,7 @@
     var progressbar, progressLabel;
     var counterStarted = false;
     var counterTimer = 0;
+    var server_finish_time;
     var counterRedBeforeEndTimeSeconds = 5 * 60; // 5 minut
     var enabledConfirmExit = false;
     var countAllQuestions = 0;
@@ -203,6 +204,7 @@
                     window.location.href='../'
                 },
                 "success": function(user_data) {
+                    server_finish_time = user_data['finish'];
                     var mapped_answers = {};
                     var reverse_question_map = {};
                     var ordered_mapped_questions = [];
@@ -252,8 +254,10 @@
                     attempt_id = user_data.attempt_id;
                     makeNextQuestionLink();
                     updateAnsweredQuestionCountDisplay();
-                    getTimeToEndOfCompetition();
-                    setInterval("getTimeToEndOfCompetition()", 5 * 60 * 1000);
+                    /* getTimeToEndOfCompetition();
+                    setInterval("getTimeToEndOfCompetition()", 5 * 60 * 1000); */
+                    lightTimeToEndOfCompetition();
+                    setInterval("lightTimeToEndOfCompetition()", 5 * 60 * 1000);
                     jQuery('.hide-controls').removeClass('hide-controls');
                 },
             });
@@ -279,7 +283,68 @@
             jQuery("#question_button_" + question_id).addClass("question_answered");
         }
     }
-
+    function lightTimeToEndOfCompetition() {
+        jQuery.ajax({
+            "url": "../server_time.json",
+            "type": "GET",
+            "dataType": "JSON",
+            "cache": false,
+            "success": function(allData) {
+                var server_time = allData['timestamp']
+                var seconds_to_end = server_finish_time - server_time;
+                if (seconds_to_end < -5) {
+                    onCompetitionNoTimeLeft();
+                }
+                if (counterStarted) {
+                    jQuery(".countdown_counter").jCounter('stop');
+                    clearTimeout(counterTimer);
+                }
+                var secondsToTimeout = seconds_to_end - counterRedBeforeEndTimeSeconds;
+                changeColorOfTime('black');
+                if (secondsToTimeout > 0) {
+                    counterTimer = setTimeout("changeColorOfTime('red')", (secondsToTimeout) * 1000);
+                } else {
+                    changeColorOfTime('red');
+                }
+                // console.log(seconds_to_end);
+                if (seconds_to_end > 60) {
+                    jQuery(".seconds").addClass("minutes").removeClass("seconds");
+                    var custom_duration = seconds_to_end.toString() + ":60";
+                    // console.log(custom_duration);
+                    jQuery(".countdown_counter").jCounter({
+                        "animation": "slide",
+                        "format": "mm",
+                        "twoDigits": 'off',
+                        // "customDuration": seconds_to_end,
+                        "serverDateSource": '',
+                        "customRange": custom_duration,
+                        "callback": function() {
+                            lightTimeToEndOfCompetition();
+                        }
+                    });
+                } else {
+                    if (counterStarted) {
+                        jQuery(".countdown_counter").jCounter('stop');
+                        clearTimeout(counterTimer);
+                    }
+                    jQuery(".minutes").addClass("seconds").removeClass("minutes");
+                    jQuery(".time_unit").html("s");
+                    jQuery(".countdown_counter").jCounter({
+                        "animation": "slide",
+                        "format": "ss",
+                        "twoDigits": 'off',
+                        "customDuration": seconds_to_end,
+                        "serverDateSource": '',
+                        "callback": function() {
+                            onCompetitionNoTimeLeft();
+                        }
+                    });
+                }
+                counterStarted = true;
+                enabledConfirmExit = true;
+            }
+        })
+    }
     function getTimeToEndOfCompetition() {
         jQuery.ajax({
             "url": "../attempts/"+attempt_id+"/time_remaining.json",

@@ -16,6 +16,6 @@
 <input type="submit" value='{% trans "Compete" %}' class="btn"/>
 </form>
 <p style="margin-top: 24px; margin-left: 180px;">
-<a style="font-size: 18px;" href="{% url 'competition_overview' slug=competition.slug %}" class="btn">Prijavi se kot učitelj</a>
+<a style="font-size: 18px;" href="{% url 'competition_overview' slug=competition.slug %}" class="btn">{% trans "Login as a teacher" %}</a>
 </p>{% load staticfiles %}
 {% endblock %}

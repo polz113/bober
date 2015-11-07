@@ -163,6 +163,86 @@ class CompetitionRegistrationForm(QuestionSetRegistrationForm):
             self.errors['competition_questionset']=[_('This field is required')]
         return super(CompetitionRegistrationForm, self).clean()
 
+class QuestionSetCompetitorForm(forms.ModelForm):
+    class Meta:
+        model = Competitor
+        fields = ['first_name', 'last_name']
+    # profile = forms.ModelChoiceField(required=False, queryset=Profile.objects.all(), widget=forms.HiddenInput())
+    short_access_code = forms.CharField(label=_('Access code'))
+    def __init__(self, *args, **kwargs):
+        cqs = kwargs.pop('competitionquestionset')
+        self.profile = kwargs.pop('profile', False)
+        self.questionset_slug = cqs.slug_str()
+        self.codegen = cqs.competition.competitor_code_generator
+        retval = super(QuestionSetCompetitorForm, self).__init__(*args, **kwargs)
+        self._meta.fields += ['profile']
+        return retval
+    def clean(self):
+        cleaned_data = super(QuestionSetCompetitorForm, self).clean()
+        if cleaned_data is None:
+            cleaned_data = self.cleaned_data
+        cleaned_data['profile'] = self.profile
+        self.cleaned_data = cleaned_data
+        return cleaned_data
+    def clean_short_access_code(self):
+        full_code = self.questionset_slug + self.codegen.format.separator + self.cleaned_data['short_access_code']
+        if not self.codegen.code_matches(full_code, 
+            {'competitor_privileges':['attempt']}):
+            raise ValidationError(_('Wrong access code'), code='short_access_code')
+        if self.codegen.code_matches(full_code,
+            {'competitor_privileges':['resume_attempt']}):
+            if not self.profile:
+                self.profile = None
+        self.cleaned_data['full_code'] = full_code
+        return self.cleaned_data['short_access_code']
+    #def clean_username(self):
+    #    validate_email(self.cleaned_data['username'])
+    #    return self.cleaned_data['username']
+    def save(self, *args, **kwargs):
+        try:
+            assert self.profile is not False
+            cleaned = self.cleaned_data
+            self.instance = Competitor.objects.filter(profile = cleaned['profile'],
+                first_name = cleaned['first_name'],
+                last_name = cleaned['last_name'])[0]
+        except:
+            pass
+        print self.instance.id, self.instance
+        instance = super(QuestionSetCompetitorForm, self).save(*args,**kwargs)
+        print instance.id, self.instance
+        return instance
+
+class CompetitionCompetitorForm(QuestionSetCompetitorForm):
+    def __init__(self, *args, **kwargs):
+        self.competition = kwargs.pop('competition')
+        self.profile = kwargs.pop('profile', False)
+        self.codegen = self.competition.competitor_code_generator
+        retval = super(QuestionSetCompetitorForm, self).__init__(*args, **kwargs)
+        self.fields['competition_questionset'] = forms.ModelChoiceField(label=_("Group"), queryset = self.competition.competitionquestionset_set.all(), required=True)
+        self._meta.fields += ['profile']
+        return retval
+    def clean_short_access_code(self):
+        return self.cleaned_data['short_access_code']
+    def clean_competition_questionset(self):
+        return self.cleaned_data['competition_questionset']
+    def clean(self):
+        cqs = self.cleaned_data.get('competition_questionset', None)
+        if cqs is not None:
+            questionset_slug = self.cleaned_data['competition_questionset'].slug_str()
+            full_code = questionset_slug + self.codegen.format.separator + self.cleaned_data['short_access_code']
+            if not self.codegen.code_matches(full_code, 
+                    {'competitor_privileges':['attempt']}):
+                self.errors['short_access_code']=[_('Wrong access code')]
+            if self.codegen.code_matches(full_code,
+                {'competitor_privileges':['resume_attempt']}):
+                if not self.profile:
+                    self.profile = None
+            self.cleaned_data['full_code'] = full_code
+        else:
+            self.errors['competition_questionset']=[_('This field is required')]
+        return super(CompetitionCompetitorForm, self).clean()
+
+
 class CompetitorCodeForm(forms.Form):
     competitor_privileges = forms.MultipleChoiceField(
         choices=COMPETITOR_PRIVILEGES)

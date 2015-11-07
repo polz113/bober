@@ -55,7 +55,7 @@ COMPETITOR_PRIVILEGES = (
     ('attempt', _('Participate in the competition')),
     ('attempt_before_start', _('Attempt competition before start')),
     ('results_before_end', _('See results before official end of competition')),
-    ('new_attempt', _('Start a new attempt every time this code is used')),
+    ('resume_attempt', _('Resume existing attempts')),
 )
 
 CODE_EFFECTS = (
@@ -581,10 +581,17 @@ class AttemptInvalidation(models.Model):
     by = ForeignKey('Profile')
     reason = TextField(blank=True)
 
+class Competitor(models.Model):
+    def __unicode__(self):
+        return u"{} {} ({})".format(self.first_name, self.last_name,
+            self.profile or '?')
+    profile = ForeignKey('Profile', null=True, blank=True)
+    first_name = models.CharField(max_length=128)
+    last_name = models.CharField(max_length=128)
+ 
 class Attempt(models.Model):
     def __unicode__(self):
-        return "XXX"
-        return "{}: {} - {}: {} ({} - {})".format(self.user,
+        return u"{}: {} - {}: {} ({} - {})".format(self.competitor,
             self.competition.slug,
             self.questionset.name,
             self.access_code,
@@ -592,6 +599,7 @@ class Attempt(models.Model):
     access_code = CodeField()
     competitionquestionset = ForeignKey('CompetitionQuestionSet')
     user = ForeignKey('Profile', null=True, blank=True)
+    competitor = ForeignKey('Competitor', null=True, blank=True)
     invalidated_by = ForeignKey('AttemptInvalidation', null=True, blank=True)
     random_seed = IntegerField()
     start = DateTimeField(auto_now_add = True)

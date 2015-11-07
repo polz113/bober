@@ -563,6 +563,9 @@ msgstr "Tekmuj kot gost!"
 msgid "I am a teacher"
 msgstr "Sem učitelj"
 
+msgid "Login as a teacher"
+msgstr "Prijavi se kot učitelj"
+
 msgid ""
 "You have attempted to leave this page. Your last question answer will be "
 "saved automatically. Are you sure you want to exit this page?"

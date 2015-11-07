@@ -54,14 +54,14 @@ urlpatterns = patterns('',
     #   2.2 competitor
     #     2.2.0 register as competitor using a code
     url(r'^competitions/(?P<slug>[\w\-_]+)/$', 
-        views.CompetitionRegistration.as_view(), name="competition_registration"),
+        views.CompetitionCompete.as_view(), name="competition_compete"),
     #url(r'^competitions/(?P<slug>[\w\-_]+)/registration$', 
     #    views.CompetitionRegistration.as_view(), name="competition_registration"),
     url(r'^compete/(?P<competition_questionset_id>[\d]+)/access_code/(?P<next>.*)$', 
         views.competitionquestionset_access_code, 
         name="competitionquestionset_access_code"),
     url(r'^compete/(?P<competition_questionset_id>[\d]+)/$', 
-        views.QuestionSetRegistration.as_view(), name="questionset_registration"),
+        views.QuestionSetCompete.as_view(), name="questionset_compete"),
     #     2.2.1 get question page
     url(r'^compete/(?P<competition_questionset_id>[\d]+)/resources/competition.html$', 
         views.competition_index, name="competition_index"),
@@ -77,6 +77,8 @@ urlpatterns = patterns('',
     #     2.2.4 get remaining time
     url(r'^compete/(?P<competition_questionset_id>\d+)/attempts/(?P<attempt_id>\d+)/time_remaining.json$', 
         views.time_remaining, name="time_remaining"),
+    url(r'^compete/(?P<competition_questionset_id>\d+)/server_time.json$', 
+        views.server_time, name="server_time"),
     #     2.2.5 submit answer
     url(r'^compete/(?P<competition_questionset_id>\d+)/attempts/(?P<attempt_id>\d+)/submit.json$', 
         views.submit_answer, name="submit_answer"),

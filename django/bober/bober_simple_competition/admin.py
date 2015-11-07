@@ -18,17 +18,17 @@ class ProfileInline(admin.StackedInline):
     model = Profile
     fk_name = 'user'
     can_delete = False
+    filter_horizontal = ['created_codes', 'received_codes', 'used_codes', 'managed_profiles', 'questions', 'question_sets', 'created_question_sets']
 
 # Define a new User admin
 class UserAdmin(UserAdmin):
     inlines = (ProfileInline, )
 
-
 # Re-register UserAdmin
 admin.site.unregister(User)
 admin.site.register(User, UserAdmin)
 
-
+admin.site.register(Competitor)
 admin.site.register(Competition, CompetitionAdmin)
 admin.site.register(QuestionSet, QuestionSetAdmin)
 admin.site.register(ResourceCache)
