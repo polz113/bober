@@ -598,7 +598,7 @@ class Attempt(models.Model):
             self.start, self.finish)
     access_code = CodeField()
     competitionquestionset = ForeignKey('CompetitionQuestionSet')
-    user = ForeignKey('Profile', null=True, blank=True)
+    # user = ForeignKey('Profile', null=True, blank=True)
     competitor = ForeignKey('Competitor', null=True, blank=True)
     invalidated_by = ForeignKey('AttemptInvalidation', null=True, blank=True)
     random_seed = IntegerField()
