@@ -34,12 +34,12 @@ class BasicProfileForm(forms.ModelForm):
         """exclude = ('user', 'created_codes', 'received_codes',
             'vcard', 'question_sets', 'managed_profiles', 'used_codes',
             'update_used_codes_timestamp', 'update_managers_timestamp')"""
-        fields = ('merged_with',);
+        # fields = ('merged_with',);
         widgets = {
-            # the autocomplete: off is supposed to preven firefox from filling in the form
+            # the autocomplete: off is supposed to prevent firefox from filling in the form
             # with the current username
-            'merged_with': autocomplete_light.ChoiceWidget('ManagedUsersAutocomplete', 
-                attrs={'class':'modern-style', 'autocomplete': 'off'}),
+        #    'merged_with': autocomplete_light.ChoiceWidget('ManagedUsersAutocomplete', 
+        #        attrs={'class':'modern-style', 'autocomplete': 'off'}),
         #    'merged_with': django_widgets.Select()
         }
     password = forms.CharField(required=False, 
@@ -181,7 +181,7 @@ class QuestionSetCompetitorForm(forms.ModelForm):
         cleaned_data = super(QuestionSetCompetitorForm, self).clean()
         if cleaned_data is None:
             cleaned_data = self.cleaned_data
-        cleaned_data['profile'] = self.profile
+        cleaned_data['profile'] = self.profile or None
         self.cleaned_data = cleaned_data
         return cleaned_data
     def clean_short_access_code(self):
@@ -207,9 +207,9 @@ class QuestionSetCompetitorForm(forms.ModelForm):
                 last_name = cleaned['last_name'])[0]
         except:
             pass
-        print self.instance.id, self.instance
+        #print self.instance.id, self.instance
         instance = super(QuestionSetCompetitorForm, self).save(*args,**kwargs)
-        print instance.id, self.instance
+        #print instance.id, self.instance
         return instance
 
 class CompetitionCompetitorForm(QuestionSetCompetitorForm):

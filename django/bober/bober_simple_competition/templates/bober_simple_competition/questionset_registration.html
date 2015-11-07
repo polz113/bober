@@ -6,9 +6,6 @@
 {% block headline %}{% trans "Registration" %}{% endblock %}
 
 {% block content %}
-<br>
-<a href="{% url 'django.contrib.auth.views.login' %}" class="btn">{% trans "Login" %}</a>
-<br>
 <form action="" method="post" id="competition_registration" class="form_compete_table">
 {% csrf_token %}
 <table>

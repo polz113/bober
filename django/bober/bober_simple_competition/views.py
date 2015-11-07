@@ -66,6 +66,7 @@ def smart_competition_admin_code_required(function = None):
                     creator_set__id = request.user.profile.id).values_list('value', flat=True)
             access_code = codes[0]
         except Exception, e:
+            pass
             print e
         if access_code is not None:
             _use_access_code(request, access_code)
@@ -106,8 +107,9 @@ def _use_access_code(request, access_code,
     # print access_code, defer_update_used_codes, defer_code_effects
     try:
         if not defer_update_used_codes:
+            profile = request.user.profile
             code = Code.objects.get(value = access_code)
-            request.user.profile.used_codes.add(code)
+            profile.used_codes.add(code)
     except Exception, e:
         print e
         pass
