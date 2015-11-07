@@ -524,7 +524,6 @@ msgstr "Zdravo,"
 msgid "Login with"
 msgstr "Prijavi se preko"
 
-
 msgid "Edit my profile"
 msgstr "Popravi moje podatke"
 
@@ -542,6 +541,9 @@ msgstr "Tekmuj kot gost"
 
 msgid "Create new account"
 msgstr "Ustvari nov račun"
+
+msgid "Advanced details"
+msgstr "Napredne možnosti"
 
 msgid "In Cooperation With"
 msgstr "V sodelovanju"

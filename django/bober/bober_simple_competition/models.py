@@ -13,7 +13,7 @@ from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 from django.core.urlresolvers import reverse
 from django.utils.text import slugify
-from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext_lazy as _
 from django.utils import timezone
 from django.core.exceptions import ValidationError
 from . import graders
@@ -586,8 +586,8 @@ class Competitor(models.Model):
         return u"{} {} ({})".format(self.first_name, self.last_name,
             self.profile or '?')
     profile = ForeignKey('Profile', null=True, blank=True)
-    first_name = models.CharField(max_length=128)
-    last_name = models.CharField(max_length=128)
+    first_name = models.CharField(max_length=128, verbose_name=_("First Name"))
+    last_name = models.CharField(max_length=128, verbose_name=_("Last Name"))
  
 class Attempt(models.Model):
     def __unicode__(self):
