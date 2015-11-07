@@ -548,6 +548,9 @@ msgstr "Zdravo,"
 msgid "Login with"
 msgstr "Prijavi se preko"
 
+msgid "Advanced details"
+msgstr "Napredne možnosti"
+
 msgid "In Cooperation With"
 msgstr "V sodelovanju"
 
