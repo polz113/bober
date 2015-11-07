@@ -12,7 +12,7 @@ class JuniorYearForm(ModelForm):
     class Meta:
         model = JuniorYear
         widgets = {
-            'raw_data': Textarea(attrs={'rows': 3, 'cols': 30})
+            'raw_data': Textarea(attrs={'rows': 20, 'cols': 20})
         }
         labels = {
             'raw_data': ''

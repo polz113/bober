@@ -1,3 +1,4 @@
 .junior_result {
-    display: inline;
+    display: inline-block;
+    font-size: 75%;
 }
