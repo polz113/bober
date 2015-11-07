@@ -573,8 +573,8 @@ def safe_media_redirect(resource_path):
 # Helper function - check whether a competitor is accessing their own attempt
 # and whether they have the correct access code
 def _check_attempt_and_code(request, attempt):
-    if attempt.user is not None:
-        if request.user.profile != attempt.user:
+    if attempt.competitor is not None:
+        if request.session['competitor_id'] != attempt.competitor_id:
             raise Exception("wrong user")
     if attempt.access_code != request.session['access_code']:
         raise Exception("wrong access code")
