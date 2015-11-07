@@ -1,43 +1,52 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-from django.shortcuts import render
-from django.shortcuts import render_to_response, redirect
+from django.shortcuts import render, redirect
+from django.core.urlresolvers import reverse, reverse_lazy
 from django.contrib.auth.decorators import login_required
+from extra_views import CreateWithInlinesView, UpdateWithInlinesView, InlineFormSet
+from braces.views import LoginRequiredMixin
 from django.http import HttpResponse
-from bober_paper_submissions.forms import JuniorResultForm
-import bober_si.models
+from bober_paper_submissions.forms import JuniorYearForm, JuniorMentorshipForm, JuniorYearInline
+from bober_si.models import School, SchoolTeacherCode
+from bober_paper_submissions.models import JuniorYear, JuniorMentorship, Competition
 import bober_paper_submissions.models
 
 # Create your views here.
 
 @login_required
-def school_mentor(request):
-    
-    if len(seznam) == 1:
-        return redirect('junior_results', competition_category_school_mentor_id = seznam[0].id)
+def mentorship_list(request, slug):
+    profile = request.user.profile
+    competition = Competition.objects.get(slug=slug)
+    #mentorship_list = JuniorMentorship.objects.filter(
+    #    competition=competition, teacher = profile)
+    mentorship_list = list()
+    for school_id in SchoolTeacherCode.objects.filter(
+            teacher = profile,
+            code__codegenerator = competition.competitor_code_generator,
+        ).values_list('school_id', flat=True).distinct():
+        mentorship, created = JuniorMentorship.objects.get_or_create(
+            competition = competition,
+            teacher = profile,
+            school_id = school_id)
+        mentorship.save()
+        mentorship_list.append(mentorship)
+    if len(mentorship_list) == 1:
+        return redirect('junior_results', pk = mentorship_list[0].id)
     #seznam = bober_competition.models.SchoolMentor.objects.all()
-    return render_to_response("bober_paper_submissions/school_mentor.html", locals())
+    return render(request, "bober_paper_submissions/school_mentor.html",
+        {'object_list': mentorship_list, 'slug':slug})
 
-@login_required
-def junior_results(request, competition_category_school_mentor_id):
-    obj, created = bober_paper_submissions.models.JuniorResult.objects.get_or_create(school_mentor_id = int(competition_category_school_mentor_id))
-    data_saved = False
-    form_data_error = False
-    if request.method == 'POST':
-        first_visit = False
-        form = JuniorResultForm(request.POST, instance=obj)
-        if form.is_valid():
-            form.save()
-            data_saved = True
-        else:
-            form_data_error = True
-    else:
-        first_visit = created
-        if first_visit:
-            obj.drugi_razred = u"Jože Primer  10\nJana Novak 11\nTina Pobriši T. Primere 8\n"
-            obj.save()
-        form = JuniorResultForm(instance = obj)
-    return render(request, "bober_paper_submissions/junior_results.html", locals())
+class JuniorResults(UpdateWithInlinesView, LoginRequiredMixin):
+    model = JuniorMentorship
+    form_class = JuniorMentorshipForm
+    inlines = [JuniorYearInline,]
+    template_name = "bober_paper_submissions/junior_results.html"
+    def dispatch(self, *args, **kwargs):
+        self.competition_slug = kwargs.get('slug', None)
+        return super(JuniorResults, self).dispatch(*args, **kwargs)
+    def get_success_url(self):
+        print self.competition_slug
+        return reverse('teacher_overview', kwargs={'slug': self.competition_slug})
 
 @login_required
 def competition_category_results_by_school(request, competition_category_id):

@@ -41,7 +41,7 @@
 ">{% trans "Competition sheets" %}</a>
             </p>
             <p>
-                {% trans "Result entry for tasks on paper" %} (še ni na voljo)
+                <a href="{% url "mentorship_list" slug=competition.slug %}">{% trans "Result entry for tasks on paper" %}</a>
             </p>
         </td>
     </tr>

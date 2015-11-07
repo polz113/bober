@@ -7,6 +7,6 @@ urlpatterns = patterns('',
     # Examples:
     # url(r'^$', 'bober.views.home', name='home'),
     # url(r'^blog/', include('blog.urls')),
-    url(r'^school/(?P<competition_category_school_mentor_id>\d+)/junior_results$', views.junior_results, name= "junior_results"),
-
+    url(r'^competitions/(?P<slug>[\w\-_]+)/junior_results/(?P<pk>\d+)$', views.JuniorResults.as_view(), name= "junior_results"),
+    url(r'^competitions/(?P<slug>[\w\-_]+)/junior_results', views.mentorship_list, name='mentorship_list'),
 )

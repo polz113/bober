@@ -1,51 +1,35 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-
-<html>
-<head>
-{% load staticfiles %}
-<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
-<title>Bober 2014 - Oddaja rezultatov</title>
-<link rel="stylesheet" type="text/css" href="{% static "bober_paper_submissions/style.css" %}" />
-
-</head>
-<body>
-
-<h1>Obrazec za oddajo rezultatov</h1>
+{% extends "base.html" %}
+{% load i18n %}
+{% load static %}
+{% block extrahead %}
+{% endblock %}
+{% block content %}
+<h1>{% trans "Result entry form" %}</h1>
 
 <form action="" method="post">
 {% csrf_token %}
-<div style="float: left">
-    <p class="explain">V polja na desni vnesite rezultate za učence v posameznem razredu.
-        Polja za razrede, v katerih tekmovanja niste izvedli, pustite prazna.</p>
-    {% if first_visit %}
-    <p class="explain">Imena, priimke in točke vnesite, kot kaže primer.</p>
-    {% elif data_saved %}
-    <p class="explain">PODATKI SHRANJENI.</p>
-    {% elif form_data_error %}
-    <p class="explain">NAPAKA PRI VNOSU!</p>
-    {% endif %}
-    <div class="button" style="clear:both">
-        <button id="submit" type="submit">Oddaj podatke</button>
+<div id="junior_instructions">
+    <p class="explain">{% trans "Use the fields below to enter the competition results for each class." %}
+{% trans "If you did not organize a competition for some of the classes, leave those fields empty." %}
+    </p>
+    <div class="btn" style="clear:both">
+        <button id="submit" type="submit">{% trans "Submit data" %}</button>
     </div>
 </div>
 
 <div>
 <table>
-    <tr>
-        <th>Drugi razred</th>
-        <th>Tretji razred</th>
-        <th>Četrti razred</th>
-        <th>Peti razred</th>
-    </tr>
-    <tr>
-        <td>{{form.drugi_razred}}</td>
-        <td>{{form.tretji_razred}}</td>
-        <td>{{form.cetrti_razred}}</td>
-        <td>{{form.peti_razred}}</td>
-    </tr>
+{{form}}
 </table>
-{{form.school_mentor}}
+{% for inline in inlines %}
+{{inline.management_form}}
+{% for inline_form in inline.forms %}
+<div class="junior_result">
+{{inline_form.instance.name}}
+{{inline_form.as_p}}
+</div>
+{% endfor %}
+{% endfor %}
 </div>
 </form>
-</body>
-</html>
+{% endblock %}

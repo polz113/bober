@@ -1,16 +1,13 @@
-<!DOCTYPE html>
-<html>
-<head lang="en">
-    <meta charset="UTF-8">
-    <title>Izbira šole</title>
-</head>
-<body>
-Izberi šolo
+{% extends "base.html" %}
+{% load i18n %}
+{% load static %}
+{% block extrahead %}
+{% endblock %}
+{% block content %}
+<h1>{% trans "Pick a school" %}</h1>
 <ul>
-    {% for item in seznam %}
-    <li><a href="{% url 'junior_results' competition_category_school_mentor_id=item.id %}">{{item.competition_category_school}}</a></li>
+    {% for item in object_list %}
+    <li><a href="{% url 'junior_results' slug=slug pk=item.pk %}">{{item.school.name}}</a></li>
     {% endfor %}
 </ul>
-
-</body>
-</html>
+{% endblock %}
