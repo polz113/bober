@@ -31,7 +31,7 @@ def mentorship_list(request, slug):
         mentorship.save()
         mentorship_list.append(mentorship)
     if len(mentorship_list) == 1:
-        return redirect('junior_results', pk = mentorship_list[0].id)
+        return redirect('junior_results', slug=slug, pk = mentorship_list[0].id)
     #seznam = bober_competition.models.SchoolMentor.objects.all()
     return render(request, "bober_paper_submissions/school_mentor.html",
         {'object_list': mentorship_list, 'slug':slug})
