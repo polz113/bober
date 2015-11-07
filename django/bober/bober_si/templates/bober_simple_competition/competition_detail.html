@@ -14,7 +14,6 @@
 <h1>{{object.slug}}</h1>
 <a href='{% url "competition_code_list" slug=object.slug %}' class="btn">{% trans "codes" %}</a>
 <a href='{% url "teacher_overview" slug=object.slug %}' class="btn">{% trans "overview" %}</a>
-<a href='{% url "competition_attempt_list" slug=object.slug %}' class="btn">{% trans "attempts" %}</a>
 <a href='{% url "competition_update" slug=object.slug %}' class="btn">{% trans "edit" %}</a>
 <div id='questionsets'>
 {% trans "Question sets" %}

@@ -86,10 +86,10 @@ urlpatterns = patterns('',
     url(r'^compete/(?P<competition_questionset_id>\d+)/attempts/(?P<attempt_id>\d+)/finish.json$', 
         views.finish_competition, name="finish_competition"),
     #     2.2.7 view results
-    url(r'^compete/(?P<competition_questionset_id>\d+)/attempts/$', 
-        views.competition_attempt_list, {'regrade':True}, name="competition_attempt_list"),
     url(r'^compete/(?P<competition_questionset_id>\d+)/attempts/regrade$', 
-        views.competition_attempt_list, {'regrade':True}, name="competition_attempt_list"),
+        views.competition_attempt_list, {'regrade':True}, name="competition_attempt_list_regrade"),
+    url(r'^compete/(?P<competition_questionset_id>\d+)/attempts/$', 
+        views.competition_attempt_list, {'regrade':False}, name="competition_attempt_list"),
     url(r'^compete/(?P<competition_questionset_id>\d+)/attempts/(?P<attempt_id>\d+)/$', 
         views.attempt_results, name="attempt_results"),
     # 3. create registration codes

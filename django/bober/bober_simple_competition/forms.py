@@ -35,6 +35,7 @@ class BasicProfileForm(forms.ModelForm):
             'vcard', 'question_sets', 'managed_profiles', 'used_codes',
             'update_used_codes_timestamp', 'update_managers_timestamp')"""
         # fields = ('merged_with',);
+        fields = ()
         widgets = {
             # the autocomplete: off is supposed to prevent firefox from filling in the form
             # with the current username
