@@ -710,11 +710,13 @@ def submit_answer(request, competition_questionset_id, attempt_id):
             val = int(request.POST['a'])
         except:
             val = None
-        attempt = Attempt.objects.get(id=attempt_id)
-        _check_attempt_and_code(request, attempt)
-        now = timezone.now()
-        if (attempt.finish - now).total_seconds() < 0:
-             raise Exception("out_of_time")
+        # UNCOMMENT THE LINES BELOW FOR MORE SECURITY
+        #attempt = Attempt.objects.get(id=attempt_id)
+        #_check_attempt_and_code(request, attempt)
+        #now = timezone.now()
+        #if (attempt.finish - now).total_seconds() < 0:
+        #     raise Exception("out_of_time")
+        # COMMENT OUT THE LINES ABOVE FOR MORE PERFORMANCE
         a = Answer(attempt_id = attempt_id,
             randomized_question_id = request.POST['q'],
             value = val, timestamp = now)
