@@ -49,3 +49,7 @@ msgstr "Oddaj podatke"
 #: templates/bober_paper_submissions/school_mentor.html:7
 msgid "Pick a school"
 msgstr "Izberite šolo"
+
+#: templates/bober_paper_submissions/junior_results.html:36
+msgid "Example"
+msgstr "Primer"
