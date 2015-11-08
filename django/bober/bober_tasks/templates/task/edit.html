@@ -1,7 +1,8 @@
-{% extends "main.html" %}
-{% load staticfiles %}
-{% block pageTitle %}Prevajanje - New task{% endblock pageTitle %}
-{% block content %}
+{% extends "base.html" %}
+{% load i18n %}
+{% load static %}
+{% block headline %}{% trans "Edit task" %}{% endblock %}
+{% block extrahead %}
 <script type="text/javascript" charset="utf-8">
     task_upload_url = "{% url "tasks.upload" id %}"
     task_translation_id = "{{id}}";
@@ -11,7 +12,8 @@
     version = "{{task_translation.version}}";
     tinyMCEbaseURL = "{% url "tasks.edit" task_translation.id %}";
 </script>
-
+{% endblock %}
+{% block content %}
     <div class="row">
 
         <div class="navbar span12">

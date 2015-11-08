@@ -1,6 +1,6 @@
 from bober_tasks.models import *
 from django.conf import settings
-from django.shortcuts import render_to_response, redirect
+from django.shortcuts import render_to_response, redirect, render
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.contrib.auth.models import User
@@ -25,7 +25,7 @@ from django.core.validators import validate_email
 import random
 
 def render_to_file(template, filename, template_data, context): # loads template with context data and returns it as a file
-    return codecs.open(os.path.join(os.path.dirname(__file__), '../private/') + filename, 'w', 'utf-8').write(render_to_string(template, template_data, context)) # save file to 'private folder'
+    return codecs.open(os.path.join(settings.MEDIA_DIR, 'tasks_private') + filename, 'w', 'utf-8').write(render_to_string(template, template_data, context)) # save file to 'private folder'
 
 def export_task_language_version( request, task_id, language_code, version ):
     task_translation = TaskTranslation.objects.get(language_locale = language_code, task_id=task_id, version=version)
@@ -132,9 +132,9 @@ def export_task_translation( request, task_translation ):
             zf.write(fpath, zip_path)
 
         # Static files
-        zf.write(os.path.join(settings.MEDIA_ROOT, 'private', 'solution.html'),'solution.html')
-        zf.write(os.path.join(settings.MEDIA_ROOT, 'private', 'Manifest.json'), 'Manifest.json')
-        zf.write(os.path.join(settings.MEDIA_ROOT, 'private', 'index.html'), 'index.html')
+        zf.write(os.path.join(settings.MEDIA_ROOT, 'tasks_private', 'solution.html'),'solution.html')
+        zf.write(os.path.join(settings.MEDIA_ROOT, 'tasks_private', 'Manifest.json'), 'Manifest.json')
+        zf.write(os.path.join(settings.MEDIA_ROOT, 'tasks_private', 'index.html'), 'index.html')
         #zf.write(path(MEDIA_ROOT, 'private', 'jquery.min.js'), path("lib", 'jquery.min.js'))
         #zf.write(path(MEDIA_ROOT, 'private', 'functions.js'), path('lib', 'functions.js'))
 
@@ -452,6 +452,8 @@ def handle_uploaded_file(f,name, task_translation):
 
     return save_path
 
+
+
 #TODO fix this!
 @login_required()
 def tasks_translate(request, id):
@@ -609,7 +611,7 @@ def edit_task(request, id):
 
     all_languages = settings.LANGUAGES
 
-    return render_to_response("task/edit.html", locals(), context_instance=RequestContext(request))
+    return render(request, "task/edit.html", locals())
 
 
 @login_required()
