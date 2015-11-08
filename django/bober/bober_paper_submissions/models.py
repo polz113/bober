@@ -6,9 +6,11 @@ from bober_simple_competition.models import Competition, Competitor, Profile
 from bober_si.models import School
 
 DEFAULT_YEARS = {
-    u'1. razred': u'Jože Primer  10',
-    u'2. razred': u'Jana Novak 11',
-    u'3. razred': u'Tina Pobriši T. Primere 8',
+#    u'1. razred': u'Jože Primer  10',
+#    u'2. razred': u'Jana Novak 11',
+#    u'3. razred': u'Tina Pobriši T. Primere 8',
+    u'2. razred': None,
+    u'3. razred': None,
     u'4. razred': None,
     u'5. razred': None,
 }
