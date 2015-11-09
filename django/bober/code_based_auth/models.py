@@ -203,10 +203,12 @@ class CodeFormat(models.Model):
                 if len(values) < 1:
                     return False
                 for value in values:
+                    # print value, format_fn, algorithm, format_fn(value)
                     h = format_fn(str_hash(salt + challenge,
                             value, algorithm))[-hash_len:]
-                    # print "h:", h
+                    #print "h:", h
                     if h not in hashes[k]:
+                    #    print "  not in ", hashes[k]
                         return False
         except Exception, e:
             print e
@@ -229,11 +231,11 @@ class CodeFormat(models.Model):
             hash_format = component.hash_format
             values = parts.get(component.name, [])
             for value in values:
-                if hash_format in CASE_INSENSITIVE_FORMATS:
-                    value = value.lower()
                 h = str_hash(salt + challenge,
                     value, component.hash_algorithm)
                 s = FORMAT_FUNCTIONS[component.hash_format][0](h)
+                if hash_format in CASE_INSENSITIVE_FORMATS:
+                    s = s.lower()
                 hash_list.append(s[-component.hash_len:])
             hashed_components.append(component.part_separator.join(hash_list))
         return self.separator.join(hashed_components)
