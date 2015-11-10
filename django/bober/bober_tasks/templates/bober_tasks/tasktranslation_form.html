@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load static %}
+{% block headline %}{% trans "Edit task" %}{% endblock %}
+{% block extrahead %}
+<script type="text/javascript" charset="utf-8">
+    task_upload_url = "{% url "tasks.upload" object.id %}"
+    task_translation_id = "{{object.id}}";
+    csrf_token = "{{csrf_token}}";
+    task_id = "{{object.task_id}}";
+    language = "{{object.language_locale}}";
+    version = "{{tobject.version}}";
+    tinyMCEbaseURL = "{% url "tasktranslation_preview" object.id %}";
+</script>
+<style>
+ul.nav li {
+    display: inline-block;
+}
+</style>
+{% endblock %}
+{% block content %}
+    <div class="row">
+        <div class="navbar span12">
+            <div class="navbar-inner">
+                <ul class="nav">
+                    <li><a href="#title"><i class="icon-chevron-right"></i> Title</a></li>
+                    <li><a href="#body"><i class="icon-chevron-right"></i> Body</a></li>
+                    <li><a href="#answers"><i class="icon-chevron-right"></i> answers</a></li>
+                    <li><a href="#correctness"><i class="icon-chevron-right"></i> Correctness</a></li>
+                    <li><a href="#solution"><i class="icon-chevron-right"></i> Solution</a></li>
+                    <li><a href="#informatics"><i class="icon-chevron-right"></i> Informatics</a></li>
+                    <li><a href="#content_category"><i class="icon-chevron-right"></i> Content category</a></li>
+                    <li><a href="#age_groups"><i class="icon-chevron-right"></i> Age groups</a></li>
+                    <li><a href="#summary"><i class="icon-chevron-right"></i> Summary</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="row-fluid">
+    {% trans "Language: " %}{{object.get_language_locale_display}}
+    <form action="" method="POST">
+    {% csrf_token %}
+{{form.as_p}}
+<h2>{% trans "Answers" %}</h2>
+    {%for inline in inlines %}
+        {{inline.management_form}}
+        {% for inlineform in inline %}
+            {{inlineform.as_p}}
+        {% endfor %}
+    {%endfor%}
+    {{remark_form.as_p}}
+        <div class="form-actions form-inline">
+            <div class="control-group">
+            <fieldset id="summary">
+                <button type="submit" class="btn btn-primary">{% trans "Save" %}</button>
+                <a href="{% url "index" %} " class="btn btn-danger">{% trans "Cancel" %}</a>
+            </fieldset>
+            </div>
+        </div>
+
+    </form>
+    </div>
+
+    <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+    <script type="text/javascript" src="{% static "js/tinymce/tinymce.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "js/ajaxupload.js" %}" charset="utf-8"></script>
+    <script type="text/javascript" src="{% static "js/editor.js" %}"></script>
+    <!-- script type="text/javascript" src="{% static "js/validate.js"}></script -->
+
+
+{% endblock content %}
