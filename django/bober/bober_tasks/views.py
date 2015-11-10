@@ -1,6 +1,7 @@
 from bober_tasks.models import *
 from django.conf import settings
 from django.shortcuts import render_to_response, redirect, render
+from django.core.urlresolvers import reverse, reverse_lazy
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.contrib.auth.models import User
@@ -12,15 +13,19 @@ import zipfile
 import codecs
 import re
 import os
-from django.utils.translation import ugettext as _
-
+from django.utils.translation import ugettext_lazy as _
+from django.views.generic import ListView, DetailView, CreateView, DeleteView, UpdateView, FormView, TemplateView
+import django.forms
+from django.forms.models import modelform_factory, model_to_dict
+from extra_views import CreateWithInlinesView, UpdateWithInlinesView, InlineFormSet
+from braces.views import LoginRequiredMixin
 import StringIO
 from json import dumps as to_json
 from django.http import HttpResponse
 from bober_tasks import forms
 from django.contrib import auth, messages
 from django.utils.text import slugify
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.core.validators import validate_email
 import random
 
@@ -154,7 +159,7 @@ def export_task_translation( request, task_translation ):
         return HttpResponse('Please submit a valid task ID and a valid language locale code')
 
 #TODO: add pager
-def parameters( request):
+def parameters(request):
     age_groups = AgeGroup.objects.all()
     difficultys = DifficultyLevel.objects.all()
     categories = Category.objects.all()
@@ -436,7 +441,7 @@ def tasks_upload(request, id=0):
 
 def handle_uploaded_file(f,name, task_translation):
     #save_path  = path( MEDIA_ROOT , 'taskresources', 'Image', task_id , task_language )
-    save_path  = os.path.join(settings.MEDIA_ROOT, 'task', str(task_translation.task_id) , task_translation.language_locale, 'resources' )
+    save_path  = os.path.join(settings.MEDIA_ROOT, 'task', str(task_translation.task_id) , str(task_translation.language_locale), 'resources' )
     # Check if upload folder of a specific task already exists and create it, if it doesn't.
     if not os.path.exists(save_path):
         os.makedirs(save_path)
@@ -459,18 +464,13 @@ def handle_uploaded_file(f,name, task_translation):
 def tasks_translate(request, id):
     all_languages = settings.LANGUAGES
     task_translation = TaskTranslation.objects.get(id=id)
-
     task = task_translation.task
-
     answer_multiple_choice = task_translation.answer_set
-
     categories = task.categories.all()
     task_age_groups = AgeGroupTask.objects.filter(task_id=task.id)
-
     content_categories = all_cat()
     age_groups = all_ages()
     difficulty_levels = all_dif()
-
     if request.method == 'POST':
         title = request.POST['title']
         body = request.POST['body']
@@ -589,6 +589,54 @@ def tasks_history(request, id):
 
     return render_to_response("task/history.html", locals(), context_instance=RequestContext(request))
 
+def tasktranslation_render(request, pk): # loads template with context data and returns it as a file
+    tt = get_object_or_404(TaskTranslation, pk=pk)
+    return HttpResponse(tt.render_to_string(), "text/html")
+    # return codecs.open(os.path.join(settings.MEDIA_DIR, 'tasks_private') + filename, 'w', 'utf-8').write(render_to_string(template, template_data, context)) # save file to 'private folder'
+
+
+class TaskDetail(LoginRequiredMixin, DetailView):
+    model = Task
+    template_name = 'bober_tasks/task_detail.html'
+
+class TaskTranslationUpdate(UpdateWithInlinesView, LoginRequiredMixin):
+    model = TaskTranslation
+    form_class = forms.TaskTranslationForm
+    template_name = 'bober_tasks/tasktranslation_form.html' 
+    inlines = [ forms.AnswerInline ]
+    def get_success_url(self):
+        return reverse('tasktranslation_preview', kwargs = {'pk': self.object.pk})
+    def get(self, request, *args, **kwargs):
+        self.remark_form = forms.InlineRemarkForm()
+        return super(TaskTranslationUpdate, self).get(request, *args, **kwargs)
+    def get_form_kwargs(self): 
+        kwargs = super(TaskTranslationUpdate, self).get_form_kwargs()
+        return kwargs
+    def get_context_data(self, *args, **kwargs):
+        context = super(TaskTranslationUpdate, self).get_context_data(*args, **kwargs)
+        context['remark_form'] = self.remark_form
+        return context
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        self.remark_form = forms.InlineRemarkForm(self.request.POST)
+        if self.remark_form.is_valid():
+            return super(TaskTranslationUpdate, self).post(request, *args, **kwargs)
+        inlines = self.construct_inlines()
+        form_class = self.get_form_class()
+        form = self.get_form(form_class)
+        return self.forms_invalid(form, inlines)
+    def save(self, *args, **kwargs):
+        print "saving", args, kwargs
+        self.remark_form.save()
+        return super(TaskTranslationUpdate, self).save(*args, **kwargs)
+
+class TaskTranslationPreview(DetailView, LoginRequiredMixin):
+    model = TaskTranslation
+    template_name = 'bober_tasks/tasktranslation_preview.html'
+
+class TaskTranslationDetail(DetailView, LoginRequiredMixin):
+    model = TaskTranslation
+    template_name = 'bober_tasks/tasktranslation_detail.html'
 
 @login_required()
 def edit_task(request, id):
@@ -600,37 +648,30 @@ def edit_task(request, id):
         parent_id = task.parent_id
     else:
         parent_id = task.id
-
     request.session['task_id_variable'] = id
     request.session['language_locale_variable'] = task_translation.language_locale
-
     answers = task_translation.answer_set.all()
-
     task_age_groups = AgeGroupTask.objects.filter(task_id=task.id)
-
-
     all_languages = settings.LANGUAGES
-
     return render(request, "task/edit.html", locals())
 
-
-@login_required()
-def new_task(request, language):
-    # Generate new task end edit it
-    task = Task()
-    task.save()
-    task_translation = TaskTranslation(task = task)
-    task_translation.language_locale = language
-    task_translation.save()
-
-    return redirect("tasks.edit", task_translation.id)
-    #"/task/edit/"+str(task_translation.id))
+class TaskCreate(LoginRequiredMixin, CreateView):
+    template_name = 'bober_tasks/task_form.html'
+    form_class = forms.TaskForm
+    def get_success_url(self):
+        first_translation = TaskTranslation(task = self.object,
+            language_locale = self.cleaned_data['language_locale'])
+        first_translation.save()
+        first_translation.create_default_answers()
+        return reverse('tasktranslation_update', kwargs={'pk': first_translation.pk})
+    def form_valid(self, form):
+        self.cleaned_data = form.cleaned_data
+        return super(TaskCreate, self).form_valid(form)
 
 @login_required()
 def save_task(request):
     if request.method == 'GET':
         redirect("/")
-
     task = Task.objects.get(id=request.POST['id'])
     i = 0
     categories = {}
@@ -640,7 +681,6 @@ def save_task(request):
             i += 1
     except Exception, e:
         True
-
     for category_id in categories:
         c = Category.objects.get(id=categories[category_id])
         task.categories.add(c)
@@ -656,11 +696,21 @@ def save_task(request):
             agt.save()
             i += 1
     except Exception, e:
-        True
-
+        pass
     return redirect("tasks.task", task.id)
 
-@login_required()
+@login_required
+def tasktranslation_clone(request, pk):
+    t = get_object_or_404(TaskTranslation, id = pk)
+    t.author = request.user
+    t.save_new_version()
+    return redirect("tasktranslation_update", pk = t.id)
+
+@login_required
+def export_to_simple_competition(request, pk):
+    pass
+
+@login_required
 def tasks_save_translation(request):
     if request.method == 'GET':
         redirect("/")
