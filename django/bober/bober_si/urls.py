@@ -10,6 +10,8 @@ urlpatterns = patterns('',
     # 2. pick competition
     url(r'^competitions/(?P<slug>[\w\-_]+)/overview$', 
         views.TeacherOverview.as_view(), name="teacher_overview"),
+    url(r'^competitions/(?P<slug>[\w\-_]+)/profiles_by_school_category$', 
+        views.ProfilesBySchoolCategory.as_view(), name="profiles_by_school_category"),
     url(r'^competitions/(?P<slug>[\w\-_]+)/detail$', 
         CompetitionDetail.as_view(), name="competition_detail"),
     url(r'^competitions/(?P<slug>[\w\-_]+)/school_codes_create$', 
