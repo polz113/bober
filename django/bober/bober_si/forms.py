@@ -13,6 +13,6 @@ class SchoolCodesCreateForm(forms.Form):
             attrs={'class':'modern-style'}))
 
 class TeacherCodeRegistrationPasswordResetForm(forms.Form):
-    email = forms.EmailField(label=_('email'))
-    password = forms.CharField(label=_('password'), widget=forms.PasswordInput)
+    email = forms.EmailField(label=_('email'), max_length=30)
+    password = forms.CharField(label=_('password'),  widget=forms.PasswordInput)
     hidden_code = forms.CharField(label=_('hidden_code'), widget=forms.HiddenInput)
