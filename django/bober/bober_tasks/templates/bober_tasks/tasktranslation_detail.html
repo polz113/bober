@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load static %}
+{% block headline %}{% trans "Displaying task" %}{% endblock %}
+{% block extrahead %}
+{% endblock %}
+{% block content %}
+<div class="row">
+    <div class="span9">
+        <div class="well">
+
+
+                    {% if object.title %}<h1>{{ object.title }}</h1>{% endif %}
+                    
+                    {{ object.body|safe }}
+
+
+                    <h2>{% trans "Answers:" %}</h2>
+                        {% for solution in object.answer_set.all %}
+                            <div class="answer">
+                                <h3 {% if solution.correct %}style="font-weight:bold;"{% endif %}>{{solution.label}}
+                                </h3>
+                                {{ solution.value|safe }}
+                            </div>
+                        {% endfor %}
+                    <h2>{% trans "Solution" %}</h2>
+                    {% if object.solution %}{{ object.solution|safe }}{% endif %}
+
+
+                    <h2>{% trans "It's informatics" %}</h2>
+                    {% if object.it_is_informatics %}
+                        {{ object.it_is_informatics|safe }}{% endif %}
+                </div>
+                <div class="well">
+                    <h2>{% trans "Version history" %}</h2>
+                <ul>
+                    {% for version in object.versions %}
+                        <li><a href="{% url "tasktranslation_detail" pk=version.pk %}">{{ version.version }} - {{ version.title }}</a> ({{ version.timestamp }}), {{ version.comment }}</li>
+                    {% endfor %}
+                </ul>
+                </div>
+            </div>
+            <div class="span3 sidebar">
+                <div class="well">
+
+                    <h3>{% trans "Task" %}</h3>
+                    <ul class="nav nav-list">
+                        <li><a href="{% url "tasktranslation_clone" object.id %} ">{% trans "Edit" %}</a></li>
+                        <li><a href="/export/task/{{ task.id }}/{{ object.language_locale.id }}/{{ object.version }}">{% trans "Export as ZIP" %}</a></li> <!-- make dynamic url -->
+                        <li><a href="{% url "export_to_simple_competition" pk=object.id %}">{% trans "Export to competition system" %}</a></li> <!-- make dynamic url -->
+                        <li><a href="{% url "tasks.translate" object.id %} ">Translate</a></li>
+                        <li style="display: none"><a href="{% url "tasks.new_form" object.id %} ">New from this version</a></li>
+                    </ul>
+
+                </div>
+                <div class="well">
+                    <h3>{% trans "International ID:" %}</h3> {% if object.task.international_id %}{{ object.task.international_id }}{% else %} No ID was set. {% endif %}
+                    
+                    <h3>{% trans "Author:" %}</h3>
+                    {{object.task.author}}
+                    <h3>{% trans "Translator:" %}</h3> 
+                    {{object.author}}
+                    <h3>{% trans "Available in languages:" %}</h3>
+                    <ul class="nav">
+                        {% for language in object.task.available_languages %}
+                            <li>
+                                <a href="?language={{ language.value }}">
+                                    <img src="{{ STATIC_URL }}img/{{ language }}.png"/> {{ language }}
+                                </a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                    
+                    <h3>{% trans "Age group:" %}</h3>
+                    <ul class="nav">
+                        {% for a in object.task.agegrouptask_set.all %}
+                            <li>{{ a.difficulty_level.value }} - {{ a.age_group.value }}</li>
+                        {% endfor %}
+                    </ul>
+                    <h3>{% trans "Category:" %}</h3>
+                    <ul class="nav">
+                        {% for a in object.task.categories.all %}
+                            <li>{{ a.title }}</li>
+                        {% endfor %}
+                    </ul>
+
+                    <p>
+                        <a href="javascript:window.print()"><img src="{{ STATIC_URL }}img/print.png" alt="print this page" id="print" class="no-print"/></a>
+                    </p>
+                    <p>
+                        <a href="{% url "tasks.task" object.task.id %}">{% trans "Edit task details" %}</a>
+                    </p>
+                </div>
+            </div>
+
+        </div>
+
+
+{% endblock content %}
+{% block script %}
+    <script type="text/javascript" charset="utf-8">
+
+    </script>
+{% endblock script %}

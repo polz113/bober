@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load static %}
+{% block headline %}{% trans "Edit task" %}{% endblock %}
+{% block extrahead %}
+<style>
+ul.nav li {
+    display: inline-block;
+}
+</style>
+{% endblock %}
+{% block content %}
+</h1>
+    <div class="row-fluid">
+    <form action="" method="POST">
+    {% csrf_token %}
+{{form.as_p}}
+    {{remark_form.as_p}}
+        <div class="form-actions form-inline">
+            <div class="control-group">
+            <fieldset id="summary">
+                <button type="submit" class="btn btn-primary">{% trans "Save" %}</button>
+                <a href="{% url "index" %} " class="btn btn-danger">{% trans "Cancel" %}</a>
+            </fieldset>
+            </div>
+        </div>
+
+    </form>
+    </div>
+{% endblock content %}
