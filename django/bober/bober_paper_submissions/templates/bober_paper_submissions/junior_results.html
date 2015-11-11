@@ -12,7 +12,7 @@
 <div id="junior_instructions">
     <p class="explain">{% trans "Use the fields below to enter the competition results for each class." %}
 {% trans "If you did not organize a competition for some of the classes, leave those fields empty." %}
-    </p>
+Primer vnosa si lahko ogledate <a href="#primer">na dnu strani</a>.</p>
     <div class="btn" style="clear:both">
         <button id="submit" type="submit">{% trans "Submit data" %}</button>
     </div>
@@ -32,8 +32,9 @@
 {% endfor %}
 {% endfor %}
 </div>
-<div>
-<h2>{% trans "Example" %}</h2>
+<div style="text-align: center">
+<a name="primer" />
+<h3>{% trans "Example" %}</h3>
 <img alt="{% trans "Primer" %}" src={% static "bober_paper_submissions/primer.png" %} />
 </div>
 </form>

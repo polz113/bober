@@ -68,7 +68,7 @@ class SchoolCodesCreate(SmartCompetitionAdminCodeRequiredMixin, FormView):
         self.access_code = self.request.session['access_code']
         codegen = self.competition.administrator_code_generator
         if not codegen.code_matches(self.access_code, 
-                {'admin_privileges': ['view_all_competitor_codes']}):
+                {'admin_privileges': ['create_competitor_codes']}):
             raise PermissionDenied
         return super(SchoolCodesCreate, self).dispatch(*args, **kwargs)
     def get_context_data(self, **kwargs):
@@ -144,4 +144,7 @@ class ProfilesBySchoolCategory(SmartCompetitionAdminCodeRequiredMixin, TemplateV
         return context
     def dispatch(self, *args, **kwargs):
         self.competition = SchoolCompetition.objects.get(slug = kwargs.pop('slug'))
+        if not self.competition.administrator_code_generator.code_matches(self.access_code, 
+                {'admin_privileges': ['view_all_competitor_codes']}):
+            raise PermissionDenied
         return super(ProfilesBySchoolCategory, self).dispatch(*args, **kwargs)
