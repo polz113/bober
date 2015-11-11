@@ -13,17 +13,21 @@ from bober_simple_competition.models import Attempt, Profile
 from django.contrib.auth.models import User
 from models import *
 from forms import *
+from collections import OrderedDict
 from braces.views import LoginRequiredMixin
 # Create your views here.
+
 
 class TeacherOverview(SmartCompetitionAdminCodeRequiredMixin, 
         TemplateView):
     template_name="bober_si/teacher_overview.html"
+
     def dispatch(self, *args, **kwargs):
         competition = SchoolCompetition.objects.get(slug=kwargs['slug'])
         access_code = self.request.session['access_code']
         self.competition = competition
         return super(TeacherOverview, self).dispatch(*args, **kwargs)
+
     def get_context_data(self, **kwargs):
         context = super(TeacherOverview, self).get_context_data(**kwargs)
         profile = self.request.user.profile
@@ -32,15 +36,15 @@ class TeacherOverview(SmartCompetitionAdminCodeRequiredMixin,
         school = None
         schools = dict()
         attempts = dict()
-        code_pairs = list()
+        code_pairs = []
         for c in profile.schoolteachercode_set.filter(
                     code__salt = self.competition.competitor_code_generator.salt,
                     code__format = self.competition.competitor_code_generator.format, 
                 ).order_by(
                     'school', 'code__value'):
             if c.school != school:
-                schools[c.school] = list()
-                attempts[c.school] = list()
+                schools[c.school] = []
+                attempts[c.school] = []
             school = c.school
             code = c.code.value
             sep = self.competition.competitor_code_generator.format.separator
@@ -49,6 +53,7 @@ class TeacherOverview(SmartCompetitionAdminCodeRequiredMixin,
             cqs = CompetitionQuestionSet.get_by_slug(cqs_slug)
             schools[school].append((cqs, sep.join(split_code[1:])))
             attempts[school].append((cqs, Attempt.objects.filter(access_code = code)))
+        
         context['schools'] = schools
         context['attempts'] = attempts
         # print attempts

@@ -558,9 +558,9 @@ def tasks_new_from(request, id):
     answers = Answer.objects.filter(task_id=id)
 
     answers_id = map(lambda answer: answer.id, answers)
-    answer_multiple_choice = AnswerTranslation.objects.filter(answer_multiple_choice_id__in=answers_id,
-                                                              language_locale=task_translation.language_locale)
-
+    answer_multiple_choice = \
+        AnswerTranslation.objects.filter(answer_multiple_choice_id__in=answers_id,
+            language_locale=task_translation.language_locale)
     task_categories = task.categories.all()
     task_age_groups = AgeGroupTask.objects.filter(task_id=task.id)
 

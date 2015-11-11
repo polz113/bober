@@ -16,6 +16,7 @@ from django.utils.text import slugify
 from django.utils.translation import ugettext_lazy as _
 from django.utils import timezone
 from django.core.exceptions import ValidationError
+from collections import OrderedDict
 from . import graders
 import random
 import os
@@ -569,9 +570,11 @@ class Answer(models.Model):
     timestamp = DateTimeField(auto_now = True)
     value = TextField(blank=True, null = True)
     score = FloatField(null=True)
+
     @property
     def question(self):
         return Question.objects.get(identifier=self.question_id)
+    
     @property
     def question_id(self):
         return self.attempt.reverse_question_id(
@@ -604,21 +607,28 @@ class Attempt(models.Model):
     random_seed = IntegerField()
     start = DateTimeField(auto_now_add = True)
     finish = DateTimeField(null=True, blank=True)
+    
     @property
     def competition(self):
         return self.competitionquestionset.competition
+    
     @property
     def questionset(self):
         return self.competitionquestionset.questionset
+    
     @property
     def valid(self):
         return self.invalidated_by == None
+    
     def reverse_question_mapping(self):
         return self.questionset.reverse_question_mapping(self.random_seed)
+    
     def reverse_question_id(self, randomized_question_id):
         return self.reverse_question_mapping()[randomized_question_id]
+    
     def question_mapping(self):
         return self.questionset.question_mapping(self.random_seed)
+    
     def grade_answers(self, grader_runtime_manager=None, regrade=False):
         if grader_runtime_manager is None:
             grader_runtime_manager = graders.RuntimeManager()
@@ -633,6 +643,7 @@ class Attempt(models.Model):
             grader = grader_runtime_manager.get_grader(q.verification_function, q.verification_function_type)
             a.score = grader(a.value, self.random_seed, q)
             a.save()
+    
     def latest_answers(self):
         # get only the latest answers
         answered_questions = set()
@@ -648,7 +659,23 @@ class Attempt(models.Model):
                     return answers
         return answers
 
-        
+    def latest_answers_by_question(self):
+        answered_questions = OrderedDict()
+        for q in self.questionset.questions.all().order_by('id'):
+            answered_questions[q] = None
+        n_questions = len(answered_questions)
+        n_found = 0
+        for a in self.answer_set.order_by("-timestamp"):
+            if a.randomized_question_id not in answered_questions:
+                answered_questions[a.question] = a
+                n_found += 1
+                if n_found >= n_questions:
+                    return answered_questions
+        return answered_questions
+    
+    def latest_answers_sum(self):
+        return int(sum([a.score for a in self.latest_answers()]))
+
 
 class Profile(models.Model):
     def __unicode__(self):

@@ -54,8 +54,8 @@
 
                 </div>
                 <div class="well">
-                    <h3>{% trans "International ID:" %}</h3> {% if object.task.international_id %}{{ object.task.international_id }}{% else %} No ID was set. {% endif %}
-                    
+                    <h3>{% trans "International ID:" %}</h3>{{ object.task.international_id }}                    
+                    <h3>{% trans "Country of origin:" %}</h3>{{ object.task.country }}                    
                     <h3>{% trans "Author:" %}</h3>
                     {{object.task.author}}
                     <h3>{% trans "Translator:" %}</h3> 

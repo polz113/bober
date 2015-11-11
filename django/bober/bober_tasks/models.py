@@ -51,6 +51,7 @@ class Resources(models.Model):
 class Task(models.Model):
     def __unicode__(self):
         return self.international_id
+
     international_id = models.CharField(max_length=16, unique=True)
     interaction_type = models.CharField(max_length=45, default='non-interactive')
     parent = models.ForeignKey("self", null = True)
