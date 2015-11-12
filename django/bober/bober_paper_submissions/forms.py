@@ -3,7 +3,7 @@
 
 from django.forms import ModelForm, HiddenInput, Textarea, CharField
 from django.utils.translation import ugettext_lazy as _
-from bober_paper_submissions.models import JuniorYear, JuniorMentorship, JuniorAttempt, Competitor, DEFAULT_EXAMPLES
+from bober_paper_submissions.models import JuniorYear, JuniorMentorship, JuniorAttempt, Competitor
 from extra_views import InlineFormSet
 from django.core.exceptions import ValidationError
 import re
@@ -21,8 +21,8 @@ class JuniorYearForm(ModelForm):
     def clean(self):
         retval = super(JuniorYearForm, self).clean()
         raw_data = self.cleaned_data['raw_data']
-        if raw_data in DEFAULT_EXAMPLES:
-            raise ValidationError(_('Remove the provided examples'), code='remove_examples')
+        #if raw_data in DEFAULT_EXAMPLES:
+        #    raise ValidationError(_('Remove the provided examples'), code='remove_examples')
         self.competitor_data = list()
         #re_rez = re.compile(r"(\d+\.?\s*)?(?P<name>([A-Za-zřéöčćžüšđČĆŽŠĐ]+[\s.-]+){1,4}"
         #            r"[A-Za-zřéöüčćžšđČĆŽŠĐ.]+)[\s;:-]*(?P<points>\d+)\s*")

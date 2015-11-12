@@ -3,20 +3,20 @@
 
 from django.db import models
 from bober_simple_competition.models import Competition, Competitor, Profile
-from bober_si.models import School
+from bober_si.models import School, SCHOOL_CATEGORIES
 
-DEFAULT_YEARS = {
+#DEFAULT_YEARS = {
 #    u'1. razred': u'Jože Primer  10',
 #    u'2. razred': u'Jana Novak 11',
 #    u'3. razred': u'Tina Pobriši T. Primere 8',
-    u'2. razred': None,
-    u'3. razred': None,
-    u'4. razred': None,
-    u'5. razred': None,
-}
+#    u'2. razred': None,
+#    u'3. razred': None,
+#    u'4. razred': None,
+#    u'5. razred': None,
+#}
 
-DEFAULT_EXAMPLES = set(DEFAULT_YEARS.values())
-DEFAULT_EXAMPLES.remove(None)
+#DEFAULT_EXAMPLES = set(DEFAULT_YEARS.values())
+#DEFAULT_EXAMPLES.remove(None)
 # Create your models here.
 class JuniorMentorship(models.Model):
     def __unicode__(self):
@@ -35,6 +35,12 @@ class JuniorYear(models.Model):
     raw_data = models.TextField(blank=True)
     remarks = models.TextField(blank=True)
 
+class JuniorDefaultYear(models.Model):
+    competition = models.ForeignKey(Competition)
+    school_category = models.CharField(choices=SCHOOL_CATEGORIES, max_length=24)
+    name = models.CharField(max_length = 16)
+    value = models.TextField(blank=True, null=True)
+
 class JuniorAttempt(models.Model):
     def __unicode__(self):
         return u"{}:{} {}".format(self.competitor, self.year_class, self.remarks)
@@ -45,12 +51,14 @@ class JuniorAttempt(models.Model):
 
 def fill_mentorship_years(sender, instance=None, **kwargs):
     if instance:
-        if instance.junioryear_set.count() < 1:
-            for name, val in DEFAULT_YEARS.iteritems():
-                # print "Creating", name
-                year = JuniorYear(mentorship = instance, name=name)
-                if val:
-                    year.raw_data = val
+        for default_year in JuniorDefaultYear.objects.filter(
+                competition = instance.competition,
+                school_category = school.category):
+            year, created = JuniorYear.objects.get_or_create(
+                mentorship = instance,
+                name = default_year.name)
+            if created:
+                year.raw_data = default_year.value
                 year.save()
 
 models.signals.post_save.connect(fill_mentorship_years, sender=JuniorMentorship)
