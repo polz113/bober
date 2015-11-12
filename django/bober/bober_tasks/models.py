@@ -144,13 +144,13 @@ class TaskTranslation(models.Model):
         accepted_answers = self.answer_set.filter(correct=True)
         authors = []
         if self.task.author:
-            authors.append(self.task.author)
+            authors.append(unicode(self.task.author))
         if self.author:
-            authors.append(self.author)
+            authors.append(unicode(self.author))
         q, created = bober_simple_competition.models.Question.objects.get_or_create(
             identifier = str(self.task.id))
         if created:
-            q.slug = slugify(self.title) + '-' + str(tt.task.id)
+            q.slug = slugify(self.title) + '-' + str(self.task.id)
         q.country = self.task.country
         q.verification_function_type = 0 # non-interactive
         q.verification_function = u",".join([str(a.id) for a in accepted_answers])
