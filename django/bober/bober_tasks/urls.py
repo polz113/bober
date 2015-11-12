@@ -1,15 +1,12 @@
 from django.conf.urls import patterns, include, url
 from bober_tasks.views import *
-
-# Uncomment the next two lines to enable the admin:
-# from django.contrib import admin
-# admin.autodiscover()
-
+from django.views.generic import RedirectView
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
 urlpatterns = patterns('',
     # Index
-    url(r'^$', index, name="tasks_index"),
+    # url(r'^$', index, name="tasks_index"),
+    url(r'^$', RedirectView.as_view(pattern_name='tasks.list'), name="task_index"),
     # Translation
     url(r'^new/$', TaskCreate.as_view(), name="tasks.new"),
     # url(r'^edit/(\d+)/resources/(\w.+)$', tasks_resource, name="tasks.resource"),
@@ -23,7 +20,7 @@ urlpatterns = patterns('',
     url(r'^tasktranslation/(?P<pk>\d+)/$', TaskTranslationPreview.as_view(), name="tasktranslation_preview"),
     url(r'^tasktranslation/(?P<pk>\d+)/$', export_to_simple_competition, name="export_to_simple_competition"),
     url(r'^translation/save.?$', tasks_save_translation, name="tasks.translation_save"),
-    url(r'^list/([a-z]+)$', tasks_list_language, name="tasks.list"),
+    url(r'^list/([a-z]*)$', tasks_list_language, name="tasks.list"),
     url(r'^history/(\d+)$', tasks_history, name="tasks.history"),
     url(r'^new_from/(\d+)$', tasks_new_from, name="tasks.new_form"),
     url(r'^translate/(\d+)$', tasks_translate, name="tasks.translate"),

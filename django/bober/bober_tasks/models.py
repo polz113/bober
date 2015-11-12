@@ -94,7 +94,10 @@ class TaskTranslation(models.Model):
 
     @property
     def correct_answer(self):
-        return self.answer_set.filter(correct=True)[0]
+        try:
+            return self.answer_set.filter(correct=True)[0]
+        except:
+            return None
     def save_new_version(self):
         task = self.task
         self.version = task.get_latest_translation(self.language_locale).version + 1

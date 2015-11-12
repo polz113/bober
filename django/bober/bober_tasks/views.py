@@ -407,12 +407,13 @@ def index( request ):
     return render_to_response("index.html", locals(), context_instance = RequestContext( request ) )
 
 @login_required
-def tasks_list_language(request, language_locale):
+def tasks_list_language(request, language_locale = None):
     language = language_locale
     languages = settings.LANGUAGES
-    # task_translations = TaskTranslation.objects.all()
-    all_task_translations = TaskTranslation.objects.filter(
-        language_locale = language_locale).order_by('task', '-version')
+    all_task_translations = TaskTranslation.objects.all()
+    if language:
+        all_task_translations = task_translations.filter(
+            language_locale = language_locale).order_by('task', '-version')
     task_translations = []
     prev_task = None
     # collect the tasks with largest versions
@@ -420,7 +421,7 @@ def tasks_list_language(request, language_locale):
         if prev_task != task:
             task_translations.append(task)
         prev_task = task
-    return render_to_response("task/list.html", locals(), context_instance = RequestContext( request ) )
+    return render(request, "bober_tasks/list.html", locals())
 
 
 @login_required
