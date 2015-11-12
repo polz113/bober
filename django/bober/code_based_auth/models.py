@@ -1,6 +1,7 @@
 from django.db import models
 import hashlib
 from collections import defaultdict
+import random
 
 CODE_COMPONENT_FORMATS = (
     ('h', 'hex'),
@@ -12,7 +13,7 @@ CODE_COMPONENT_FORMATS = (
     ('r', 'raw no hash'),
 )
 
-CASE_INSENSITIVE_FORMATS = ['h', 'l', 'L', 'W']
+CASE_INSENSITIVE_FORMATS = ['h', 'i', 'L', 'W']
 
 HASH_ALGORITHMS = tuple(
     [(i, i) for i in list(hashlib.algorithms)] + [('noop', 'No hash')]
@@ -56,6 +57,8 @@ def split_by_bits(s, bits):
     return [s[i:i+b] for i in xrange(0, len(s), b)]
     
 def str_to_long(s):
+    if type(s) == unicode:
+        s = s.encode('iso8859-1')
     l = 0
     for c in s:
         l = l * 256
@@ -71,12 +74,16 @@ def long_to_str(l):
     return s
 
 def str_to_hex(s):
+    if type(s) == unicode:
+        s = s.encode('iso8859-1')
     return s.encode('hex')
 
 def hex_to_str(s):
     return s.decode('hex')
 
 def str_to_dec(s):
+    if type(s) == unicode:
+        s = s.encode('iso8859-1')
     return str(str_to_long(s))
 
 def dec_to_str(s):
@@ -208,15 +215,24 @@ class CodeFormat(models.Model):
                     # print value, format_fn, algorithm, format_fn(value)
                     h = format_fn(str_hash(salt + challenge,
                             value, algorithm))[-hash_len:]
+                    # if component.hash_format in CASE_INSENSITIVE_FORMATS:
+                    #    h = h.lower()
                     # print "h:", h
                     if h not in hashes[k]:
-                        print "  not in ", hashes[k]
+                    #    print "  ", h, "not in", hashes[k]
                         return False
         except Exception, e:
             print e
             return False
         return True
                 
+    def unhashed_formatted_part(self, part, value):
+        component = self.components.get(
+            name=part, 
+            hash_algorithm='noop', max_parts=1)
+        fn =  FORMAT_FUNCTIONS[component.hash_format][0]
+        return fn(value)[-component.hash_len:]
+        
     def code_from_parts(self, salt, parts):
         salt = salt.encode('utf-8')
         format_components = self.components.order_by('ordering')
@@ -253,27 +269,33 @@ class CodePart(models.Model):
 class Code(models.Model):
     def __unicode__(self):
         return self.value
-    value = CodeField()
+    value = CodeField(db_index=True)
     salt = models.CharField(max_length=256)
     format = models.ForeignKey('CodeFormat')
+
     @property
     def parts(self):
         parts = defaultdict(list)
         for i in self.code_parts.order_by('name', 'ordering'):
             parts[i.name].append(i.value)
         return dict(parts)
+
     @parts.setter
     def parts(self, parts_dict):
         self.code_parts.all().delete()
         for k, values in parts_dict.iteritems():
             for i, value in enumerate(values):
+                if type(value) != unicode:
+                    value = value.decode('iso8859-1')
                 part = CodePart(code = self, ordering = i,
                     name = k, value = value)
                 part.save()
         self.value = self.format.code_from_parts(self.salt, parts_dict)
+
     @parts.deleter
     def parts(self):
         self.code_parts.delete()
+
     @classmethod
     def create(cls, format, salt, parts):
         c = cls(format=format, salt=salt, value = "foo")
@@ -289,15 +311,26 @@ class CodeGenerator(models.Model):
     format = models.ForeignKey('CodeFormat')
     salt = models.CharField(max_length=256)
     codes = models.ManyToManyField('Code', null=True, blank=True)
-    def create_code(self, parts):
-        created_code = Code.create(salt=self.salt, format=self.format, 
-            parts={})
+    def create_code(self, parts, random_unique=False):
+        if not random_unique:
+            created_code = Code.create(salt=self.salt, format=self.format, 
+                parts={})
+            code_id = created_code.id
         if self.unique_code_component:
-            parts[self.unique_code_component] = [long_to_str(created_code.id).encode('string_escape')]
-        created_code.parts = parts
+            if random_unique:
+                parts[self.unique_code_component] = [long_to_str(random.getrandbits(64))]
+            else:
+                parts[self.unique_code_component] = [long_to_str(code_id)]
+        code_value = self.format.code_from_parts(self.salt, parts)
+        if random_unique:
+            created_code = Code.create(salt=self.salt, format=self.format,
+                   parts = parts)
+        else:    
+            created_code.parts = parts
         created_code.save()
         self.codes.add(created_code)
         return created_code
+
     def variable_components(self):
         return self.format.components.order_by('ordering').exclude(
             name = self.unique_code_component)
