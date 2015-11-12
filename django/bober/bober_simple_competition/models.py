@@ -175,6 +175,7 @@ class Competition(models.Model):
         c = self.administrator_code_generator.create_code(code_data)
         c.save()
         return c 
+
 class CompetitionQuestionSet(models.Model):
     def __unicode__(self):
         return u"{}".format(self.name)
@@ -330,6 +331,24 @@ class Resource(models.Model):
     def as_base64(self):
         return base64.b64encode(self.as_bytes())
 
+def _resource_list(soup):
+    resource_set = set()
+    imgs = soup.find_all('img')
+    objs = soup.find_all('object')
+    scripts = soup.find_all('script')
+    for items, item_type, url_property in [
+        (imgs, 'image', 'src'), 
+        (objs, 'image', 'data'), 
+        (scripts, 'javascript', 'src')]:
+        for i in items:
+            url = i.get(url_property, None)
+            if url is not None:
+                resource_set.add((item_type, url))
+    return [
+        {'type': item_type, 'url': url} for item_type, url in resource_set
+    ]
+
+
 def _question_from_dirlike(cls, identifier = '-1',
         language = None,
         regenerate_modules = True, 
@@ -410,21 +429,7 @@ def _question_from_dirlike(cls, identifier = '-1',
     if len(accepted_answers) > 0:
         index_dict['acceptedAnswers'] = accepted_answers
     # find all bitmaps and .svgs
-    resource_set = set()
-    imgs = index_soup.find_all('img')
-    objs = index_soup.find_all('object')
-    scripts = index_soup.find_all('script')
-    for items, item_type, url_property in [
-        (imgs, 'image', 'src'), 
-        (objs, 'image', 'data'), 
-        (scripts, 'javascript', 'src')]:
-        for i in items:
-            url = i.get(url_property, None)
-            if url is not None:
-                resource_set.add((item_type, url))
-    resource_list = [
-        {'type': item_type, 'url': url} for item_type, url in resource_set
-    ]
+    resource_list = _resource_list(index_soup)
     index_dict['task'] = [
         {'type': "html", "url": "index.html"}] + resource_list
     if regenerate_manifest:
@@ -495,6 +500,7 @@ class Question(models.Model):
     none_score = FloatField(default=0)
     max_score = FloatField(default=1)
     # accepted_answers = CommaSeparatedIntegerField(max_length = 255, blank=True, null=True)
+
     def index(self):
         for u in ['index.html', 'index.htm']:
             try:
@@ -502,6 +508,7 @@ class Question(models.Model):
             except:
                 pass
         return None
+
     def solution(self):
         for u in ['solution.html']:
             try:
@@ -509,8 +516,10 @@ class Question(models.Model):
             except:
                 pass
         return None
+
     def index_str(self, embed_resources = True):
         raw_index = self.index().as_bytes()
+
     def manifest(self, safe=True):
         manifest = dict()
         manifest['id'] = self.identifier
@@ -535,6 +544,7 @@ class Question(models.Model):
             manifest['acceptedAnswers'] = [int(i) for i in 
                 self.accepted_answers.split(',')]
         return manifest
+
     @classmethod
     def from_zip(cls, f, identifier = '-1',
             language = None,

@@ -7,6 +7,9 @@ from django.db.models.signals import post_save
 import django.template
 from django.forms.models import model_to_dict
 import os
+from bs4 import BeautifulSoup
+
+import bober_simple_competition
 
 TASK_TEMPLATE_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'task_templates')
 TASK_TEMPLATES = tuple([(i[:-len('.html')], i) for i in os.listdir(TASK_TEMPLATE_DIR) if i.endswith('.html')])
@@ -98,6 +101,7 @@ class TaskTranslation(models.Model):
             return self.answer_set.filter(correct=True)[0]
         except:
             return None
+
     def save_new_version(self):
         task = self.task
         self.version = task.get_latest_translation(self.language_locale).version + 1
@@ -108,17 +112,21 @@ class TaskTranslation(models.Model):
             a.id = None
             a.task_translation = self
             a.save()
+
     def versions(self):
         return TaskTranslation.objects.filter(task = self.task, language_locale = self.language_locale).order_by("-version")
+
     @staticmethod
     def last_translation(task_id, language):
         return TaskTranslation.objects.filter(language_locale=language, task=task_id).order_by('timestamp')[0]
+
     def create_default_answers(self):
         if self.answer_set.count() > 0:
             return
         for i in "ABCD":
             a = Answer(label=i, task_translation=self)
             a.save()
+
     def render_to_string(self):
         with open(os.path.join(TASK_TEMPLATE_DIR, self.template) + '.html', 'r') as f:
             template = django.template.Template(f.read())
@@ -127,6 +135,66 @@ class TaskTranslation(models.Model):
         d['answers'] = self.answer_set.all()
         d['title'] = self.title
         return template.render(django.template.Context(d))
+    
+    def export_to_simple_competition(self):
+        
+        # if request.method == 'GET':
+        #    return redirect("/")
+        accepted_answers = self.answer_set.filter(correct=True)
+        authors = []
+        if self.task.author:
+            authors.append(self.task.author)
+        if self.author:
+            authors.append(self.author)
+        q, created = bober_simple_competition.models.Question.objects.get_or_create(
+            identifier = str(self.task.id))
+        if created:
+            q.slug = slugify(self.title) + '-' + str(tt.task.id)
+        q.country = self.task.country
+        q.verification_function_type = 0 # non-interactive
+        q.verification_function = u",".join([str(a.id) for a in accepted_answers])
+        q.title = self.title
+        q.version = self.version
+        q.authors = ", ".join(authors)
+        q.language = self.language_locale
+        q.save()
+        # print q, tt
+        index_str = self.render_to_string()
+        index_soup = BeautifulSoup(index_str, "lxml")
+        resource_list = bober_simple_competition.models._resource_list(index_soup)
+        resource_list += [{'type': "html", "url": "index.html"}]
+        # print index_str.encode('utf-8')
+        # print resource_list
+        index_resource = bober_simple_competition.models.Resource(
+            question = q,
+            relative_url = 'index.html',
+            file = None,
+            mimetype = 'text/html',
+            data = index_str.encode('utf-8'))
+        index_resource.save()
+        for d in resource_list:
+            print d['url']
+            try:
+                resource = self.task.resources_set.get(
+                    filename = os.path.basename(d['url']))
+                f_path = os.path.join(
+                    settings.MEDIA_ROOT, 
+                    'task',
+                    str(self.task_id), 
+                    str(self.language_locale), 
+                    'resources',
+                    resource.filename)
+                with open(f_path) as f:
+                    r = bober_simple_competition.models.Resource(
+                        question = q,
+                        relative_url = 'resources/' + resource.filename,
+                        resource_type = d['type'],
+                        file = None,
+                        data = f.read(),
+                    )
+                r.save()
+            except Exception, e:
+                print e
 
  
 def create_default_answers(sender, instance=None, **kwargs):

@@ -709,13 +709,16 @@ def tasktranslation_clone(request, pk):
 
 @login_required
 def export_to_simple_competition(request, pk):
-    pass
+    #if request.method == 'GET':
+    #    return redirect("/")
+    tt = get_object_or_404(TaskTranslation, id=pk)
+    tt.export_to_simple_competition()
+    return redirect("tasktranslation_detail", pk = pk)
 
 @login_required
 def tasks_save_translation(request):
     if request.method == 'GET':
-        redirect("/")
-
+        return redirect("/")
     if request.method == 'POST':
         if request.POST.has_key('id'): # Updating object
             id = request.POST['id']
