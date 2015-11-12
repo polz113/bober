@@ -94,6 +94,91 @@ div.page-footer {
 	margin-top: 20px;
 }
 
+
+div.results-group,
+div.prelim,
+div.results-school {
+    font-weight: bold;
+    margin-top: 20px;
+}
+table.results {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+table.results th {
+    font-size: 80%;
+    text-align: right;
+    padding-right: 10px;
+}
+
+table.results tr.unconfirmed th {
+    color: #aaa;
+}
+
+table.results span.qualify-button {
+    display: inline-block;
+    width: 12px;
+    height: 14px;
+    margin-left: 5px;
+}
+
+table.results tr.unconfirmed span.qualify-button {
+    background: url(/static/img/qualify.png) 0px 0px/12px 12px no-repeat;
+}
+
+table.results tr.confirmed span.qualify-button {
+    background: url(/static/img/disqualify.png) 0px 0px/12px 12px no-repeat;
+}
+
+table.results tr.unconfirmed td {
+    display: none;
+}
+
+table.results tr:nth-child(even) {
+    background: white;
+}
+
+table.results tr {
+    line-height: 150%
+}
+
+table.results td, table.results th {
+    font-weight: normal;
+}
+
+table#results tr:first-of-type th {
+    font-weight: bold;
+}
+
+table.results tr:first-of-type th,
+table.results td {
+    text-align: center;
+    padding-left: 3px;
+    padding-right: 3px;
+    font-size: 80%;
+}
+
+span.correct {
+    color: green;
+}
+
+span.wrong {
+    color: red;
+}
+
+table.results tr.confirmed td.score, 
+table.results tr.unconfirmed td.score {
+    text-align: right;
+    width: 27px;
+}
+
+
+td.score span {
+    font-weight: bold;
+    padding-left: 10px;
+}
+
 /*********/
 /* basic */
 /*********/

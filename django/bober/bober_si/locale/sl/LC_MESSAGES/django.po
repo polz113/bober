@@ -116,3 +116,6 @@ msgstr "Nabori vprašanj"
 #: bober_si/templates/bober_simple_competition/no_hidden_code.html:27
 msgid "Did you copy the whole URL? The hidden access code is wrong or missing."
 msgstr "Ste skopirali celotno povezavo? Del s skrivno kodo manjka ali pa je napačen."
+
+msgid "Preliminary results"
+msgstr "Začasni rezultati"

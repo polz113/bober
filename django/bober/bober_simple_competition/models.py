@@ -584,6 +584,10 @@ class AttemptInvalidation(models.Model):
     by = ForeignKey('Profile')
     reason = TextField(blank=True)
 
+class AttemptConfirmation(models.Model):
+    by = ForeignKey('Profile')
+    attempt = ForeignKey('Attempt')
+
 class Competitor(models.Model):
     def __unicode__(self):
         return u"{} {} ({})".format(self.first_name, self.last_name,
@@ -604,6 +608,7 @@ class Attempt(models.Model):
     # user = ForeignKey('Profile', null=True, blank=True)
     competitor = ForeignKey('Competitor', null=True, blank=True)
     invalidated_by = ForeignKey('AttemptInvalidation', null=True, blank=True)
+    confirmed_by = ManyToManyField('Profile', through='AttemptConfirmation', null=True, blank=True)
     random_seed = IntegerField()
     start = DateTimeField(auto_now_add = True)
     finish = DateTimeField(null=True, blank=True)
@@ -659,18 +664,23 @@ class Attempt(models.Model):
                     return answers
         return answers
 
-    def latest_answers_by_question(self):
+    def latest_answers_by_question_id(self):
         answered_questions = OrderedDict()
-        for q in self.questionset.questions.all().order_by('id'):
-            answered_questions[q] = None
+        # print "loading."
+        for q_id in self.questionset.questions.all().order_by('id').values_list('identifier', flat=True):
+            answered_questions[q_id] = None
         n_questions = len(answered_questions)
         n_found = 0
+        # print "  iterating.."
         for a in self.answer_set.order_by("-timestamp"):
-            if a.randomized_question_id not in answered_questions:
-                answered_questions[a.question] = a
+            q_id = a.question_id
+            if answered_questions[q_id] is None:
+                answered_questions[q_id] = a
                 n_found += 1
                 if n_found >= n_questions:
+                    # print "  ", answered_questions
                     return answered_questions
+        # print "  ", answered_questions
         return answered_questions
     
     def latest_answers_sum(self):

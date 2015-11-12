@@ -2,6 +2,15 @@
 {% load i18n %}
 {% load static %}
 {% block extrahead %}
+<script>
+function switch_qualify(obj) {
+   var tr = $(obj).closest("tr");
+   $.ajax("/").done(function() {
+       tr.toggleClass("confirmed unconfirmed");
+   })
+}
+
+</script>
 {% endblock %}
 {% block context_menu %}
 {% if request.user.is_authenticated %}
@@ -57,15 +66,43 @@
 <a href="{% url 'competition_detail' slug=competition.slug %}">{% trans "Advanced details" %}</a>
 </div>
 <div>
+<div class="prelim">{% trans "Preliminary results" %}</div>
 {% for school, cqsa in attempts.iteritems %}
+    <div class="results-school">{{ school }}</div>
     {% for cqs, attempts in cqsa %}<div>
-        {{cqs.name}}
-        <table>
-            <tr><td>{% trans "Competitor" %}</td>{% for q in cqs.questionset.questions.all %}<td><span title="{{q.title}}">{{q.title|truncatechars:7}}</span></td>{% endfor %}<td>{% trans "Score" %}</td></tr>
-        {% for attempt in attempts %}<tr>
-            <td>{{attempt.competitor}}</td>{% for q, answer in attempt.latest_answers_by_question.iteritems %}
-<td>{% if answer.score > 0 %}&#x2714;{% elif answer.score == None %}{% else %}&#10008;{% endif %}</td>{% endfor %}<td>{{attempt.latest_answers_sum}}</td>
-        </tr>{% endfor %}
+        <div class="results-group">{{cqs.name}}</div>
+        <table class="results">
+            <tr>
+               <td></td>
+                   {% for q in cqs.questionset.questions.all %}
+                       <th>
+                           <span title="{{q.title}}">{{q.title|truncatechars:7}}</span>
+                       </th>
+                   {% endfor %}
+            </tr>
+            {% for attempt in attempts %}
+                <tr class="unconfirmed">
+                    <th>{{attempt.competitor.first_name}} {{attempt.competitor.last_name}}
+                         <a href="/"><img src="/static/img/pencil.png"/></a>
+                         <span class="qualify-button" onclick="switch_qualify(this)">
+                    </th>
+                    {% for q, answer in attempt.latest_answers_by_question_id.iteritems %}
+                        <td>
+                            {% if answer.score > 0 %}
+                                <span class="correct">&#x2714;</span>
+                            {% elif answer.score == None %}
+                            {% else %}
+                                <span class="wrong">&#10008;</span>
+                            {% endif %}
+                        </td>
+                    {% endfor %}
+                    <td class="score">
+                        <span>
+                            {{attempt.latest_answers_sum}}
+                        </span>
+                    </td>
+                </tr>
+            {% endfor %}
         </table>
     </div>{% endfor %}
 {%  endfor %}
