@@ -8,6 +8,7 @@ import django.template
 from django.forms.models import model_to_dict
 import os
 from bs4 import BeautifulSoup
+from django.utils.text import slugify
 
 import bober_simple_competition
 
