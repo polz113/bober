@@ -608,6 +608,8 @@ class AttemptInvalidation(models.Model):
     reason = TextField(blank=True)
 
 class AttemptConfirmation(models.Model):
+    def __unicode__(self):
+        return u"{}: {}".format(by, attempt)
     by = ForeignKey('Profile')
     attempt = ForeignKey('Attempt')
 

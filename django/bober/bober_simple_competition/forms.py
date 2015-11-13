@@ -93,6 +93,7 @@ class BasicProfileForm(forms.ModelForm):
 class ProfileEditForm(BasicProfileForm):
     pass
 
+
 class QuestionSetRegistrationForm(forms.ModelForm):
     class Meta:
         model = User
@@ -243,6 +244,12 @@ class CompetitionCompetitorForm(QuestionSetCompetitorForm):
             self.errors['competition_questionset']=[_('This field is required')]
         return super(CompetitionCompetitorForm, self).clean()
 
+class CompetitorUpdateForm(forms.ModelForm):
+    class Meta:
+        model = Competitor
+        fields = ['first_name', 'last_name']
+    cqs_id = forms.IntegerField(min_value=0, widget=forms.HiddenInput)
+    attempt_id = forms.IntegerField(min_value=0, widget=forms.HiddenInput)
 
 class CompetitorCodeForm(forms.Form):
     competitor_privileges = forms.MultipleChoiceField(

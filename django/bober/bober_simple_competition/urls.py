@@ -100,7 +100,7 @@ urlpatterns = patterns('',
     url(r'^registration_codes/$', views.registration_codes, name="registration_codes"),
     # 5. edit user data
     # url(r'^users/$', views.ProfileListView.as_view(), name="profile_list"),
-    url(r'^competitor/(?P<pk>\d+)/update', views.CompetitorUpdate.as_view(), name='competitor_update'),
+    url(r'^competitor/(?P<pk>\d+)/update', views.CompetitorUpdateJson.as_view(), name='competitor_update'),
     url(r'^users/$', views.ProfileTableView.as_view(), name="profile_list"),
     url(r'^users/(?P<pk>\d+)/$', views.ProfileDetail.as_view(), name="profile_detail"),
     #   5.1 merge users

@@ -804,10 +804,27 @@ def attempt_unconfirm(request, competition_questionset_id, attempt_id):
     ).delete()
     return JsonResponse({'status': 'success'})
 
-class CompetitorUpdate(LoginRequiredMixin, UpdateView):
+class CompetitorUpdateJson(LoginRequiredMixin, UpdateView):
     model = Competitor
-    def dispatch(self):
-        pass 
+    form_class = CompetitorUpdateForm
+    def form_valid(self, form):
+        attempt = get_object_or_404(Attempt, id=form.cleaned_data['attempt_id'])
+        print attempt.competitor, self.object
+        if attempt.competitor != self.object:
+            raise PermissionDenied
+        cqs = get_object_or_404(CompetitionQuestionSet, 
+            id=form.cleaned_data['cqs_id'])
+        profile = self.request.user.profile
+        if self.request.user.profile.created_codes.filter(
+            codegenerator = cqs.competition.competitor_code_generator,
+            value = attempt.access_code
+        ).count() < 1:
+            raise PermissionDenied
+        form.save()
+        # print "obj:", self.object
+        return JsonResponse({'status': 'success', 
+            'first_name': self.object.first_name, 
+            'last_name': self.object.last_name})
 
 class ProfileListView(LoginRequiredMixin, ListView):
     model = Profile
