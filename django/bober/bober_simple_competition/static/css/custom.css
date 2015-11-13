@@ -131,7 +131,7 @@ table.results tr.confirmed span.qualify-button {
     background: url(/static/img/disqualify.png) 0px 0px/12px 12px no-repeat;
 }
 
-table.results tr.unconfirmed td {
+table.results tr.unconfirmed td span {
     display: none;
 }
 
@@ -173,6 +173,14 @@ table.results tr.unconfirmed td.score {
     width: 27px;
 }
 
+table.results th img {
+    padding-left: 5px;
+}
+
+table.results td.score {
+    width: 30px;
+    padding: 0;
+}
 
 td.score span {
     font-weight: bold;
