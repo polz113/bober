@@ -52,8 +52,13 @@ class TeacherOverview(SmartCompetitionAdminCodeRequiredMixin,
             cqs_slug = split_code[0]
             cqs = CompetitionQuestionSet.get_by_slug(cqs_slug)
             schools[school].append((cqs, sep.join(split_code[1:])))
-            attempts[school].append((cqs, Attempt.objects.filter(access_code = code)))
-        
+            a_list = []
+            for a in Attempt.objects.filter(access_code = code):
+                if a.confirmed_by.filter(id=profile.id).count() > 0:
+                    a_list.append((a, 'confirmed'))
+                else:
+                    a_list.append((a, 'unconfirmed'))
+            attempts[school].append((cqs, a_list))
         context['schools'] = schools
         context['attempts'] = attempts
         # print attempts

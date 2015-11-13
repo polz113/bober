@@ -1,7 +1,7 @@
 from django.shortcuts import render
-from django.shortcuts import render, redirect, resolve_url
+from django.shortcuts import render, redirect, resolve_url, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse, QueryDict, HttpResponseRedirect
+from django.http import HttpResponse, QueryDict, HttpResponseRedirect, JsonResponse
 from bober_simple_competition.forms import *
 from bober_simple_competition import tables
 from bober_simple_competition import filters
@@ -767,6 +767,48 @@ def registration_codes(request):
 
 # 5. edit user data
 # 5.0 list ?users registered using the current user's codes?
+# Confirm attempts
+@login_required
+def attempt_confirm(request, competition_questionset_id, attempt_id):
+    if request.method != 'POST':
+        raise PermissionDenied
+    attempt = get_object_or_404(Attempt, id=attempt_id)
+    cqs = get_object_or_404(CompetitionQuestionSet, id=competition_questionset_id)
+    profile = request.user.profile
+    if request.user.profile.created_codes.filter(
+            codegenerator = cqs.competition.competitor_code_generator,
+            value = attempt.access_code
+        ).count() < 1:
+        raise PermissionDenied
+    ac, created = AttemptConfirmation.objects.get_or_create(
+        by = profile,
+        attempt = attempt
+    )
+    return JsonResponse({'id': ac.id, 'status': 'success'})
+
+@login_required
+def attempt_unconfirm(request, competition_questionset_id, attempt_id):
+    if request.method != 'POST':
+        raise PermissionDenied
+    attempt = get_object_or_404(Attempt, id=attempt_id)
+    cqs = get_object_or_404(CompetitionQuestionSet, id=competition_questionset_id)
+    profile = request.user.profile
+    if request.user.profile.created_codes.filter(
+            codegenerator = cqs.competition.competitor_code_generator,
+            value = attempt.access_code
+        ).count() < 1:
+        raise PermissionDenied
+    AttemptConfirmation.objects.filter(
+        by = profile,
+        attempt = attempt
+    ).delete()
+    return JsonResponse({'status': 'success'})
+
+class CompetitorUpdate(LoginRequiredMixin, UpdateView):
+    model = Competitor
+    def dispatch(self):
+        pass 
+
 class ProfileListView(LoginRequiredMixin, ListView):
     model = Profile
     template_name = 'bober_simple_competition/profile_list.html'

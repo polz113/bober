@@ -2,25 +2,42 @@
 {% load i18n %}
 {% load static %}
 {% block extrahead %}
+<script src="{% static "js/django_csrf_cookie.js" %}"></script>
 <script>
 function switch_qualify(obj) {
-   var tr = $(obj).closest("tr");
-   $.ajax("/").done(function() {
-       tr.toggleClass("confirmed unconfirmed");
-   })
+    var tr = $(obj).closest("tr");
+    var url = tr[0].attributes['confirm_url'].value;
+    if (tr.hasClass("confirmed")){
+        url = tr[0].attributes['unconfirm_url'].value;
+    }
+    $.ajax({
+        url: url,
+        method: "post",
+        success: function(response_data) {
+            tr.toggleClass("confirmed unconfirmed");
+        }
+    })
 }
 
 function edit_name(obj) {
-   var tr = $(obj).closest("tr");
-   tr.find("span.name").css("display", "none");
-   tr.find("span.edit-name").css("display", "inline-block");
-
-   tr.find("input").keyup(function (e) {
+    var tr = $(obj).closest("tr");
+    tr.find("span.name").css("display", "none");
+    var span = tr.find("span.edit-name");
+    span.css("display", "inline-block");
+    tr.find("input").keyup(function (e) {
         if (e.keyCode == 13) {
-            tr.find("span.name").css("display", "inline-block");
-            tr.find("span.edit-name").css("display", "none");
+            $.ajax({
+                url : span.update_url, // the endpoint
+                type : "POST", // http method
+                data : { the_post : $('#post-text').val() }, // data sent with the post request
+                // handle a successful response
+                success : function(response_data) {
+                    tr.find("span.name").css("display", "inline-block");
+                    tr.find("span.edit-name").css("display", "none");
+                },
+            });
         }
-   });
+    });
 }
 
 </script>
@@ -70,8 +87,8 @@ function edit_name(obj) {
     <tr>
         <th>{% trans "Certificates" %}</th>
         <td>
-            <p>{% trans "Certificates of achievement" %} (še ni na voljo)</p>
-            <p>{% trans "Certificates for mentors" %} (še ni na voljo)</p>
+            <p>{% trans "Certificates of achievement" %} ({% trans "not available yet" %})</p>
+            <p>{% trans "Certificates for mentors" %} ({% trans "not available yet" %})</p>
         </td>
     </tr>
 </table>
@@ -93,13 +110,15 @@ function edit_name(obj) {
                        </th>
                    {% endfor %}
             </tr>
-            {% for attempt in attempts %}
-                <tr class="unconfirmed">
+            {% for attempt, status in attempts %}
+                <tr class="{{status}}" confirm_url="{% url "attempt_confirm" attempt_id=attempt.id competition_questionset_id=cqs.id %}" unconfirm_url="{% url "attempt_unconfirm" attempt_id=attempt.id competition_questionset_id=cqs.id %}">
                     <th>
                          <span class="name">{{attempt.competitor.first_name}} {{attempt.competitor.last_name}}</span>
-                         <span class="edit-name" style="display: none">
+                         <span class="edit-name" style="display: none" update_url="{% url "competitor_update" pk=attempt.competitor.id %}">
+                         <form>
                              <input type="text" value="{{attempt.competitor.first_name}}"/> 
                              <input type="text" value="{{attempt.competitor.last_name}}"/> 
+                         </form>
                          </span>
                          <img src="/static/img/pencil.png" onclick="edit_name(this); " />
                          <span class="qualify-button" onclick="switch_qualify(this); ">

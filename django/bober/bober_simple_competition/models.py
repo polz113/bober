@@ -109,34 +109,41 @@ class Competition(models.Model):
     # duration in seconds
     duration = IntegerField(default=60*60) # 60s * 60 = 1h.
     end = DateTimeField()
+    
     def expand_competitor_code(self, short_code, competition_questionset):
         sep = self.competitor_code_generator.format.separator
         return competition_questionset.slug_str() + sep + short_code
+    
     def split_competitor_code(self, access_code):
         sep = self.competitor_code_generator.format.separator
         return access_code.split(sep)
-    def grade_attempts(self, grade_runtime_managers=None):
+    
+    def grade_attempts(self, grader_runtime_manager=None):
         if grader_runtime_manager is None:
             grader_runtime_manager = graders.RuntimeManager()
             grader_runtime_manager.start_runtimes()
-        for cq in self.competition_question_set_set.all():
+        for cq in CompetitionQuestionSet.objects.filter(competition=self):
             for attempt in cq.attempt_set.all():
                 attempt.grade_answers(grader_runtime_manager)
+    
     def admin_privilege_choices(self, access_code):
         return filter(
             lambda x: self.administrator_code_generator.code_matches(access_code,
                 {'admin_privileges': [x[0]]}),
             ADMIN_PRIVILEGES)
+    
     def allowed_effect_choices(self, access_code):
         return filter(
             lambda x: self.administrator_code_generator.code_matches(access_code,
                 {'allowed_effects': [x[0]]}),
             CODE_EFFECTS)
+    
     def competitor_privilege_choices(self, access_code):
         return filter(
         lambda x: self.administrator_code_generator.code_matches(access_code,
             {'competitor_privileges': [x[0]]}),
         COMPETITOR_PRIVILEGES)
+    
     def max_admin_code_data(self, access_code):
         return {
             'admin_privileges': 
@@ -146,11 +153,13 @@ class Competition(models.Model):
             'competitor_privileges': 
                 [i[0] for i in self.competitor_privilege_choices(access_code)]
             }
+    
     def max_competitor_code_data(self, access_code):
         return {
             'competitor_privileges': 
                 [i[0] for i in self.competitor_privilege_choices(access_code)]
             }
+    
     def competitor_code_create(self, access_code, 
             competition_questionset = None,
             code_data = None):
@@ -234,6 +243,7 @@ class QuestionSet(models.Model):
     name = CharField(max_length = 255)
     questions = ManyToManyField('Question')
     resource_caches = ManyToManyField('ResourceCache', null=True, blank=True)
+
     def question_mapping(self, random_seed):
         q = self.questions.order_by('identifier').values_list('identifier')
         d = dict()
@@ -242,10 +252,13 @@ class QuestionSet(models.Model):
         for n, i in enumerate(q):
             d[i[0]] = c[n]
         return d
+
     def cache_dir(self):
         return str(self.id) + "-" + self.slug
+
     def reverse_question_mapping(self, random_seed):
         return {v: k for k, v in self.question_mapping(random_seed).iteritems()}
+
     def rebuild_caches(self, embed_images = True):
         html_resources = {}
         self.resource_caches.all().delete()
@@ -694,7 +707,7 @@ class Attempt(models.Model):
         return answered_questions
     
     def latest_answers_sum(self):
-        return int(sum([a.score for a in self.latest_answers()]))
+        return int(sum([a.score for a in self.latest_answers() if a.score is not None]))
 
 
 class Profile(models.Model):
