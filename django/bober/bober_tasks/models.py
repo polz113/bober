@@ -9,6 +9,7 @@ from django.forms.models import model_to_dict
 import os
 from bs4 import BeautifulSoup
 from django.utils.text import slugify
+import mimetypes
 
 import bober_simple_competition
 
@@ -138,7 +139,6 @@ class TaskTranslation(models.Model):
         return template.render(django.template.Context(d))
     
     def export_to_simple_competition(self):
-        
         # if request.method == 'GET':
         #    return redirect("/")
         accepted_answers = self.answer_set.filter(correct=True)
@@ -151,6 +151,8 @@ class TaskTranslation(models.Model):
             identifier = str(self.task.id))
         if created:
             q.slug = slugify(self.title) + '-' + str(self.task.id)
+        else:
+            q.resource_set.all().delete()
         q.country = self.task.country
         q.verification_function_type = 0 # non-interactive
         q.verification_function = u",".join([str(a.id) for a in accepted_answers])
@@ -162,17 +164,17 @@ class TaskTranslation(models.Model):
         # print q, tt
         index_str = self.render_to_string()
         index_soup = BeautifulSoup(index_str, "lxml")
-        resource_list = bober_simple_competition.models._resource_list(index_soup)
-        resource_list += [{'type': "html", "url": "index.html"}]
         # print index_str.encode('utf-8')
         # print resource_list
         index_resource = bober_simple_competition.models.Resource(
             question = q,
             relative_url = 'index.html',
             file = None,
+            resource_type = 'html',
             mimetype = 'text/html',
             data = index_str.encode('utf-8'))
         index_resource.save()
+        resource_list = bober_simple_competition.models._resource_list(index_soup)
         for d in resource_list:
             print d['url']
             try:
@@ -185,15 +187,21 @@ class TaskTranslation(models.Model):
                     str(self.language_locale), 
                     'resources',
                     resource.filename)
-                with open(f_path) as f:
+                with open(f_path, mode='rb') as f:
+                    data = bytes(f.read())
                     r = bober_simple_competition.models.Resource(
                         question = q,
                         relative_url = 'resources/' + resource.filename,
                         resource_type = d['type'],
+                        mimetype = mimetypes.guess_type(d['url'])[0],
                         file = None,
-                        data = f.read(),
                     )
-                r.save()
+                    r.save()
+                    print r.id, type(data)
+                    r.data = data
+                    print "  saving"
+                    r.save()
+                    print "  done!"
             except Exception, e:
                 print e
 
