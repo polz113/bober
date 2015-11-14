@@ -118,13 +118,13 @@ class Competition(models.Model):
         sep = self.competitor_code_generator.format.separator
         return access_code.split(sep)
     
-    def grade_attempts(self, grader_runtime_manager=None):
+    def grade_attempts(self, grader_runtime_manager=None, regrade=False):
         if grader_runtime_manager is None:
             grader_runtime_manager = graders.RuntimeManager()
             grader_runtime_manager.start_runtimes()
         for cq in CompetitionQuestionSet.objects.filter(competition=self):
             for attempt in cq.attempt_set.all():
-                attempt.grade_answers(grader_runtime_manager)
+                attempt.grade_answers(grader_runtime_manager, regrade=regrade)
     
     def admin_privilege_choices(self, access_code):
         return filter(
@@ -590,7 +590,7 @@ class Answer(models.Model):
             
     attempt = ForeignKey('Attempt')
     randomized_question_id = IntegerField()
-    timestamp = DateTimeField(auto_now = True)
+    timestamp = DateTimeField(auto_now_add = True)
     value = TextField(blank=True, null = True)
     score = FloatField(null=True)
 
@@ -620,6 +620,12 @@ class Competitor(models.Model):
     profile = ForeignKey('Profile', null=True, blank=True)
     first_name = models.CharField(max_length=128, verbose_name=_("First Name"))
     last_name = models.CharField(max_length=128, verbose_name=_("Last Name"))
+
+class GradedAnswer(models.Model):
+    attempt = ForeignKey('Attempt')
+    question = ForeignKey('Question')
+    answer = ForeignKey('Answer')
+    score = FloatField(null=True)
  
 class Attempt(models.Model):
     def __unicode__(self):
@@ -633,11 +639,15 @@ class Attempt(models.Model):
     # user = ForeignKey('Profile', null=True, blank=True)
     competitor = ForeignKey('Competitor', null=True, blank=True)
     invalidated_by = ForeignKey('AttemptInvalidation', null=True, blank=True)
-    confirmed_by = ManyToManyField('Profile', through='AttemptConfirmation', null=True, blank=True)
+    confirmed_by = ManyToManyField('Profile', through='AttemptConfirmation',
+        null=True, blank=True)
     random_seed = IntegerField()
     start = DateTimeField(auto_now_add = True)
     finish = DateTimeField(null=True, blank=True)
-    
+    graded_answers = ManyToManyField('Answer', through='GradedAnswer',
+        related_name = 'graded_attempt',
+        null=True, blank=True)
+ 
     @property
     def competition(self):
         return self.competitionquestionset.competition
@@ -660,40 +670,60 @@ class Attempt(models.Model):
         return self.questionset.question_mapping(self.random_seed)
     
     def grade_answers(self, grader_runtime_manager=None, regrade=False):
+        print "grading..."
         if grader_runtime_manager is None:
             grader_runtime_manager = graders.RuntimeManager()
             grader_runtime_manager.start_runtimes()
+        self.update_graded_answers()
+        print "graded_answers_updated"
+        print self.latest_answers()
         if regrade:
-            answers = self.answer_set.select_related('question').all()
+            answers = self.graded_answers.select_related('question').all()
         else:
-            answers = self.answer_set.select_related('question').filter(score=None)
+            answers = self.graded_answers.select_related('question').filter(score=None)
         for a in answers:
         #    print "regrading", a
             q = a.question
-            grader = grader_runtime_manager.get_grader(q.verification_function, q.verification_function_type)
+            grader = grader_runtime_manager.get_grader(
+                q.verification_function, q.verification_function_type)
             a.score = grader(a.value, self.random_seed, q)
             a.save()
-    
-    def latest_answers(self):
-        # get only the latest answers
+
+    def update_graded_answers(self, check_timestamp=False):
         answered_questions = set()
-        answers = []
         n_questions = self.questionset.questions.count()
         n_found = 0
-        for a in self.answer_set.order_by("-timestamp"):
+        answers = self.answer_set.order_by("-timestamp").all()
+        if check_timestamp:
+            answers = answers.filter(timestamp__lte=self.finish)
+        for a in answers:
+            print "a:", a
             if a.randomized_question_id not in answered_questions:
-                answers.append(a)
-                answered_questions.add(a.randomized_question_id)
-                n_found += 1
-                if n_found >= n_questions:
-                    return answers
-        return answers
+                try:
+                    print "  ", a.question.id
+                    GradedAnswer.objects.update_or_create(
+                        attempt=self, question_id=a.question.id,
+                        defaults={'answer': a})
+                    answered_questions.add(a.randomized_question_id)
+                    n_found += 1
+                    if n_found >= n_questions:
+                        return
+                except Exception, e:
+                    print e
+
+    def latest_answers(self):
+        # get only the latest answers
+        return self.graded_answers.all()
 
     def latest_answers_by_question_id(self):
+        # return self.graded_answers.order_by('gradedanswer__question_id')
         answered_questions = OrderedDict()
         # print "loading."
-        for q_id in self.questionset.questions.all().order_by('id').values_list('identifier', flat=True):
-            answered_questions[q_id] = None
+        for q_id in self.questionset.questions.all().order_by('id').values_list(
+                'id', flat=True):
+            answered_questions[q_id] = self.graded_answers.filter(
+                gradedanswer__question_id = q_id).first()
+        return answered_questions
         n_questions = len(answered_questions)
         n_found = 0
         # print "  iterating.."

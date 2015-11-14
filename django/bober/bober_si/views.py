@@ -53,7 +53,8 @@ class TeacherOverview(SmartCompetitionAdminCodeRequiredMixin,
             cqs = CompetitionQuestionSet.get_by_slug(cqs_slug)
             schools[school].append((cqs, sep.join(split_code[1:])))
             a_list = []
-            for a in Attempt.objects.filter(access_code = code):
+            for a in Attempt.objects.filter(
+                    access_code = code).prefetch_related('graded_answers'):
                 if a.confirmed_by.filter(id=profile.id).count() > 0:
                     a_list.append((a, 'confirmed'))
                 else:

@@ -29,6 +29,9 @@ import string
 
 epoch = datetime.datetime.utcfromtimestamp(0).replace(tzinfo=timezone.get_current_timezone())
 
+class OutOfTimeError(Exception):
+    pass
+
 def access_code_required(function = None):
     def code_fn(*args, **kwargs):
         request = kwargs.get('request', args[0])
@@ -644,6 +647,7 @@ def competition_data(request, competition_questionset_id):
         assert codegen.code_matches(
             access_code, {'competitor_privileges':['resume_attempt']})
         sep = codegen.format.separator
+        # access_code_id_part contains both the group and the code id
         access_code_id_part = sep.join(access_code.split(sep)[:2])
         attempt = Attempt.objects.filter(competitor=competitor,
             access_code__startswith=access_code_id_part,
@@ -711,16 +715,32 @@ def submit_answer(request, competition_questionset_id, attempt_id):
         except:
             val = None
         now = timezone.now()
-        # UNCOMMENT THE LINES BELOW FOR MORE SECURITY
-        #attempt = Attempt.objects.get(id=attempt_id)
-        #_check_attempt_and_code(request, attempt)
-        #if (attempt.finish - now).total_seconds() < 0:
-        #     raise Exception("out_of_time")
-        # COMMENT OUT THE LINES ABOVE FOR MORE PERFORMANCE
         a = Answer(attempt_id = attempt_id,
             randomized_question_id = request.POST['q'],
             value = val, timestamp = now)
         a.save()
+        try:
+            # uncomment the line below for offline checking
+            # raise Exception();
+            
+            graded_answer, created = GradedAnswer.objects.get_or_create(
+                attempt_id = attempt_id,
+                question_id = a.question_id,
+                defaults = {'answer': a}).select_related('attempt')
+            attempt = graded_answer.attempt
+            _check_attempt_and_code(request, attempt)
+            if (attempt.finish - now).total_seconds() >= 0:
+                if not created:
+                    graded_answer.answer = a
+                    graded_answer.save()
+            else:
+                if created:
+                    graded_answer.delete()
+                raise OutOfTimeError("out_of_time")
+        except OutOfTimeError, e:
+            raise e
+        except:
+            pass
         data['success'] = True
         # don't do a read before each write!
     except Exception, e:
