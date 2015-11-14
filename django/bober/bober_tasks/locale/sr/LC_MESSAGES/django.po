@@ -30,7 +30,7 @@ msgstr "Prezime"
 
 #: bober_tasks/forms.py:9 bober_tasks/templates/control-panel/users.html:32
 msgid "Email"
-msgstr "Elektronska pošta"
+msgstr "Adresa e-pošte"
 
 #: bober_tasks/forms.py:10
 msgid "Password"
