@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Bober\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-11-07 20:13+0000\n"
-"PO-Revision-Date: 2015-10-21 08:24+0100\n"
+"PO-Revision-Date: 2015-11-14 17:48+0100\n"
 "Last-Translator: Bojan Milosavljević <bmilosavljevic@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: sr\n"
@@ -25,93 +25,87 @@ msgstr "Pristupni kôd"
 
 #: forms.py:22
 msgid "Update used codes later"
-msgstr ""
+msgstr "Kasnije ažuriraj korišćene kôdove"
 
 #: forms.py:25
 msgid "Execute effects later"
-msgstr ""
+msgstr "Izvrši efekte kasnije"
 
 #: forms.py:127 forms.py:161 forms.py:192 forms.py:236
-#, fuzzy
 #| msgid "Enter access code"
 msgid "Wrong access code"
-msgstr "Unesi pristupni kôd"
+msgstr "Pogrešan pristupni kôd"
 
 #: forms.py:147 forms.py:222
 msgid "Group"
-msgstr ""
+msgstr "Grupa"
 
 #: forms.py:164 forms.py:243
 msgid "This field is required"
-msgstr ""
+msgstr "Ovo polje je obavezno"
 
 #: models.py:55
-#, fuzzy
 #| msgid "Create competition"
 msgid "Participate in the competition"
-msgstr "Kreiraj takmičenje"
+msgstr "Učestvuj u takmičenju"
 
 #: models.py:56
 msgid "Attempt competition before start"
-msgstr ""
+msgstr "Pokušaj takmičenje pre početka"
 
 #: models.py:57
 msgid "See results before official end of competition"
-msgstr ""
+msgstr "Vidi rezultate pre zvaničnog kraja takmičenja"
 
 #: models.py:58
-#, fuzzy
 #| msgid "Competition attempts"
 msgid "Resume existing attempts"
-msgstr "Pokušaji takmičenja"
+msgstr "Pregled postojećih pokušaja takmičenja"
 
 #: models.py:62
 msgid "Allow the creator to manage the profile of anyone using this code"
-msgstr ""
+msgstr "Dozvoli kreatoru da upravlja bilo čijim profilom korišćenjem ovog kôda"
 
 #: models.py:63
 msgid ""
 "Allow the creator and their managers to manage the profile of anyone using "
 "this code"
 msgstr ""
+"Dozvoli kreatoru i njegovim upravnicima da upravljaju bilo čijim profilima "
+"korišćenjem ovo kôda"
 
 #: models.py:67
-#, fuzzy
 #| msgid "Create admin codes"
 msgid "Create administrator codes"
 msgstr "Kreiraj kodove administratora"
 
 #: models.py:68
-#, fuzzy
 #| msgid "Competitor codes"
 msgid "Create comeptitor codes"
-msgstr "Kôdovi takmičara"
+msgstr "Kreiraj kôdove takmičara"
 
 #: models.py:69
-#, fuzzy
 #| msgid "Use question sets for new competitions"
 msgid "View all attempts for this competition"
-msgstr "Koristi skupove pitanja za nova takmičenja"
+msgstr "Pregled svih pokušaja za ovo takmičenje"
 
 #: models.py:70
 msgid "View all administrator codes for this competition"
-msgstr ""
+msgstr "Pregled svih administratorskih kôdova za ovo takmičenje"
 
 #: models.py:71
-#, fuzzy
 #| msgid "Welcome to the Bober competition"
 msgid "View all competitor codes for this competition"
-msgstr "Dobrodošli na takmičenje Dabar"
+msgstr "Pregled svih takmičarskih kôdova za ovo takmičenje"
 
 #: models.py:72
 msgid "Use question sets for new competitions"
 msgstr "Koristi skupove pitanja za nova takmičenja"
 
 #: models.py:73
-#, fuzzy
 #| msgid "Create competition"
 msgid "Modify this competition"
-msgstr "Kreiraj takmičenje"
+msgstr "Izmeni takmičenje"
 
 #: models.py:75
 msgid "Use questions for new question sets"
@@ -119,27 +113,27 @@ msgstr "Koristi pitanja za nove skupove pitanja"
 
 #: models.py:88
 msgid "Reduced functionality"
-msgstr ""
+msgstr "Smanjena funcionalnost"
 
 #: models.py:89
 msgid "Basic features only"
-msgstr ""
+msgstr "Samo osnovne funkcije"
 
 #: models.py:90
 msgid "Commonly used features"
-msgstr ""
+msgstr "Obično korišćene funkcije"
 
 #: models.py:91
 msgid "All features"
-msgstr ""
+msgstr "Sve funkcije"
 
 #: templates/base.html:37
 msgid "Beaver"
-msgstr ""
+msgstr "Dabar"
 
 #: templates/base.html:42
 msgid "Logout"
-msgstr ""
+msgstr "Odjavljivanje"
 
 #: templates/bober_simple_competition/access_code.html:4
 #: templates/bober_simple_competition/access_code.html:6
@@ -155,7 +149,7 @@ msgstr "Unesi pristupni kôd"
 #: templates/bober_simple_competition/profile_detail.html:14
 #: templates/bober_simple_competition/profile_table_list.html:11
 msgid "Back to Menu"
-msgstr ""
+msgstr "Nazad na Meni"
 
 #: templates/bober_simple_competition/access_code.html:18
 #: templates/bober_simple_competition/basic_registration.html:11
@@ -182,7 +176,7 @@ msgstr "Pitanja"
 #: templates/bober_simple_competition/attempt_results.html:14
 #: templates/bober_simple_competition/competition_attempt_list.html:19
 msgid "Not graded yet"
-msgstr ""
+msgstr "Nije još ocenjeno"
 
 #: templates/bober_simple_competition/attempt_results.html:15
 #: templates/bober_simple_competition/competition_attempt_list.html:20
@@ -191,7 +185,6 @@ msgstr "Pogrešan odgovor"
 
 #: templates/bober_simple_competition/attempt_results.html:16
 #: templates/bober_simple_competition/competition_attempt_list.html:21
-#, fuzzy
 #| msgid "Correct Answer"
 msgid "Correct"
 msgstr "Tačan odgovor"
@@ -229,7 +222,7 @@ msgstr "Kreiraj format kôda"
 
 #: templates/bober_simple_competition/codeformat_create.html:9
 msgid "Code format successfully created!"
-msgstr ""
+msgstr "Uspešno je kreiran format kôda!"
 
 #: templates/bober_simple_competition/codeformat_index.html:4
 #: templates/bober_simple_competition/codeformat_index.html:6
@@ -238,44 +231,38 @@ msgstr ""
 #: templates/bober_simple_competition/index.html:17
 #: templates/code_based_auth/codeformat_list.html:4
 #: templates/code_based_auth/codeformat_list.html:6
-#, fuzzy
 #| msgid "Create code format"
 msgid "Code formats"
-msgstr "Kreiraj format kôda"
+msgstr "Formati kôdova"
 
 #: templates/bober_simple_competition/codeformat_index.html:9
 msgid "Back to index"
-msgstr ""
+msgstr "Nazad na indeks"
 
 #: templates/bober_simple_competition/codeformat_index.html:10
-#, fuzzy
 #| msgid "Competitor codes"
 msgid "Competitor code formats"
-msgstr "Kôdovi takmičara"
+msgstr "Formati kôdova takmičara"
 
 #: templates/bober_simple_competition/codeformat_index.html:11
-#, fuzzy
 #| msgid "Create code format"
 msgid "Create competitor code format"
-msgstr "Kreiraj format kôda"
+msgstr "Kreiraj format kôda taakmičara"
 
 #: templates/bober_simple_competition/codeformat_index.html:12
-#, fuzzy
 #| msgid "Admin codes"
 msgid "Admin code formats"
-msgstr "Kodovi administratorâ"
+msgstr "Formati kôdova administratorâ"
 
 #: templates/bober_simple_competition/codeformat_index.html:13
-#, fuzzy
 #| msgid "Create code format"
 msgid "Create administrator code format"
-msgstr "Kreiraj format kôda"
+msgstr "Kreiraj format kôda administratora"
 
 #: templates/bober_simple_competition/codeformat_list.html:8
-#, fuzzy
 #| msgid "Create code format"
 msgid "Back to code format index"
-msgstr "Kreiraj format kôda"
+msgstr "Nazad na spisak formata kôdova"
 
 #: templates/bober_simple_competition/competition_attempt_list.html:4
 #: templates/bober_simple_competition/competition_attempt_list.html:6
@@ -285,17 +272,15 @@ msgstr "Pokušaji takmičenja"
 #: templates/bober_simple_competition/competition_attempt_list.html:9
 #: templates/bober_simple_competition/competition_code_list.html:9
 #: templates/bober_simple_competition/competition_detail.html:12
-#, fuzzy
 #| msgid "Create competition"
 msgid "Back to competitions"
-msgstr "Kreiraj takmičenje"
+msgstr "Nazad na takmičenja"
 
 #: templates/bober_simple_competition/competition_attempt_list.html:11
 #: templates/bober_simple_competition/competition_code_list.html:11
-#, fuzzy
 #| msgid "Competitions"
 msgid "Competition details"
-msgstr "Takmičenja"
+msgstr "Detalji takmičenja"
 
 #: templates/bober_simple_competition/competition_code_create.html:4
 #: templates/bober_simple_competition/competition_code_create.html:6
@@ -310,10 +295,9 @@ msgid "Codes"
 msgstr "Kôdovi"
 
 #: templates/bober_simple_competition/competition_code_list.html:12
-#, fuzzy
 #| msgid "Create code"
 msgid "Current code"
-msgstr "Kreiraj kôd"
+msgstr "Važeći kôd"
 
 #: templates/bober_simple_competition/competition_code_list.html:16
 msgid "Admin codes"
@@ -340,34 +324,30 @@ msgstr "kodova"
 
 #: templates/bober_simple_competition/competition_detail.html:16
 msgid "edit"
-msgstr ""
+msgstr "uredi"
 
 #: templates/bober_simple_competition/competition_detail.html:18
 #: templates/bober_simple_competition/competition_form.html:36
 #: templates/bober_simple_competition/index.html:15
 #: templates/bober_simple_competition/questionset_list.html:4
 #: templates/bober_simple_competition/questionset_list.html:6
-#, fuzzy
 #| msgid "Question"
 msgid "Question sets"
-msgstr "Pitanja"
+msgstr "Skupovi pitanja"
 
 #: templates/bober_simple_competition/competition_form.html:6
 #: templates/bober_simple_competition/competition_form.html:8
-#, fuzzy
 #| msgid "Create competition"
 msgid "Edit competition"
-msgstr "Kreiraj takmičenje"
+msgstr "Uredi takmičenje"
 
 #: templates/bober_simple_competition/competition_form.html:43
 #: templates/bober_simple_competition/competition_form.html:71
-#, fuzzy
 #| msgid "Show More"
 msgid "Show more"
 msgstr "Prikaži više"
 
 #: templates/bober_simple_competition/competition_form.html:68
-#, fuzzy
 #| msgid "Show Less"
 msgid "Show less"
 msgstr "Prikaži manje"
@@ -375,35 +355,32 @@ msgstr "Prikaži manje"
 #: templates/bober_simple_competition/competition_guest.html:4
 #: templates/bober_simple_competition/competition_guest.html:6
 msgid "Compete as a guest"
-msgstr ""
+msgstr "Takmiči se kao gost"
 
 #: templates/bober_simple_competition/competition_guest.html:13
 msgid "Guest access not allowed."
-msgstr ""
+msgstr "Pristup kao gost nije dozvoljen."
 
 #: templates/bober_simple_competition/competition_guest.html:14
-#, fuzzy
 #| msgid "Competitor codes"
 msgid "Compete using a code"
-msgstr "Kôdovi takmičara"
+msgstr "Takmiči se korišćenjem kôda"
 
 #: templates/bober_simple_competition/competition_guest.html:16
 msgid "If you are not redirected automatically, click on the link below."
-msgstr ""
+msgstr "Ako ne budete preusmereni automatski, uradite klik na link ispod."
 
 #: templates/bober_simple_competition/competition_guest.html:17
 #: templates/bober_simple_competition/competition_registration.html:16
 #: templates/bober_simple_competition/questionset_registration.html:14
-#, fuzzy
 #| msgid "Competition"
 msgid "Compete"
-msgstr "Takmičenje"
+msgstr "Takmiči se"
 
 #: templates/bober_simple_competition/competition_index.html:57
-#, fuzzy
 #| msgid "Clear Answer"
 msgid "Answered"
-msgstr "Obriši odgovor"
+msgstr "Odgovoreno"
 
 #: templates/bober_simple_competition/competition_index.html:64
 msgid "Time left"
@@ -411,7 +388,7 @@ msgstr "Preostalo vreme"
 
 #: templates/bober_simple_competition/competition_index.html:70
 msgid "Finish"
-msgstr ""
+msgstr "Završi"
 
 #: templates/bober_simple_competition/competition_index.html:81
 #: templates/bober_simple_competition/competition_index.html:93
@@ -428,7 +405,7 @@ msgstr "Kreiraj takmičenje"
 
 #: templates/bober_simple_competition/competition_registration.html:19
 msgid "Login as a teacher"
-msgstr ""
+msgstr "Prijavite se kao nastavnik"
 
 #: templates/bober_simple_competition/index.html:4
 msgid "Welcome to the Bober competition"
@@ -445,102 +422,96 @@ msgstr "Takmičenja"
 #: templates/bober_simple_competition/index.html:11
 #: templates/registration/login.html:5
 msgid "Login"
-msgstr ""
+msgstr "Prijava"
 
 #: templates/bober_simple_competition/index.html:13
 msgid "Managed users"
-msgstr ""
+msgstr "Upravljani korisnici"
 
 #: templates/bober_simple_competition/index.html:14
 msgid "My profile"
-msgstr ""
+msgstr "Moj profil"
 
 #: templates/bober_simple_competition/index.html:16
 #: templates/bober_simple_competition/question_list.html:4
 #: templates/bober_simple_competition/question_list.html:6
 #: templates/bober_simple_competition/question_table.html:4
 #: templates/bober_simple_competition/question_table.html:6
-#, fuzzy
 #| msgid "Question"
 msgid "Questions"
 msgstr "Pitanja"
 
 #: templates/bober_simple_competition/profile_detail.html:19
 msgid "Profile Details"
-msgstr ""
+msgstr "Detalji profila"
 
 #: templates/bober_simple_competition/profile_detail.html:22
 msgid "First Name"
-msgstr ""
+msgstr "Ime"
 
 #: templates/bober_simple_competition/profile_detail.html:26
 msgid "Last Name"
-msgstr ""
+msgstr "Prezime"
 
 #: templates/bober_simple_competition/profile_detail.html:30
 msgid "Email"
-msgstr ""
+msgstr "Adresa e-pošte"
 
 #: templates/bober_simple_competition/profile_detail.html:39
 msgid "Former profiles"
-msgstr ""
+msgstr "Raniji profili"
 
 #: templates/bober_simple_competition/profile_detail.html:54
-#, fuzzy
 #| msgid "attempts"
 msgid "Attempts"
-msgstr "pokušaja"
+msgstr "Pokušaji"
 
 #: templates/bober_simple_competition/profile_detail.html:68
 #: templates/bober_simple_competition/profile_detail.html:106
 #: templates/bober_simple_competition/profile_form.html:30
 #: templates/bober_simple_competition/profile_form.html:68
-#, fuzzy
 #| msgid "Show More"
 msgid "Show codes"
-msgstr "Prikaži više"
+msgstr "Prikaži kôdove"
 
 #: templates/bober_simple_competition/profile_detail.html:71
 #: templates/bober_simple_competition/profile_form.html:33
-#, fuzzy
 #| msgid "Admin codes"
 msgid "Used codes"
-msgstr "Kodovi administratorâ"
+msgstr "Korišćeni kôdovi"
 
 #: templates/bober_simple_competition/profile_detail.html:80
 #: templates/bober_simple_competition/profile_form.html:42
 msgid "Received codes"
-msgstr ""
+msgstr "Dobijeni kôdovi"
 
 #: templates/bober_simple_competition/profile_detail.html:89
 #: templates/bober_simple_competition/profile_form.html:51
-#, fuzzy
 #| msgid "Create code"
 msgid "Created codes"
-msgstr "Kreiraj kôd"
+msgstr "Kreirani kôdovi"
 
 #: templates/bober_simple_competition/profile_detail.html:103
 #: templates/bober_simple_competition/profile_form.html:65
-#, fuzzy
 #| msgid "Admin codes"
 msgid "Hide codes"
-msgstr "Kodovi administratorâ"
+msgstr "Sakrij kôdove"
 
 #: templates/bober_simple_competition/profile_form.html:4
 #: templates/bober_simple_competition/profile_form.html:6
 msgid "Edit user"
-msgstr ""
+msgstr "Uredi korisnika"
 
 #: templates/bober_simple_competition/profile_list.html:4
 #: templates/bober_simple_competition/profile_list.html:5
 #: templates/bober_simple_competition/profile_table_list.html:4
 #: templates/bober_simple_competition/profile_table_list.html:5
 msgid "Users"
-msgstr ""
+msgstr "Korisnici"
 
 #: templates/bober_simple_competition/profile_list.html:14
 msgid "Update profile"
-msgstr ""
+msgstr "Ažuriraj profil"
 
 #: templates/bober_simple_competition/questionset_create.html:4
 #: templates/bober_simple_competition/questionset_create.html:6
@@ -551,42 +522,40 @@ msgstr "Kreiraj skup pitanja"
 #: templates/bober_simple_competition/questionset_detail.html:8
 #: templates/bober_simple_competition/questionset_form.html:6
 #: templates/bober_simple_competition/questionset_form.html:8
-#, fuzzy
 #| msgid "Question"
 msgid "Question set"
-msgstr "Pitanja"
+msgstr "Skupovi pitanja"
 
 #: templates/bober_simple_competition/questionset_detail.html:18
-#, fuzzy
 #| msgid "Create question set"
 msgid "Edit questionset"
-msgstr "Kreiraj skup pitanja"
+msgstr "Uredi skup pitanja"
 
 #: templates/bober_simple_competition/user_files.html:4
 #: templates/bober_simple_competition/user_files.html:6
 msgid "Files"
-msgstr ""
+msgstr "Datoteke"
 
 #: templates/bober_simple_competition/user_registration_confirmation.html:4
 #: templates/bober_simple_competition/user_registration_confirmation.html:6
 msgid "User created"
-msgstr ""
+msgstr "Korisnik je kreiran"
 
 #: templates/registration/logged_out.html:5
 msgid "Thank you for using Bober"
-msgstr ""
+msgstr "Hvala Vam za korišćenje sistema Dabar"
 
 #: templates/registration/logged_out.html:6
 msgid "Back to first page"
-msgstr ""
+msgstr "Nazad na prvu stranicu"
 
 #: templates/registration/login.html:9
 msgid "Hello,"
-msgstr ""
+msgstr "Zdravo,"
 
 #: templates/registration/login.html:13 templates/registration/login.html:16
 msgid "Login with"
-msgstr ""
+msgstr "Prijavi se sa"
 
 #~ msgid "In Cooperation With"
 #~ msgstr "U saradnji sa"

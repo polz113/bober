@@ -109,7 +109,7 @@ class Competition(models.Model):
     # duration in seconds
     duration = IntegerField(default=60*60) # 60s * 60 = 1h.
     end = DateTimeField()
-    
+ 
     def expand_competitor_code(self, short_code, competition_questionset):
         sep = self.competitor_code_generator.format.separator
         return competition_questionset.slug_str() + sep + short_code
@@ -118,14 +118,21 @@ class Competition(models.Model):
         sep = self.competitor_code_generator.format.separator
         return access_code.split(sep)
     
-    def grade_attempts(self, grader_runtime_manager=None, regrade=False):
+    def grade_attempts(self, grader_runtime_manager=None, 
+            update_graded=False, regrade=False):
+        if update_graded:
+            self.update_graded_answers()
         if grader_runtime_manager is None:
             grader_runtime_manager = graders.RuntimeManager()
             grader_runtime_manager.start_runtimes()
         for cq in CompetitionQuestionSet.objects.filter(competition=self):
-            for attempt in cq.attempt_set.all():
-                attempt.grade_answers(grader_runtime_manager, regrade=regrade)
+            cq.grade_attempts(grader_runtime_manager=grader_runtime_manager,
+                update_graded=False, regrade=regrade)
     
+    def update_graded_answers(self):
+        for cq in CompetitionQuestionSet.objects.filter(competition=self):
+            cq.update_graded_answers()
+
     def admin_privilege_choices(self, access_code):
         return filter(
             lambda x: self.administrator_code_generator.code_matches(access_code,
@@ -188,16 +195,64 @@ class Competition(models.Model):
 class CompetitionQuestionSet(models.Model):
     def __unicode__(self):
         return u"{}".format(self.name)
-    def slug_str(self):
-        return unicode(self.id) + '.' + self.questionset.slug
-    @classmethod
-    def get_by_slug(cls, slug):
-        return cls.objects.get(id=slug[:slug.find('.')])
+
     name = models.CharField(max_length=256, null=True, blank=True)
     questionset = models.ForeignKey('QuestionSet')
     competition = models.ForeignKey('Competition')
     guest_code = ForeignKey(Code, null=True, blank=True)
+ 
+    def slug_str(self):
+        return unicode(self.id) + '.' + self.questionset.slug
+    
+    @classmethod
+    def get_by_slug(cls, slug):
+        return cls.objects.get(id=slug[:slug.find('.')])
+    
+    def grade_attempts(self, grader_runtime_manager=None,
+            update_graded=False, regrade=False):
+        if grader_runtime_manager is None:
+            grader_runtime_manager = graders.RuntimeManager()
+            grader_runtime_manager.start_runtimes()
+        if update_graded:
+            self.update_graded_answers()
+        graded_answers = GradedAnswer.objects.filter(attempt__competitionquestionset=self).distinct()
+        if not regrade:
+            graded_answers = graded_answers.filter(score=None)
+        graded_answers.select_related('question__verification_function',
+            'question__verification_function_type',
+            'answer__value', 'attempt')
+        for g_a in graded_answers:
+            print "regrading", g_a.id, g_a.answer.id, g_a.answer
+            q = g_a.question
+            grader = grader_runtime_manager.get_grader(
+                q.verification_function, q.verification_function_type)
+            g_a.score = grader(g_a.answer.value, g_a.attempt.random_seed, q)
+            g_a.save()
+            g_a.answer.score = g_a.score
+            g_a.answer.save()
 
+    def update_graded_answers(self, check_timestamp = False):
+        print "fetching answers..."
+        answers = Answer.objects.filter(
+                attempt__competitionquestionset=self).order_by('timestamp')
+        if check_timestamp:
+            answers.select_related('attempt__finish')
+        for a in answers:
+            print "a:", a
+            try:
+                g_a, created = GradedAnswer.objects.get_or_create(
+                    attempt_id = a.attempt_id, question_id=a.question_id,
+                    defaults={'answer': a})
+                if not check_timestamp or a.timestamp < a.attempt.finish:
+                    if not created:
+                        g_a.answer = a
+                        g_a.save()
+                else:
+                    if created:
+                        g_a.delete()
+            except:
+                pass 
+ 
 class CodeEffect(models.Model):
     code = ForeignKey(Code)
     effect = models.CharField(max_length = 64, choices=CODE_EFFECTS)
@@ -596,12 +651,19 @@ class Answer(models.Model):
 
     @property
     def question(self):
-        return Question.objects.get(identifier=self.question_id)
-    
+        return Question.objects.get(identifier=self.question_identifier)
+
     @property
     def question_id(self):
+        return Question.objects.filter(
+                identifier=self.question_identifier
+            ).values_list('id', flat=True)[0]
+
+    @property
+    def question_identifier(self):
         return self.attempt.reverse_question_id(
             self.randomized_question_id)
+
 
 class AttemptInvalidation(models.Model):
     by = ForeignKey('Profile')
@@ -634,6 +696,7 @@ class Attempt(models.Model):
             self.questionset.name,
             self.access_code,
             self.start, self.finish)
+
     access_code = CodeField()
     competitionquestionset = ForeignKey('CompetitionQuestionSet')
     # user = ForeignKey('Profile', null=True, blank=True)
@@ -669,18 +732,20 @@ class Attempt(models.Model):
     def question_mapping(self):
         return self.questionset.question_mapping(self.random_seed)
     
-    def grade_answers(self, grader_runtime_manager=None, regrade=False):
-        print "grading..."
+    def grade_attempts(self, grader_runtime_manager=None,
+            update_graded=False, regrade=False):
+        #print "grading..."
         if grader_runtime_manager is None:
             grader_runtime_manager = graders.RuntimeManager()
             grader_runtime_manager.start_runtimes()
-        self.update_graded_answers()
-        print "graded_answers_updated"
-        print self.latest_answers()
+        if update_graded:
+            self.update_graded_answers()
+        #print "graded_answers_updated"
+        #print self.latest_answers()
         if regrade:
-            answers = self.graded_answers.select_related('question').all()
+            answers = self.graded_answer_set.select_related('question').all()
         else:
-            answers = self.graded_answers.select_related('question').filter(score=None)
+            answers = self.graded_answer_set.select_related('question').filter(score=None)
         for a in answers:
         #    print "regrading", a
             q = a.question
@@ -688,22 +753,26 @@ class Attempt(models.Model):
                 q.verification_function, q.verification_function_type)
             a.score = grader(a.value, self.random_seed, q)
             a.save()
+            a.answer.score = a.score
+            a.answer.save()
 
     def update_graded_answers(self, check_timestamp=False):
         answered_questions = set()
         n_questions = self.questionset.questions.count()
         n_found = 0
-        answers = self.answer_set.order_by("-timestamp").all()
+        answers = self.answer_set.order_by("-timestamp")
         if check_timestamp:
             answers = answers.filter(timestamp__lte=self.finish)
-        for a in answers:
-            print "a:", a
+        for a in answers.all():
+            #print "a:", a
             if a.randomized_question_id not in answered_questions:
                 try:
-                    print "  ", a.question.id
-                    GradedAnswer.objects.update_or_create(
-                        attempt=self, question_id=a.question.id,
+                    #print "  ", a.question.id
+                    g_a, created = GradedAnswer.objects.get_or_create(
+                        attempt=self, question_id=a.question_id,
                         defaults={'answer': a})
+                    if not created:
+                        g_a.answer = a
                     answered_questions.add(a.randomized_question_id)
                     n_found += 1
                     if n_found >= n_questions:
@@ -724,19 +793,19 @@ class Attempt(models.Model):
             answered_questions[q_id] = self.graded_answers.filter(
                 gradedanswer__question_id = q_id).first()
         return answered_questions
-        n_questions = len(answered_questions)
-        n_found = 0
+        #n_questions = len(answered_questions)
+        #n_found = 0
         # print "  iterating.."
-        for a in self.answer_set.order_by("-timestamp"):
-            q_id = a.question_id
-            if answered_questions[q_id] is None:
-                answered_questions[q_id] = a
-                n_found += 1
-                if n_found >= n_questions:
-                    # print "  ", answered_questions
-                    return answered_questions
+        #for a in self.answer_set.order_by("-timestamp"):
+        #    q_id = a.question_id
+        #    if answered_questions[q_id] is None:
+        #        answered_questions[q_id] = a
+        #        n_found += 1
+        #        if n_found >= n_questions:
+        #            # print "  ", answered_questions
+        #            return answered_questions
         # print "  ", answered_questions
-        return answered_questions
+        #return answered_questions
     
     def latest_answers_sum(self):
         return int(sum([a.score for a in self.latest_answers() if a.score is not None]))
