@@ -53,7 +53,7 @@ def fill_mentorship_years(sender, instance=None, **kwargs):
     if instance:
         for default_year in JuniorDefaultYear.objects.filter(
                 competition = instance.competition,
-                school_category = school.category):
+                school_category = instance.school.category):
             year, created = JuniorYear.objects.get_or_create(
                 mentorship = instance,
                 name = default_year.name)
