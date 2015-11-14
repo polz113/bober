@@ -163,7 +163,7 @@ function edit_name(obj) {
                          <span class="qualify-button" onclick="switch_qualify(this); ">
                     </th>
                     {% for q, answer in attempt.latest_answers_by_question_id.iteritems %}
-                        <td>
+                        <td>{{answer.gradedanswer_set.first.question}}
                             {% if answer.score > 0 %}
                                 <span class="correct">&#x2714;</span>
                             {% elif answer.score == None %}
