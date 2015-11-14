@@ -21,13 +21,27 @@ function switch_qualify(obj) {
 
 function edit_name(obj) {
     var tr = $(obj).closest("tr");
+    if (tr.hasClass("unconfirmed")) {
+        return;
+    }
     tr.find("span.name").css("display", "none");
     var span = tr.find("span.edit-name");
     span.css("display", "inline-block");
+    var inputs = span.find("input");
+    $(inputs[$(obj).hasClass('last_name') ? 1 : 0]).focus();
+    $(inputs[0]).val(tr.find("span.first_name").text());
+    $(inputs[1]).val(tr.find("span.last_name").text());
     var form = span.find("form");
-    tr.find("input").keyup(function (e) {
-        if (e.keyCode == 13) {
-            $.ajax({
+
+    function cancel_editing() {
+        $('body').off('click', click_body);
+        tr.find("span.name").css("display", "inline-block");
+        tr.find("span.edit-name").css("display", "none");
+    }
+
+    function finish_editing() {
+        $('body').off('click', click_body);
+        $.ajax({
                 url : form[0].action, 
                 type : form[0].method, 
                 data : form.serialize(), 
@@ -42,6 +56,21 @@ function edit_name(obj) {
                     tr.find("span.edit-name").css("display", "none");
                 },
             });
+    }
+
+    function click_body(e) {
+        if (e.target.tagName != "INPUT") {
+            finish_editing();
+        }
+    }
+
+    setTimeout(function() { $('body').on('click', click_body); }, 200);
+    tr.find("input").keyup(function (e) {
+        if (e.keyCode == 13) {
+            finish_editing();
+        }
+        else if (e.keyCode == 27) {
+            cancel_editing();
         }
     });
 }
@@ -58,12 +87,13 @@ function edit_name(obj) {
     <tr>
         <th>
             {% trans "Codes for each school" %}<br/>
-            <span style="font-weight: normal; font-size: 13px">(Kode, ki jih bodo tekmovalci<br/>uporabili za vstop v sistem.)</span>
+            <!--<span style="font-weight: normal; font-size: 13px">(Kode, ki jih bodo tekmovalci<br/>uporabili za vstop v sistem.)</span>-->
         </th>
         <td>
             {% for school, codes in schools.iteritems %}
                 <div class="school">
                     <p>{{school}}</p>
+                    {% comment %}
                     <ul>
                         {% for code in codes %}
                             <li>
@@ -71,6 +101,7 @@ function edit_name(obj) {
                             </li>
                         {% endfor %}
                     </ul>
+                    {% endcomment %}
                 </div>
             {% endfor %}
             <a href="{% url 'school_codes_create' slug=competition.slug %}?next_url={{request.path}}">{% trans "Add school" %}</a>
@@ -119,7 +150,7 @@ function edit_name(obj) {
             {% for attempt, status in attempts %}
                 <tr class="{{status}}" confirm_url="{% url "attempt_confirm" attempt_id=attempt.id competition_questionset_id=cqs.id %}" unconfirm_url="{% url "attempt_unconfirm" attempt_id=attempt.id competition_questionset_id=cqs.id %}">
                     <th>
-                         <span class="name first_name">{{attempt.competitor.first_name}}</span> <span class="name last_name">{{attempt.competitor.last_name}}</span>
+                         <span class="name first_name" onclick="edit_name(this);">{{attempt.competitor.first_name}}</span> <span class="name last_name" onclick="edit_name(this);">{{attempt.competitor.last_name}}</span>
                          <span class="edit-name" style="display: none">
                          <form action="{% url "competitor_update" pk=attempt.competitor.id %}" method="post">
                              <input name="first_name" type="text" value="{{attempt.competitor.first_name}}"/> 
@@ -128,7 +159,7 @@ function edit_name(obj) {
                              <input name="attempt_id" type="hidden" value="{{attempt.id}}">
                          </form>
                          </span>
-                         <img src="/static/img/pencil.png" onclick="edit_name(this); " />
+                         <img class="pencil" src="/static/img/pencil.png" onclick="edit_name(this); " />
                          <span class="qualify-button" onclick="switch_qualify(this); ">
                     </th>
                     {% for q, answer in attempt.latest_answers_by_question_id.iteritems %}

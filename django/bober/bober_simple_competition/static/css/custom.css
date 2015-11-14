@@ -125,6 +125,7 @@ table.results span.qualify-button {
 
 table.results tr.unconfirmed span.qualify-button {
     background: url(/static/img/qualify.png) 0px 0px/12px 12px no-repeat;
+    margin-left: 29px; /* include the hidden pencil */
 }
 
 table.results tr.confirmed span.qualify-button {
@@ -159,6 +160,12 @@ table.results td {
     font-size: 80%;
 }
 
+table.results input {
+    width: 90px;
+    height: 20px;
+    line-height: 20px;
+}
+
 span.correct {
     color: green;
 }
@@ -171,6 +178,10 @@ table.results tr.confirmed td.score,
 table.results tr.unconfirmed td.score {
     text-align: right;
     width: 27px;
+}
+
+table.results tr.unconfirmed th img.pencil {
+    display: none;
 }
 
 table.results th img {

@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.shortcuts import render, redirect, resolve_url, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse, QueryDict, HttpResponseRedirect, JsonResponse
+from django.http import HttpResponse, QueryDict, HttpResponseRedirect
 from bober_simple_competition.forms import *
 from bober_simple_competition import tables
 from bober_simple_competition import filters
@@ -26,6 +26,10 @@ import time
 import json
 import random
 import string
+
+# get rid of this when we stop supporting django 1.5
+def JsonResponse(data, **kwargs):
+    return HttpResponse(json.dumps(data), mimetype='application/json', **kwargs)
 
 epoch = datetime.datetime.utcfromtimestamp(0).replace(tzinfo=timezone.get_current_timezone())
 
