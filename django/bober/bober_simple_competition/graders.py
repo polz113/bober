@@ -10,7 +10,7 @@ class NoneRuntime:
     def __init__(self):
         self.graders = dict()
     def add_grader(self, s):
-        print [i.strip() for i in s.split(',')]
+        # print [i.strip() for i in s.split(',')]
         accepted_set = set([i.strip() for i in s.split(',')])
         #print accepted_set
         def grader(answer, token, question):

@@ -721,7 +721,7 @@ def submit_answer(request, competition_questionset_id, attempt_id):
         a.save()
         try:
             # uncomment the line below for offline checking
-            # raise Exception();
+            raise Exception();
             
             graded_answer, created = GradedAnswer.objects.get_or_create(
                 attempt_id = attempt_id,
