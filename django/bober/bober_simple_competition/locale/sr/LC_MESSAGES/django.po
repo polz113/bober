@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Bober\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-11-07 20:13+0000\n"
-"PO-Revision-Date: 2015-11-14 17:48+0100\n"
+"PO-Revision-Date: 2015-11-15 20:19+0100\n"
 "Last-Translator: Bojan Milosavljević <bmilosavljevic@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: sr\n"
@@ -557,6 +557,37 @@ msgstr "Zdravo,"
 msgid "Login with"
 msgstr "Prijavi se sa"
 
+msgid ""
+"You have attempted to leave this page. Your last question answer will be "
+"saved automatically. Are you sure you want to exit this page?"
+msgstr ""
+"Pokušali ste napustiti stranicu. Vaš poslednji odgovor će se automatski "
+"sačuvati. Da li sigurno želite napustiti stranicu?"
+
+msgid "You are out of time for solving the competition."
+msgstr "Isteklo vam je vreme za takmičenje."
+
+msgid "Thank you for participating in the competition"
+msgstr "Hvala!"
+
+msgid "Your answer was successfully saved!"
+msgstr "Odgovor je sačuvan!"
+
+msgid "Are you sure you want to clear answer?"
+msgstr "Da li sigurno želite izbrisati odgovor?"
+
+msgid "You left %s question unanswered. "
+msgid_plural "Ostavili ste %s neodgovorenih pitanja."
+msgstr[0] "Ostavili ste %s neodgovoreno pitanje. "
+msgstr[1] "Ostavili ste %s neodgovorena pitanja. "
+msgstr[2] "Ostavili ste %s neodgovorenih pitanja. "
+
+msgid "Are you sure you want to finish the competition?"
+msgstr "Da li sigurno želite napustiti takmičenje?"
+
+msgid "An error has occured. Please try to finish competition again."
+msgstr "Došlo je do problema. Pokušajte još jednom završiti takmičenje."
+
 #~ msgid "In Cooperation With"
 #~ msgstr "U saradnji sa"
 
@@ -565,36 +596,3 @@ msgstr "Prijavi se sa"
 
 #~ msgid "Create code format for competitors"
 #~ msgstr "Kreiraj format kôda za takmičare"
-
-msgid ""
-"You have attempted to leave this page. Your last question answer will be "
-"saved automatically. Are you sure you want to exit this page?"
-msgstr ""
-"Pokušavate pokinuti stranicu. Vaš poslednji odgovor će se automatično sahraniti. "
-"Jeste li sigurni da želite pokinuti stranicu?"
-
-msgid "You are out of time for solving the competition."
-msgstr "Isteklo vam je vreme na takmićenje."
-
-msgid "Thank you for participating in the competition"
-msgstr "Hvala!"
-
-msgid "Your answer was successfully saved!"
-msgstr "Odgovor je sahranjen!"
-
-msgid "Are you sure you want to clear answer?"
-msgstr "Dali ste sigurni, da želite izbrisati odgovor?"
-
-msgid "You left %s question unanswered. "
-msgid_plural "Ostavili ste %s neodgovorenih pitanja."
-msgstr[0] "Ostavili ste %s neodgovoreno pitanje. "
-msgstr[1] "Ostavili ste %s neodgovorenih pitanja. "
-msgstr[2] "Ostavili ste %s neodgovorenih pitanja. "
-msgstr[3] "Ostavili ste %s neodgovorenih pitanja. "
-
-msgid "Are you sure you want to finish the competition?"
-msgstr "Dali ste sigurni, da želite zapustiti takmićenje?"
-
-msgid "An error has occured. Please try to finish competition again."
-msgstr "Došlo je do problema. Pokušajte još jednom završiti takmićenje."
-
