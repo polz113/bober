@@ -106,10 +106,15 @@ table.results {
     margin-right: auto;
 }
 
-table.results th {
+table.junior {
+    margin-top: 10px;
+    margin-left: 40px !important;
+}
+
+table.results th, table.results tr:first-of-type th {
     font-size: 80%;
-    text-align: right;
-    padding-right: 10px;
+    text-align: right !important;
+    padding-right: 10px !important;
 }
 
 table.results tr.unconfirmed th {

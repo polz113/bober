@@ -2,6 +2,80 @@
 {% load i18n %}
 {% load static %}
 {% block extrahead %}
+<script src="{% static "js/django_csrf_cookie.js" %}"></script>
+<script>
+function switch_qualify(obj) {
+    var tr = $(obj).closest("tr");
+    var url = tr[0].attributes['confirm_url'].value;
+    if (tr.hasClass("confirmed")){
+        url = tr[0].attributes['unconfirm_url'].value;
+    }
+    $.ajax({
+        url: url,
+        method: "post",
+        success: function(response_data) {
+            tr.toggleClass("confirmed unconfirmed");
+        }
+    })
+}
+
+function edit_name(obj) {
+    var tr = $(obj).closest("tr");
+    if (tr.hasClass("unconfirmed")) {
+        return;
+    }
+    tr.find("span.name").css("display", "none");
+    var span = tr.find("span.edit-name");
+    span.css("display", "inline-block");
+    var inputs = span.find("input");
+    $(inputs[$(obj).hasClass('last_name') ? 1 : 0]).focus();
+    $(inputs[0]).val(tr.find("span.first_name").text());
+    $(inputs[1]).val(tr.find("span.last_name").text());
+    var form = span.find("form");
+
+    function cancel_editing() {
+        $('body').off('click', click_body);
+        tr.find("span.name").css("display", "inline-block");
+        tr.find("span.edit-name").css("display", "none");
+    }
+
+    function finish_editing() {
+        $('body').off('click', click_body);
+        $.ajax({
+                url : form[0].action, 
+                type : form[0].method, 
+                data : form.serialize(), 
+                // handle a successful response
+                success : function(response_data) {
+                    f_name = tr.find("span.first_name");
+                    l_name = tr.find("span.last_name");
+                    f_name.text(response_data["first_name"]);
+                    l_name.text(response_data["last_name"]);
+                    f_name.css("display", "inline-block");
+                    l_name.css("display", "inline-block");
+                    tr.find("span.edit-name").css("display", "none");
+                },
+            });
+    }
+
+    function click_body(e) {
+        if (e.target.tagName != "INPUT") {
+            finish_editing();
+        }
+    }
+
+    setTimeout(function() { $('body').on('click', click_body); }, 200);
+    tr.find("input").keyup(function (e) {
+        if (e.keyCode == 13) {
+            finish_editing();
+        }
+        else if (e.keyCode == 27) {
+            cancel_editing();
+        }
+    });
+}
+
+</script>
 {% endblock %}
 {% block context_menu %}
 {% if request.user.is_authenticated %}
@@ -13,12 +87,13 @@
     <tr>
         <th>
             {% trans "Codes for each school" %}<br/>
-            <span style="font-weight: normal; font-size: 13px">(Kode, ki jih bodo tekmovalci<br/>uporabili za vstop v sistem.)</span>
+            <!--<span style="font-weight: normal; font-size: 13px">(Kode, ki jih bodo tekmovalci<br/>uporabili za vstop v sistem.)</span>-->
         </th>
         <td>
             {% for school, codes in schools.iteritems %}
                 <div class="school">
                     <p>{{school}}</p>
+                    {% if show_codes %}
                     <ul>
                         {% for code in codes %}
                             <li>
@@ -26,12 +101,13 @@
                             </li>
                         {% endfor %}
                     </ul>
+                    {% endif %}
                 </div>
             {% endfor %}
             <a href="{% url 'school_codes_create' slug=competition.slug %}?next_url={{request.path}}">{% trans "Add school" %}</a>
         </td>
     </tr>
-    <tr>
+    {% if show_paper_results %}<tr>
         <th>
             {%  trans "Competition on paper" %}
         </th>
@@ -44,32 +120,88 @@
                 <a href="{% url "mentorship_list" slug=competition.slug %}">{% trans "Result entry for tasks on paper" %}</a>
             </p>
         </td>
-    </tr>
+    </tr>{% endif %}
     <tr>
         <th>{% trans "Certificates" %}</th>
         <td>
-            <p>{% trans "Certificates of achievement" %} (še ni na voljo)</p>
-            <p>{% trans "Certificates for mentors" %} (še ni na voljo)</p>
+            <p>{% trans "Certificates of achievement" %} ({% trans "not available yet" %})</p>
+            <p>{% trans "Certificates for mentors" %} ({% trans "not available yet" %})</p>
         </td>
     </tr>
 </table>
+<div>
+<div class="prelim">{% trans "Preliminary results" %}</div>
+{% for school, cqsa in attempts.iteritems %}
+    <div class="results-school">{{ school }}</div>
+    {% for cqs, attempts in cqsa %}{% if attempts %}<div>
+        <div class="results-group">{{cqs.name}}</div>
+        <table class="results">
+            <tr>
+               <td></td>
+                   {% for q in cqs.questionset.questions.all %}
+                       <th>
+                           <span title="{{q.title}}">{{q.title|truncatechars:7}}</span>
+                       </th>
+                   {% endfor %}
+            </tr>
+            {% for attempt, status in attempts %}
+                <tr class="{{status}}" confirm_url="{% url "attempt_confirm" attempt_id=attempt.id competition_questionset_id=cqs.id %}" unconfirm_url="{% url "attempt_unconfirm" attempt_id=attempt.id competition_questionset_id=cqs.id %}">
+                    <th>
+                         <span class="name first_name" onclick="edit_name(this);">{{attempt.competitor.first_name}}</span> <span class="name last_name" onclick="edit_name(this);">{{attempt.competitor.last_name}}</span>
+                         <span class="edit-name" style="display: none">
+                         <form action="{% url "competitor_update" pk=attempt.competitor.id %}" method="post">
+                             <input name="first_name" type="text" value="{{attempt.competitor.first_name}}"/> 
+                             <input name="last_name" type="text" value="{{attempt.competitor.last_name}}"/>
+                             <input name="cqs_id" type="hidden" value="{{cqs.id}}">
+                             <input name="attempt_id" type="hidden" value="{{attempt.id}}">
+                         </form>
+                         </span>
+                         <img class="pencil" src="/static/img/pencil.png" onclick="edit_name(this); " />
+                         <span class="qualify-button" onclick="switch_qualify(this); ">
+                    </th>
+                    {% for q, answer in attempt.graded_answers_by_question_id.iteritems %}
+                        <td>
+                            {% if answer.score > 0 %}
+                                <span class="correct">&#x2714;</span>
+                            {% elif answer.score == None %}
+                            {% else %}
+                                <span class="wrong">&#10008;</span>
+                            {% endif %}
+                        </td>
+                    {% endfor %}
+                    <td class="score">
+                        <span>
+                            {{attempt.score|floatformat:"0"}}
+                        </span>
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>{% endif %}{% endfor %}
+{%  endfor %}
+</div>
+{% if junior_mentorships %}
+<div>
+<div class="prelim">{% trans "Results on paper" %}</div>
+{% for mentorship in junior_mentorships %}
+    {% for junior_year in mentorship.junioryear_set.all %}
+    {% if junior_year.juniorattempt_set.count %}<div>
+        <div class="results-school">{{mentorship.school}} - {{junior_year.name}}</div>
+        <p>Seznam spreminjate v <a href="{% url "mentorship_list" slug=competition.slug %}">obrazcu za vnos rezultatov</a>
+        </p>
+        <table class="results junior ">
+            {% for attempt in junior_year.juniorattempt_set.all %}<tr>
+                <th>{{attempt.competitor.first_name}}
+                    {{attempt.competitor.last_name}}</th>
+                <td>{{attempt.score|floatformat:"0"}}</td>
+            </tr>{% endfor %}
+        </table>
+    </div>{% endif %}
+    {% endfor%}
+{% endfor %}
+</div>
+{% endif %}
 <div class="footnote">
 <a href="{% url 'competition_detail' slug=competition.slug %}">{% trans "Advanced details" %}</a>
-</div>
-<div>
-{% comment %}
-{% for school, cqsa in attempts.iteritems %}
-    {% for cqs, attempts in cqsa %}<div>
-        {{cqs.name}}
-        <table>
-            <tr><td>{% trans "Competitor" %}</td>{% for q in cqs.questionset.questions.all %}<td><span title="{{q.title}}">{{q.title|truncatechars:7}}</span></td>{% endfor %}<td></td>{% trans "Score" %}</tr>
-        {% for attempt in attempts %}<tr>
-            <td>{{attempt.competitor}}</td>{% for q, answer in attempt.latest_answers_by_question.iteritems %}
-<td>{% if answer.score > 0 %}&#x2714;{% elif answer.score == None %}{% else %}&#10008;{% endif %}</td>{% endfor %}<td>{{attempt.latest_answers_sum}}</td>
-        </tr>{% endfor %}
-        </table>
-    </div>{% endfor %}
-{%  endfor %}
-{% endcomment %}
 </div>
 {% endblock %}
