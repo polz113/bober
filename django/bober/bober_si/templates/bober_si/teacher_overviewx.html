@@ -93,7 +93,7 @@ function edit_name(obj) {
             {% for school, codes in schools.iteritems %}
                 <div class="school">
                     <p>{{school}}</p>
-                    {% comment %}
+                    {% if show_codes %}
                     <ul>
                         {% for code in codes %}
                             <li>
@@ -101,7 +101,7 @@ function edit_name(obj) {
                             </li>
                         {% endfor %}
                     </ul>
-                    {% endcomment %}
+                    {% endif %}
                 </div>
             {% endfor %}
             <a href="{% url 'school_codes_create' slug=competition.slug %}?next_url={{request.path}}">{% trans "Add school" %}</a>

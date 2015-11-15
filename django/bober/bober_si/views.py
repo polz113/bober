@@ -12,6 +12,7 @@ from bober_simple_competition.views import AccessCodeRequiredMixin, SmartCompeti
 from bober_simple_competition.models import Attempt, Profile
 from bober_paper_submissions.models import JuniorDefaultYear
 from django.contrib.auth.models import User
+from django.utils import timezone
 from models import *
 from forms import *
 from collections import OrderedDict
@@ -67,6 +68,7 @@ class TeacherOverview(SmartCompetitionAdminCodeRequiredMixin,
                     a_list.append((a, 'unconfirmed'))
             attempts[school].append((cqs, a_list))
         context['show_paper_results'] = show_paper_results
+        context['show_codes'] = self.competition.end >= timezone.now()
         context['schools'] = schools
         context['attempts'] = attempts
         context['junior_mentorships'] = profile.juniormentorship_set.filter(
