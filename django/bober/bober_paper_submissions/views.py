@@ -45,7 +45,6 @@ class JuniorResults(UpdateWithInlinesView, LoginRequiredMixin):
         self.competition_slug = kwargs.get('slug', None)
         return super(JuniorResults, self).dispatch(*args, **kwargs)
     def get_success_url(self):
-        print self.competition_slug
         return reverse('teacher_overview', kwargs={'slug': self.competition_slug})
 
 @login_required

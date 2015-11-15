@@ -29,7 +29,7 @@ import string
 
 # get rid of this when we stop supporting django 1.5
 def JsonResponse(data, **kwargs):
-    return HttpResponse(json.dumps(data), mimetype='application/json', **kwargs)
+    return HttpResponse(json.dumps(data), content_type='application/json', **kwargs)
 
 epoch = datetime.datetime.utcfromtimestamp(0).replace(tzinfo=timezone.get_current_timezone())
 

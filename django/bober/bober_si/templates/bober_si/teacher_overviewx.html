@@ -107,7 +107,7 @@ function edit_name(obj) {
             <a href="{% url 'school_codes_create' slug=competition.slug %}?next_url={{request.path}}">{% trans "Add school" %}</a>
         </td>
     </tr>
-    <tr>
+    {% if show_paper_results %}<tr>
         <th>
             {%  trans "Competition on paper" %}
         </th>
@@ -120,7 +120,7 @@ function edit_name(obj) {
                 <a href="{% url "mentorship_list" slug=competition.slug %}">{% trans "Result entry for tasks on paper" %}</a>
             </p>
         </td>
-    </tr>
+    </tr>{% endif %}
     <tr>
         <th>{% trans "Certificates" %}</th>
         <td>
@@ -129,14 +129,11 @@ function edit_name(obj) {
         </td>
     </tr>
 </table>
-<div class="footnote">
-<a href="{% url 'competition_detail' slug=competition.slug %}">{% trans "Advanced details" %}</a>
-</div>
 <div>
 <div class="prelim">{% trans "Preliminary results" %}</div>
 {% for school, cqsa in attempts.iteritems %}
     <div class="results-school">{{ school }}</div>
-    {% for cqs, attempts in cqsa %}<div>
+    {% for cqs, attempts in cqsa %}{% if attempts %}<div>
         <div class="results-group">{{cqs.name}}</div>
         <table class="results">
             <tr>
@@ -162,8 +159,8 @@ function edit_name(obj) {
                          <img class="pencil" src="/static/img/pencil.png" onclick="edit_name(this); " />
                          <span class="qualify-button" onclick="switch_qualify(this); ">
                     </th>
-                    {% for q, answer in attempt.latest_answers_by_question_id.iteritems %}
-                        <td>{{answer.gradedanswer_set.first.question}}
+                    {% for q, answer in attempt.graded_answers_by_question_id.iteritems %}
+                        <td>
                             {% if answer.score > 0 %}
                                 <span class="correct">&#x2714;</span>
                             {% elif answer.score == None %}
@@ -174,13 +171,35 @@ function edit_name(obj) {
                     {% endfor %}
                     <td class="score">
                         <span>
-                            {{attempt.latest_answers_sum}}
+                            {{attempt.score|floatformat:"0"}}
                         </span>
                     </td>
                 </tr>
             {% endfor %}
         </table>
-    </div>{% endfor %}
+    </div>{% endif %}{% endfor %}
 {%  endfor %}
+</div>
+{% if junior_mentorships %}
+<div>
+<div class="prelim">{% trans "Results on paper" %}</div>
+{% for mentorship in junior_mentorships %}
+    {% for junior_year in mentorship.junioryear_set.all %}
+    {% if junior_year.juniorattempt_set.count %}<div>
+        <div class="results-school">{{mentorship.school}} - {{junior_year.name}}</div>
+        <table class="results">
+            {% for attempt in junior_year.juniorattempt_set.all %}<tr>
+                <td>{{attempt.competitor.first_name}}</td>
+                <td>{{attempt.competitor.last_name}}</td>
+                <td>{{attempt.score|floatformat:"0"}}</td>
+            </tr>{% endfor %}
+        </table>
+    </div>{% endif %}
+    {% endfor%}
+{% endfor %}
+</div>
+{% endif %}
+<div class="footnote">
+<a href="{% url 'competition_detail' slug=competition.slug %}">{% trans "Advanced details" %}</a>
 </div>
 {% endblock %}

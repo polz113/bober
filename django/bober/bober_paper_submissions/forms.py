@@ -53,23 +53,7 @@ class JuniorYearForm(ModelForm):
         return retval
     def save(self, *args, **kwargs):
         instance = super(JuniorYearForm, self).save(*args, **kwargs)
-        still_here = list()
-        for first_name, last_name, points in self.competitor_data:
-            c, created = Competitor.objects.get_or_create(
-                first_name = first_name, 
-                last_name = last_name,
-                juniorattempt__year_class = instance)
-            # print c, created
-            if created:
-                c.save()
-            else:
-                c.juniorattempt_set.all().delete()
-            still_here.append(c.id)
-            a = JuniorAttempt(year_class = self.instance, competitor = c)
-            a.save()
-        Competitor.objects.filter(
-            juniorattempt__year_class = instance,
-            profile=None).exclude(id__in=still_here).delete()
+        instance.save_results()
         return instance
 
 class JuniorMentorshipForm(ModelForm):

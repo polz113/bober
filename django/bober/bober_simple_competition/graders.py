@@ -84,4 +84,9 @@ class RuntimeManager:
         runtime = self.runtimes[function_type]
         return runtime.get_grader(function)
 
+def init_runtimes(grader_runtime_manager=None):
+    if grader_runtime_manager is None:
+        grader_runtime_manager = RuntimeManager()
+        grader_runtime_manager.start_runtimes()
+    return grader_runtime_manager
 

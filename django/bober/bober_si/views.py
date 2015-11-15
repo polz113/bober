@@ -10,6 +10,7 @@ from django.contrib.auth import authenticate, login
 from forms import OverviewForm, SchoolCodesCreateForm
 from bober_simple_competition.views import AccessCodeRequiredMixin, SmartCompetitionAdminCodeRequiredMixin
 from bober_simple_competition.models import Attempt, Profile
+from bober_paper_submissions.models import JuniorDefaultYear
 from django.contrib.auth.models import User
 from models import *
 from forms import *
@@ -37,6 +38,7 @@ class TeacherOverview(SmartCompetitionAdminCodeRequiredMixin,
         schools = dict()
         attempts = dict()
         code_pairs = []
+        show_paper_results = False
         for c in profile.schoolteachercode_set.filter(
                     code__salt = self.competition.competitor_code_generator.salt,
                     code__format = self.competition.competitor_code_generator.format, 
@@ -46,6 +48,10 @@ class TeacherOverview(SmartCompetitionAdminCodeRequiredMixin,
                 schools[c.school] = []
                 attempts[c.school] = []
             school = c.school
+            show_paper_results |= JuniorDefaultYear.objects.filter(
+                competition = self.competition,
+                school_category = school.category,
+                ).count() > 0
             code = c.code.value
             sep = self.competition.competitor_code_generator.format.separator
             split_code = code.split(sep)
@@ -54,14 +60,17 @@ class TeacherOverview(SmartCompetitionAdminCodeRequiredMixin,
             schools[school].append((cqs, sep.join(split_code[1:])))
             a_list = []
             for a in Attempt.objects.filter(
-                    access_code = code).prefetch_related('graded_answers'):
+                    access_code = code).prefetch_related('gradedanswer_set'):
                 if a.confirmed_by.filter(id=profile.id).count() > 0:
                     a_list.append((a, 'confirmed'))
                 else:
                     a_list.append((a, 'unconfirmed'))
             attempts[school].append((cqs, a_list))
+        context['show_paper_results'] = show_paper_results
         context['schools'] = schools
         context['attempts'] = attempts
+        context['junior_mentorships'] = profile.juniormentorship_set.filter(
+            competition = self.competition)
         # print attempts
         return context
 
