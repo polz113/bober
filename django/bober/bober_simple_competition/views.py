@@ -658,8 +658,9 @@ def competition_data(request, competition_questionset_id):
             competitionquestionset_id = competition_questionset_id)[0]
         answers = []
         finish = attempt.finish
-        for a in attempt.latest_answers():
-            val = a.value
+        attempt.grade_answers()
+        for g_a in attempt.gradedanswer_set():
+            val = g_a.answer.value
             if val is None:
                 val = ''
             answers.append({ 'q': a.randomized_question_id, 'a': str(val)})
