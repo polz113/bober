@@ -571,7 +571,7 @@ msgid "Thank you for participating in the competition"
 msgstr "Hvala!"
 
 msgid "Your answer was successfully saved!"
-msgstr "Odgovor je sačuvan!"
+msgstr "Odgovor je snimljen!"
 
 msgid "Are you sure you want to clear answer?"
 msgstr "Da li sigurno želite izbrisati odgovor?"
