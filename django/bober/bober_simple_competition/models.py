@@ -832,7 +832,7 @@ class Attempt(models.Model):
 
     def latest_answers(self):
         # get only the latest answers
-        return self.graded_answers.all()
+        return self.gradedanswer_set.all()
 
     def graded_answers_by_question_id(self):
         # return self.graded_answers.order_by('gradedanswer__question_id')
