@@ -187,10 +187,12 @@ function edit_name(obj) {
     {% for junior_year in mentorship.junioryear_set.all %}
     {% if junior_year.juniorattempt_set.count %}<div>
         <div class="results-school">{{mentorship.school}} - {{junior_year.name}}</div>
-        <table class="results">
+        <p>Seznam spreminjate v <a href="{% url "mentorship_list" slug=competition.slug %}">obrazcu za vnos rezultatov</a>
+        </p>
+        <table class="results junior ">
             {% for attempt in junior_year.juniorattempt_set.all %}<tr>
-                <td>{{attempt.competitor.first_name}}</td>
-                <td>{{attempt.competitor.last_name}}</td>
+                <th>{{attempt.competitor.first_name}}
+                    {{attempt.competitor.last_name}}</th>
                 <td>{{attempt.score|floatformat:"0"}}</td>
             </tr>{% endfor %}
         </table>

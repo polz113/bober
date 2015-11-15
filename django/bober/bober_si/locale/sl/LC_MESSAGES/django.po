@@ -119,3 +119,9 @@ msgstr "Ste skopirali celotno povezavo? Del s skrivno kodo manjka ali pa je napa
 
 msgid "Preliminary results"
 msgstr "Začasni rezultati"
+
+msgid "not available yet"
+msgstr "še ni na voljo"
+
+msgid "Results on paper"
+msgstr "Rezultati za nižje razrede"

@@ -206,6 +206,7 @@ def _create_graded(answer, regrade, grader_runtime_manager):
     try:
         a = answer
         if regrade:
+            print a
             g_a = GradedAnswer(
                 attempt_id = a.attempt_id, question_id=a.question_id,
                 answer = a 
@@ -276,7 +277,8 @@ class CompetitionQuestionSet(models.Model):
         grader_runtime_manager = graders.init_runtimes(
             grader_runtime_manager)
         answers = Answer.objects.filter(
-            attempt__competitionquestionset=self).order_by('-timestamp')
+            attempt__competitionquestionset=self).order_by('-id')
+            # attempt__competitionquestionset=self).order_by('-timestamp', '-id')
         if check_timestamp:
             answers.select_related('attempt__finish')
         if regrade:
@@ -810,7 +812,8 @@ class Attempt(models.Model):
         graded_list = []
         if regrade:
             GradedAnswer.objects.filter(attempt=self).delete()
-        answers = self.answer_set.order_by("-timestamp")
+        # answers = self.answer_set.order_by("-timestamp", "-id")
+        answers = self.answer_set.order_by("-id")
         if check_timestamp:
             answers = answers.filter(timestamp__lte=self.finish)
         n_questions = self.questionset.questions.count()
