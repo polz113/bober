@@ -53,7 +53,7 @@ def smart_competition_admin_code_required(function = None):
         access_code = request.session.get('access_code', None)
         try:
             slug = kwargs['slug']
-            competition = Competition.objects.get(slug=kwargs['slug'])
+            competition = Competition.get_cached_by_slug(slug=kwargs['slug'])
             codegen=competition.administrator_code_generator
             codes = [ ]
             if access_code is not None:
@@ -265,6 +265,7 @@ class CompetitionCreate(LoginRequiredMixin, CreateWithInlinesView):
                     f.instance.guest_code = c
                     f.instance.save()
         return retval
+
     def get_initial(self):
         return {
             'admin_code_format':
@@ -396,7 +397,6 @@ def competition_code_list(request, slug):
         for c in all_competitor_codes.filter(value__startswith = cqs_slug):
             c_list.append(c.value[slugpart_len:])
         competitor_codes[cqs] = c_list
-    print competitor_codes
     can_create_administrator_codes = admin_codegen.code_matches(
         access_code, {'admin_privileges': ['create_admin_codes']})
     # print access_code, can_create_administrator_codes
@@ -505,6 +505,7 @@ def competition_attempt_list(request, slug, regrade=False):
         attempt.grade_answers(runtime_manager, regrade)
     return render(request, 
         "bober_simple_competition/competition_attempt_list.html", locals())
+
 
 # 2.1.4 mark attempts as invalid
 #     all attempts with codes created or distributed by
@@ -834,7 +835,6 @@ class CompetitorUpdateJson(LoginRequiredMixin, UpdateView):
     form_class = CompetitorUpdateForm
     def form_valid(self, form):
         attempt = get_object_or_404(Attempt, id=form.cleaned_data['attempt_id'])
-        print attempt.competitor, self.object
         if attempt.competitor != self.object:
             raise PermissionDenied
         cqs = get_object_or_404(CompetitionQuestionSet, 

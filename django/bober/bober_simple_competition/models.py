@@ -16,6 +16,7 @@ from django.utils.text import slugify
 from django.utils.translation import ugettext_lazy as _
 from django.utils import timezone
 from django.core.exceptions import ValidationError
+from django.core.cache import cache
 from collections import OrderedDict
 from . import graders
 import random
@@ -25,7 +26,6 @@ import base64
 import zipfile
 from bs4 import BeautifulSoup
 import mimetypes
-
 
 # Create your models here.
 GRADER_FUNCTION_TYPES = (
@@ -109,7 +109,18 @@ class Competition(models.Model):
     # duration in seconds
     duration = IntegerField(default=60*60) # 60s * 60 = 1h.
     end = DateTimeField()
- 
+    
+    @classmethod
+    def get_cached_by_slug(cls, slug):
+        c = cache.get('competition_by_slug__' + slug, None)
+        if c is None:
+            c = cls.objects.get(slug = slug)
+            codegen = c.administrator_code_generator
+            codegen = c.competitor_code_generator
+            print "  adding", slug, "to cache"
+            cache.set('competition_by_slug__' + slug, c)
+        return c
+
     def expand_competitor_code(self, short_code, competition_questionset):
         sep = self.competitor_code_generator.format.separator
         return competition_questionset.slug_str() + sep + short_code
@@ -185,6 +196,7 @@ class Competition(models.Model):
         c = self.competitor_code_generator.create_code(code_data)
         c.save()
         return c
+
     def master_code_create(self):
         c = self.administrator_code_generator.create_code({
             'admin_privileges': [i[0] for i in ADMIN_PRIVILEGES],
@@ -193,6 +205,7 @@ class Competition(models.Model):
         })
         c.save()
         return c
+
     def admin_code_create(self, access_code, code_data = None):
         if code_data is None:
             code_data = self.max_admin_code_data(access_code)
@@ -309,8 +322,7 @@ class CodeEffect(models.Model):
                 owner.managed_profiles.add(profile)
         def let_manage_recursive(profile):
             competitions = Competition.objects.filter(
-            competitor_code_generator__salt = self.code.salt,
-            competitor_code_generator__format = self.code.format).unique()
+                competitor_code_generator = self.generator).unique()
             for owner in self.code.owner_set:
                 owner.managed_profiles.add(profile)
                 for competition in competitions:
@@ -354,6 +366,15 @@ class QuestionSet(models.Model):
         for n, i in enumerate(q):
             d[i[0]] = c[n]
         return d
+
+    def ordered_question_ids(self):
+        cache_id = 'questionset_question_ids_' + str(self.id)
+        q_ids = cache.get(cache_id, None)
+        if q_ids is None:
+            q_ids = self.questions.order_by('id').values_list(
+                'id', flat=True)
+            cache.set(cache_id, q_ids)
+        return q_ids 
 
     def cache_dir(self):
         return str(self.id) + "-" + self.slug
@@ -408,6 +429,7 @@ class QuestionSet(models.Model):
             for r in q.resource_set.exclude(part_of_solution = True).exclude(
                 id__in = embeded_resource_ids):
                 print "must create cache for ", r.id, r.question.identifier, r.file.name
+        question_cache_id = 'questionset_question_ids_' + str(self.id)
 
 class ResourceCache(models.Model):
     def __unicode__(self):
@@ -833,15 +855,14 @@ class Attempt(models.Model):
     def latest_answers(self):
         # get only the latest answers
         return self.gradedanswer_set.all()
-
+    
     def graded_answers_by_question_id(self):
         # return self.graded_answers.order_by('gradedanswer__question_id')
         answered_questions = OrderedDict()
         # print "loading."
-        for q_id in self.questionset.questions.all().order_by('id').values_list(
-                'id', flat=True):
-            answered_questions[q_id] = self.gradedanswer_set.filter(
-                question_id = q_id).first()
+        graded_answers_dict = dict((i.question_id, i) for i in self.gradedanswer_set.all())
+        for q_id in self.questionset.ordered_question_ids():
+            answered_questions[q_id] = graded_answers_dict.get(q_id, None)
         return answered_questions
         #n_questions = len(answered_questions)
         #n_found = 0
