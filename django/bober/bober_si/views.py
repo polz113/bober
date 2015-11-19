@@ -199,7 +199,7 @@ class CompetitionXlsResults(SmartCompetitionAdminCodeRequiredMixin, TemplateView
                     i.user.username, i.user.email
                 ) for i in p_list])
         wb = Workbook()
-        ws = wb.active
+        ws = wb.get_active_sheet()
         for cqs in self.competitionquestionsets.all():
             profiles_by_code = defaultdict(list)
             schools_by_code = defaultdict(list)
