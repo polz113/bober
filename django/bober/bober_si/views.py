@@ -9,7 +9,7 @@ from django.core.exceptions import PermissionDenied
 from django.contrib.auth import authenticate, login
 from forms import OverviewForm, SchoolCodesCreateForm
 from bober_simple_competition.views import AccessCodeRequiredMixin, SmartCompetitionAdminCodeRequiredMixin
-from bober_simple_competition.models import Attempt, Profile, GradedAnswer
+from bober_simple_competition.models import Attempt, Profile, GradedAnswer, AttemptConfirmation
 from bober_paper_submissions.models import JuniorDefaultYear
 from django.contrib.auth.models import User
 from django.utils import timezone
@@ -20,6 +20,7 @@ from collections import OrderedDict, defaultdict
 from braces.views import LoginRequiredMixin
 from openpyxl import Workbook
 from openpyxl.writer.excel import save_virtual_workbook
+import datetime
 # Create your views here.
 
 
@@ -201,6 +202,7 @@ class CompetitionXlsResults(SmartCompetitionAdminCodeRequiredMixin, TemplateView
         wb = Workbook()
         ws = wb.active
         for cqs in self.competitionquestionsets.all():
+            # t0 = datetime.datetime.now()
             profiles_by_code = defaultdict(list)
             schools_by_code = defaultdict(list)
             schools_by_teacher = defaultdict(list)
@@ -230,66 +232,87 @@ class CompetitionXlsResults(SmartCompetitionAdminCodeRequiredMixin, TemplateView
                 'First name',
                 'Last name',
             ]
+            question_none_scores = dict()
             for q in questions:
                 keys.append(str(q))
+                question_none_scores[q.id] = q.none_score
             ws.append(keys)
-            attempts = cqs.attempt_set.all().select_related(
-                ).prefetch_related(
-                    'competitor',
-                    'gradedanswer_set',
-                    'confirmed_by',
-                    'confirmed_by__user'
-                )
             #all_answers = dict()
             #for g_ans in GradedAnswer.objects.filter(
             #            attempt__competitionquestionset = cqs
             #        )
             #    all_answers[(g_ans.attempt_id, g_ans.question_id)] = g_ans
-            #print "    got answers"
-            for attempt in attempts:
+            # print "    got data in ", datetime.datetime.now() - t0
+            gradedanswers = dict()
+            for attempt_id, question_id, score in GradedAnswer.objects.filter(
+                    attempt__competitionquestionset__id = cqs.id
+                ).distinct().values_list(
+                    'attempt_id', 'question_id', 'score'):
+                gradedanswers[(attempt_id, question_id)] = score
+            confirmations = defaultdict(list)
+            for by_id, attempt_id, username, email in AttemptConfirmation.objects.filter(
+                    attempt__competitionquestionset__id = cqs.id
+                ).distinct().values_list(
+                    'by_id',
+                    'attempt_id',
+                    'by__user__username', 'by__user__email'):
+                confirmations[attempt_id].append((
+                    by_id,
+                    u"{} <{}>".format(username, email)
+                ))
+            attempts = cqs.attempt_set.all()
+            for (
+                    attempt_id,
+                    attempt_start,
+                    attempt_finish,
+                    access_code,
+                    first_name,
+                    last_name,
+                ) in attempts.values_list(
+                    'id',
+                    'start',
+                    'finish',
+                    'access_code',
+                    'competitor__first_name',
+                    'competitor__last_name',
+                ).distinct():
                 # print "  attempt:", attempt.id
-                mentors = profiles_by_code[attempt.access_code]
-                schools = schools_by_code[attempt.access_code]
-                confirmed_by = attempt.confirmed_by.all()
+                mentors = profiles_by_code[access_code]
+                schools = schools_by_code[access_code]
+                # confirmed_by = attempt.confirmed_by.all()
                 confirmed_schools = set()
-                if attempt.competitor is None:
-                    first_name = 'A. Nonny'
-                    last_name = 'Moose Guest'
-                else:
-                    first_name = attempt.competitor.first_name
-                    last_name = attempt.competitor.last_name
+                #if competitor is None:
+                #    first_name = 'A. Nonny'
+                #    last_name = 'Moose Guest'
+                #else:
+                #    first_name = competitor.first_name
+                #    last_name = competitor.last_name
+                confirmed_by = confirmations[attempt_id]
                 for p in confirmed_by:
-                    for s in schools_by_teacher[p.id]:
+                    for s in schools_by_teacher[p[0]]:
                         confirmed_schools.add(s)
                 confirmed_by_schools = set(schools).intersection(
                     confirmed_schools)
+                #print "    ", confirmed_by
                 l1 = [
-                    attempt.id,
-                    attempt.start,
-                    attempt.finish, 
-                    attempt.access_code,
+                    attempt_id,
+                    attempt_start,
+                    attempt_finish, 
+                    access_code,
                     self.competition.slug,
                     u", ".join([i.name for i in schools]),
                     u", ".join([i.name for i in confirmed_by_schools]),
-                    profiles_str(confirmed_by),
+                    ", ".join([i[1] for i in confirmed_by]),
                     len(confirmed_by),
                     profiles_str(mentors),
                     cqs.name,
                     first_name,
                     last_name,
                 ]
-                answers_dict = dict()
-                for ans in attempt.gradedanswer_set.all():
-                    answers_dict[ans.question_id] = ans
                 for q in questions:
-                    # ans = answers[q.id]
-                    ans = answers_dict.get(q.id, None)
-                    # ans = all_answers.get((attempt.id, q.id), None)
-                    if ans is None:
-                        score = q.none_score
-                    else:
-                        score = ans.score
-                    l1.append(score)
+                    l1.append(gradedanswers.get((attempt_id, q.id), 
+                        question_none_scores[q.id]))
+                #print "    ", l1
                 ws.append(l1)
             ws = wb.create_sheet()
         return save_virtual_workbook(wb)
