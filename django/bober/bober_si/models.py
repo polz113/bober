@@ -29,6 +29,8 @@ class SchoolTeacherCode(models.Model):
         return u"{} {}:{}".format(self.school, self.teacher, self.code)
     school = models.ForeignKey(School)
     teacher = models.ForeignKey(Profile)
+    competition_questionset = models.ForeignKey(
+        CompetitionQuestionSet, null=True)
     code = models.ForeignKey(Code)
 
 

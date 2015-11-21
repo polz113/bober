@@ -122,3 +122,6 @@ msgstr ""
 
 msgid "Preliminary results"
 msgstr "Preliminarni rezultati"
+
+msgid "not available yet"
+msgstr "u pripremi"

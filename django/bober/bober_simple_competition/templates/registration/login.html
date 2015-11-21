@@ -18,9 +18,6 @@
    </ul>
    {% endif %}
  </p>
- <p>
-Če imate že od lani uporabniško ime, ga vpišite. Če ste se prvič prijavili
-letos, namesto uporabniškega imena uporabljajte elektronski naslov.</p>
 <form method="post" action="{% url 'django.contrib.auth.views.login' %}">
 {% csrf_token %}
 <table>
