@@ -77,11 +77,11 @@ class JuniorYear(models.Model):
                 first_name = first_name,
                 last_name = last_name,
                 juniorattempt__year_class = self)
-            # print c, created
-            if created:
-                c.save()
-            else:
+            if not created:
                 c.juniorattempt_set.all().delete()
+            c.first_name = first_name
+            c.last_name = last_name
+            c.save()
             still_here.append(c.id)
             a = JuniorAttempt(year_class = self, competitor = c, score=points)
             a.save()

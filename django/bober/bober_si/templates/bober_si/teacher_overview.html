@@ -4,17 +4,14 @@
 {% block extrahead %}
 <script src="{% static "js/django_csrf_cookie.js" %}"></script>
 <script>
-function switch_qualify(obj) {
+function switch_qualify(obj, url, confirm) {
     var tr = $(obj).closest("tr");
-    var url = tr[0].attributes['confirm_url'].value;
-    if (tr.hasClass("confirmed")){
-        url = tr[0].attributes['unconfirm_url'].value;
-    }
     $.ajax({
         url: url,
         method: "post",
         success: function(response_data) {
-            tr.toggleClass("confirmed unconfirmed");
+            tr.removeClass(confirm ? "unconfirmed" : "confirmed");
+            tr.addClass(confirm ? "confirmed" : "unconfirmed");
         }
     })
 }
@@ -130,7 +127,22 @@ function edit_name(obj) {
     </tr>
 </table>
 <div>
-<div class="prelim">{% trans "Preliminary results" %}</div>
+
+<div>
+<div style="color: blue; font-weight: bold; margin-top: 20px; padding: 5px; border: thin solid blue">
+
+<p style="color: black">{% trans "Preliminary results" %}</p>
+<p>S klikom na kljukico dodajte vse tekmovalce,
+ki so vaši. Tedaj boste videli tudi, koliko točk je tekmovalec dosegel.
+Če je moral kateri izmed tekmovalcev iz tehničnih razlogov ponoviti
+tekmovanje, izločite napačen poskus tako, da ga ne potrdite. Če
+tekmovalce potrdite po pomoti (ali zato, da ugotovite, kateri poskus
+je bil pravi), ga lahko ponovno izločite s klikom na križec.</p>
+<p>Prosimo, da preverite tudi, ali so imena pravilno črkovana. Po potrebi jih
+popravite, saj bodo na priznanjih izpisana natančno tako, kot so zapisana tu.
+</p>
+</div>
+
 {% for school, cqsa in attempts.iteritems %}
     <div class="results-school">{{ school }}</div>
     {% for cqs, attempts in cqsa %}{% if attempts %}<div>
@@ -145,7 +157,7 @@ function edit_name(obj) {
                    {% endfor %}
             </tr>
             {% for attempt, status in attempts %}
-                <tr class="{{status}}" confirm_url="{% url "attempt_confirm" attempt_id=attempt.id competition_questionset_id=cqs.id %}" unconfirm_url="{% url "attempt_unconfirm" attempt_id=attempt.id competition_questionset_id=cqs.id %}">
+                <tr class="{{status}}">
                     <th>
                          <span class="name first_name" onclick="edit_name(this);">{{attempt.competitor.first_name}}</span> <span class="name last_name" onclick="edit_name(this);">{{attempt.competitor.last_name}}</span>
                          <span class="edit-name" style="display: none">
@@ -157,7 +169,8 @@ function edit_name(obj) {
                          </form>
                          </span>
                          <img class="pencil" src="/static/img/pencil.png" onclick="edit_name(this); " />
-                         <span class="qualify-button" onclick="switch_qualify(this); ">
+                         <img src="/static/img/qualify.png" class="confirm" onclick="switch_qualify(this, '{% url "attempt_confirm" attempt_id=attempt.id competition_questionset_id=cqs.id %}', true)" />
+                         <img src="/static/img/disqualify.png" class="confirm" onclick="switch_qualify(this, '{% url "attempt_unconfirm" attempt_id=attempt.id competition_questionset_id=cqs.id %}', false)" />
                     </th>
                     {% for q, answer in attempt.graded_answers_by_question_id.iteritems %}
                         <td>
