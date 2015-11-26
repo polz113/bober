@@ -950,13 +950,17 @@ class CompetitionCompete(QuestionSetCompete):
         self.competition = Competition.objects.get(slug=kwargs['slug'])
         self.competitionquestionset = None
         return super(QuestionSetCompete, self).dispatch(*args, **kwargs)
+
     def get_form(self, form_class=None):
+        if form_class is None:
+            form_class = self.form_class
         kwargs = self.get_form_kwargs()
         kwargs['competition'] = self.competition
         if self.request.user.is_authenticated():
             kwargs['profile'] = self.request.user.profile
         f = form_class(**kwargs) 
         return f
+
     def form_valid(self, form):
         self.competitionquestionset = form.cleaned_data['competition_questionset']
         return super(CompetitionCompete, self).form_valid(form)

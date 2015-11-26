@@ -125,3 +125,16 @@ msgstr "Preliminarni rezultati"
 
 msgid "not available yet"
 msgstr "u pripremi"
+
+msgid "Username"
+msgstr "Korisničko ime"
+
+#: templates/bober_simple_competition/competition_detail.html:23
+#, python-format
+msgid "%(n)s attempt"
+msgid_plural "%(n)s attempts"
+msgstr[0] "%(n)s pokušaj"
+msgstr[1] "%(n)s pokušaja"
+msgstr[2] "%(n)s pokušaja"
+msgstr[3] "%(n)s pokušaja"
+
