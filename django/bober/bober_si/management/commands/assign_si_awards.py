@@ -23,7 +23,7 @@ class Command(BaseCommand):
             first_arg = args[0]
         except:
             first_arg = None
-        cslug = unicode(options.get('competition_slug', first_arg)[0])
+        cslug = unicode(options.get('competition_slug', [first_arg])[0])
         competition = SchoolCompetition.objects.get(slug=cslug)
         attempt_awards = []
         year_str = str(timezone.now().year)[-2:]
