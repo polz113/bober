@@ -63,7 +63,7 @@ class Command(BaseCommand):
                     questionset = cqs,
                     template = 'bronasto',
                     name = 'bronasto',
-                    threshold = l[(len(l) - 1) / 5]
+                    threshold = l[(len(l) - 1) / 5],
                     serial_prefix = year_prefix + cqs.name[:2]
                 )
                 bronze_award.save()
