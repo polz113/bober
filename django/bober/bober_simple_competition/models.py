@@ -243,7 +243,7 @@ def _create_graded(answer, regrade, grader_runtime_manager):
 
 class CompetitionQuestionSet(models.Model):
     def __unicode__(self):
-        return u"{}".format(self.name)
+        return u"{}: {}".format(self.competition.slug, self.name)
 
     name = models.CharField(max_length=256, null=True, blank=True)
     questionset = models.ForeignKey('QuestionSet')
@@ -339,15 +339,6 @@ class CodeEffect(models.Model):
         for user in users:
             effects[self.effect](user)
 
-class ShortenedCode(models.Model):
-    class Meta:
-        unique_together = (('competition_questionset', 'short'),)
-    def __unicode__(self):
-        return u"{}: ({}) {}".format(self.short, self.competition_questionset, self.code)
-    competition_questionset = ForeignKey(CompetitionQuestionSet)
-    code = ForeignKey(Code, unique=True)
-    short = models.CharField(max_length=64)
-
 class QuestionSet(models.Model):
     def __unicode__(self):
         return u"{}: {}".format(self.name, ",".join([unicode(i) for i in self.questions.all()]))
@@ -356,7 +347,7 @@ class QuestionSet(models.Model):
     slug = SlugField(unique=True)
     name = CharField(max_length = 255)
     questions = ManyToManyField('Question')
-    resource_caches = ManyToManyField('ResourceCache', null=True, blank=True)
+    resource_caches = ManyToManyField('ResourceCache', blank=True)
 
     def question_mapping(self, random_seed):
         q = self.questions.order_by('identifier').values_list('identifier')
@@ -740,7 +731,7 @@ class AttemptInvalidation(models.Model):
 
 class AttemptConfirmation(models.Model):
     def __unicode__(self):
-        return u"{}: {}".format(by, attempt)
+        return u"{}: {}".format(self.by, self.attempt)
     by = ForeignKey('Profile')
     attempt = ForeignKey('Attempt')
 
@@ -772,7 +763,7 @@ class Attempt(models.Model):
     competitor = ForeignKey('Competitor', null=True, blank=True)
     invalidated_by = ForeignKey('AttemptInvalidation', null=True, blank=True)
     confirmed_by = ManyToManyField('Profile', through='AttemptConfirmation',
-        null=True, blank=True)
+        blank=True)
     random_seed = IntegerField()
     start = DateTimeField(auto_now_add = True)
     finish = DateTimeField(null=True, blank=True)
@@ -889,20 +880,21 @@ class Profile(models.Model):
         return reverse('profile_detail', kwargs={'pk': str(self.pk)})
     user = models.OneToOneField(User)
     feature_level = IntegerField(choices=FEATURE_LEVELS, default=1)
-    managed_profiles = models.ManyToManyField('Profile', related_name='managers', null=True, blank=True)
+    managed_profiles = models.ManyToManyField('Profile', related_name='managers', 
+        blank=True)
     # managed_users = models.ManyToManyField(User, related_name='managers', null=True, blank=True)
     #first_competition = models.ForeignKey(Competition, null=True, blank=True)
     #registration_code = CodeField(null=True, blank=True)
-    created_codes = ManyToManyField(Code, null=True, blank=True,
+    created_codes = ManyToManyField(Code, blank=True,
         related_name='creator_set')
-    received_codes = ManyToManyField(Code, null=True, blank=True,
+    received_codes = ManyToManyField(Code, blank=True,
         related_name='recipient_set')
-    used_codes = ManyToManyField(Code, null=True, blank=True,
+    used_codes = ManyToManyField(Code, blank=True,
         related_name='user_set')
-    question_sets = ManyToManyField(QuestionSet, null=True, blank=True)
-    created_question_sets = ManyToManyField(QuestionSet, null=True, blank=True, 
+    question_sets = ManyToManyField(QuestionSet, blank=True)
+    created_question_sets = ManyToManyField(QuestionSet, blank=True, 
         related_name='creator_set')
-    questions = ManyToManyField(Question, null=True, blank=True)
+    questions = ManyToManyField(Question, blank=True)
     merged_with = ForeignKey('Profile', null = True, blank=True, related_name='former_profile_set')
     # merged_with = ForeignKey(User, null = True, blank=True, related_name='merged_set')
     update_used_codes_timestamp = DateTimeField(null=True, blank=True)
