@@ -2,8 +2,12 @@ from django.contrib import admin
 from bober_si.models import *
 from bober_simple_competition.models import CompetitionQuestionSet
 
+class AwardInline(admin.TabularInline):
+    model = Award
+
 class CompetitionQuestionSetInline(admin.TabularInline):
     model = CompetitionQuestionSet
+    # inlines = [ AwardInline ]
 
 class SchoolCategoryQuestionSetsInline(admin.TabularInline):
     model = SchoolCategoryQuestionSets
@@ -22,11 +26,18 @@ class CompetitionAdmin(admin.ModelAdmin):
         request._obj_ = obj
         return super(CompetitionAdmin, self).get_form(request, obj, **kwargs)
 
+class CompetitionQuestionSetAdmin(admin.ModelAdmin):
+    inlines = [ AwardInline ]
+    model = CompetitionQuestionSet
+
 class SchoolAdmin(admin.ModelAdmin):
     model = School
     search_fields = ['name']
 
 # Register your models here.
 admin.site.register(School, SchoolAdmin)
+admin.site.register(Award)
+admin.site.register(AttemptAward)
+admin.site.register(CompetitionQuestionSet, CompetitionQuestionSetAdmin)
 admin.site.register(SchoolTeacherCode)
 admin.site.register(SchoolCompetition, CompetitionAdmin)
