@@ -1,5 +1,5 @@
 from django.db import models
-from bober_simple_competition.models import Profile, ShortenedCode, CompetitionQuestionSet, Competition
+from bober_simple_competition.models import Profile, CompetitionQuestionSet, Competition, Attempt
 from code_based_auth.models import Code
 from django.utils.translation import ugettext as _
 from collections import OrderedDict
@@ -43,6 +43,25 @@ class SchoolCategoryQuestionSets(models.Model):
     questionsets = models.ManyToManyField(CompetitionQuestionSet)
     school_category = models.CharField(choices=SCHOOL_CATEGORIES, max_length=24)
 
+class Award(models.Model):
+    def __unicode__(self):
+        return u"{} {} ({})".format(self.name, self.questionset.name, self.threshold)
+    name = models.CharField(max_length=256)
+    questionset = models.ForeignKey(CompetitionQuestionSet)
+    template = models.CharField(max_length=256)
+    threshold = models.FloatField()
+    serial_prefix = models.CharField(max_length=256)
+
+class AttemptAward(models.Model):
+    def __unicode__(self):
+        return u"{} {} {} {}".format(self.attempt.competitor, self.award,
+            self.attempt.score, self.note)
+    award = models.ForeignKey(Award)
+    attempt = models.ForeignKey(Attempt)
+    note = models.CharField(max_length=1024, 
+        blank=True, default='')
+    serial = models.CharField(max_length=256, blank=True, default='')
+
 class SchoolCompetition(Competition):
     class Meta:
         proxy = True
@@ -73,5 +92,5 @@ class SchoolCompetition(Competition):
             code_data = code_data)
         teacher.created_codes.add(code)
         sc = SchoolTeacherCode(teacher=teacher, school=school, 
-            code=code)
+            code=code, competition_questionset = competition_questionset)
         sc.save()
