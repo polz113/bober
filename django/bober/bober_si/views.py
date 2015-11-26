@@ -73,8 +73,9 @@ class TeacherOverview(SmartCompetitionAdminCodeRequiredMixin,
                 access_code = code).select_related(
                     'competitor',
                     'competitionquestionset',
-                    'competitionquestionset__questionset__questions').prefetch_related(
-                    'gradedanswer_set'
+                    'competitionquestionset__questionset').prefetch_related(
+                    'gradedanswer_set',
+                    'competitionquestionset__questionset__questions',
                 )
             confirmed_attempts = all_attempts.filter(
                 confirmed_by__id=profile.id,    
@@ -337,9 +338,9 @@ class CompetitionXlsResults(SmartCompetitionAdminCodeRequiredMixin, TemplateView
         return super(CompetitionXlsResults, self).dispatch(*args, **kwargs)
 
 @login_required
-def award_pdf(request, slug, cqs_name):
-    p = request.user.profile
-    cert_dir = os.path.join('user_files', str(p.pk), slug)
+def award_pdf(request, slug, school_id, cqs_name):
+    profile = request.user.profile
+    cert_dir = os.path.join('user_files', str(profile.pk), slug, school_id)
     cert_fname = cqs_name + '.pdf'
     cert_path = os.path.join(cert_dir, cert_fname)
     try:
@@ -352,16 +353,52 @@ def award_pdf(request, slug, cqs_name):
             # print e
         # regenerate award. Ignore the template
             template_file = os.path.join(AWARD_TEMPLATE_DIR, 'all_si.svg')
-            print "generating..."
-            data = {}
-            
+            #print "generating..."
+            data = list()
+            competition = SchoolCompetition.get_cached_by_slug(slug=slug)
+            for stc in profile.schoolteachercode_set.filter(
+                        code__codegenerator = competition.competitor_code_generator,
+                        competition_questionset__name = cqs_name,
+                        school__id = school_id
+                    ).order_by(
+                        'code'
+                    ).prefetch_related(
+                        'code'):
+                school = stc.school
+                code = stc.code.value
+                cqs = stc.competition_questionset
+                #print "    ", school, cqs
+                #CompetitionQuestionSet.objects.get(competition=competition,
+                #    name = cqs_name)
+                confirmed_attempts = Attempt.objects.filter(
+                        access_code = code,
+                        competitionquestionset = cqs,
+                        confirmed_by__id=profile.id,
+                    ).select_related(
+                        'competitor',
+                    ).prefetch_related(
+                        'attemptaward_set',
+                    )
+                for attempt in confirmed_attempts:
+                    for award in attempt.attemptaward_set.all().select_related('award'):
+                        data.append(
+                            {
+                                'name': u" ".join((attempt.competitor.first_name, attempt.competitor.last_name)),
+                                'school': school.name,
+                                'group': cqs.name,
+                                'serial': award.serial,
+                                'template': award.award.template,
+                            }
+                        )
+            #    print data
+            #print os.path.join(cert_full_dir, cert_fname)
             generate_award_pdf(os.path.join(cert_full_dir, cert_fname),
                 data, template_file)
         pass
-    return None
+    #return None
     return safe_media_redirect(cert_path)
 
 @login_required
-def invalidate_award(request, slug, profile_id, competition_questionset_id):
+def invalidate_award(request, slug, profile_id, school_id, competition_questionset_id):
     
     pass

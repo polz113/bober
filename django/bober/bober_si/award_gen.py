@@ -36,9 +36,9 @@ page = u"""
 
 def generate_award_pdf(output, data, template_file):
     with open(template_file) as f:
-        template = f.read()
+        template = unicode(f.read())
     shorten_schools(data)
-    pages = u"".join(page.format_map(participant) for participant in data)
+    pages = u"".join(page.format(**participant) for participant in data)
     cairosvg.svg2pdf(template.format(pages), write_to=output)
 
 def shorten_schools(data):
