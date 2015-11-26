@@ -25,4 +25,4 @@ class Command(BaseCommand):
             first_arg = None
         cslug = unicode(options.get('competition_slug', first_arg)[0])
         competition = SchoolCompetition.objects.get(slug=cslug)
-
+        
