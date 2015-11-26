@@ -165,6 +165,7 @@ class CompetitionRegistrationForm(QuestionSetRegistrationForm):
             self.errors['competition_questionset']=[_('This field is required')]
         return super(CompetitionRegistrationForm, self).clean()
 
+
 class QuestionSetCompetitorForm(forms.ModelForm):
     class Meta:
         model = Competitor
@@ -179,6 +180,7 @@ class QuestionSetCompetitorForm(forms.ModelForm):
         retval = super(QuestionSetCompetitorForm, self).__init__(*args, **kwargs)
         self._meta.fields += ['profile']
         return retval
+
     def clean(self):
         cleaned_data = super(QuestionSetCompetitorForm, self).clean()
         if cleaned_data is None:
@@ -186,6 +188,7 @@ class QuestionSetCompetitorForm(forms.ModelForm):
         cleaned_data['profile'] = self.profile or None
         self.cleaned_data = cleaned_data
         return cleaned_data
+
     def clean_short_access_code(self):
         full_code = self.questionset_slug + self.codegen.format.separator + self.cleaned_data['short_access_code']
         if not self.codegen.code_matches(full_code, 
@@ -200,6 +203,7 @@ class QuestionSetCompetitorForm(forms.ModelForm):
     #def clean_username(self):
     #    validate_email(self.cleaned_data['username'])
     #    return self.cleaned_data['username']
+
     def save(self, *args, **kwargs):
         try:
             assert self.profile is not False
@@ -214,19 +218,29 @@ class QuestionSetCompetitorForm(forms.ModelForm):
         #print instance.id, self.instance
         return instance
 
+
+class CompetitionSetChoiceField(forms.ModelChoiceField):
+    def label_from_instance(self, obj):
+        return u"{}".format(obj.name)
+
+
 class CompetitionCompetitorForm(QuestionSetCompetitorForm):
+
     def __init__(self, *args, **kwargs):
         self.competition = kwargs.pop('competition')
         self.profile = kwargs.pop('profile', False)
         self.codegen = self.competition.competitor_code_generator
         retval = super(QuestionSetCompetitorForm, self).__init__(*args, **kwargs)
-        self.fields['competition_questionset'] = forms.ModelChoiceField(label=_("Group"), queryset = self.competition.competitionquestionset_set.all(), required=True)
+        self.fields['competition_questionset'] = CompetitionSetChoiceField(label=_("Group"), queryset = self.competition.competitionquestionset_set.all(), required=True)
         self._meta.fields += ['profile']
         return retval
+
     def clean_short_access_code(self):
         return self.cleaned_data['short_access_code']
+
     def clean_competition_questionset(self):
         return self.cleaned_data['competition_questionset']
+
     def clean(self):
         cqs = self.cleaned_data.get('competition_questionset', None)
         if cqs is not None:

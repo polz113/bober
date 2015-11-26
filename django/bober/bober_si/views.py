@@ -7,9 +7,12 @@ from django.core.urlresolvers import reverse
 from django.http import HttpResponse
 from django.core.exceptions import PermissionDenied
 from django.contrib.auth import authenticate, login
+from django.contrib.auth.decorators import login_required
+from django.conf import settings
 from forms import OverviewForm, SchoolCodesCreateForm
 from bober_simple_competition.views import AccessCodeRequiredMixin, SmartCompetitionAdminCodeRequiredMixin
 from bober_simple_competition.models import Attempt, Profile, GradedAnswer, AttemptConfirmation
+from bober_simple_competition.views import safe_media_redirect
 from bober_paper_submissions.models import JuniorDefaultYear
 from django.contrib.auth.models import User
 from django.utils import timezone
@@ -21,8 +24,11 @@ from braces.views import LoginRequiredMixin
 from openpyxl import Workbook
 from openpyxl.writer.excel import save_virtual_workbook
 import datetime
+import os
+from award_gen import generate_award_pdf
 # Create your views here.
 
+AWARD_TEMPLATE_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'award_templates')
 
 class TeacherOverview(SmartCompetitionAdminCodeRequiredMixin, 
         TemplateView):
@@ -330,3 +336,32 @@ class CompetitionXlsResults(SmartCompetitionAdminCodeRequiredMixin, TemplateView
             self.competitionquestionsets = self.competitionquestionsets.filter(id=cqs_id)
         return super(CompetitionXlsResults, self).dispatch(*args, **kwargs)
 
+@login_required
+def award_pdf(request, slug, cqs_name):
+    p = request.user.profile
+    cert_dir = os.path.join('user_files', str(p.pk), slug)
+    cert_fname = cqs_name + '.pdf'
+    cert_path = os.path.join(cert_dir, cert_fname)
+    try:
+        assert os.path.isfile(cert_path)
+    except:
+        try:
+            cert_full_dir = os.path.join(settings.MEDIA_ROOT, cert_dir)
+            os.makedirs(cert_full_dir)
+        except Exception, e:
+            # print e
+        # regenerate award. Ignore the template
+            template_file = os.path.join(AWARD_TEMPLATE_DIR, 'all_si.svg')
+            print "generating..."
+            data = {}
+            
+            generate_award_pdf(os.path.join(cert_full_dir, cert_fname),
+                data, template_file)
+        pass
+    return None
+    return safe_media_redirect(cert_path)
+
+@login_required
+def invalidate_award(request, slug, profile_id, competition_questionset_id):
+    
+    pass

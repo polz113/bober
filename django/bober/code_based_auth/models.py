@@ -1,7 +1,9 @@
 from django.db import models
+from django.core.cache import cache
 import hashlib
 from collections import defaultdict
 import random
+
 
 CODE_COMPONENT_FORMATS = (
     ('h', 'hex'),
@@ -167,6 +169,7 @@ class CodeFormat(models.Model):
         return self.separator.join([
             unicode(i) for i in self.components.order_by('ordering')])
     separator = models.CharField(max_length=1, default=DEFAULT_SEPARATOR)
+
     @classmethod
     def from_components(cls, components, separator=DEFAULT_SEPARATOR):
         cf = cls(separator = separator)
@@ -175,6 +178,7 @@ class CodeFormat(models.Model):
             cc = CodeComponent(code_format = cf, ordering = i, **p)
             cc.save()
         return cf
+
     def code_matches(self, code, salt, parts):
         if len(parts) < 1:
             return False
@@ -310,7 +314,7 @@ class CodeGenerator(models.Model):
         max_length = 256)
     format = models.ForeignKey('CodeFormat')
     salt = models.CharField(max_length=256)
-    codes = models.ManyToManyField('Code', null=True, blank=True)
+    codes = models.ManyToManyField('Code', blank=True)
     def create_code(self, parts, random_unique=False):
         if not random_unique:
             created_code = Code.create(salt=self.salt, format=self.format, 

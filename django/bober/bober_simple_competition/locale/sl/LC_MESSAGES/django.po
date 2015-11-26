@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-11-07 20:13+0000\n"
+"POT-Creation-Date: 2015-11-16 08:23+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Plural-Forms: nplurals=4; plural=(n%100==1 ? 0 : n%100==2 ? 1 : n%100==3 || n"
 "%100==4 ? 2 : 3);\n"
 
-#: forms.py:20 forms.py:29 forms.py:101 forms.py:172
+#: forms.py:20 forms.py:29 forms.py:102 forms.py:173
 msgid "Access code"
 msgstr "Koda za dostop"
 
@@ -31,39 +31,39 @@ msgstr "Obnovi seznam obnovljenih kod kasneje"
 msgid "Execute effects later"
 msgstr "Izvedi učinke kasneje (po samomoru)"
 
-#: forms.py:127 forms.py:161 forms.py:192 forms.py:236
+#: forms.py:128 forms.py:162 forms.py:193 forms.py:237
 msgid "Wrong access code"
 msgstr "Vnesi kodo za dostop"
 
-#: forms.py:147 forms.py:222
+#: forms.py:148 forms.py:223
 msgid "Group"
 msgstr ""
 
-#: forms.py:164 forms.py:243
+#: forms.py:165 forms.py:244
 msgid "This field is required"
 msgstr "To polje je obvezno"
 
-#: models.py:55
+#: models.py:56
 msgid "Participate in the competition"
 msgstr "Tekmuj"
 
-#: models.py:56
+#: models.py:57
 msgid "Attempt competition before start"
 msgstr "Tekmuj pred začetkom tekmovanja"
 
-#: models.py:57
+#: models.py:58
 msgid "See results before official end of competition"
 msgstr "Vidi rezultate pred koncem tekmovanja"
 
-#: models.py:58
+#: models.py:59
 msgid "Resume existing attempts"
 msgstr "Nadaljuj začete poizkuse"
 
-#: models.py:62
+#: models.py:63
 msgid "Allow the creator to manage the profile of anyone using this code"
 msgstr "Dovoli stvaritelju kode, da popravlja podatke uporabnikov kode"
 
-#: models.py:63
+#: models.py:64
 msgid ""
 "Allow the creator and their managers to manage the profile of anyone using "
 "this code"
@@ -71,53 +71,61 @@ msgstr ""
 "Dovoli stvaritelju kode in njemu nadrejenim, da popravljajo podatke "
 "uporabnikov kode"
 
-#: models.py:67
+#: models.py:68
 msgid "Create administrator codes"
 msgstr "Ustvari administratorske kode za dostop"
 
-#: models.py:68
+#: models.py:69
 msgid "Create comeptitor codes"
 msgstr "Ustvari kode tekmovalcev"
 
-#: models.py:69
+#: models.py:70
 msgid "View all attempts for this competition"
 msgstr "Prikaži vse poizkuse na tekmovanju"
 
-#: models.py:70
+#: models.py:71
 msgid "View all administrator codes for this competition"
 msgstr "Poglej vse administratorske kode za to tekmovanje"
 
-#: models.py:71
+#: models.py:72
 msgid "View all competitor codes for this competition"
 msgstr "Prikaži vse kode tekmovalcev za to tekmovanje"
 
-#: models.py:72
+#: models.py:73
 msgid "Use question sets for new competitions"
 msgstr "Uporabi nabore vprašanj za nova tekmovanja"
 
-#: models.py:73
+#: models.py:74
 msgid "Modify this competition"
 msgstr "Uredi tekmovanje"
 
-#: models.py:75
+#: models.py:76
 msgid "Use questions for new question sets"
 msgstr "Uporabi vprašanja za nove nabore vprašanj"
 
-#: models.py:88
+#: models.py:89
 msgid "Reduced functionality"
 msgstr "Omejena funkcionalnost"
 
-#: models.py:89
+#: models.py:90
 msgid "Basic features only"
 msgstr "Samo osnovna funkcionalnost"
 
-#: models.py:90
+#: models.py:91
 msgid "Commonly used features"
 msgstr "Običajna funkcionalnost"
 
-#: models.py:91
+#: models.py:92
 msgid "All features"
 msgstr "Vse možnosti"
+
+#: models.py:730 templates/bober_simple_competition/profile_detail.html:22
+msgid "First Name"
+msgstr "Ime"
+
+#: models.py:731 templates/bober_simple_competition/profile_detail.html:26
+msgid "Last Name"
+msgstr "Priimek"
 
 #: templates/base.html:37
 msgid "Beaver"
@@ -419,14 +427,6 @@ msgstr "Vprašanja"
 msgid "Profile Details"
 msgstr "Podatki uporabnika"
 
-#: templates/bober_simple_competition/profile_detail.html:22
-msgid "First Name"
-msgstr "Ime"
-
-#: templates/bober_simple_competition/profile_detail.html:26
-msgid "Last Name"
-msgstr "Priimek"
-
 #: templates/bober_simple_competition/profile_detail.html:30
 msgid "Email"
 msgstr "E-pošta"
@@ -513,6 +513,7 @@ msgid "Thank you for using Bober"
 msgstr "Hvala, ker ste uporabljali Bobra"
 
 #: templates/registration/logged_out.html:6
+#: templates/registration/logged_out.html:7
 msgid "Back to first page"
 msgstr "Nazaj na prvo stran"
 
@@ -557,7 +558,6 @@ msgstr "Ustvari format kode za tekmovalce"
 msgid "Try it!"
 msgstr "Tekmuj kot gost!"
 
-
 msgid ""
 "You have attempted to leave this page. Your last question answer will be "
 "saved automatically. Are you sure you want to exit this page?"
@@ -583,6 +583,13 @@ msgstr[0] "Pustili ste %s neodgovorjeno vprašanje. "
 msgstr[1] "Pustili ste %s neodgovorjeni vprašanji. "
 msgstr[2] "Pustili ste %s neodgovorjena vprašanja. "
 msgstr[3] "Pustili ste %s neodgovorjenih vprašanj. "
+
+msgid "%(n)s competitor"
+msgid_plural "%s competitors"
+msgstr[0] "%(n)s tekmovalec"
+msgstr[1] "%(n)s tekmovalca"
+msgstr[2] "%(n)s tekmovalci"
+msgstr[3] "%(n)s tekmovalcev"
 
 msgid "Are you sure you want to finish the competition?"
 msgstr "Ste prepričani, da želite zaključiti s tekmovanjem?"
