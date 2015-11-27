@@ -13,7 +13,13 @@ function switch_qualify(obj, url, confirm) {
             tr.removeClass(confirm ? "unconfirmed" : "confirmed");
             tr.addClass(confirm ? "confirmed" : "unconfirmed");
         }
-    })
+    });
+}
+
+function invalidate_award(url) {
+    $.ajax({ url: url,
+             method: 'post'}
+    );
 }
 
 function edit_name(obj) {
@@ -32,12 +38,14 @@ function edit_name(obj) {
 
     function cancel_editing() {
         $('body').off('click', click_body);
+        $(tr.find("input")).off('keyup', keyup_function);     
         tr.find("span.name").css("display", "inline-block");
         tr.find("span.edit-name").css("display", "none");
     }
 
     function finish_editing() {
         $('body').off('click', click_body);
+        $(tr.find("input")).off('keyup', keyup_function);     
         $.ajax({
                 url : form[0].action, 
                 type : form[0].method, 
@@ -53,6 +61,7 @@ function edit_name(obj) {
                     tr.find("span.edit-name").css("display", "none");
                 },
             });
+        invalidate_award($(form).find("input.invalidate-url")[0].value);
     }
 
     function click_body(e) {
@@ -61,15 +70,17 @@ function edit_name(obj) {
         }
     }
 
-    setTimeout(function() { $('body').on('click', click_body); }, 200);
-    tr.find("input").keyup(function (e) {
+    function keyup_function(e) {
         if (e.keyCode == 13) {
             finish_editing();
         }
         else if (e.keyCode == 27) {
             cancel_editing();
         }
-    });
+    }
+
+    setTimeout(function() { $('body').on('click', click_body); }, 200);
+    tr.find("input").keyup(keyup_function);
 }
 
 </script>
@@ -121,8 +132,14 @@ function edit_name(obj) {
     <tr>
         <th>{% trans "Certificates" %}</th>
         <td>
-            <p>{% trans "Certificates of achievement" %} ({% trans "not available yet" %})</p>
-            <p>{% trans "Certificates for mentors" %} ({% trans "not available yet" %})</p>
+            {% for school, cqsa in attempts.iteritems %}
+                 {% for cqs, attempts in cqsa %}{% if attempts %}
+                    <p><a href="{% url "award_pdf" slug=competition.slug cqs_name=cqs.name school_id=school.id %}">{{ school }} - {{ cqs.name }}</a></p>
+                 {% endif %}{% endfor %}
+            {% endfor %}            
+            <p>Priznanja za 2. - 5. razred OŠ bodo objavljena v prihodnjih dneh.
+               Bronasto priznanje dobi gornja tretjina učencev vsake generacije,
+               vendar le tisti, ki so dosegli vsaj polovico možnih točk.</p>
         </td>
     </tr>
 </table>
@@ -159,18 +176,23 @@ popravite, saj bodo na priznanjih izpisana natančno tako, kot so zapisana tu.
             {% for attempt, status in attempts %}
                 <tr class="{{status}}">
                     <th>
+                         {% if attempt.bronze %}
+                             <img src="/static/img/bronze-medal.png" />
+                         {% endif %}
                          <span class="name first_name" onclick="edit_name(this);">{{attempt.competitor.first_name}}</span> <span class="name last_name" onclick="edit_name(this);">{{attempt.competitor.last_name}}</span>
                          <span class="edit-name" style="display: none">
-                         <form action="{% url "competitor_update" pk=attempt.competitor.id %}" method="post">
+                         <form action="{% url "competitor_update" pk=attempt.competitor.id %}" method="post" />
                              <input name="first_name" type="text" value="{{attempt.competitor.first_name}}"/> 
                              <input name="last_name" type="text" value="{{attempt.competitor.last_name}}"/>
                              <input name="cqs_id" type="hidden" value="{{cqs.id}}">
                              <input name="attempt_id" type="hidden" value="{{attempt.id}}">
+                             <input name="invalidate_url" class="invalidate-url" type="hidden" value="{% url "invalidate_award" competition_questionset_id=cqs.id profile_id=profile.id slug=competition.slug school_id=school.id %}" />
+              
                          </form>
                          </span>
                          <img class="pencil" src="/static/img/pencil.png" onclick="edit_name(this); " />
-                         <img src="/static/img/qualify.png" class="confirm" onclick="switch_qualify(this, '{% url "attempt_confirm" attempt_id=attempt.id competition_questionset_id=cqs.id %}', true)" />
-                         <img src="/static/img/disqualify.png" class="confirm" onclick="switch_qualify(this, '{% url "attempt_unconfirm" attempt_id=attempt.id competition_questionset_id=cqs.id %}', false)" />
+                         <img src="/static/img/qualify.png" class="confirm" onclick="switch_qualify(this, '{% url "attempt_confirm" attempt_id=attempt.id competition_questionset_id=cqs.id %}', true); invalidate_award('{% url "invalidate_award" competition_questionset_id=cqs.id profile_id=profile.id slug=competition.slug school_id=school.id %}')" />
+                         <img src="/static/img/disqualify.png" class="confirm" onclick="switch_qualify(this, '{% url "attempt_unconfirm" attempt_id=attempt.id competition_questionset_id=cqs.id %}', false); invalidate_award('{% url "invalidate_award" competition_questionset_id=cqs.id profile_id=profile.id slug=competition.slug school_id=school.id %}')" />
                     </th>
                     {% for q, answer in attempt.graded_answers_by_question_id.iteritems %}
                         <td>
@@ -217,35 +239,4 @@ popravite, saj bodo na priznanjih izpisana natančno tako, kot so zapisana tu.
 <div class="footnote">
 <a href="{% url 'competition_detail' slug=competition.slug %}">{% trans "Advanced details" %}</a>
 </div>
- {%if sql_queries %}<div class="footNav">
-  <h2>Queries</h2>
-  <p>
-    {{ sql_queries|length }} Quer{{ sql_queries|pluralize:"y,ies" }}, {{sql_time_sum}} Time
-    {% ifnotequal sql_queries|length 0 %}
-    (<span style="cursor: pointer;" onclick="var s=document.getElementById('debugQueryTable').style;s.disp\
-lay=s.display=='none'?'':'none';this.innerHTML=this.innerHTML=='Show'?'Hide':'Show';">Show</span>)
-    {% endifnotequal %}
-  </p>
-  <table id="debugQueryTable">
-    <col width="1"></col>
-    <col></col>
-    <col width="1"></col>
-    <thead>
-    <tr>
-      <th scope="col">#</th>
-      <th scope="col">SQL</th>
-      <th scope="col">Time</th>
-    </tr>
-    </thead>
-    <tbody>
-    {% for query in sql_queries %}<tr class="{% cycle odd,even %}">
-      <td>{{ forloop.counter }}</td>
-      <td>{{ query.sql|escape }}</td>
-      <td>{{ query.time }}</td>
-    </tr>{% endfor %}
-    </tbody>
-  </table>
-
-</div>{%endif %}
-
 {% endblock %}
