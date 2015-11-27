@@ -83,7 +83,7 @@ class Command(BaseCommand):
                 l.sort(reverse=True)
                 if len(l) < 1:
                     continue
-                bronze_threshold = min(l[(len(l) - 1) // 3], bronze_award.threshold)
+                bronze_threshold = min(l[(len(l) - 1) // 3][0], bronze_award.threshold)
                 bronze_threshold = max(bronze_threshold, max_score / 2)
                 for i in l:
                     a = i[1].attempt
@@ -92,7 +92,7 @@ class Command(BaseCommand):
                             AttemptAward(
                                 award = bronze_award,
                                 attempt = a,
-                                serial = bronze_award.serial_prefix + str(a.id)
+                                serial = "{}{:06}".format(bronze_award.serial_prefix, a.id)
                             )
                         )
                     else:
@@ -100,7 +100,7 @@ class Command(BaseCommand):
                             AttemptAward(
                                 award = general_award,
                                 attempt = a,
-                                serial = bronze_award.serial_prefix + str(a.id)
+                                serial = "{}{:06}".format(bronze_award.serial_prefix, a.id)
                             )
                         )
         AttemptAward.objects.bulk_create(attempt_awards)
