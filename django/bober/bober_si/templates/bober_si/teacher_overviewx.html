@@ -132,11 +132,18 @@ function edit_name(obj) {
     <tr>
         <th>{% trans "Certificates" %}</th>
         <td>
+            {% for mentorship in junior_mentorships %}
+                {% for junior_year in mentorship.junioryear_set.all %}
+                    {% if junior_year.juniorattempt_set.count %}
+                        <p><a href="{% url "junior_award_pdf" slug=competition.slug year_name=junior_year.name school_id=mentorship.school_id %}">{{ mentorship.school }} - {{ junior_year.name }}</a></p>
+                    {% endif %}
+                {% endfor %}
+            {% endfor %}
             {% for school, cqsa in attempts.iteritems %}
                  {% for cqs, attempts in cqsa %}{% if attempts %}
                     <p><a href="{% url "award_pdf" slug=competition.slug cqs_name=cqs.name school_id=school.id %}">{{ school }} - {{ cqs.name }}</a></p>
                  {% endif %}{% endfor %}
-            {% endfor %}            
+            {% endfor %}
             <p>Priznanja za 2. - 5. razred OŠ bodo objavljena v prihodnjih dneh.
                Bronasto priznanje dobi gornja tretjina učencev vsake generacije,
                vendar le tisti, ki so dosegli vsaj polovico možnih točk.</p>
