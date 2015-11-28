@@ -238,6 +238,7 @@ class CompetitionXlsResults(SmartCompetitionAdminCodeRequiredMixin, TemplateView
                 'Group',
                 'First name',
                 'Last name',
+                'Awards'
             ]
             question_none_scores = dict()
             for q in questions:
@@ -258,15 +259,20 @@ class CompetitionXlsResults(SmartCompetitionAdminCodeRequiredMixin, TemplateView
                 gradedanswers[(attempt_id, question_id)] = score
             confirmations = defaultdict(list)
             for by_id, attempt_id, username, email in AttemptConfirmation.objects.filter(
-                    attempt__competitionquestionset__id = cqs.id
-                ).distinct().values_list(
-                    'by_id',
-                    'attempt_id',
-                    'by__user__username', 'by__user__email'):
+                        attempt__competitionquestionset__id = cqs.id
+                    ).distinct().values_list(
+                        'by_id',
+                        'attempt_id',
+                        'by__user__username', 'by__user__email'):
                 confirmations[attempt_id].append((
                     by_id,
                     u"{} <{}>".format(username, email)
                 ))
+            awards = defaultdict(list)
+            for attempt_id, award_name in AttemptAward.objects.filter(
+                        attempt__competitionquestionset__id = cqs.id
+                    ).distinct().values_list('attempt_id', 'award__name'):
+                awards[attempt_id].append(award_name)
             attempts = cqs.attempt_set.all()
             for (
                     attempt_id,
@@ -315,6 +321,7 @@ class CompetitionXlsResults(SmartCompetitionAdminCodeRequiredMixin, TemplateView
                     cqs.name,
                     first_name,
                     last_name,
+                    u", ".join(awards[attempt_id]),
                 ]
                 for q in questions:
                     l1.append(gradedanswers.get((attempt_id, q.id), 
