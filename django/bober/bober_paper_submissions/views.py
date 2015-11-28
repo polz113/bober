@@ -3,13 +3,18 @@
 from django.shortcuts import render, redirect
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.contrib.auth.decorators import login_required
+from django.conf import settings
 from extra_views import CreateWithInlinesView, UpdateWithInlinesView, InlineFormSet
 from braces.views import LoginRequiredMixin
 from django.http import HttpResponse
 from bober_paper_submissions.forms import JuniorYearForm, JuniorMentorshipForm, JuniorYearInline
-from bober_si.models import School, SchoolTeacherCode
-from bober_paper_submissions.models import JuniorYear, JuniorMentorship, Competition
+from bober_si.models import School, SchoolTeacherCode, SchoolCompetition
+from bober_paper_submissions.models import JuniorYear, JuniorMentorship, Competition, JuniorAttempt, JuniorAward
 import bober_paper_submissions.models
+from bober_simple_competition.views import safe_media_redirect, user_files, _user_file_path
+from bober_si.views import AWARD_TEMPLATE_DIR
+from bober_si.award_gen import generate_award_pdf
+import os
 
 # Create your views here.
 
@@ -69,3 +74,59 @@ def competition_category_results_by_school(request, competition_category_id):
         d[competition_key] = competition_data
     return HttpResponse(cPickle.dumps(d), content_type='application/python-pickle')
     
+@login_required
+def junior_award_pdf(request, slug, school_id, year_name):
+    profile = request.user.profile
+    cert_dir = os.path.join(_user_file_path(profile, school_id))
+    cert_fname = year_name + '.pdf'
+    cert_path = os.path.join(cert_dir, cert_fname)
+    cert_full_fname = os.path.join(settings.MEDIA_ROOT, cert_path)
+    try:
+        assert os.path.isfile(cert_full_fname)
+    except:
+        try:
+            cert_full_dir = os.path.join(settings.MEDIA_ROOT, cert_dir)
+            os.makedirs(cert_full_dir)
+        except Exception, e:
+            pass
+            print e
+        # regenerate award. Ignore the template
+        template_file = os.path.join(AWARD_TEMPLATE_DIR, 'all_si.svg')
+        #print "generating..."
+        data = list()
+        competition = SchoolCompetition.get_cached_by_slug(slug=slug)
+        for junior_year in JuniorYear.objects.filter(
+                mentorship__competition = competition,
+                mentorship__teacher = profile).select_related(
+                'mentorship', 'mentorship__school').distinct():
+            school = junior_year.mentorship.school
+            #print "    ", school, cqs
+            #CompetitionQuestionSet.objects.get(competition=competition,
+            #    name = cqs_name)
+            junior_attempts = JuniorAttempt.objects.filter(
+                    year_class = junior_year
+                ).select_related(
+                    'competitor',
+                ).prefetch_related(
+                    'junioraward_set',
+                )
+            for attempt in junior_attempts:
+                for award in attempt.junioraward_set.all().select_related('award'):
+                    data.append(
+                        {
+                            'name': u" ".join((attempt.competitor.first_name, attempt.competitor.last_name)),
+                            'school': school.name,
+                            'group': junior_year.name,
+                            'serial': award.serial,
+                            'template': award.award.template,
+                        }
+                    )
+        #    print data
+        #print os.path.join(cert_full_dir, cert_fname)
+        generate_award_pdf(cert_full_fname,
+            data, template_file)
+    pass
+    #return None
+    return safe_media_redirect(cert_path)
+
+

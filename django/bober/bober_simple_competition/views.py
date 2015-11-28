@@ -889,20 +889,24 @@ class ProfileUpdate(LoginRequiredMixin, UpdateView):
     model = Profile
     form_class = ProfileEditForm
     success_url = reverse_lazy('profile_list')
+
     def get_queryset(self):
         return self.request.user.profile.managed_profiles.all()
+
     def get_form(self, form_class):
         form = super(UpdateView, self).get_form(form_class)
         if 'merged_with' in form.fields:
             form.fields['merged_with'].queryset = self.get_queryset()
         return form
+
     def form_valid(self, form):
         if (form.instance.merged_with is not None
                 and form.instance.merged_with \
                     not in self.get_queryset()):
             # print "merged_with user not managed"
-            return PermissionDenied
+            raise PermissionDenied
         return super(ProfileUpdate, self).form_valid(form)
+
 
 # 4. register competitor
 class QuestionSetCompete(CreateView):
@@ -911,16 +915,19 @@ class QuestionSetCompete(CreateView):
     def get_success_url(self):
         return reverse('competition_index', 
             kwargs = {'competition_questionset_id': self.competitionquestionset.id})
+
     def dispatch(self, *args, **kwargs):
         cqs = CompetitionQuestionSet.objects.get(id=kwargs['competition_questionset_id'])
         self.competitionquestionset = cqs
         self.competition = cqs.competition
         return super(QuestionSetCompete, self).dispatch(*args, **kwargs)
+
     def get_context_data(self, **kwargs):
         context = super(QuestionSetCompete, self).get_context_data(**kwargs)
         context['competition'] = self.competition
         context['competitionquestionset'] = self.competitionquestionset
         return context
+
     def get_initial(self):
         d = super(QuestionSetCompete, self).get_initial()
         if self.request.user.is_authenticated():
@@ -929,6 +936,7 @@ class QuestionSetCompete(CreateView):
             d['last_name'] = profile.user.last_name
         d['short_access_code'] = self.request.session.get('short_access_code', '')
         return d
+
     def get_form(self, form_class=None):
         kwargs = self.get_form_kwargs()
         kwargs['competitionquestionset'] = self.competitionquestionset
@@ -936,6 +944,7 @@ class QuestionSetCompete(CreateView):
             kwargs['profile'] = self.request.user.profile
         f = form_class(**kwargs) 
         return f
+
     def form_valid(self, form):
         retval = super(QuestionSetCompete, self).form_valid(form)
         # print user, form.cleaned_data['username'], form.cleaned_data['password']
@@ -943,9 +952,11 @@ class QuestionSetCompete(CreateView):
         self.request.session['competitor_id'] = form.instance.id
         return retval
 
+
 class CompetitionCompete(QuestionSetCompete):
     form_class = CompetitionCompetitorForm
     template_name = "bober_simple_competition/competition_registration.html"
+
     def dispatch(self, *args, **kwargs):
         self.competition = Competition.objects.get(slug=kwargs['slug'])
         self.competitionquestionset = None
@@ -970,19 +981,23 @@ class CompetitionCompete(QuestionSetCompete):
 class QuestionSetRegistration(CreateView):
     form_class = QuestionSetRegistrationForm
     template_name = "bober_simple_competition/questionset_registration.html"
+
     def get_success_url(self):
         return reverse('competition_index', 
             kwargs = {'competition_questionset_id': self.competitionquestionset.id})
+
     def dispatch(self, *args, **kwargs):
         cqs = CompetitionQuestionSet.objects.get(id=kwargs['competition_questionset_id'])
         self.competitionquestionset = cqs
         self.competition = cqs.competition
         return super(QuestionSetRegistration, self).dispatch(*args, **kwargs)
+
     def get_context_data(self, **kwargs):
         context = super(QuestionSetRegistration, self).get_context_data(**kwargs)
         context['competition'] = self.competition
         context['competitionquestionset'] = self.competitionquestionset
         return context
+
     def get(self, request, *args, **kwargs):
         if request.user.is_authenticated():
             if 'access_code' in request.session:
@@ -997,11 +1012,13 @@ class QuestionSetRegistration(CreateView):
                 competition_questionset_id = self.competitionquestionset.id, 
                 next=self.get_success_url())
         return super(QuestionSetRegistration, self).get(request, *args, **kwargs)
+
     def get_form(self, form_class=None):
         kwargs = self.get_form_kwargs()
         kwargs['competitionquestionset'] = self.competitionquestionset
         f = form_class(**kwargs) 
         return f
+
     def form_valid(self, form):
         retval = super(QuestionSetRegistration, self).form_valid(form)
         user = authenticate(
@@ -1013,90 +1030,117 @@ class QuestionSetRegistration(CreateView):
             _use_access_code(self.request, form.cleaned_data['full_code'])
         return retval
 
+
 class CompetitionRegistration(QuestionSetRegistration):
     form_class = CompetitionRegistrationForm
     template_name = "bober_simple_competition/competition_registration.html"
+
     def dispatch(self, *args, **kwargs):
         self.competition = Competition.objects.get(slug=kwargs['slug'])
         self.competitionquestionset = None
         return super(QuestionSetRegistration, self).dispatch(*args, **kwargs)
+
     def get_form(self, form_class=None):
         kwargs = self.get_form_kwargs()
         kwargs['competition'] = self.competition
         f = form_class(**kwargs) 
         return f
+
     def get(self, request, *args, **kwargs):
-        return super(QuestionSetRegistration, self).get(request, *args, **kwargs)
+        return super(QuestionSetRegistration, self).get(
+            request, *args, **kwargs)
+
     def form_valid(self, form):
-        self.competitionquestionset = form.cleaned_data['competition_questionset']
+        self.competitionquestionset = form.cleaned_data[
+            'competition_questionset']
         return super(CompetitionRegistration, self).form_valid(form)
 
 
 #   5.3 get certificates, other files
+def _user_file_path(profile, path):
+    resource_dir = os.path.join('user_files', profile.user.username)
+    return os.path.join(resource_dir, path)
 @login_required
 def user_files(request, pk, resource_path):
-    try:
-        q = request.user.profile.questions.get(pk=pk)
-    except:
+    profile = request.user.profile
+    if int(pk) not in profile.managed_profiles.all().values_list(
+            'id', flat=True):
         raise PermissionDenied
-    resource_dir = 'user_files/' + str(pk) + '/'
-    return safe_media_redirect(os.path.join(resource_dir, resource_path))
+    return safe_media_redirect(_user_file_path(profile, path))
+
 
 # 6. import question(s)
 class QuestionImport(LoginRequiredMixin, DetailView):
     template_name = "bober_simple_competition/question_import.html"
 
+
 class QuestionSolution(LoginRequiredMixin, DetailView):
     template_name = "bober_simple_competition/question_solution.html"
+
 
 class QuestionList(LoginRequiredMixin, ListView):
     model = Question
     template_name = 'bober_simple_competition/question_list.html'
+
     def get_queryset(self):
         return self.request.user.profile.questions.all()
+
 
 class QuestionTableView(LoginRequiredMixin, FilteredSingleTableView):
     table_class = tables.QuestionTable
     filter_class = filters.ProfileFilter
     template_name = 'bober_simple_competition/question_table_list.html'
+
     def get_queryset(self):
         return self.request.user.profile.questions.all()
 
+
 class QuestionDetail(LoginRequiredMixin, DetailView):
     model = Question
+
     def get_queryset(self):
         return self.request.user.profile.questions.all()
 #
 # 7. create questionset from questions
 
+
 class QuestionSetList(LoginRequiredMixin, ListView):
     model = QuestionSet
+
     def get_queryset(self):
         return self.request.user.profile.question_sets.all() 
 
+
 class QuestionSetDetail(LoginRequiredMixin, DetailView):
     model = QuestionSet
+
     def get_queryset(self):
         return self.request.user.profile.question_sets.all() 
+
 
 class QuestionSetCreate(LoginRequiredMixin, CreateView):
     model = QuestionSet
     form_class = QuestionSetForm
+
     def form_valid(self, form):
         retval = super(QuestionSetCreate, self).form_valid(form)
         self.request.user.created_question_sets.add(form.instance)
         return retval
+
     def get_success_url(self):
         return reverse('questionset_list')
+
 
 class QuestionSetUpdate(LoginRequiredMixin, UpdateView):
     model = QuestionSet
     form_class = QuestionSetForm
+
     def get_queryset(self):
         return self.request.user.profile.created_question_sets.all() 
         
 class QuestionSetDelete(LoginRequiredMixin, DeleteView):
     model = QuestionSet
+
     def get_queryset(self):
         return self.request.user.profile.created_question_sets.all() 
 

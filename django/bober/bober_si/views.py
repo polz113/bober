@@ -11,8 +11,8 @@ from django.contrib.auth.decorators import login_required
 from django.conf import settings
 from forms import OverviewForm, SchoolCodesCreateForm
 from bober_simple_competition.views import AccessCodeRequiredMixin, SmartCompetitionAdminCodeRequiredMixin
+from bober_simple_competition.views import safe_media_redirect, user_files, _user_file_path
 from bober_simple_competition.models import Attempt, Profile, GradedAnswer, AttemptConfirmation
-from bober_simple_competition.views import safe_media_redirect
 from bober_paper_submissions.models import JuniorDefaultYear
 from django.contrib.auth.models import User
 from django.utils import timezone
@@ -347,61 +347,64 @@ class CompetitionXlsResults(SmartCompetitionAdminCodeRequiredMixin, TemplateView
 @login_required
 def award_pdf(request, slug, school_id, cqs_name):
     profile = request.user.profile
-    cert_dir = os.path.join('user_files', str(profile.pk), slug, school_id)
+    cert_dir = os.path.join(_user_file_path(profile, school_id))
     cert_fname = cqs_name + '.pdf'
     cert_path = os.path.join(cert_dir, cert_fname)
+    cert_full_fname = os.path.join(settings.MEDIA_ROOT, cert_path)
     try:
-        assert os.path.isfile(cert_path)
+        # print "f:", os.path.join(settings.MEDIA_ROOT, cert_path)
+        assert os.path.isfile(cert_full_fname)
     except:
         try:
             cert_full_dir = os.path.join(settings.MEDIA_ROOT, cert_dir)
             os.makedirs(cert_full_dir)
         except Exception, e:
-            # print e
+            pass
+            print e
         # regenerate award. Ignore the template
-            template_file = os.path.join(AWARD_TEMPLATE_DIR, 'all_si.svg')
+        template_file = os.path.join(AWARD_TEMPLATE_DIR, 'all_si.svg')
             #print "generating..."
-            data = list()
-            competition = SchoolCompetition.get_cached_by_slug(slug=slug)
-            for stc in profile.schoolteachercode_set.filter(
-                        code__codegenerator = competition.competitor_code_generator,
-                        competition_questionset__name = cqs_name,
-                        school__id = school_id
-                    ).order_by(
-                        'code'
-                    ).prefetch_related(
-                        'code'):
-                school = stc.school
-                code = stc.code.value
-                cqs = stc.competition_questionset
-                #print "    ", school, cqs
-                #CompetitionQuestionSet.objects.get(competition=competition,
-                #    name = cqs_name)
-                confirmed_attempts = Attempt.objects.filter(
-                        access_code = code,
-                        competitionquestionset = cqs,
-                        confirmed_by__id=profile.id,
-                    ).select_related(
-                        'competitor',
-                    ).prefetch_related(
-                        'attemptaward_set',
+        data = list()
+        competition = SchoolCompetition.get_cached_by_slug(slug=slug)
+        for stc in profile.schoolteachercode_set.filter(
+                    code__codegenerator = competition.competitor_code_generator,
+                    competition_questionset__name = cqs_name,
+                    school__id = school_id
+                ).order_by(
+                    'code'
+                ).prefetch_related(
+                    'code'):
+            school = stc.school
+            code = stc.code.value
+            cqs = stc.competition_questionset
+            #print "    ", school, cqs
+            #CompetitionQuestionSet.objects.get(competition=competition,
+            #    name = cqs_name)
+            confirmed_attempts = Attempt.objects.filter(
+                    access_code = code,
+                    competitionquestionset = cqs,
+                    confirmed_by__id=profile.id,
+                ).select_related(
+                    'competitor',
+                ).prefetch_related(
+                    'attemptaward_set',
+                )
+            for attempt in confirmed_attempts:
+                for award in attempt.attemptaward_set.all().select_related('award'):
+                    data.append(
+                        {
+                            'name': u" ".join((attempt.competitor.first_name, attempt.competitor.last_name)),
+                            'school': school.name,
+                            'group': cqs.name,
+                            'serial': award.serial,
+                            'template': award.award.template,
+                        }
                     )
-                for attempt in confirmed_attempts:
-                    for award in attempt.attemptaward_set.all().select_related('award'):
-                        data.append(
-                            {
-                                'name': u" ".join((attempt.competitor.first_name, attempt.competitor.last_name)),
-                                'school': school.name,
-                                'group': cqs.name,
-                                'serial': award.serial,
-                                'template': award.award.template,
-                            }
-                        )
-            #    print data
-            #print os.path.join(cert_full_dir, cert_fname)
-            generate_award_pdf(os.path.join(cert_full_dir, cert_fname),
-                data, template_file)
-        pass
+        #    print data
+        #print os.path.join(cert_full_dir, cert_fname)
+        generate_award_pdf(cert_full_fname,
+            data, template_file)
+        
     #return None
     return safe_media_redirect(cert_path)
 

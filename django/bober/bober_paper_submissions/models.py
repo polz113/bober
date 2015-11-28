@@ -3,7 +3,7 @@
 
 from django.db import models
 from bober_simple_competition.models import Competition, Competitor, Profile
-from bober_si.models import School, SCHOOL_CATEGORIES
+from bober_si.models import School, SCHOOL_CATEGORIES, Award
 import re
 
 #DEFAULT_YEARS = {
@@ -102,6 +102,15 @@ class JuniorAttempt(models.Model):
     competitor = models.ForeignKey(Competitor)
     remarks = models.TextField(blank=True)
     score = models.FloatField(null=True)
+
+
+class JuniorAward(models.Model):
+    award = models.ForeignKey(Award)
+    attempt = models.ForeignKey(JuniorAttempt)
+    note = models.CharField(max_length=1024, 
+        blank=True, default='')
+    serial = models.CharField(max_length=256, blank=True, default='')
+
 
 def fill_mentorship_years(sender, instance=None, **kwargs):
     if instance:
