@@ -135,7 +135,7 @@ function edit_name(obj) {
             {% for mentorship in junior_mentorships %}
                 {% for junior_year in mentorship.junioryear_set.all %}
                     {% if junior_year.juniorattempt_set.count %}
-                        <p><a href="{% url "junior_award_pdf" slug=competition.slug year_name=junior_year.name school_id=mentorship.school_id %}">{{ mentorship.school }} - {{ junior_year.name }}</a></p>
+                        <p><a href="{% url "award_pdf" slug=competition.slug cqs_name=junior_year.cqs.name school_id=mentorship.school_id %}">{{ mentorship.school }} - {{ junior_year.name }}</a></p>
                     {% endif %}
                 {% endfor %}
             {% endfor %}
@@ -227,12 +227,12 @@ popravite, saj bodo na priznanjih izpisana natančno tako, kot so zapisana tu.
 <div class="prelim">{% trans "Results on paper" %}</div>
 {% for mentorship in junior_mentorships %}
     {% for junior_year in mentorship.junioryear_set.all %}
-    {% if junior_year.juniorattempt_set.count %}<div>
+    {% if junior_year.attempts.count %}<div>
         <div class="results-school">{{mentorship.school}} - {{junior_year.name}}</div>
         <p>Seznam spreminjate v <a href="{% url "mentorship_list" slug=competition.slug %}">obrazcu za vnos rezultatov</a>
         </p>
         <table class="results junior ">
-            {% for attempt in junior_year.juniorattempt_set.all %}<tr>
+            {% for attempt in junior_year.attempts.all %}<tr>
                 <th>{{attempt.competitor.first_name}}
                     {{attempt.competitor.last_name}}</th>
                 <td>{{attempt.score|floatformat:"0"}}</td>

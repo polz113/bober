@@ -14,6 +14,7 @@ SCHOOL_CATEGORIES = (
 class School(models.Model):
     def __unicode__(self):
         return u"{}, {}".format(self.name, self.post, self.category)
+
     name = models.CharField(unique=True, max_length=255)
     category = models.CharField(choices=SCHOOL_CATEGORIES, max_length=24)
     address = models.CharField(max_length=1024, blank=True, null=True)
@@ -24,9 +25,11 @@ class School(models.Model):
     identifier = models.CharField(max_length=20, blank=True, null=True)
     headmaster = models.CharField(max_length=255, blank=True, null=True)
 
+
 class SchoolTeacherCode(models.Model):
     def __unicode__(self):
         return u"{} {}:{}".format(self.school, self.teacher, self.code)
+
     school = models.ForeignKey(School)
     teacher = models.ForeignKey(Profile)
     competition_questionset = models.ForeignKey(
@@ -37,30 +40,39 @@ class SchoolTeacherCode(models.Model):
 class SchoolCategoryQuestionSets(models.Model):
     def __unicode__(self):
         return u"{} {}".format(self.competition, self.school_category)
+
     class Meta:
         unique_together = (("competition", "school_category"))
+
     competition = models.ForeignKey(Competition)
     questionsets = models.ManyToManyField(CompetitionQuestionSet)
     school_category = models.CharField(choices=SCHOOL_CATEGORIES, max_length=24)
 
+
 class Award(models.Model):
     def __unicode__(self):
         return u"{} {} ({})".format(self.name, self.questionset.name, self.threshold)
+
+    competition = models.ForeignKey(Competition, null=True)
     name = models.CharField(max_length=256)
+    group_name = models.CharField(max_length=256)
     questionset = models.ForeignKey(CompetitionQuestionSet)
     template = models.CharField(max_length=256)
     threshold = models.FloatField()
     serial_prefix = models.CharField(max_length=256)
 
+
 class AttemptAward(models.Model):
     def __unicode__(self):
         return u"{} {} {} {}".format(self.attempt.competitor, self.award,
             self.attempt.score, self.note)
+
     award = models.ForeignKey(Award)
     attempt = models.ForeignKey(Attempt)
     note = models.CharField(max_length=1024, 
         blank=True, default='')
     serial = models.CharField(max_length=256, blank=True, default='')
+
 
 class SchoolCompetition(Competition):
     class Meta:
@@ -94,3 +106,39 @@ class SchoolCompetition(Competition):
         sc = SchoolTeacherCode(teacher=teacher, school=school, 
             code=code, competition_questionset = competition_questionset)
         sc.save()
+
+
+def assign_si_awards(attempts, awards):
+    attempt_awards = []
+    if len(attempts) < 1:
+        return attempt_awards
+    bronze_award = awards.objects.get(name='bronasto')
+    general_award = awards.objects.get(name='bronasto')
+    print bronze_award.threshold
+    l = []
+    for attempt in attempts:
+        l.append((attempt.score, attempt))
+            # print "    ", c.attempt.competitor, c.attempt.access_code, c.by
+    l.sort(reverse=True)
+    bronze_threshold = min(l[(len(l) - 1) // 3][0], bronze_award.threshold)
+    bronze_threshold = max(bronze_threshold, max_score / 2)
+    for i in l:
+        a = i[1]
+        if i[0] >= bronze_threshold:
+            attempt_awards.append(
+                AttemptAward(
+                    award = bronze_award,
+                    attempt = a,
+                    serial = "{}{:06}".format(bronze_award.serial_prefix, a.id)
+                )
+            )
+        else:
+            attempt_awards.append(
+                AttemptAward(
+                    award = general_award,
+                    attempt = a,
+                    serial = "{}{:06}".format(bronze_award.serial_prefix, a.id)
+                )
+            )
+    return attempt_awards
+

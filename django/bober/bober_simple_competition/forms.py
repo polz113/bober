@@ -16,6 +16,7 @@ class ProfileForm(forms.ModelForm):
         exclude = tuple()
         model = Profile
 
+
 class AccessCodeForm(forms.Form):
     access_code = forms.CharField(label=_('Access code'), max_length=256)
     defer_update_used_codes = forms.BooleanField(
@@ -25,8 +26,10 @@ class AccessCodeForm(forms.Form):
             label=_('Execute effects later'), required = False,
             initial = False)
 
+
 class MinimalAccessCodeForm(forms.Form):
     access_code = forms.CharField(label=_('Access code'), max_length=256)
+
 
 class BasicProfileForm(forms.ModelForm):
     class Meta:
@@ -45,6 +48,7 @@ class BasicProfileForm(forms.ModelForm):
         }
     password = forms.CharField(required=False, 
         widget = forms.PasswordInput(attrs={'autocomplete': 'off'}))
+
     def __init__(self, *args, **kwargs):
         _fields = ('first_name', 'last_name', 'email')
         instance = kwargs.get('instance', None)
@@ -64,6 +68,7 @@ class BasicProfileForm(forms.ModelForm):
                 pass
         # add the fields not listed above at the end
         self.fields.update(unordered_fields)
+
     def save(self, *args, **kwargs):
         if self.instance.id is not None:
             u = self.instance.user
@@ -90,8 +95,10 @@ class BasicProfileForm(forms.ModelForm):
         profile.managed_profiles.add(profile)
         return profile 
 
+
 class ProfileEditForm(BasicProfileForm):
     pass
+
 
 
 class QuestionSetRegistrationForm(forms.ModelForm):
@@ -100,6 +107,7 @@ class QuestionSetRegistrationForm(forms.ModelForm):
         fields = ['first_name', 'last_name']
     username = forms.CharField(required=False, widget=forms.HiddenInput())
     access_code = forms.CharField(label=_('Access code'))
+
     def __init__(self, *args, **kwargs):
         cqs = kwargs.pop('competitionquestionset')
         self.questionset_slug = cqs.slug_str()
@@ -107,6 +115,7 @@ class QuestionSetRegistrationForm(forms.ModelForm):
         retval = super(QuestionSetRegistrationForm, self).__init__(*args, **kwargs)
         self._meta.fields += ['username', 'email']
         return retval
+
     def clean(self):
         if len(self.cleaned_data.get('username', '')) < 1:
             self.cleaned_data['username'] = '.'.join([
@@ -236,7 +245,7 @@ class CompetitionCompetitorForm(QuestionSetCompetitorForm):
         return retval
 
     def clean_short_access_code(self):
-        return self.cleaned_data['short_access_code']
+        return self.cleaned_data.get('short_access_code', '')
 
     def clean_competition_questionset(self):
         return self.cleaned_data['competition_questionset']

@@ -11,6 +11,35 @@ import json
 import os
 from django.db.models import Sum
 
+def __create_awards(competition, group_name, all_attempts):
+    bronze_award, created = Award.objects.get_or_create(
+        # questionset = cqs,
+        competition = competition,
+        group_name = group_name,
+        template = 'bronasto',
+        name = 'bronasto',
+        defaults = {
+            'threshold':max_score,
+            'serial_prefix':year_prefix + cqs.name[:2]
+        }
+    )
+    if created:
+        l = []
+        for a in all_attempts:
+            l.append(a.score)
+        l.sort(reverse=True)
+        bronze_award.threshold = l[(len(l) - 1) / 5] 
+        bronze_award.save()
+    general_award, created = Award.objects.get_or_create(
+        # questionset = cqs,
+        competition = competition,
+        group_name = group_name,
+        name = 'priznanje',
+        threshold = 0,
+        defaults = {'template': 'priznanje'},
+    )
+
+
 class Command(BaseCommand):
     # @transaction.atomic
     help = "Assign awards according to slovenian rules"
@@ -18,6 +47,7 @@ class Command(BaseCommand):
         print "haha"
     def add_arguments(self, parser):
         parser.add_argument('competition_slug', nargs='+')
+
     def handle(self, *args, **options):
         try:
             first_arg = args[0]
@@ -32,12 +62,6 @@ class Command(BaseCommand):
                 Sum('max_score'))['max_score__sum']
             attempts_by_school = dict()
             all_attempts = list()
-            try:
-                bronze_award = cqs.award_set.get(
-                    name='bronasto')
-            except Exception, e:
-                print "E:", e
-                bronze_award = None
             confirmations = defaultdict(list)
             for c in AttemptConfirmation.objects.filter(
                     attempt__competitionquestionset=cqs).select_related('attempt'):
@@ -52,55 +76,11 @@ class Command(BaseCommand):
                 for confirmation in confirmations[(stc.teacher, stc.code.value)]:
                     l.append(confirmation)
                     if bronze_award is None:
-                        all_attempts.append(confirmation)
+                        all_attempts.append(confirmation.attempt)
                 attempts_by_school[stc.school] = l
-            if bronze_award is None:
-                l = []
-                for c in all_attempts:
-                    l.append(c.attempt.score)
-                l.sort(reverse=True)
-                bronze_award = Award(
-                    questionset = cqs,
-                    template = 'bronasto',
-                    name = 'bronasto',
-                    threshold = l[(len(l) - 1) / 5],
-                    serial_prefix = year_prefix + cqs.name[:2]
-                )
-                bronze_award.save()
-            general_award, created = Award.objects.get_or_create(
-                questionset = cqs,
-                name = 'priznanje',
-                threshold = 0,
-                defaults = {'template': 'priznanje'},
-            )
-            print bronze_award.threshold
-            for school, confirmations in attempts_by_school.iteritems():
+            __create_awards(cqs.competition, cqs.name, all_attempts)
+            awards = Award.objects.filter(questionset = cqs)
+            for school, attempts in attempts_by_school.iteritems():
                 print "  ", school
-                l = []
-                for c in confirmations:
-                    l.append((c.attempt.score, c))
-                    # print "    ", c.attempt.competitor, c.attempt.access_code, c.by
-                l.sort(reverse=True)
-                if len(l) < 1:
-                    continue
-                bronze_threshold = min(l[(len(l) - 1) // 3][0], bronze_award.threshold)
-                bronze_threshold = max(bronze_threshold, max_score / 2)
-                for i in l:
-                    a = i[1].attempt
-                    if i[0] >= bronze_threshold:
-                        attempt_awards.append(
-                            AttemptAward(
-                                award = bronze_award,
-                                attempt = a,
-                                serial = "{}{:06}".format(bronze_award.serial_prefix, a.id)
-                            )
-                        )
-                    else:
-                        attempt_awards.append(
-                            AttemptAward(
-                                award = general_award,
-                                attempt = a,
-                                serial = "{}{:06}".format(bronze_award.serial_prefix, a.id)
-                            )
-                        )
+                attempt_awards += assign_si_awards(attempts, awards)
         AttemptAward.objects.bulk_create(attempt_awards)
