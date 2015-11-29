@@ -349,7 +349,8 @@ class CompetitionXlsResults(SmartCompetitionAdminCodeRequiredMixin, TemplateView
 @login_required
 def award_pdf(request, slug, school_id, cqs_name):
     profile = request.user.profile
-    cert_dir = os.path.join(_user_file_path(profile, school_id))
+    cert_dir = os.path.join(_user_file_path(profile, 
+        os.path.join(slug, school_id)))
     cert_fname = cqs_name + '.pdf'
     cert_path = os.path.join(cert_dir, cert_fname)
     cert_full_fname = os.path.join(settings.MEDIA_ROOT, cert_path)
@@ -368,6 +369,7 @@ def award_pdf(request, slug, school_id, cqs_name):
             #print "generating..."
         data = list()
         competition = SchoolCompetition.get_cached_by_slug(slug=slug)
+        l = []
         for stc in profile.schoolteachercode_set.filter(
                     code__codegenerator = competition.competitor_code_generator,
                     competition_questionset__name = cqs_name,
@@ -376,9 +378,16 @@ def award_pdf(request, slug, school_id, cqs_name):
                     'code'
                 ).prefetch_related(
                     'code'):
-            school = stc.school
-            code = stc.code.value
-            cqs = stc.competition_questionset
+            l.append((stc.school, stc.competition_questionset, stc.code.value))
+        for mentorship in profile.juniormentorship_set.filter(
+                competition=competition,
+                junioryear__questionset__name=cqs_name).distinct():
+            for year in mentorship.junioryear_set.all():
+                code = 'Beavers bridging brooks'
+            	l.append((mentorship.school,
+                    year.questionset, code))
+        data_set = set()
+        for (school, cqs, code) in l:
             #print "    ", school, cqs
             #CompetitionQuestionSet.objects.get(competition=competition,
             #    name = cqs_name)
@@ -393,19 +402,20 @@ def award_pdf(request, slug, school_id, cqs_name):
                 )
             for attempt in confirmed_attempts:
                 for award in attempt.attemptaward_set.all().select_related('award'):
-                    data.append(
-                        {
-                            'name': u" ".join(
+                    data_set.add(
+                        (
+                            u" ".join(
                                 (attempt.competitor.first_name, 
                                 attempt.competitor.last_name)),
-                            'school': school.name,
-                            'group': cqs.name,
-                            'serial': award.serial,
-                            'template': award.award.template,
-                        }
+                            school.name,
+                            cqs.name,
+                            award.serial,
+                            award.award.template,
+                        )
                     )
         #    print data
         #print os.path.join(cert_full_dir, cert_fname)
+        data = [{'name': i[0], 'school': i[1], 'group': i[2], 'serial': i[3], 'template': i[4]} for i in data_set]
         generate_award_pdf(cert_full_fname,
             data, template_file)
         
