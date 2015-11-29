@@ -339,6 +339,7 @@ class CodeEffect(models.Model):
         for user in users:
             effects[self.effect](user)
 
+
 class QuestionSet(models.Model):
     def __unicode__(self):
         return u"{}: {}".format(self.name, ",".join([unicode(i) for i in self.questions.all()]))
@@ -346,7 +347,7 @@ class QuestionSet(models.Model):
         return reverse('questionset_detail', kwargs={'pk': str(self.id)})
     slug = SlugField(unique=True)
     name = CharField(max_length = 255)
-    questions = ManyToManyField('Question')
+    questions = ManyToManyField('Question', blank=True)
     resource_caches = ManyToManyField('ResourceCache', blank=True)
 
     def question_mapping(self, random_seed):
@@ -422,12 +423,14 @@ class QuestionSet(models.Model):
                 print "must create cache for ", r.id, r.question.identifier, r.file.name
         question_cache_id = 'questionset_question_ids_' + str(self.id)
 
+
 class ResourceCache(models.Model):
     def __unicode__(self):
         return u"{}: {}".format(self.format, self.file)
     file = FileField(upload_to='caches')
     format = CharField(max_length = 16, choices=CACHE_FORMATS)
     resources = ManyToManyField('Resource')
+
 
 class Resource(models.Model):
     def __unicode__(self):
@@ -458,6 +461,7 @@ class Resource(models.Model):
         return s
     def as_base64(self):
         return base64.b64encode(self.as_bytes())
+
 
 def _resource_list(soup):
     resource_set = set()
@@ -609,6 +613,7 @@ def _question_from_dirlike(cls, identifier = '-1',
             modules_list.append(i)
     return question
 
+
 class Question(models.Model):
     def __unicode__(self):
         return self.title
@@ -694,6 +699,7 @@ class Question(models.Model):
         kwargs['my_close']=lambda x: x.close()
         return _question_from_dirlike(cls, *args, **kwargs)
 
+
 class Answer(models.Model):
     def __unicode__(self):
         #print self.correct()
@@ -729,11 +735,13 @@ class AttemptInvalidation(models.Model):
     by = ForeignKey('Profile')
     reason = TextField(blank=True)
 
+
 class AttemptConfirmation(models.Model):
     def __unicode__(self):
         return u"{}: {}".format(self.by, self.attempt)
     by = ForeignKey('Profile')
     attempt = ForeignKey('Attempt')
+
 
 class Competitor(models.Model):
     def __unicode__(self):
@@ -743,11 +751,13 @@ class Competitor(models.Model):
     first_name = models.CharField(max_length=128, verbose_name=_("First Name"))
     last_name = models.CharField(max_length=128, verbose_name=_("Last Name"))
 
+
 class GradedAnswer(models.Model):
     attempt = ForeignKey('Attempt')
     question = ForeignKey('Question')
     answer = ForeignKey('Answer')
     score = FloatField(null=True)
+
  
 class Attempt(models.Model):
     def __unicode__(self):
@@ -900,18 +910,23 @@ class Profile(models.Model):
     update_used_codes_timestamp = DateTimeField(null=True, blank=True)
     update_managers_timestamp = DateTimeField(null=True, blank=True)
     vcard = models.TextField(blank=True)
+
     @property
     def first_name(self):
         return self.user.first_name
+
     @property
     def last_name(self):
         return self.user.last_name
+
     @property
     def email(self):
         return self.user.email
+
     @property
     def username(self):
         return self.user.username
+
     def __superiors(self, codegen, known):
         for c in self.received_codes.filter(format = codegen.format,
                 salt = codegen.salt):
@@ -942,6 +957,8 @@ class Profile(models.Model):
             except Exception, e:
                 print e
                 pass
+
+
     def apply_code_effects(self, codes = None):
         if codes is None:
             update_managers_timestamp = timezone.now()
@@ -949,6 +966,7 @@ class Profile(models.Model):
         for c in codes:
             for effect in c.code_effect_set:
                 effect.apply(users=[self])
+
 
     def update_managers(self, codes = None):
         for c in codes:
@@ -967,6 +985,7 @@ class Profile(models.Model):
                             for superior in superiors(u,
                                     competition.administrator_code_generator):
                                 superior.managed_profiles.add(self)
+
 
     def update_managed_profiles(self, codes = None):
         if codes is None:

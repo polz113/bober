@@ -97,10 +97,12 @@ class TeacherOverview(SmartCompetitionAdminCodeRequiredMixin,
         context['schools'] = schools
         context['attempts'] = attempts
         context['junior_mentorships'] = profile.juniormentorship_set.filter(
-            competition = self.competition).prefetch_related('junioryear_set', 
-                'junioryear_set__juniorattempt_set', 'junioryear_set__juniorattempt_set__competitor')
+            competition = self.competition).prefetch_related('junioryear_set',
+                'junioryear_set__attempts', 'junioryear_set__attempts__competitor')
+                # 'junioryear_set__juniorattempt_set', 'junioryear_set__juniorattempt_set__competitor')
         # print attempts
         return context
+
 
 class SchoolCodesCreate(SmartCompetitionAdminCodeRequiredMixin, FormView):
     template_name="bober_si/school_codes_create.html"
@@ -393,7 +395,9 @@ def award_pdf(request, slug, school_id, cqs_name):
                 for award in attempt.attemptaward_set.all().select_related('award'):
                     data.append(
                         {
-                            'name': u" ".join((attempt.competitor.first_name, attempt.competitor.last_name)),
+                            'name': u" ".join(
+                                (attempt.competitor.first_name, 
+                                attempt.competitor.last_name)),
                             'school': school.name,
                             'group': cqs.name,
                             'serial': award.serial,
