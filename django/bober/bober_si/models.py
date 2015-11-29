@@ -108,12 +108,12 @@ class SchoolCompetition(Competition):
         sc.save()
 
 
-def assign_si_awards(attempts, awards):
+def assign_si_awards(attempts, awards, max_score):
     attempt_awards = []
     if len(attempts) < 1:
         return attempt_awards
-    bronze_award = awards.objects.get(name='bronasto')
-    general_award = awards.objects.get(name='bronasto')
+    bronze_award = awards.get(name='bronasto')
+    general_award = awards.get(name='priznanje')
     print bronze_award.threshold
     l = []
     for attempt in attempts:
