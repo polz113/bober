@@ -382,7 +382,9 @@ def award_pdf(request, slug, school_id, cqs_name):
         for mentorship in profile.juniormentorship_set.filter(
                 competition=competition,
                 junioryear__questionset__name=cqs_name).distinct():
-            for year in mentorship.junioryear_set.all():
+            for year in mentorship.junioryear_set.filter(
+                    questionset__name=cqs_name
+                ):
                 code = 'Beavers bridging brooks'
             	l.append((mentorship.school,
                     year.questionset, code))
