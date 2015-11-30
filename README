@@ -1,4 +1,10 @@
 Bober is a web-based bebras competition system written in php using the yii framework.
 It is easily localizable and is written to be scalable.
 
-Most of the files can be found under backend/ .
+As of 2015, most development is going on under django/.
+
+The django version uses standard gettext .po files for the messages. The message files can
+be found under django/bober/*/locale/*.
+
+If you want to localize the old version of the system, look under backend/messages
+for examples.
