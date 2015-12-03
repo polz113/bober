@@ -107,6 +107,7 @@ class TeacherOverview(SmartCompetitionAdminCodeRequiredMixin,
 class SchoolCodesCreate(SmartCompetitionAdminCodeRequiredMixin, FormView):
     template_name="bober_si/school_codes_create.html"
     form_class = SchoolCodesCreateForm
+
     def dispatch(self, *args, **kwargs):
         self.competition = SchoolCompetition.objects.get(slug=kwargs['slug'])
         self.next_url = self.request.GET.get('next_url', None)
@@ -116,20 +117,24 @@ class SchoolCodesCreate(SmartCompetitionAdminCodeRequiredMixin, FormView):
                 {'admin_privileges': ['create_competitor_codes']}):
             raise PermissionDenied
         return super(SchoolCodesCreate, self).dispatch(*args, **kwargs)
+
     def get_context_data(self, **kwargs):
         context = super(SchoolCodesCreate, self).get_context_data(**kwargs)
         context['next_url'] = self.next_url
         return context
+
     def form_valid(self, form):
         school = form.cleaned_data['school']
         self.competition.school_codes_create(
             school, self.request.user.profile, 
             self.request.session['access_code']) 
         return super(SchoolCodesCreate, self).form_valid(form)
+
     def get_success_url(self):
         if self.next_url is None:
             return reverse('index')
         return self.next_url
+
 
 class TeacherCodeRegistrationPasswordReset(FormView):
     form_class = TeacherCodeRegistrationPasswordResetForm
@@ -145,10 +150,12 @@ class TeacherCodeRegistrationPasswordReset(FormView):
             response.status_code = 403
             return response
         return super(TeacherCodeRegistrationPasswordReset, self).get(*args, **kwargs)
+
     def get_initial(self):
         initial = super( TeacherCodeRegistrationPasswordReset, self).get_initial()
         initial['hidden_code'] = self.request.GET.get('hidden_code', '')
         return initial
+
     def form_valid(self, form):
         retval = super( TeacherCodeRegistrationPasswordReset, self).form_valid(form)
         email = form.cleaned_data['email']
@@ -170,11 +177,14 @@ class TeacherCodeRegistrationPasswordReset(FormView):
         u = authenticate(username = user.username, password=password)
         login(self.request, u)
         return retval
+
     def get_success_url(self):
         return reverse('teacher_overview', kwargs={"slug":self.competition.slug})
 
+
 class ProfilesBySchoolCategory(SmartCompetitionAdminCodeRequiredMixin, TemplateView):
     template_name = 'bober_si/profiles_by_schooltype.html'
+
     def get_context_data(self, *args, **kwargs):
         context = super(ProfilesBySchoolCategory, self).get_context_data(*args, **kwargs)
         categories = dict()
@@ -187,6 +197,7 @@ class ProfilesBySchoolCategory(SmartCompetitionAdminCodeRequiredMixin, TemplateV
                 categories[category] = profiles
         context['categories'] = categories
         return context
+
     def dispatch(self, *args, **kwargs):
         self.competition = SchoolCompetition.objects.get(slug = kwargs.pop('slug'))
         if not self.competition.administrator_code_generator.code_matches(self.access_code, 
@@ -346,6 +357,7 @@ class CompetitionXlsResults(SmartCompetitionAdminCodeRequiredMixin, TemplateView
             self.competitionquestionsets = self.competitionquestionsets.filter(id=cqs_id)
         return super(CompetitionXlsResults, self).dispatch(*args, **kwargs)
 
+
 @login_required
 def award_pdf(request, slug, school_id, cqs_name):
     profile = request.user.profile
@@ -403,14 +415,13 @@ def award_pdf(request, slug, school_id, cqs_name):
                     'attemptaward_set',
                 )
             for attempt in confirmed_attempts:
-                for award in attempt.attemptaward_set.all().select_related('award'):
+                for award in attempt.attemptaward_set.all().select_related(
+                        'award'):
                     data_set.add(
                         (
-                            u" ".join(
-                                (attempt.competitor.first_name, 
-                                attempt.competitor.last_name)),
-                            school.name,
-                            cqs.name,
+                            award.competitor_name,
+                            award.school_name,
+                            award.group_name,
                             award.serial,
                             award.award.template,
                         )
@@ -420,7 +431,6 @@ def award_pdf(request, slug, school_id, cqs_name):
         data = [{'name': i[0], 'school': i[1], 'group': i[2], 'serial': i[3], 'template': i[4]} for i in data_set]
         generate_award_pdf(cert_full_fname,
             data, template_file)
-        
     #return None
     return safe_media_redirect(cert_path)
 

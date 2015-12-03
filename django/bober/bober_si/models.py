@@ -11,6 +11,7 @@ SCHOOL_CATEGORIES = (
     ('KINDERGARDEN', _('Kindergarden')),
 )
 
+
 class School(models.Model):
     def __unicode__(self):
         return u"{}, {}".format(self.name, self.post, self.category)
@@ -71,7 +72,18 @@ class AttemptAward(models.Model):
     attempt = models.ForeignKey(Attempt)
     note = models.CharField(max_length=1024, 
         blank=True, default='')
-    serial = models.CharField(max_length=256, blank=True, default='')
+    competitor_name = models.TextField(blank=True)
+    school_name = models.TextField(blank=True)
+    group_name = models.TextField(blank=True)
+    revoked_by = models.ForeignKey(Profile, null=True)
+    serial = models.CharField(max_length=64, blank=True, default='',
+        unique=True)
+    files = models.ManyToManyField('AwardFile')
+
+
+class AwardFile(models.Model):
+    file = models.FileField()    
+    recipients = models.ManyToManyField(Profile, blank=True)
 
 
 class SchoolCompetition(Competition):
@@ -114,7 +126,7 @@ def assign_si_awards(attempts, awards, max_score):
         return attempt_awards
     bronze_award = awards.get(name='bronasto')
     general_award = awards.get(name='priznanje')
-    print bronze_award.threshold
+    # print bronze_award.threshold
     l = []
     for attempt in attempts:
         l.append((attempt.score, attempt))
@@ -129,6 +141,7 @@ def assign_si_awards(attempts, awards, max_score):
                 AttemptAward(
                     award = bronze_award,
                     attempt = a,
+                    
                     serial = "{}{:06}".format(bronze_award.serial_prefix, a.id)
                 )
             )
