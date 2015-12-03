@@ -5,6 +5,7 @@ from django.db import models
 from django.utils.html import escape
 from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
+from code_based_auth.models import CodeField
 from bober_simple_competition.models import Competition, Competitor, Profile, CompetitionQuestionSet, Attempt, AttemptConfirmation
 from bober_si.models import School, SCHOOL_CATEGORIES, Award
 import re
@@ -70,6 +71,7 @@ class JuniorYear(models.Model):
         ordering = ['name']
 
     mentorship = models.ForeignKey(JuniorMentorship)
+    access_code = CodeField()
     questionset = models.ForeignKey(CompetitionQuestionSet, null=True)
     name = models.CharField(max_length = 16)
     raw_data = models.TextField(blank=True)
@@ -163,7 +165,7 @@ class JuniorAttempt(models.Model):
     # competitor = models.ForeignKey(Competitor)
     attempt = models.OneToOneField(Attempt, null=True)
     line = models.IntegerField(default=-1)
-    remarks = models.TextField(blank=True)
+    remarks = models.TextField(blank=True, null=True)
     # score = models.FloatField(null=True)
 
 #class JuniorAward(models.Model):
