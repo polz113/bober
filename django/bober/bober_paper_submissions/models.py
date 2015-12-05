@@ -78,7 +78,7 @@ class JuniorYear(models.Model):
     remarks = models.TextField(blank=True)
     attempts = models.ManyToManyField(Attempt, through='JuniorAttempt')
     
-    def save_results(self, competitor_data=None):
+    def save_results(self, competitor_data=None, profile=None):
         if competitor_data is None:
             competitor_data = parse_competitor_data(self.raw_data)
         j_attempts_by_name = {}
@@ -111,8 +111,8 @@ class JuniorYear(models.Model):
             if j_a.id not in still_here:
                 missing.append(j_a)
                 missing_ids.add(j_a.id)
-        #print unrecognized_attempts
-        #print "missing:", missing_ids
+        # print unrecognized_attempts
+        # print "missing:", missing_ids
         for i, (line_no, first_name, last_name, points) in enumerate(unrecognized_attempts):
             if i < len(missing) and missing[i].attempt.score == points:
                 j_a = missing[i]
@@ -122,7 +122,7 @@ class JuniorYear(models.Model):
             else:
                 c = Competitor()
                 a = Attempt(competitionquestionset = self.questionset,
-                    random_seed=0, access_code = 'Beavers bridging brooks')
+                    random_seed=0, access_code = self.access_code)
                 j_a = JuniorAttempt(year_class = self)
             c.first_name = first_name
             c.last_name = last_name
@@ -133,9 +133,10 @@ class JuniorYear(models.Model):
             j_a.line = line_no
             # j_a.score = points
             j_a.attempt = a
+            j_a.remarks = ''
             # j_a.competitor = c
             j_a.save()
-        #print "   still missing:", missing_ids
+        # print "   still missing:", missing_ids
         for j_a in JuniorAttempt.objects.filter(id__in=missing_ids):
             j_a.attempt.competitor.delete()
             j_a.attempt.delete()
@@ -148,7 +149,17 @@ class JuniorYear(models.Model):
             created_one = created_one or created
         if created_one:
             # we should probably recreate the awards.
-            pass
+            awards = Award.objects.filter(questionset = self.questionset)
+            if profile is None:
+                codegen = self.questionset.competition.administrator_code_generator
+                profile = codegen.codes.filter(
+                    code_parts__name='admin_privileges', 
+                    code_parts__value='view_all_admin_codes'
+                )[0].creator_set.all()[0]
+            self.mentorship.school.assign_si_awards(awards,
+                CompetitionQuestionSet.objects.filter(id=self.questionset_id),
+                revoked_by = profile, commit = True)
+
 
 class JuniorDefaultYear(models.Model):
     competition = models.ForeignKey(Competition)
@@ -160,7 +171,7 @@ class JuniorDefaultYear(models.Model):
 
 class JuniorAttempt(models.Model):
     def __unicode__(self):
-        return u"{}:{} {}".format(self.competitor, self.year_class, self.remarks)
+        return u"{}:{} {}".format(self.attempt.competitor, self.year_class, self.remarks)
     year_class = models.ForeignKey(JuniorYear)
     # competitor = models.ForeignKey(Competitor)
     attempt = models.OneToOneField(Attempt, null=True)

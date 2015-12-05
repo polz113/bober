@@ -74,7 +74,7 @@ def smart_competition_admin_code_required(function = None):
             access_code = codes[0]
         except Exception, e:
             pass
-            print e
+            # print e
         if access_code is not None:
             _use_access_code(request, access_code)
         else:

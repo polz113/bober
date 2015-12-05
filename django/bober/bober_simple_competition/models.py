@@ -213,6 +213,7 @@ class Competition(models.Model):
         c.save()
         return c 
 
+
 ANSWER_BATCH_SIZE = 100000
 
 def _create_graded(answer, regrade, grader_runtime_manager):
@@ -240,6 +241,7 @@ def _create_graded(answer, regrade, grader_runtime_manager):
     except Exception, e:
         print e
     return None
+
 
 class CompetitionQuestionSet(models.Model):
     def __unicode__(self):
@@ -312,6 +314,7 @@ class CompetitionQuestionSet(models.Model):
                 graded_list = []
                 grades_set.clear()
         GradedAnswer.objects.bulk_create(graded_list)
+
 
 class CodeEffect(models.Model):
     code = ForeignKey(Code)

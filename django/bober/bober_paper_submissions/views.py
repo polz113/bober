@@ -52,6 +52,13 @@ class JuniorResults(UpdateWithInlinesView, LoginRequiredMixin):
         self.competition_slug = kwargs.get('slug', None)
         return super(JuniorResults, self).dispatch(*args, **kwargs)
 
+    def forms_valid(self, form, inlines):
+        for inline_set in inlines:
+            for inline in inline_set:
+                inline.instance.save_results(
+                    inline.competitor_data, self.request.user.profile)
+        return super(JuniorResults, self).forms_valid(form, inlines)
+
     def get_success_url(self):
         return reverse('teacher_overview', kwargs={'slug': self.competition_slug})
 

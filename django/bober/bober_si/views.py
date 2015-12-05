@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect, resolve_url
+from django.shortcuts import render, redirect, resolve_url, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.utils.translation import ugettext as _
@@ -11,7 +11,7 @@ from django.contrib.auth.decorators import login_required
 from django.conf import settings
 from forms import OverviewForm, SchoolCodesCreateForm
 from bober_simple_competition.views import AccessCodeRequiredMixin, SmartCompetitionAdminCodeRequiredMixin
-from bober_simple_competition.views import safe_media_redirect, user_files, _user_file_path
+from bober_simple_competition.views import safe_media_redirect, user_files, _user_file_path, JsonResponse
 from bober_simple_competition.models import Attempt, Profile, GradedAnswer, AttemptConfirmation
 from bober_paper_submissions.models import JuniorDefaultYear
 from django.contrib.auth.models import User
@@ -375,66 +375,134 @@ def award_pdf(request, slug, school_id, cqs_name):
             os.makedirs(cert_full_dir)
         except Exception, e:
             pass
-            print e
+        #    print e
         # regenerate award. Ignore the template
         template_file = os.path.join(AWARD_TEMPLATE_DIR, 'all_si.svg')
-            #print "generating..."
-        data = list()
+        #print "generating..."
+        data = []
         competition = SchoolCompetition.get_cached_by_slug(slug=slug)
-        l = []
-        for stc in profile.schoolteachercode_set.filter(
+        #print cqs_name
+        #for i in profile.schoolteachercode_set.all():
+        #    print "  ", i.competition_questionset.name
+        #print profile.schoolteachercode_set.filter(school_id = school_id,
+        #    competition_questionset__name=cqs_name)
+        stcs = profile.schoolteachercode_set.filter(
                     code__codegenerator = competition.competitor_code_generator,
                     competition_questionset__name = cqs_name,
-                    school__id = school_id
+                    school_id = school_id
                 ).order_by(
                     'code'
                 ).prefetch_related(
-                    'code'):
-            l.append((stc.school, stc.competition_questionset, stc.code.value))
-        for mentorship in profile.juniormentorship_set.filter(
-                competition=competition,
-                junioryear__questionset__name=cqs_name).distinct():
-            for year in mentorship.junioryear_set.filter(
-                    questionset__name=cqs_name
-                ):
-                code = 'Beavers bridging brooks'
-            	l.append((mentorship.school,
-                    year.questionset, code))
-        data_set = set()
-        for (school, cqs, code) in l:
-            #print "    ", school, cqs
-            #CompetitionQuestionSet.objects.get(competition=competition,
-            #    name = cqs_name)
-            confirmed_attempts = Attempt.objects.filter(
-                    access_code = code,
-                    competitionquestionset = cqs,
-                    confirmed_by__id=profile.id,
+                    'code')
+        # print stcs
+        for stc in stcs:
+            stc.assign_si_awards(revoked_by = profile)
+            awards = stc.attempt_awards().order_by(
+                    'attempt__competitor__last_name',
+                    'attempt__competitor__first_name'
                 ).select_related(
-                    'competitor',
-                ).prefetch_related(
-                    'attemptaward_set',
+                    'award')
+            for award in awards:
+                data.append(
+                    {
+                        'name': award.competitor_name,
+                        'school': award.school_name,
+                        'group': award.group_name,
+                        'serial': award.serial,
+                        'template': award.award.template,
+                    }
                 )
-            for attempt in confirmed_attempts:
-                for award in attempt.attemptaward_set.all().select_related(
-                        'award'):
-                    data_set.add(
-                        (
-                            award.competitor_name,
-                            award.school_name,
-                            award.group_name,
-                            award.serial,
-                            award.award.template,
-                        )
-                    )
-        #    print data
-        #print os.path.join(cert_full_dir, cert_fname)
-        data = [{'name': i[0], 'school': i[1], 'group': i[2], 'serial': i[3], 'template': i[4]} for i in data_set]
         generate_award_pdf(cert_full_fname,
             data, template_file)
     #return None
     return safe_media_redirect(cert_path)
 
 @login_required
-def invalidate_award(request, slug, profile_id, school_id, competition_questionset_id):
-    
+def bla(request):
     pass
+
+def __update_juniorattempt(attempt):
+    try:
+        j_a = attempt.juniorattempt
+        year_class = j_a.year_class
+        raw = year_class.raw_data
+        lines = raw.split('\n')
+        replacement_line = u"{} {}\t{:.0f}".format(
+            attempt.competitor.first_name,
+            attempt.competitor.last_name,
+            attempt.score)
+        print (lines[j_a.line],),(replacement_line,)
+        lines[j_a.line] = replacement_line
+        raw = u"\n".join(lines)
+        print raw
+        year_class.raw_data = raw
+        year_class.save()
+    except Exception, e:
+        # print e
+        pass
+   
+
+@login_required
+def revalidate_awards(request, attempt_id, *args, **kwargs):
+    attempt = get_object_or_404(Attempt, id=attempt_id)
+    # TODO check permissions, determine the actual teacher
+    teacher = request.user.profile
+    # TODO update all possible awards files containing this attempt
+    # print attempt
+    __update_juniorattempt(attempt)
+    awards_changed = False
+    sct = teacher.schoolteachercode_set.get(
+        code__value = attempt.access_code,
+        competition_questionset = attempt.competitionquestionset
+    )
+    cqs = sct.competition_questionset
+    school = sct.school
+    awards_changed = []
+    serials = set()
+    for aaward in attempt.attemptaward_set.filter(revoked_by = None):
+        serials.add(aaward.serial)
+        competitor_name = u"{} {}".format(attempt.competitor.first_name,
+            attempt.competitor.last_name)
+        # print "  ", aaward.competitor_name, competitor_name
+        if aaward.competitor_name != competitor_name or \
+                aaward.school_name != school.name or \
+                aaward.group_name != cqs.name:
+            # print "changed!"
+            aaward.revoked_by = teacher
+            aaward.save()
+            aaward.id = None
+            aaward.competitor_name = competitor_name
+            aaward.school_name = school.name
+            aaward.revoked_by = None
+            aaward.group_name = cqs.name
+            awards_changed.append(aaward)
+    for award in awards_changed:
+        base_serial = award.serial
+        p = base_serial.rfind('-')
+        if p >= 0:
+            base_serial = base_serial[:p]
+        new_serial = base_serial
+        i = 1
+        # print serials
+        while new_serial in serials:
+            new_serial = "{}-{}".format(base_serial, i)
+            i += 1
+        award.serial = new_serial
+        # print "created award", award.serial, award, award.revoked_by
+        award.save()
+        serials.add(new_serial)
+    if True or len(awards_changed):
+        cert_dir = os.path.join(_user_file_path(teacher, 
+            os.path.join(cqs.competition.slug, str(school.id))))
+        cert_fname = cqs.name + '.pdf'
+        cert_path = os.path.join(cert_dir, cert_fname)
+        cert_full_fname = os.path.join(settings.MEDIA_ROOT, cert_path)
+        new_cert_full_fname = cert_full_fname
+        i = 0
+        while os.path.isfile(new_cert_full_fname):
+            i += 1
+            new_cert_full_fname = u'{}-{}'.format(cert_full_fname, i)
+        # print "new file name:", new_cert_full_fname
+        os.rename(cert_full_fname, new_cert_full_fname)
+
+    return JsonResponse({'status': 'success'})

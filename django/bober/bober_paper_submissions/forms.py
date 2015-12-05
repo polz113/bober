@@ -27,7 +27,6 @@ class JuniorYearForm(ModelForm):
 
     def save(self, *args, **kwargs):
         instance = super(JuniorYearForm, self).save(*args, **kwargs)
-        instance.save_results(self.competitor_data)
         return instance
 
 class JuniorMentorshipForm(ModelForm):

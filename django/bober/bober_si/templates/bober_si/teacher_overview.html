@@ -198,13 +198,13 @@ popravite, saj bodo na priznanjih izpisana natančno tako, kot so zapisana tu.
                              <input name="last_name" type="text" value="{{attempt.competitor.last_name}}"/>
                              <input name="cqs_id" type="hidden" value="{{cqs.id}}">
                              <input name="attempt_id" type="hidden" value="{{attempt.id}}">
-                             <input name="invalidate_url" class="invalidate-url" type="hidden" value="{% url "invalidate_award" competition_questionset_id=cqs.id profile_id=profile.id slug=competition.slug school_id=school.id %}" />
+                             <input name="invalidate_url" class="invalidate-url" type="hidden" value="{% url "revalidate_awards" profile_id=profile.id slug=competition.slug attempt_id=attempt.id %}" />
               
                          </form>
                          </span>
                          <img class="pencil" src="/static/img/pencil.png" onclick="edit_name(this); " />
-                         <img src="/static/img/qualify.png" class="confirm" onclick="switch_qualify(this, '{% url "attempt_confirm" attempt_id=attempt.id competition_questionset_id=cqs.id %}', true); invalidate_award('{% url "invalidate_award" competition_questionset_id=cqs.id profile_id=profile.id slug=competition.slug school_id=school.id %}')" />
-                         <img src="/static/img/disqualify.png" class="confirm" onclick="switch_qualify(this, '{% url "attempt_unconfirm" attempt_id=attempt.id competition_questionset_id=cqs.id %}', false); invalidate_award('{% url "invalidate_award" competition_questionset_id=cqs.id profile_id=profile.id slug=competition.slug school_id=school.id %}')" />
+                         <img src="/static/img/qualify.png" class="confirm" onclick="switch_qualify(this, '{% url "attempt_confirm" attempt_id=attempt.id competition_questionset_id=cqs.id %}', true); invalidate_award('{% url "revalidate_awards" profile_id=profile.id slug=competition.slug attempt_id=attempt.id %}')" />
+                         <img src="/static/img/disqualify.png" class="confirm" onclick="switch_qualify(this, '{% url "attempt_unconfirm" attempt_id=attempt.id competition_questionset_id=cqs.id %}', false); invalidate_award('{% url "revalidate_awards" profile_id=profile.id slug=competition.slug attempt_id=attempt.id %}')" />
                     </th>
                     {% for q, answer in attempt.graded_answers_by_question_id.iteritems %}
                         <td>
@@ -227,7 +227,7 @@ popravite, saj bodo na priznanjih izpisana natančno tako, kot so zapisana tu.
     </div>{% endif %}{% endfor %}
 {%  endfor %}
 </div>
-{% if junior_mentorships %}
+{% if False and junior_mentorships %}
 <div>
 <div class="prelim">{% trans "Results on paper" %}</div>
 {% for mentorship in junior_mentorships %}
