@@ -359,8 +359,11 @@ class CompetitionXlsResults(SmartCompetitionAdminCodeRequiredMixin, TemplateView
 
 
 @login_required
-def award_pdf(request, slug, school_id, cqs_name):
-    profile = request.user.profile
+def award_pdf(request, username, slug, school_id, cqs_name):
+    profile = Profile.objects.get(user__username=username)
+    assert profile.user == request.user or \
+        request.user.profile.managed_users.filter(
+            id=profile.id).count() > 0
     cert_dir = os.path.join(_user_file_path(profile, 
         os.path.join(slug, school_id)))
     cert_fname = cqs_name + '.pdf'

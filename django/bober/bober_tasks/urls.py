@@ -4,7 +4,7 @@ from django.views.generic import RedirectView
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.core.urlresolvers import reverse_lazy
 
-urlpatterns = patterns('',
+urlpatterns = [
     # Index
     # url(r'^$', index, name="tasks_index"),
     url(r'^$', RedirectView.as_view(url=reverse_lazy('tasks.list')), name="task_index"),
@@ -73,6 +73,6 @@ urlpatterns = patterns('',
     # url(r'^admin/', include(admin.site.urls)),
     #(r'^ckeditor/', include('ckeditor.urls')),
     # Show static HTML
-)
+]
 
 urlpatterns += staticfiles_urlpatterns()

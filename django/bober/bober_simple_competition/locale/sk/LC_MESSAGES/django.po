@@ -1,0 +1,595 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-11-16 08:23+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=4; plural=(n%100==1 ? 0 : n%100==2 ? 1 : n%100==3 || n"
+"%100==4 ? 2 : 3);\n"
+
+#: forms.py:20 forms.py:29 forms.py:102 forms.py:173
+msgid "Access code"
+msgstr "Prístupový kód"
+
+#: forms.py:22
+msgid "Update used codes later"
+msgstr "Aktualizácie použitie kódov neskôr"
+
+#: forms.py:25
+msgid "Execute effects later"
+msgstr "Spúšťať efekty neskôr"
+
+#: forms.py:128 forms.py:162 forms.py:193 forms.py:237
+msgid "Wrong access code"
+msgstr "Chybný prístupový kód"
+
+#: forms.py:148 forms.py:223
+msgid "Group"
+msgstr "Group"
+
+#: forms.py:165 forms.py:244
+msgid "This field is required"
+msgstr "Toto pole je vyžadované"
+
+#: models.py:56
+msgid "Participate in the competition"
+msgstr "Účasť v súťaži"
+
+#: models.py:57
+msgid "Attempt competition before start"
+msgstr "Pokus súťaže pred štartom"
+
+#: models.py:58
+msgid "See results before official end of competition"
+msgstr "Pozri výsledky pred oficiálnym ukončenia súťaže"
+
+#: models.py:59
+msgid "Resume existing attempts"
+msgstr "Obnoviť existujúce pokusy"
+
+#: models.py:63
+msgid "Allow the creator to manage the profile of anyone using this code"
+msgstr "Nechajte tvorca spravovať profil niekto pomocou tohto kódu"
+
+#: models.py:64
+msgid ""
+"Allow the creator and their managers to manage the profile of anyone using "
+"this code"
+msgstr "Nechajte tvorca a ich manažéri riadiť profil niekto pomocou tohto kódu"
+
+#: models.py:68
+msgid "Create administrator codes"
+msgstr "Vytvoriť kódy správcu"
+
+#: models.py:69
+msgid "Create comeptitor codes"
+msgstr "Vytvoriť comeptitor kódy"
+
+#: models.py:70
+msgid "View all attempts for this competition"
+msgstr "Zobraziť všetky pokusy pre túto súťaž"
+
+#: models.py:71
+msgid "View all administrator codes for this competition"
+msgstr "Zobraziť všetky kódy správcu pre túto súťaž"
+
+#: models.py:72
+msgid "View all competitor codes for this competition"
+msgstr "Zobraziť všetky konkurencie kódy pre túto súťaž"
+
+#: models.py:73
+msgid "Use question sets for new competitions"
+msgstr "Pomocou sady otázok pre nové súťaže"
+
+#: models.py:74
+msgid "Modify this competition"
+msgstr "Zmeniť túto súťaž"
+
+#: models.py:76
+msgid "Use questions for new question sets"
+msgstr "Používajte otázky pre nové otázka sady"
+
+#: models.py:89
+msgid "Reduced functionality"
+msgstr "Znížená funkcia"
+
+#: models.py:90
+msgid "Basic features only"
+msgstr "Iba Základné vlastnosti"
+
+#: models.py:91
+msgid "Commonly used features"
+msgstr "Bežne používané funkcie"
+
+#: models.py:92
+msgid "All features"
+msgstr "Všetky funkcie"
+
+#: models.py:730 templates/bober_simple_competition/profile_detail.html:22
+msgid "First Name"
+msgstr "Krstné meno"
+
+#: models.py:731 templates/bober_simple_competition/profile_detail.html:26
+msgid "Last Name"
+msgstr "Priezvisko"
+
+#: templates/base.html:37
+msgid "Beaver"
+msgstr "Beaver"
+
+#: templates/base.html:42
+msgid "Logout"
+msgstr "Odhlásiť sa"
+
+#: templates/bober_simple_competition/access_code.html:4
+#: templates/bober_simple_competition/access_code.html:6
+#: templates/bober_simple_competition/compete_with_short_code.html:4
+#: templates/bober_simple_competition/compete_with_short_code.html:6
+msgid "Enter access code"
+msgstr "Zadajte prístupový kód"
+
+#: templates/bober_simple_competition/access_code.html:10
+#: templates/bober_simple_competition/compete_with_short_code.html:10
+#: templates/bober_simple_competition/competition_guest.html:10
+#: templates/bober_simple_competition/competition_list.html:10
+#: templates/bober_simple_competition/profile_detail.html:14
+#: templates/bober_simple_competition/profile_table_list.html:11
+msgid "Back to Menu"
+msgstr "Späť do menu"
+
+#: templates/bober_simple_competition/access_code.html:18
+#: templates/bober_simple_competition/basic_registration.html:11
+#: templates/bober_simple_competition/codeformat_create.html:14
+#: templates/bober_simple_competition/compete_with_short_code.html:18
+#: templates/bober_simple_competition/competition_code_create.html:13
+#: templates/bober_simple_competition/competition_form.html:59
+#: templates/bober_simple_competition/profile_form.html:25
+#: templates/bober_simple_competition/questionset_form.html:15
+#: templates/bober_simple_competition/user_registration.html:21
+msgid "Submit"
+msgstr "Predložiť"
+
+#: templates/bober_simple_competition/attempt_results.html:4
+#: templates/bober_simple_competition/attempt_results.html:6
+msgid "Results"
+msgstr "Výsledky"
+
+#: templates/bober_simple_competition/attempt_results.html:13
+#: templates/bober_simple_competition/competition_attempt_list.html:18
+msgid "Question"
+msgstr "Otázka"
+
+#: templates/bober_simple_competition/attempt_results.html:14
+#: templates/bober_simple_competition/competition_attempt_list.html:19
+msgid "Not graded yet"
+msgstr "Ešte nie triedené"
+
+#: templates/bober_simple_competition/attempt_results.html:15
+#: templates/bober_simple_competition/competition_attempt_list.html:20
+msgid "Wrong Answer"
+msgstr "Zlá odpoveď"
+
+#: templates/bober_simple_competition/attempt_results.html:16
+#: templates/bober_simple_competition/competition_attempt_list.html:21
+msgid "Correct"
+msgstr "Správna"
+
+#: templates/bober_simple_competition/basic_registration.html:5
+#: templates/bober_simple_competition/competition_data.html:4
+#: templates/bober_simple_competition/competition_data.html:6
+#: templates/bober_simple_competition/competition_registration.html:4
+#: templates/bober_simple_competition/competition_registration.html:6
+#: templates/bober_simple_competition/competition_resources.html:4
+#: templates/bober_simple_competition/competition_resources.html:6
+#: templates/bober_simple_competition/invalidate_attempt.html:4
+#: templates/bober_simple_competition/invalidate_attempt.html:6
+#: templates/bober_simple_competition/profile_merge.html:4
+#: templates/bober_simple_competition/profile_merge.html:6
+#: templates/bober_simple_competition/question_import.html:4
+#: templates/bober_simple_competition/question_import.html:6
+#: templates/bober_simple_competition/questionset_registration.html:4
+#: templates/bober_simple_competition/questionset_registration.html:6
+#: templates/bober_simple_competition/registration_codes.html:4
+#: templates/bober_simple_competition/registration_codes.html:6
+#: templates/bober_simple_competition/send_codes.html:4
+#: templates/bober_simple_competition/send_codes.html:6
+#: templates/bober_simple_competition/submit_answer.html:4
+#: templates/bober_simple_competition/submit_answer.html:6
+#: templates/bober_simple_competition/user_registration.html:4
+#: templates/bober_simple_competition/user_registration.html:6
+msgid "Registration"
+msgstr "Zápis"
+
+#: templates/bober_simple_competition/codeformat_create.html:4
+#: templates/bober_simple_competition/codeformat_create.html:6
+msgid "Create code format"
+msgstr "Vytvoriť formátovanie kódu"
+
+#: templates/bober_simple_competition/codeformat_create.html:9
+msgid "Code format successfully created!"
+msgstr "Formát Code úspešne vytvorená!"
+
+#: templates/bober_simple_competition/codeformat_index.html:4
+#: templates/bober_simple_competition/codeformat_index.html:6
+#: templates/bober_simple_competition/codeformat_list.html:4
+#: templates/bober_simple_competition/codeformat_list.html:6
+#: templates/bober_simple_competition/index.html:17
+#: templates/code_based_auth/codeformat_list.html:4
+#: templates/code_based_auth/codeformat_list.html:6
+msgid "Code formats"
+msgstr "Formáty Kód"
+
+#: templates/bober_simple_competition/codeformat_index.html:9
+msgid "Back to index"
+msgstr "Späť do indexu"
+
+#: templates/bober_simple_competition/codeformat_index.html:10
+msgid "Competitor code formats"
+msgstr "Formáty Pretekár kód"
+
+#: templates/bober_simple_competition/codeformat_index.html:11
+msgid "Create competitor code format"
+msgstr "Vytvoriť formát konkurencie kódu"
+
+#: templates/bober_simple_competition/codeformat_index.html:12
+msgid "Admin code formats"
+msgstr "Formáty kód admin"
+
+#: templates/bober_simple_competition/codeformat_index.html:13
+msgid "Create administrator code format"
+msgstr "Vytvoriť kód formátu administrátora"
+
+#: templates/bober_simple_competition/codeformat_list.html:8
+msgid "Back to code format index"
+msgstr "Späť do kódu formátu indexu"
+
+#: templates/bober_simple_competition/competition_attempt_list.html:4
+#: templates/bober_simple_competition/competition_attempt_list.html:6
+msgid "Competition attempts"
+msgstr "Pokusy Súťaž"
+
+#: templates/bober_simple_competition/competition_attempt_list.html:9
+#: templates/bober_simple_competition/competition_code_list.html:9
+#: templates/bober_simple_competition/competition_detail.html:12
+msgid "Back to competitions"
+msgstr "Späť na súťažiach"
+
+#: templates/bober_simple_competition/competition_attempt_list.html:11
+#: templates/bober_simple_competition/competition_code_list.html:11
+msgid "Competition details"
+msgstr "Podrobnosti Súťaž"
+
+#: templates/bober_simple_competition/competition_code_create.html:4
+#: templates/bober_simple_competition/competition_code_create.html:6
+msgid "Create code"
+msgstr "Vytvoriť kód"
+
+#: templates/bober_simple_competition/competition_code_list.html:4
+#: templates/bober_simple_competition/competition_code_list.html:6
+#: templates/bober_simple_competition/profile_detail.html:66
+#: templates/bober_simple_competition/profile_form.html:28
+msgid "Codes"
+msgstr "Kódy"
+
+#: templates/bober_simple_competition/competition_code_list.html:12
+msgid "Current code"
+msgstr "Aktuálny kód"
+
+#: templates/bober_simple_competition/competition_code_list.html:16
+msgid "Admin codes"
+msgstr "Správca kódy"
+
+#: templates/bober_simple_competition/competition_code_list.html:18
+#: templates/bober_simple_competition/competition_code_list.html:27
+msgid "Generate code"
+msgstr "Generovať kód"
+
+#: templates/bober_simple_competition/competition_code_list.html:25
+msgid "Competitor codes"
+msgstr "Konkurenčné kódy"
+
+#: templates/bober_simple_competition/competition_detail.html:6
+#: templates/bober_simple_competition/competition_detail.html:8
+#: templates/bober_simple_competition/competition_list.html:4
+msgid "Competition"
+msgstr "Súťaž"
+
+#: templates/bober_simple_competition/competition_detail.html:15
+msgid "codes"
+msgstr "kódy"
+
+#: templates/bober_simple_competition/competition_detail.html:16
+msgid "edit"
+msgstr "editovať"
+
+#: templates/bober_simple_competition/competition_detail.html:18
+#: templates/bober_simple_competition/competition_form.html:36
+#: templates/bober_simple_competition/index.html:15
+#: templates/bober_simple_competition/questionset_list.html:4
+#: templates/bober_simple_competition/questionset_list.html:6
+msgid "Question sets"
+msgstr "Otázka sety"
+
+#: templates/bober_simple_competition/competition_form.html:6
+#: templates/bober_simple_competition/competition_form.html:8
+msgid "Edit competition"
+msgstr "Upraviť súťaž"
+
+#: templates/bober_simple_competition/competition_form.html:43
+#: templates/bober_simple_competition/competition_form.html:71
+msgid "Show more"
+msgstr "Zobraziť viac"
+
+#: templates/bober_simple_competition/competition_form.html:68
+msgid "Show less"
+msgstr "Zobraziť menej"
+
+#: templates/bober_simple_competition/competition_guest.html:4
+#: templates/bober_simple_competition/competition_guest.html:6
+msgid "Compete as a guest"
+msgstr "Súťažiť ako hosť"
+
+#: templates/bober_simple_competition/competition_guest.html:13
+msgid "Guest access not allowed."
+msgstr "Hosť prístup nie je povolený."
+
+#: templates/bober_simple_competition/competition_guest.html:14
+msgid "Compete using a code"
+msgstr "Súťažte pomocou kódu"
+
+#: templates/bober_simple_competition/competition_guest.html:16
+msgid "If you are not redirected automatically, click on the link below."
+msgstr "Ak nebudete automaticky presmerovaní, kliknite na odkaz nižšie."
+
+#: templates/bober_simple_competition/competition_guest.html:17
+#: templates/bober_simple_competition/competition_registration.html:16
+#: templates/bober_simple_competition/questionset_registration.html:14
+msgid "Compete"
+msgstr "Súťažiť"
+
+#: templates/bober_simple_competition/competition_index.html:57
+msgid "Answered"
+msgstr "Odpovedal"
+
+#: templates/bober_simple_competition/competition_index.html:64
+msgid "Time left"
+msgstr "Zostávajúci čas"
+
+#: templates/bober_simple_competition/competition_index.html:70
+msgid "Finish"
+msgstr "Skončiť"
+
+#: templates/bober_simple_competition/competition_index.html:81
+#: templates/bober_simple_competition/competition_index.html:93
+msgid "Clear Answer"
+msgstr "Jasná odpoveď"
+
+#: templates/bober_simple_competition/competition_list.html:5
+msgid "Competitions in progress"
+msgstr "Súťaže prebiehajúce"
+
+#: templates/bober_simple_competition/competition_list.html:20
+msgid "Create competition"
+msgstr "Vytvoriť súťaž"
+
+#: templates/bober_simple_competition/competition_registration.html:19
+msgid "Login as a teacher"
+msgstr "Prihláste sa ako učiteľ"
+
+#: templates/bober_simple_competition/index.html:4
+msgid "Welcome to the Bober competition"
+msgstr "Vitajte v Bober súťaži"
+
+#: templates/bober_simple_competition/index.html:6
+msgid "Bober"
+msgstr "Bober"
+
+#: templates/bober_simple_competition/index.html:9
+msgid "Competitions"
+msgstr "Súťaže"
+
+#: templates/bober_simple_competition/index.html:11
+#: templates/registration/login.html:5
+msgid "Login"
+msgstr "Prihlásiť sa"
+
+#: templates/bober_simple_competition/index.html:13
+msgid "Managed users"
+msgstr "Riadené užívateľov"
+
+#: templates/bober_simple_competition/index.html:14
+msgid "My profile"
+msgstr "Môj profil"
+
+#: templates/bober_simple_competition/index.html:16
+#: templates/bober_simple_competition/question_list.html:4
+#: templates/bober_simple_competition/question_list.html:6
+#: templates/bober_simple_competition/question_table.html:4
+#: templates/bober_simple_competition/question_table.html:6
+msgid "Questions"
+msgstr "Otázky"
+
+#: templates/bober_simple_competition/profile_detail.html:19
+msgid "Profile Details"
+msgstr "Profil Podrobnosti"
+
+#: templates/bober_simple_competition/profile_detail.html:30
+msgid "Email"
+msgstr "Email"
+
+#: templates/bober_simple_competition/profile_detail.html:39
+msgid "Former profiles"
+msgstr "Bývalí profily"
+
+#: templates/bober_simple_competition/profile_detail.html:54
+msgid "Attempts"
+msgstr "Pokusy"
+
+#: templates/bober_simple_competition/profile_detail.html:68
+#: templates/bober_simple_competition/profile_detail.html:106
+#: templates/bober_simple_competition/profile_form.html:30
+#: templates/bober_simple_competition/profile_form.html:68
+msgid "Show codes"
+msgstr "Zobraziť kódy"
+
+#: templates/bober_simple_competition/profile_detail.html:71
+#: templates/bober_simple_competition/profile_form.html:33
+msgid "Used codes"
+msgstr "Použité kódy"
+
+#: templates/bober_simple_competition/profile_detail.html:80
+#: templates/bober_simple_competition/profile_form.html:42
+msgid "Received codes"
+msgstr "Prijaté kódy"
+
+#: templates/bober_simple_competition/profile_detail.html:89
+#: templates/bober_simple_competition/profile_form.html:51
+msgid "Created codes"
+msgstr "Vytvorené kódy"
+
+#: templates/bober_simple_competition/profile_detail.html:103
+#: templates/bober_simple_competition/profile_form.html:65
+msgid "Hide codes"
+msgstr "Skryť kódy"
+
+#: templates/bober_simple_competition/profile_form.html:4
+#: templates/bober_simple_competition/profile_form.html:6
+msgid "Edit user"
+msgstr "Upraviť užívat"
+
+#: templates/bober_simple_competition/profile_list.html:4
+#: templates/bober_simple_competition/profile_list.html:5
+#: templates/bober_simple_competition/profile_table_list.html:4
+#: templates/bober_simple_competition/profile_table_list.html:5
+msgid "Users"
+msgstr "Užívatelia"
+
+#: templates/bober_simple_competition/profile_list.html:14
+msgid "Update profile"
+msgstr "Aktualizovať profil"
+
+#: templates/bober_simple_competition/questionset_create.html:4
+#: templates/bober_simple_competition/questionset_create.html:6
+msgid "Create question set"
+msgstr "Vytvoriť sada otázok"
+
+#: templates/bober_simple_competition/questionset_detail.html:6
+#: templates/bober_simple_competition/questionset_detail.html:8
+#: templates/bober_simple_competition/questionset_form.html:6
+#: templates/bober_simple_competition/questionset_form.html:8
+msgid "Question set"
+msgstr "Otázka set"
+
+#: templates/bober_simple_competition/questionset_detail.html:18
+msgid "Edit questionset"
+msgstr "Upraviť questionset"
+
+#: templates/bober_simple_competition/user_files.html:4
+#: templates/bober_simple_competition/user_files.html:6
+msgid "Files"
+msgstr "Súbory"
+
+#: templates/bober_simple_competition/user_registration_confirmation.html:4
+#: templates/bober_simple_competition/user_registration_confirmation.html:6
+msgid "User created"
+msgstr "Užívateľ vytvoril"
+
+#: templates/registration/logged_out.html:5
+msgid "Thank you for using Bober"
+msgstr "Ďakujeme, že používate Bober"
+
+#: templates/registration/logged_out.html:6
+#: templates/registration/logged_out.html:7
+msgid "Back to first page"
+msgstr "Späť na prvú stránku"
+
+#: templates/registration/login.html:9
+msgid "Hello,"
+msgstr "Ahoj,"
+
+#: templates/registration/login.html:13 templates/registration/login.html:16
+msgid "Login with"
+msgstr "Prihlásiť sa"
+
+msgid "Edit my profile"
+msgstr "Upraviť môj profil"
+
+msgid "attempts"
+msgstr "pokusy"
+
+msgid "Competition Name"
+msgstr "Súťaž Meno"
+
+msgid "Options"
+msgstr "Možnosti"
+
+msgid "Compete as guest"
+msgstr "Súťažte ako hosť"
+
+msgid "Create new account"
+msgstr "Vytvoriť nový účet"
+
+msgid "Advanced details"
+msgstr "Pokročilé detaily"
+
+msgid "In Cooperation With"
+msgstr "V spolupráci s"
+
+msgid "Create code format for admin users (teachers)"
+msgstr "Vytvoriť formátovanie kódu pre užívateľov admin (učitelia)"
+
+msgid "Create code format for competitors"
+msgstr "Vytvoriť formát kód pre konkurentov"
+
+msgid "Try it!"
+msgstr "Skús to!"
+
+msgid ""
+"You have attempted to leave this page. Your last question answer will be "
+"saved automatically. Are you sure you want to exit this page?"
+msgstr "Pokúsili ste sa opustiť túto stránku. Vaša posledná otázka odpoveď sa automaticky uloží. Ste si istí, že chcete opustiť túto stránku?"
+
+msgid "You are out of time for solving the competition."
+msgstr "Ste mimo čas pre riešenie konkurencie."
+
+msgid "Thank you for participating in the competition"
+msgstr "Ďakujem za účasť v súťaži"
+
+msgid "Your answer was successfully saved!"
+msgstr "Vaša odpoveď bola úspešne uložený!"
+
+msgid "Are you sure you want to clear answer?"
+msgstr "Ste si istí, že chcete vymazať odpoveď?"
+
+msgid "You left %s question unanswered. "
+msgid_plural "You left %s questions unanswered. "
+msgstr[0] "Nechal %s otázku nezodpovedanú."
+msgstr[1] "Nechal %s otázku nezodpovedanú."
+msgstr[2] "Nechal %s otázku nezodpovedanú."
+msgstr[3] "Nechal %s otázku nezodpovedanú."
+
+msgid "%(n)s competitor"
+msgid_plural "%s competitors"
+msgstr[0] "% (N) s súťažiaci"
+msgstr[1] "% (N) s súťažiaci"
+msgstr[2] "% (N) s súťažiaci"
+msgstr[3] "% (N) s súťažiaci"
+
+msgid "Are you sure you want to finish the competition?"
+msgstr "Ste si istí, že chcete dokončiť súťaž?"
+
+msgid "An error has occured. Please try to finish competition again."
+msgstr "Došlo k chybe. Prosím, pokúsiť sa dokončiť súťaž znova."
+

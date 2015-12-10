@@ -287,7 +287,7 @@ class Municipality(models.Model):
 class Profiles(models.Model):
     def __unicode__(self):
         return u"{0}: {1} {2}".format(self.user, self.first_name, self.last_name)
-    user = models.ForeignKey('Users', primary_key=True)
+    user = models.OneToOneField('Users', primary_key=True)
     first_name = models.CharField(max_length=255, blank=True)
     last_name = models.CharField(max_length=255, blank=True)
     country = models.ForeignKey(Country, blank=True, null=True)

@@ -1,0 +1,595 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-11-16 08:23+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=4; plural=(n%100==1 ? 0 : n%100==2 ? 1 : n%100==3 || n"
+"%100==4 ? 2 : 3);\n"
+
+#: forms.py:20 forms.py:29 forms.py:102 forms.py:173
+msgid "Access code"
+msgstr "액세스 코드"
+
+#: forms.py:22
+msgid "Update used codes later"
+msgstr "업데이트에 사용되는 코드 이상"
+
+#: forms.py:25
+msgid "Execute effects later"
+msgstr "실행 효과 이상"
+
+#: forms.py:128 forms.py:162 forms.py:193 forms.py:237
+msgid "Wrong access code"
+msgstr "잘못된 액세스 코드"
+
+#: forms.py:148 forms.py:223
+msgid "Group"
+msgstr "그룹"
+
+#: forms.py:165 forms.py:244
+msgid "This field is required"
+msgstr "이 필드는 필수입니다"
+
+#: models.py:56
+msgid "Participate in the competition"
+msgstr "경쟁에 참여"
+
+#: models.py:57
+msgid "Attempt competition before start"
+msgstr "시작하기 전에 경쟁을 시도"
+
+#: models.py:58
+msgid "See results before official end of competition"
+msgstr "경쟁의 공식 끝나기 전에 결과를 확인하십시오"
+
+#: models.py:59
+msgid "Resume existing attempts"
+msgstr "기존의 시도를 다시 시작"
+
+#: models.py:63
+msgid "Allow the creator to manage the profile of anyone using this code"
+msgstr "작성자가이 코드를 사용하여 사람의 프로필을 관리 할 수​​ 있습니다"
+
+#: models.py:64
+msgid ""
+"Allow the creator and their managers to manage the profile of anyone using "
+"this code"
+msgstr "작성자 및 그들의 관리자가이 코드를 사용하여 사람의 프로필을 관리 할 수​​ 있도록"
+
+#: models.py:68
+msgid "Create administrator codes"
+msgstr "관리자 코드 만들기"
+
+#: models.py:69
+msgid "Create comeptitor codes"
+msgstr "comeptitor 코드 만들기"
+
+#: models.py:70
+msgid "View all attempts for this competition"
+msgstr "이 대회에 대한 모든 시도를보기"
+
+#: models.py:71
+msgid "View all administrator codes for this competition"
+msgstr "이 대회에 대한 모든 관리자 코드를보기"
+
+#: models.py:72
+msgid "View all competitor codes for this competition"
+msgstr "이 대회에 대한 모든 경쟁자 코드를보기"
+
+#: models.py:73
+msgid "Use question sets for new competitions"
+msgstr "새로운 경쟁에 대한 질문 세트를 사용하여"
+
+#: models.py:74
+msgid "Modify this competition"
+msgstr "이 경쟁을 수정"
+
+#: models.py:76
+msgid "Use questions for new question sets"
+msgstr "새로운 질문 세트에 대한 질문을 사용하여"
+
+#: models.py:89
+msgid "Reduced functionality"
+msgstr "감소 기능"
+
+#: models.py:90
+msgid "Basic features only"
+msgstr "기본 기능 만"
+
+#: models.py:91
+msgid "Commonly used features"
+msgstr "일반적으로 사용되는 기능"
+
+#: models.py:92
+msgid "All features"
+msgstr "모든 기능"
+
+#: models.py:730 templates/bober_simple_competition/profile_detail.html:22
+msgid "First Name"
+msgstr "이름"
+
+#: models.py:731 templates/bober_simple_competition/profile_detail.html:26
+msgid "Last Name"
+msgstr "성"
+
+#: templates/base.html:37
+msgid "Beaver"
+msgstr "비버"
+
+#: templates/base.html:42
+msgid "Logout"
+msgstr "로그 아웃"
+
+#: templates/bober_simple_competition/access_code.html:4
+#: templates/bober_simple_competition/access_code.html:6
+#: templates/bober_simple_competition/compete_with_short_code.html:4
+#: templates/bober_simple_competition/compete_with_short_code.html:6
+msgid "Enter access code"
+msgstr "액세스 코드를 입력"
+
+#: templates/bober_simple_competition/access_code.html:10
+#: templates/bober_simple_competition/compete_with_short_code.html:10
+#: templates/bober_simple_competition/competition_guest.html:10
+#: templates/bober_simple_competition/competition_list.html:10
+#: templates/bober_simple_competition/profile_detail.html:14
+#: templates/bober_simple_competition/profile_table_list.html:11
+msgid "Back to Menu"
+msgstr "돌아 가기 메뉴로"
+
+#: templates/bober_simple_competition/access_code.html:18
+#: templates/bober_simple_competition/basic_registration.html:11
+#: templates/bober_simple_competition/codeformat_create.html:14
+#: templates/bober_simple_competition/compete_with_short_code.html:18
+#: templates/bober_simple_competition/competition_code_create.html:13
+#: templates/bober_simple_competition/competition_form.html:59
+#: templates/bober_simple_competition/profile_form.html:25
+#: templates/bober_simple_competition/questionset_form.html:15
+#: templates/bober_simple_competition/user_registration.html:21
+msgid "Submit"
+msgstr "제출"
+
+#: templates/bober_simple_competition/attempt_results.html:4
+#: templates/bober_simple_competition/attempt_results.html:6
+msgid "Results"
+msgstr "결과"
+
+#: templates/bober_simple_competition/attempt_results.html:13
+#: templates/bober_simple_competition/competition_attempt_list.html:18
+msgid "Question"
+msgstr "문제"
+
+#: templates/bober_simple_competition/attempt_results.html:14
+#: templates/bober_simple_competition/competition_attempt_list.html:19
+msgid "Not graded yet"
+msgstr "아직 등급"
+
+#: templates/bober_simple_competition/attempt_results.html:15
+#: templates/bober_simple_competition/competition_attempt_list.html:20
+msgid "Wrong Answer"
+msgstr "잘못된 답변"
+
+#: templates/bober_simple_competition/attempt_results.html:16
+#: templates/bober_simple_competition/competition_attempt_list.html:21
+msgid "Correct"
+msgstr "옳은"
+
+#: templates/bober_simple_competition/basic_registration.html:5
+#: templates/bober_simple_competition/competition_data.html:4
+#: templates/bober_simple_competition/competition_data.html:6
+#: templates/bober_simple_competition/competition_registration.html:4
+#: templates/bober_simple_competition/competition_registration.html:6
+#: templates/bober_simple_competition/competition_resources.html:4
+#: templates/bober_simple_competition/competition_resources.html:6
+#: templates/bober_simple_competition/invalidate_attempt.html:4
+#: templates/bober_simple_competition/invalidate_attempt.html:6
+#: templates/bober_simple_competition/profile_merge.html:4
+#: templates/bober_simple_competition/profile_merge.html:6
+#: templates/bober_simple_competition/question_import.html:4
+#: templates/bober_simple_competition/question_import.html:6
+#: templates/bober_simple_competition/questionset_registration.html:4
+#: templates/bober_simple_competition/questionset_registration.html:6
+#: templates/bober_simple_competition/registration_codes.html:4
+#: templates/bober_simple_competition/registration_codes.html:6
+#: templates/bober_simple_competition/send_codes.html:4
+#: templates/bober_simple_competition/send_codes.html:6
+#: templates/bober_simple_competition/submit_answer.html:4
+#: templates/bober_simple_competition/submit_answer.html:6
+#: templates/bober_simple_competition/user_registration.html:4
+#: templates/bober_simple_competition/user_registration.html:6
+msgid "Registration"
+msgstr "기재"
+
+#: templates/bober_simple_competition/codeformat_create.html:4
+#: templates/bober_simple_competition/codeformat_create.html:6
+msgid "Create code format"
+msgstr "코드 형식을 만듭니다"
+
+#: templates/bober_simple_competition/codeformat_create.html:9
+msgid "Code format successfully created!"
+msgstr "코드 포맷이 성공적으로 생성!"
+
+#: templates/bober_simple_competition/codeformat_index.html:4
+#: templates/bober_simple_competition/codeformat_index.html:6
+#: templates/bober_simple_competition/codeformat_list.html:4
+#: templates/bober_simple_competition/codeformat_list.html:6
+#: templates/bober_simple_competition/index.html:17
+#: templates/code_based_auth/codeformat_list.html:4
+#: templates/code_based_auth/codeformat_list.html:6
+msgid "Code formats"
+msgstr "코드 형식"
+
+#: templates/bober_simple_competition/codeformat_index.html:9
+msgid "Back to index"
+msgstr "돌아 가기 색인"
+
+#: templates/bober_simple_competition/codeformat_index.html:10
+msgid "Competitor code formats"
+msgstr "경쟁자 코드 형식"
+
+#: templates/bober_simple_competition/codeformat_index.html:11
+msgid "Create competitor code format"
+msgstr "경쟁자 코드 형식 만들기"
+
+#: templates/bober_simple_competition/codeformat_index.html:12
+msgid "Admin code formats"
+msgstr "관리 코드 형식"
+
+#: templates/bober_simple_competition/codeformat_index.html:13
+msgid "Create administrator code format"
+msgstr "관리자 코드 형식 만들기"
+
+#: templates/bober_simple_competition/codeformat_list.html:8
+msgid "Back to code format index"
+msgstr "위로 코드 형식 인덱스"
+
+#: templates/bober_simple_competition/competition_attempt_list.html:4
+#: templates/bober_simple_competition/competition_attempt_list.html:6
+msgid "Competition attempts"
+msgstr "경쟁 시도"
+
+#: templates/bober_simple_competition/competition_attempt_list.html:9
+#: templates/bober_simple_competition/competition_code_list.html:9
+#: templates/bober_simple_competition/competition_detail.html:12
+msgid "Back to competitions"
+msgstr "맨 대회에"
+
+#: templates/bober_simple_competition/competition_attempt_list.html:11
+#: templates/bober_simple_competition/competition_code_list.html:11
+msgid "Competition details"
+msgstr "대회 정보"
+
+#: templates/bober_simple_competition/competition_code_create.html:4
+#: templates/bober_simple_competition/competition_code_create.html:6
+msgid "Create code"
+msgstr "코드 만들기"
+
+#: templates/bober_simple_competition/competition_code_list.html:4
+#: templates/bober_simple_competition/competition_code_list.html:6
+#: templates/bober_simple_competition/profile_detail.html:66
+#: templates/bober_simple_competition/profile_form.html:28
+msgid "Codes"
+msgstr "코드"
+
+#: templates/bober_simple_competition/competition_code_list.html:12
+msgid "Current code"
+msgstr "현재 코드"
+
+#: templates/bober_simple_competition/competition_code_list.html:16
+msgid "Admin codes"
+msgstr "관리 코드"
+
+#: templates/bober_simple_competition/competition_code_list.html:18
+#: templates/bober_simple_competition/competition_code_list.html:27
+msgid "Generate code"
+msgstr "코드를 생성"
+
+#: templates/bober_simple_competition/competition_code_list.html:25
+msgid "Competitor codes"
+msgstr "경쟁자 코드"
+
+#: templates/bober_simple_competition/competition_detail.html:6
+#: templates/bober_simple_competition/competition_detail.html:8
+#: templates/bober_simple_competition/competition_list.html:4
+msgid "Competition"
+msgstr "경쟁"
+
+#: templates/bober_simple_competition/competition_detail.html:15
+msgid "codes"
+msgstr "코드"
+
+#: templates/bober_simple_competition/competition_detail.html:16
+msgid "edit"
+msgstr "편집"
+
+#: templates/bober_simple_competition/competition_detail.html:18
+#: templates/bober_simple_competition/competition_form.html:36
+#: templates/bober_simple_competition/index.html:15
+#: templates/bober_simple_competition/questionset_list.html:4
+#: templates/bober_simple_competition/questionset_list.html:6
+msgid "Question sets"
+msgstr "질문 세트"
+
+#: templates/bober_simple_competition/competition_form.html:6
+#: templates/bober_simple_competition/competition_form.html:8
+msgid "Edit competition"
+msgstr "편집 경쟁"
+
+#: templates/bober_simple_competition/competition_form.html:43
+#: templates/bober_simple_competition/competition_form.html:71
+msgid "Show more"
+msgstr "자세히보기"
+
+#: templates/bober_simple_competition/competition_form.html:68
+msgid "Show less"
+msgstr "보기 이하"
+
+#: templates/bober_simple_competition/competition_guest.html:4
+#: templates/bober_simple_competition/competition_guest.html:6
+msgid "Compete as a guest"
+msgstr "게스트로 경쟁"
+
+#: templates/bober_simple_competition/competition_guest.html:13
+msgid "Guest access not allowed."
+msgstr "게스트 액세스가 허용되지 않습니다."
+
+#: templates/bober_simple_competition/competition_guest.html:14
+msgid "Compete using a code"
+msgstr "코드를 사용하여 경쟁"
+
+#: templates/bober_simple_competition/competition_guest.html:16
+msgid "If you are not redirected automatically, click on the link below."
+msgstr "당신이 자동으로 리디렉션하지 않는 경우, 아래 링크를 클릭."
+
+#: templates/bober_simple_competition/competition_guest.html:17
+#: templates/bober_simple_competition/competition_registration.html:16
+#: templates/bober_simple_competition/questionset_registration.html:14
+msgid "Compete"
+msgstr "경쟁"
+
+#: templates/bober_simple_competition/competition_index.html:57
+msgid "Answered"
+msgstr "답변"
+
+#: templates/bober_simple_competition/competition_index.html:64
+msgid "Time left"
+msgstr "남은 시간"
+
+#: templates/bober_simple_competition/competition_index.html:70
+msgid "Finish"
+msgstr "끝"
+
+#: templates/bober_simple_competition/competition_index.html:81
+#: templates/bober_simple_competition/competition_index.html:93
+msgid "Clear Answer"
+msgstr "명확한 답변"
+
+#: templates/bober_simple_competition/competition_list.html:5
+msgid "Competitions in progress"
+msgstr "진행중인 경기"
+
+#: templates/bober_simple_competition/competition_list.html:20
+msgid "Create competition"
+msgstr "경쟁 만들기"
+
+#: templates/bober_simple_competition/competition_registration.html:19
+msgid "Login as a teacher"
+msgstr "교사로 로그인"
+
+#: templates/bober_simple_competition/index.html:4
+msgid "Welcome to the Bober competition"
+msgstr "Bober 대회에 오신 것을 환영합니다"
+
+#: templates/bober_simple_competition/index.html:6
+msgid "Bober"
+msgstr "Bober"
+
+#: templates/bober_simple_competition/index.html:9
+msgid "Competitions"
+msgstr "대회"
+
+#: templates/bober_simple_competition/index.html:11
+#: templates/registration/login.html:5
+msgid "Login"
+msgstr "로그인"
+
+#: templates/bober_simple_competition/index.html:13
+msgid "Managed users"
+msgstr "관리 사용자"
+
+#: templates/bober_simple_competition/index.html:14
+msgid "My profile"
+msgstr "내 프로필"
+
+#: templates/bober_simple_competition/index.html:16
+#: templates/bober_simple_competition/question_list.html:4
+#: templates/bober_simple_competition/question_list.html:6
+#: templates/bober_simple_competition/question_table.html:4
+#: templates/bober_simple_competition/question_table.html:6
+msgid "Questions"
+msgstr "질문"
+
+#: templates/bober_simple_competition/profile_detail.html:19
+msgid "Profile Details"
+msgstr "프로필 세부 사항"
+
+#: templates/bober_simple_competition/profile_detail.html:30
+msgid "Email"
+msgstr "이메일"
+
+#: templates/bober_simple_competition/profile_detail.html:39
+msgid "Former profiles"
+msgstr "전 프로필"
+
+#: templates/bober_simple_competition/profile_detail.html:54
+msgid "Attempts"
+msgstr "시도"
+
+#: templates/bober_simple_competition/profile_detail.html:68
+#: templates/bober_simple_competition/profile_detail.html:106
+#: templates/bober_simple_competition/profile_form.html:30
+#: templates/bober_simple_competition/profile_form.html:68
+msgid "Show codes"
+msgstr "보기 코드"
+
+#: templates/bober_simple_competition/profile_detail.html:71
+#: templates/bober_simple_competition/profile_form.html:33
+msgid "Used codes"
+msgstr "중고 코드"
+
+#: templates/bober_simple_competition/profile_detail.html:80
+#: templates/bober_simple_competition/profile_form.html:42
+msgid "Received codes"
+msgstr "수신 코드"
+
+#: templates/bober_simple_competition/profile_detail.html:89
+#: templates/bober_simple_competition/profile_form.html:51
+msgid "Created codes"
+msgstr "생성 된 코드"
+
+#: templates/bober_simple_competition/profile_detail.html:103
+#: templates/bober_simple_competition/profile_form.html:65
+msgid "Hide codes"
+msgstr "숨기기 코드"
+
+#: templates/bober_simple_competition/profile_form.html:4
+#: templates/bober_simple_competition/profile_form.html:6
+msgid "Edit user"
+msgstr "사용자 편집"
+
+#: templates/bober_simple_competition/profile_list.html:4
+#: templates/bober_simple_competition/profile_list.html:5
+#: templates/bober_simple_competition/profile_table_list.html:4
+#: templates/bober_simple_competition/profile_table_list.html:5
+msgid "Users"
+msgstr "사용자"
+
+#: templates/bober_simple_competition/profile_list.html:14
+msgid "Update profile"
+msgstr "프로파일 업데이트"
+
+#: templates/bober_simple_competition/questionset_create.html:4
+#: templates/bober_simple_competition/questionset_create.html:6
+msgid "Create question set"
+msgstr "질문 세트를 작성"
+
+#: templates/bober_simple_competition/questionset_detail.html:6
+#: templates/bober_simple_competition/questionset_detail.html:8
+#: templates/bober_simple_competition/questionset_form.html:6
+#: templates/bober_simple_competition/questionset_form.html:8
+msgid "Question set"
+msgstr "질문 세트"
+
+#: templates/bober_simple_competition/questionset_detail.html:18
+msgid "Edit questionset"
+msgstr "편집 questionset"
+
+#: templates/bober_simple_competition/user_files.html:4
+#: templates/bober_simple_competition/user_files.html:6
+msgid "Files"
+msgstr "파일"
+
+#: templates/bober_simple_competition/user_registration_confirmation.html:4
+#: templates/bober_simple_competition/user_registration_confirmation.html:6
+msgid "User created"
+msgstr "사용자 생성"
+
+#: templates/registration/logged_out.html:5
+msgid "Thank you for using Bober"
+msgstr "Bober을 이용해 주셔서 감사합니다"
+
+#: templates/registration/logged_out.html:6
+#: templates/registration/logged_out.html:7
+msgid "Back to first page"
+msgstr "맨 첫 페이지로"
+
+#: templates/registration/login.html:9
+msgid "Hello,"
+msgstr "안녕하세요,"
+
+#: templates/registration/login.html:13 templates/registration/login.html:16
+msgid "Login with"
+msgstr "으로 로그인"
+
+msgid "Edit my profile"
+msgstr "내 프로필 수정"
+
+msgid "attempts"
+msgstr "시도"
+
+msgid "Competition Name"
+msgstr "대회 이름"
+
+msgid "Options"
+msgstr "옵션"
+
+msgid "Compete as guest"
+msgstr "게스트로 경쟁"
+
+msgid "Create new account"
+msgstr "새 계정을 만들"
+
+msgid "Advanced details"
+msgstr "고급 세부 사항"
+
+msgid "In Cooperation With"
+msgstr "협력에"
+
+msgid "Create code format for admin users (teachers)"
+msgstr "관리자 사용자를위한 코드 형식 만들기 (교사)"
+
+msgid "Create code format for competitors"
+msgstr "경쟁에 대한 코드 형식 만들기"
+
+msgid "Try it!"
+msgstr "시도 해봐!"
+
+msgid ""
+"You have attempted to leave this page. Your last question answer will be "
+"saved automatically. Are you sure you want to exit this page?"
+msgstr "이 페이지를 떠나 시도했다. 당신의 마지막 질문의 답은 자동으로 저장됩니다. 이 페이지를 종료 하시겠습니까?"
+
+msgid "You are out of time for solving the competition."
+msgstr "당신은 경쟁을 해결하기위한 시간이 있습니다."
+
+msgid "Thank you for participating in the competition"
+msgstr "경쟁에 참여 주셔서 감사합니다"
+
+msgid "Your answer was successfully saved!"
+msgstr "당신의 대답은 성공적으로 저장되었습니다!"
+
+msgid "Are you sure you want to clear answer?"
+msgstr "당신은 당신이 대답을 삭제 하시겠습니까?"
+
+msgid "You left %s question unanswered. "
+msgid_plural "You left %s questions unanswered. "
+msgstr[0] "당신은 왼쪽 %s 질문은 대답없는."
+msgstr[1] "당신은 왼쪽 %s 질문은 대답없는."
+msgstr[2] "당신은 왼쪽 %s 질문은 대답없는."
+msgstr[3] "당신은 왼쪽 %s 질문은 대답없는."
+
+msgid "%(n)s competitor"
+msgid_plural "%s competitors"
+msgstr[0] "% (N)의 경쟁"
+msgstr[1] "% (N)의 경쟁"
+msgstr[2] "% (N)의 경쟁"
+msgstr[3] "% (N)의 경쟁"
+
+msgid "Are you sure you want to finish the competition?"
+msgstr "당신은 경쟁을 종료 하시겠습니까?"
+
+msgid "An error has occured. Please try to finish competition again."
+msgstr "오류가 발생했습니다. 다시 경쟁을 완료 해보세요."
+

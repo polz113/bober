@@ -121,10 +121,6 @@ function edit_name(obj) {
         </th>
         <td>
             <p>
-                <a href="/static/cn87gy8nyq38g5y3qv8t7yg23y/Bober-pole-2-5-razred.zip
-">{% trans "Competition sheets" %}</a>
-            </p>
-            <p>
                 <a href="{% url "mentorship_list" slug=competition.slug %}">{% trans "Result entry for tasks on paper" %}</a>
             </p>
         </td>
@@ -136,7 +132,7 @@ function edit_name(obj) {
                  <p>{{ school }}</p>
                  <p style="padding-bottom: 20px">
                  {% for cqs, attempts in cqsa %}{% if attempts %}
-                    <a style="padding-left: 20px" href="{% url "award_pdf" slug=competition.slug cqs_name=cqs.name school_id=school.id %}">{{ cqs.name }}</a>
+                    <a style="padding-left: 20px" href="{% url "award_pdf" slug=competition.slug username=request.user.username cqs_name=cqs.name school_id=school.id %}">{{ cqs.name }}</a>
                  {% else %}
                     <span style="padding-left: 20px">{{cqs.name}}: ni tekmovalcev</span>
                  {% endif %}{% endfor %}

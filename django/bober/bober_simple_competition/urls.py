@@ -1,10 +1,10 @@
-from django.conf.urls import patterns, include, url
+from django.conf.urls import include, url
 from django.views.generic import ListView
 from bober_simple_competition.models import *
 import views
 
 
-urlpatterns = patterns('',
+urlpatterns = [
     # Examples:
     # url(r'^blog/', include('blog.urls')),
     url(r'^$', views.index, name="simple_index"),
@@ -155,4 +155,4 @@ urlpatterns = patterns('',
     url(r'^code_format/competitor/create$', views.CompetitorCodeFormatCreate.as_view(), 
         name="competitor_code_format_create"),
     # shortcut for registering and competing immediately 
-)
+]

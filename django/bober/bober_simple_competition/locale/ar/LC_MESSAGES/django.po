@@ -1,0 +1,595 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-11-16 08:23+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=4; plural=(n%100==1 ? 0 : n%100==2 ? 1 : n%100==3 || n"
+"%100==4 ? 2 : 3);\n"
+
+#: forms.py:20 forms.py:29 forms.py:102 forms.py:173
+msgid "Access code"
+msgstr "رمز الدخول"
+
+#: forms.py:22
+msgid "Update used codes later"
+msgstr "في وقت لاحق رموز التحديث المستخدمة"
+
+#: forms.py:25
+msgid "Execute effects later"
+msgstr "في وقت لاحق تنفيذ الآثار"
+
+#: forms.py:128 forms.py:162 forms.py:193 forms.py:237
+msgid "Wrong access code"
+msgstr "رمز الدخول الخاطئ"
+
+#: forms.py:148 forms.py:223
+msgid "Group"
+msgstr "مجموعة"
+
+#: forms.py:165 forms.py:244
+msgid "This field is required"
+msgstr "هذه الخانة مطلوبه"
+
+#: models.py:56
+msgid "Participate in the competition"
+msgstr "المشاركة في المسابقة"
+
+#: models.py:57
+msgid "Attempt competition before start"
+msgstr "محاولة المسابقة قبل بداية"
+
+#: models.py:58
+msgid "See results before official end of competition"
+msgstr "رؤية النتائج قبل النهاية الرسمية للمنافسة"
+
+#: models.py:59
+msgid "Resume existing attempts"
+msgstr "استئناف المحاولات الحالية"
+
+#: models.py:63
+msgid "Allow the creator to manage the profile of anyone using this code"
+msgstr "السماح للخالق لإدارة الملف الشخصى أي شخص يستخدم هذا الرمز"
+
+#: models.py:64
+msgid ""
+"Allow the creator and their managers to manage the profile of anyone using "
+"this code"
+msgstr "السماح للخالق ومديريها لإدارة الملف الشخصى أي شخص يستخدم هذا الرمز"
+
+#: models.py:68
+msgid "Create administrator codes"
+msgstr "إنشاء رموز المسؤول"
+
+#: models.py:69
+msgid "Create comeptitor codes"
+msgstr "إنشاء رموز comeptitor"
+
+#: models.py:70
+msgid "View all attempts for this competition"
+msgstr "عرض كل المحاولات لهذه المسابقة"
+
+#: models.py:71
+msgid "View all administrator codes for this competition"
+msgstr "عرض جميع رموز المسؤول عن هذه المسابقة"
+
+#: models.py:72
+msgid "View all competitor codes for this competition"
+msgstr "عرض جميع رموز منافس لهذه المسابقة"
+
+#: models.py:73
+msgid "Use question sets for new competitions"
+msgstr "استخدام مجموعات سؤال للمسابقات جديدة"
+
+#: models.py:74
+msgid "Modify this competition"
+msgstr "تعديل هذه المسابقة"
+
+#: models.py:76
+msgid "Use questions for new question sets"
+msgstr "استخدام الأسئلة لمجموعات سؤال جديد"
+
+#: models.py:89
+msgid "Reduced functionality"
+msgstr "خفض وظائف"
+
+#: models.py:90
+msgid "Basic features only"
+msgstr "السمات الأساسية فقط"
+
+#: models.py:91
+msgid "Commonly used features"
+msgstr "السمات الشائعة الاستخدام"
+
+#: models.py:92
+msgid "All features"
+msgstr "كافة الميزات"
+
+#: models.py:730 templates/bober_simple_competition/profile_detail.html:22
+msgid "First Name"
+msgstr "الاسم الأول"
+
+#: models.py:731 templates/bober_simple_competition/profile_detail.html:26
+msgid "Last Name"
+msgstr "الاسم الاخير"
+
+#: templates/base.html:37
+msgid "Beaver"
+msgstr "سمور"
+
+#: templates/base.html:42
+msgid "Logout"
+msgstr "تسجيل خروج"
+
+#: templates/bober_simple_competition/access_code.html:4
+#: templates/bober_simple_competition/access_code.html:6
+#: templates/bober_simple_competition/compete_with_short_code.html:4
+#: templates/bober_simple_competition/compete_with_short_code.html:6
+msgid "Enter access code"
+msgstr "إدخال رمز الوصول"
+
+#: templates/bober_simple_competition/access_code.html:10
+#: templates/bober_simple_competition/compete_with_short_code.html:10
+#: templates/bober_simple_competition/competition_guest.html:10
+#: templates/bober_simple_competition/competition_list.html:10
+#: templates/bober_simple_competition/profile_detail.html:14
+#: templates/bober_simple_competition/profile_table_list.html:11
+msgid "Back to Menu"
+msgstr "العودة إلى القائمة"
+
+#: templates/bober_simple_competition/access_code.html:18
+#: templates/bober_simple_competition/basic_registration.html:11
+#: templates/bober_simple_competition/codeformat_create.html:14
+#: templates/bober_simple_competition/compete_with_short_code.html:18
+#: templates/bober_simple_competition/competition_code_create.html:13
+#: templates/bober_simple_competition/competition_form.html:59
+#: templates/bober_simple_competition/profile_form.html:25
+#: templates/bober_simple_competition/questionset_form.html:15
+#: templates/bober_simple_competition/user_registration.html:21
+msgid "Submit"
+msgstr "عرض"
+
+#: templates/bober_simple_competition/attempt_results.html:4
+#: templates/bober_simple_competition/attempt_results.html:6
+msgid "Results"
+msgstr "النتائج"
+
+#: templates/bober_simple_competition/attempt_results.html:13
+#: templates/bober_simple_competition/competition_attempt_list.html:18
+msgid "Question"
+msgstr "سؤال"
+
+#: templates/bober_simple_competition/attempt_results.html:14
+#: templates/bober_simple_competition/competition_attempt_list.html:19
+msgid "Not graded yet"
+msgstr "لا متدرج حتى الآن"
+
+#: templates/bober_simple_competition/attempt_results.html:15
+#: templates/bober_simple_competition/competition_attempt_list.html:20
+msgid "Wrong Answer"
+msgstr "جواب خاطئ"
+
+#: templates/bober_simple_competition/attempt_results.html:16
+#: templates/bober_simple_competition/competition_attempt_list.html:21
+msgid "Correct"
+msgstr "صحيح"
+
+#: templates/bober_simple_competition/basic_registration.html:5
+#: templates/bober_simple_competition/competition_data.html:4
+#: templates/bober_simple_competition/competition_data.html:6
+#: templates/bober_simple_competition/competition_registration.html:4
+#: templates/bober_simple_competition/competition_registration.html:6
+#: templates/bober_simple_competition/competition_resources.html:4
+#: templates/bober_simple_competition/competition_resources.html:6
+#: templates/bober_simple_competition/invalidate_attempt.html:4
+#: templates/bober_simple_competition/invalidate_attempt.html:6
+#: templates/bober_simple_competition/profile_merge.html:4
+#: templates/bober_simple_competition/profile_merge.html:6
+#: templates/bober_simple_competition/question_import.html:4
+#: templates/bober_simple_competition/question_import.html:6
+#: templates/bober_simple_competition/questionset_registration.html:4
+#: templates/bober_simple_competition/questionset_registration.html:6
+#: templates/bober_simple_competition/registration_codes.html:4
+#: templates/bober_simple_competition/registration_codes.html:6
+#: templates/bober_simple_competition/send_codes.html:4
+#: templates/bober_simple_competition/send_codes.html:6
+#: templates/bober_simple_competition/submit_answer.html:4
+#: templates/bober_simple_competition/submit_answer.html:6
+#: templates/bober_simple_competition/user_registration.html:4
+#: templates/bober_simple_competition/user_registration.html:6
+msgid "Registration"
+msgstr "التسجيل"
+
+#: templates/bober_simple_competition/codeformat_create.html:4
+#: templates/bober_simple_competition/codeformat_create.html:6
+msgid "Create code format"
+msgstr "إنشاء شكل شفرة"
+
+#: templates/bober_simple_competition/codeformat_create.html:9
+msgid "Code format successfully created!"
+msgstr "شكل شفرة خلق بنجاح!"
+
+#: templates/bober_simple_competition/codeformat_index.html:4
+#: templates/bober_simple_competition/codeformat_index.html:6
+#: templates/bober_simple_competition/codeformat_list.html:4
+#: templates/bober_simple_competition/codeformat_list.html:6
+#: templates/bober_simple_competition/index.html:17
+#: templates/code_based_auth/codeformat_list.html:4
+#: templates/code_based_auth/codeformat_list.html:6
+msgid "Code formats"
+msgstr "صيغ قانون"
+
+#: templates/bober_simple_competition/codeformat_index.html:9
+msgid "Back to index"
+msgstr "عودة إلى الفهرس"
+
+#: templates/bober_simple_competition/codeformat_index.html:10
+msgid "Competitor code formats"
+msgstr "صيغ قانون منافس"
+
+#: templates/bober_simple_competition/codeformat_index.html:11
+msgid "Create competitor code format"
+msgstr "إنشاء منافس شكل شفرة"
+
+#: templates/bober_simple_competition/codeformat_index.html:12
+msgid "Admin code formats"
+msgstr "صيغ قانون المشرف"
+
+#: templates/bober_simple_competition/codeformat_index.html:13
+msgid "Create administrator code format"
+msgstr "إنشاء مسؤول تنسيق الرمز"
+
+#: templates/bober_simple_competition/codeformat_list.html:8
+msgid "Back to code format index"
+msgstr "عودة إلى الفهرس شكل شفرة"
+
+#: templates/bober_simple_competition/competition_attempt_list.html:4
+#: templates/bober_simple_competition/competition_attempt_list.html:6
+msgid "Competition attempts"
+msgstr "محاولات المنافسة"
+
+#: templates/bober_simple_competition/competition_attempt_list.html:9
+#: templates/bober_simple_competition/competition_code_list.html:9
+#: templates/bober_simple_competition/competition_detail.html:12
+msgid "Back to competitions"
+msgstr "العودة إلى المنافسات"
+
+#: templates/bober_simple_competition/competition_attempt_list.html:11
+#: templates/bober_simple_competition/competition_code_list.html:11
+msgid "Competition details"
+msgstr "تفاصيل المنافسة"
+
+#: templates/bober_simple_competition/competition_code_create.html:4
+#: templates/bober_simple_competition/competition_code_create.html:6
+msgid "Create code"
+msgstr "إنشاء مدونة"
+
+#: templates/bober_simple_competition/competition_code_list.html:4
+#: templates/bober_simple_competition/competition_code_list.html:6
+#: templates/bober_simple_competition/profile_detail.html:66
+#: templates/bober_simple_competition/profile_form.html:28
+msgid "Codes"
+msgstr "رموز"
+
+#: templates/bober_simple_competition/competition_code_list.html:12
+msgid "Current code"
+msgstr "القانون الحالي"
+
+#: templates/bober_simple_competition/competition_code_list.html:16
+msgid "Admin codes"
+msgstr "رموز المشرف"
+
+#: templates/bober_simple_competition/competition_code_list.html:18
+#: templates/bober_simple_competition/competition_code_list.html:27
+msgid "Generate code"
+msgstr "إنشاء التعليمات البرمجية"
+
+#: templates/bober_simple_competition/competition_code_list.html:25
+msgid "Competitor codes"
+msgstr "رموز منافس"
+
+#: templates/bober_simple_competition/competition_detail.html:6
+#: templates/bober_simple_competition/competition_detail.html:8
+#: templates/bober_simple_competition/competition_list.html:4
+msgid "Competition"
+msgstr "مسابقة"
+
+#: templates/bober_simple_competition/competition_detail.html:15
+msgid "codes"
+msgstr "رموز"
+
+#: templates/bober_simple_competition/competition_detail.html:16
+msgid "edit"
+msgstr "تحرير"
+
+#: templates/bober_simple_competition/competition_detail.html:18
+#: templates/bober_simple_competition/competition_form.html:36
+#: templates/bober_simple_competition/index.html:15
+#: templates/bober_simple_competition/questionset_list.html:4
+#: templates/bober_simple_competition/questionset_list.html:6
+msgid "Question sets"
+msgstr "مجموعات السؤال"
+
+#: templates/bober_simple_competition/competition_form.html:6
+#: templates/bober_simple_competition/competition_form.html:8
+msgid "Edit competition"
+msgstr "تحرير المنافسة"
+
+#: templates/bober_simple_competition/competition_form.html:43
+#: templates/bober_simple_competition/competition_form.html:71
+msgid "Show more"
+msgstr "عرض المزيد"
+
+#: templates/bober_simple_competition/competition_form.html:68
+msgid "Show less"
+msgstr "عرض أقل"
+
+#: templates/bober_simple_competition/competition_guest.html:4
+#: templates/bober_simple_competition/competition_guest.html:6
+msgid "Compete as a guest"
+msgstr "تنافس كضيف"
+
+#: templates/bober_simple_competition/competition_guest.html:13
+msgid "Guest access not allowed."
+msgstr "دخول الزوار غير مسموح به."
+
+#: templates/bober_simple_competition/competition_guest.html:14
+msgid "Compete using a code"
+msgstr "تنافس باستخدام رمز"
+
+#: templates/bober_simple_competition/competition_guest.html:16
+msgid "If you are not redirected automatically, click on the link below."
+msgstr "إذا لم يتم إعادة توجيهك تلقائيا، انقر على الرابط أدناه."
+
+#: templates/bober_simple_competition/competition_guest.html:17
+#: templates/bober_simple_competition/competition_registration.html:16
+#: templates/bober_simple_competition/questionset_registration.html:14
+msgid "Compete"
+msgstr "تنافس"
+
+#: templates/bober_simple_competition/competition_index.html:57
+msgid "Answered"
+msgstr "تم الرد"
+
+#: templates/bober_simple_competition/competition_index.html:64
+msgid "Time left"
+msgstr "الوقت المتبقي"
+
+#: templates/bober_simple_competition/competition_index.html:70
+msgid "Finish"
+msgstr "إنهاء"
+
+#: templates/bober_simple_competition/competition_index.html:81
+#: templates/bober_simple_competition/competition_index.html:93
+msgid "Clear Answer"
+msgstr "واضح الإجابة"
+
+#: templates/bober_simple_competition/competition_list.html:5
+msgid "Competitions in progress"
+msgstr "مسابقات في التقدم"
+
+#: templates/bober_simple_competition/competition_list.html:20
+msgid "Create competition"
+msgstr "خلق المنافسة"
+
+#: templates/bober_simple_competition/competition_registration.html:19
+msgid "Login as a teacher"
+msgstr "دخول كمدرس"
+
+#: templates/bober_simple_competition/index.html:4
+msgid "Welcome to the Bober competition"
+msgstr "مرحبا بكم في مسابقة Bober"
+
+#: templates/bober_simple_competition/index.html:6
+msgid "Bober"
+msgstr "Bober"
+
+#: templates/bober_simple_competition/index.html:9
+msgid "Competitions"
+msgstr "مسابقات"
+
+#: templates/bober_simple_competition/index.html:11
+#: templates/registration/login.html:5
+msgid "Login"
+msgstr "تسجيل دخول"
+
+#: templates/bober_simple_competition/index.html:13
+msgid "Managed users"
+msgstr "تمكن المستخدمين"
+
+#: templates/bober_simple_competition/index.html:14
+msgid "My profile"
+msgstr "ملفي الشخصي"
+
+#: templates/bober_simple_competition/index.html:16
+#: templates/bober_simple_competition/question_list.html:4
+#: templates/bober_simple_competition/question_list.html:6
+#: templates/bober_simple_competition/question_table.html:4
+#: templates/bober_simple_competition/question_table.html:6
+msgid "Questions"
+msgstr "الأسئلة"
+
+#: templates/bober_simple_competition/profile_detail.html:19
+msgid "Profile Details"
+msgstr "تفاصيل الملف"
+
+#: templates/bober_simple_competition/profile_detail.html:30
+msgid "Email"
+msgstr "البريد الإلكتروني"
+
+#: templates/bober_simple_competition/profile_detail.html:39
+msgid "Former profiles"
+msgstr "التشكيلات السابقة"
+
+#: templates/bober_simple_competition/profile_detail.html:54
+msgid "Attempts"
+msgstr "محاولات"
+
+#: templates/bober_simple_competition/profile_detail.html:68
+#: templates/bober_simple_competition/profile_detail.html:106
+#: templates/bober_simple_competition/profile_form.html:30
+#: templates/bober_simple_competition/profile_form.html:68
+msgid "Show codes"
+msgstr "مشاهدة مدونات"
+
+#: templates/bober_simple_competition/profile_detail.html:71
+#: templates/bober_simple_competition/profile_form.html:33
+msgid "Used codes"
+msgstr "مستعملة رموز"
+
+#: templates/bober_simple_competition/profile_detail.html:80
+#: templates/bober_simple_competition/profile_form.html:42
+msgid "Received codes"
+msgstr "رموز تلقى"
+
+#: templates/bober_simple_competition/profile_detail.html:89
+#: templates/bober_simple_competition/profile_form.html:51
+msgid "Created codes"
+msgstr "رموز خلق"
+
+#: templates/bober_simple_competition/profile_detail.html:103
+#: templates/bober_simple_competition/profile_form.html:65
+msgid "Hide codes"
+msgstr "إخفاء رموز"
+
+#: templates/bober_simple_competition/profile_form.html:4
+#: templates/bober_simple_competition/profile_form.html:6
+msgid "Edit user"
+msgstr "تحرير المستخدم"
+
+#: templates/bober_simple_competition/profile_list.html:4
+#: templates/bober_simple_competition/profile_list.html:5
+#: templates/bober_simple_competition/profile_table_list.html:4
+#: templates/bober_simple_competition/profile_table_list.html:5
+msgid "Users"
+msgstr "المستخدمين"
+
+#: templates/bober_simple_competition/profile_list.html:14
+msgid "Update profile"
+msgstr "تحديث الملف"
+
+#: templates/bober_simple_competition/questionset_create.html:4
+#: templates/bober_simple_competition/questionset_create.html:6
+msgid "Create question set"
+msgstr "إنشاء مجموعة السؤال"
+
+#: templates/bober_simple_competition/questionset_detail.html:6
+#: templates/bober_simple_competition/questionset_detail.html:8
+#: templates/bober_simple_competition/questionset_form.html:6
+#: templates/bober_simple_competition/questionset_form.html:8
+msgid "Question set"
+msgstr "السؤال مجموعة"
+
+#: templates/bober_simple_competition/questionset_detail.html:18
+msgid "Edit questionset"
+msgstr "تحرير questionset"
+
+#: templates/bober_simple_competition/user_files.html:4
+#: templates/bober_simple_competition/user_files.html:6
+msgid "Files"
+msgstr "ملفات"
+
+#: templates/bober_simple_competition/user_registration_confirmation.html:4
+#: templates/bober_simple_competition/user_registration_confirmation.html:6
+msgid "User created"
+msgstr "المستخدم إنشاء"
+
+#: templates/registration/logged_out.html:5
+msgid "Thank you for using Bober"
+msgstr "شكرا لك على استخدام Bober"
+
+#: templates/registration/logged_out.html:6
+#: templates/registration/logged_out.html:7
+msgid "Back to first page"
+msgstr "العودة إلى الصفحة الأولى"
+
+#: templates/registration/login.html:9
+msgid "Hello,"
+msgstr "أهلا،"
+
+#: templates/registration/login.html:13 templates/registration/login.html:16
+msgid "Login with"
+msgstr "تسجيل الدخول مع"
+
+msgid "Edit my profile"
+msgstr "تعديل ملفي الشخصي"
+
+msgid "attempts"
+msgstr "محاولات"
+
+msgid "Competition Name"
+msgstr "اسم المنافسة"
+
+msgid "Options"
+msgstr "خيارات"
+
+msgid "Compete as guest"
+msgstr "تنافس كضيف"
+
+msgid "Create new account"
+msgstr "إنشاء حساب جديد"
+
+msgid "Advanced details"
+msgstr "تفاصيل متقدمة"
+
+msgid "In Cooperation With"
+msgstr "بالتعاون مع"
+
+msgid "Create code format for admin users (teachers)"
+msgstr "إنشاء شكل رمز لمستخدمي الادارة (المعلمين)"
+
+msgid "Create code format for competitors"
+msgstr "إنشاء تنسيق رمز للمنافسين"
+
+msgid "Try it!"
+msgstr "جربها!"
+
+msgid ""
+"You have attempted to leave this page. Your last question answer will be "
+"saved automatically. Are you sure you want to exit this page?"
+msgstr "لقد حاولت مغادرة هذه الصفحة. سيتم حفظ الخاص بك إجابة السؤال الأخير تلقائيا. هل أنت متأكد أنك تريد إنهاء هذه الصفحة؟"
+
+msgid "You are out of time for solving the competition."
+msgstr "كنت خارجا من الوقت لحل المنافسة."
+
+msgid "Thank you for participating in the competition"
+msgstr "شكرا لك على المشاركة في المسابقة"
+
+msgid "Your answer was successfully saved!"
+msgstr "تم حفظ جوابك بنجاح!"
+
+msgid "Are you sure you want to clear answer?"
+msgstr "هل أنت متأكد أنك تريد مسح الجواب؟"
+
+msgid "You left %s question unanswered. "
+msgid_plural "You left %s questions unanswered. "
+msgstr[0] "لقد %s السؤال دون إجابة."
+msgstr[1] "لقد %s السؤال دون إجابة."
+msgstr[2] "لقد %s السؤال دون إجابة."
+msgstr[3] "لقد %s السؤال دون إجابة."
+
+msgid "%(n)s competitor"
+msgid_plural "%s competitors"
+msgstr[0] "٪ (ن) ق منافس"
+msgstr[1] "٪ (ن) ق منافس"
+msgstr[2] "٪ (ن) ق منافس"
+msgstr[3] "٪ (ن) ق منافس"
+
+msgid "Are you sure you want to finish the competition?"
+msgstr "هل أنت متأكد أنك تريد إنهاء المنافسة؟"
+
+msgid "An error has occured. Please try to finish competition again."
+msgstr "حدث خطأ. يرجى المحاولة لإنهاء المنافسة مرة أخرى."
+
