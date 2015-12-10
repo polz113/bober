@@ -1,10 +1,10 @@
-from django.conf.urls import patterns, include, url
+from django.conf.urls import include, url
 from django.views.generic import ListView
 from bober_simple_competition.models import *
 from bober_simple_competition.views import CompetitionDetail
 import views
 
-urlpatterns = patterns('',
+urlpatterns = [
     # Examples:
     # url(r'^blog/', include('blog.urls')),
     # 2. pick competition
@@ -12,7 +12,7 @@ urlpatterns = patterns('',
         views.TeacherOverview.as_view(), name="teacher_overview"),
     url(r'^competitions/(?P<slug>[\w\-_]+)/overviewx$', 
         views.TeacherOverview.as_view(template_name='bober_si/teacher_overviewx.html'), name="teacher_overviewx"),
-    url(r'^competitions/(?P<slug>[\w\-_]+)/award/(?P<school_id>\d+)/(?P<cqs_name>.*).pdf$', 
+    url(r'^competitions/(?P<slug>[\w\-_]+)/award/(?P<username>[^/]*)/(?P<school_id>\d+)/(?P<cqs_name>.*).pdf$', 
         views.award_pdf, name="award_pdf"),
     url(r'^competitions/(?P<slug>[\w\-_]+)/revalidate_awards/(?P<profile_id>\d+)/(?P<attempt_id>\d+)/$', 
         views.revalidate_awards, name="revalidate_awards"),
@@ -30,4 +30,4 @@ urlpatterns = patterns('',
         views.TeacherCodeRegistrationPasswordReset.as_view(), name="teacher_registration"),
     #url(r'^competitions/(?P<slug>[\w\-_]+)/$', 
     #    views.TeacherOverview.as_view(), name="teacher_overview"),
-)
+]
