@@ -1,0 +1,595 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-11-16 08:23+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=4; plural=(n%100==1 ? 0 : n%100==2 ? 1 : n%100==3 || n"
+"%100==4 ? 2 : 3);\n"
+
+#: forms.py:20 forms.py:29 forms.py:102 forms.py:173
+msgid "Access code"
+msgstr "Rochtain cód"
+
+#: forms.py:22
+msgid "Update used codes later"
+msgstr "Cóid Nuashonrú úsáid níos déanaí"
+
+#: forms.py:25
+msgid "Execute effects later"
+msgstr "Éifeachtaí Rith níos déanaí"
+
+#: forms.py:128 forms.py:162 forms.py:193 forms.py:237
+msgid "Wrong access code"
+msgstr "Cód rochtana Mícheart"
+
+#: forms.py:148 forms.py:223
+msgid "Group"
+msgstr "Grúpa"
+
+#: forms.py:165 forms.py:244
+msgid "This field is required"
+msgstr "Tá an réimse ag teastáil"
+
+#: models.py:56
+msgid "Participate in the competition"
+msgstr "Páirt a ghlacadh sa chomórtas"
+
+#: models.py:57
+msgid "Attempt competition before start"
+msgstr "Iarracht iomaíocht roimh thús"
+
+#: models.py:58
+msgid "See results before official end of competition"
+msgstr "Féach ar na torthaí roimh dheireadh oifigiúil na hiomaíochta"
+
+#: models.py:59
+msgid "Resume existing attempts"
+msgstr "Lean iarrachtaí atá ann cheana féin"
+
+#: models.py:63
+msgid "Allow the creator to manage the profile of anyone using this code"
+msgstr "Ceadaigh an cruthaitheoir a bhainistiú próifíl duine ar bith ag baint úsáide as cód seo"
+
+#: models.py:64
+msgid ""
+"Allow the creator and their managers to manage the profile of anyone using "
+"this code"
+msgstr "Ceadaigh an cruthaitheoir agus a mbainisteoirí a bhainistiú próifíl duine ar bith ag baint úsáide as cód seo"
+
+#: models.py:68
+msgid "Create administrator codes"
+msgstr "Cruthaigh cóid riarthóir"
+
+#: models.py:69
+msgid "Create comeptitor codes"
+msgstr "Cruthaigh cóid comeptitor"
+
+#: models.py:70
+msgid "View all attempts for this competition"
+msgstr "Féach ar gach iarracht don chomórtas seo"
+
+#: models.py:71
+msgid "View all administrator codes for this competition"
+msgstr "Féach ar gach cóid riarthóir don chomórtas"
+
+#: models.py:72
+msgid "View all competitor codes for this competition"
+msgstr "Féach ar gach cóid iomaitheoirí don chomórtas"
+
+#: models.py:73
+msgid "Use question sets for new competitions"
+msgstr "Bain úsáid as sraitheanna ceisteanna do chomórtais nua"
+
+#: models.py:74
+msgid "Modify this competition"
+msgstr "Athraigh an comórtas seo"
+
+#: models.py:76
+msgid "Use questions for new question sets"
+msgstr "Ceisteanna do sraitheanna ceisteanna nua a úsáid"
+
+#: models.py:89
+msgid "Reduced functionality"
+msgstr "Feidhmiúlacht laghdaithe"
+
+#: models.py:90
+msgid "Basic features only"
+msgstr "Gnéithe bunúsacha amháin"
+
+#: models.py:91
+msgid "Commonly used features"
+msgstr "Gnéithe A úsáidtear go coitianta"
+
+#: models.py:92
+msgid "All features"
+msgstr "Gach gnéithe"
+
+#: models.py:730 templates/bober_simple_competition/profile_detail.html:22
+msgid "First Name"
+msgstr "Ainm"
+
+#: models.py:731 templates/bober_simple_competition/profile_detail.html:26
+msgid "Last Name"
+msgstr "Ainm Last"
+
+#: templates/base.html:37
+msgid "Beaver"
+msgstr "Bébhar"
+
+#: templates/base.html:42
+msgid "Logout"
+msgstr "Logáil Amach"
+
+#: templates/bober_simple_competition/access_code.html:4
+#: templates/bober_simple_competition/access_code.html:6
+#: templates/bober_simple_competition/compete_with_short_code.html:4
+#: templates/bober_simple_competition/compete_with_short_code.html:6
+msgid "Enter access code"
+msgstr "Cuir isteach cód rochtana"
+
+#: templates/bober_simple_competition/access_code.html:10
+#: templates/bober_simple_competition/compete_with_short_code.html:10
+#: templates/bober_simple_competition/competition_guest.html:10
+#: templates/bober_simple_competition/competition_list.html:10
+#: templates/bober_simple_competition/profile_detail.html:14
+#: templates/bober_simple_competition/profile_table_list.html:11
+msgid "Back to Menu"
+msgstr "Ar ais go Menu"
+
+#: templates/bober_simple_competition/access_code.html:18
+#: templates/bober_simple_competition/basic_registration.html:11
+#: templates/bober_simple_competition/codeformat_create.html:14
+#: templates/bober_simple_competition/compete_with_short_code.html:18
+#: templates/bober_simple_competition/competition_code_create.html:13
+#: templates/bober_simple_competition/competition_form.html:59
+#: templates/bober_simple_competition/profile_form.html:25
+#: templates/bober_simple_competition/questionset_form.html:15
+#: templates/bober_simple_competition/user_registration.html:21
+msgid "Submit"
+msgstr "Cuir isteach"
+
+#: templates/bober_simple_competition/attempt_results.html:4
+#: templates/bober_simple_competition/attempt_results.html:6
+msgid "Results"
+msgstr "Torthaí"
+
+#: templates/bober_simple_competition/attempt_results.html:13
+#: templates/bober_simple_competition/competition_attempt_list.html:18
+msgid "Question"
+msgstr "Ceist"
+
+#: templates/bober_simple_competition/attempt_results.html:14
+#: templates/bober_simple_competition/competition_attempt_list.html:19
+msgid "Not graded yet"
+msgstr "Gan grádaithe fós"
+
+#: templates/bober_simple_competition/attempt_results.html:15
+#: templates/bober_simple_competition/competition_attempt_list.html:20
+msgid "Wrong Answer"
+msgstr "Freagra Mícheart"
+
+#: templates/bober_simple_competition/attempt_results.html:16
+#: templates/bober_simple_competition/competition_attempt_list.html:21
+msgid "Correct"
+msgstr "Ceart"
+
+#: templates/bober_simple_competition/basic_registration.html:5
+#: templates/bober_simple_competition/competition_data.html:4
+#: templates/bober_simple_competition/competition_data.html:6
+#: templates/bober_simple_competition/competition_registration.html:4
+#: templates/bober_simple_competition/competition_registration.html:6
+#: templates/bober_simple_competition/competition_resources.html:4
+#: templates/bober_simple_competition/competition_resources.html:6
+#: templates/bober_simple_competition/invalidate_attempt.html:4
+#: templates/bober_simple_competition/invalidate_attempt.html:6
+#: templates/bober_simple_competition/profile_merge.html:4
+#: templates/bober_simple_competition/profile_merge.html:6
+#: templates/bober_simple_competition/question_import.html:4
+#: templates/bober_simple_competition/question_import.html:6
+#: templates/bober_simple_competition/questionset_registration.html:4
+#: templates/bober_simple_competition/questionset_registration.html:6
+#: templates/bober_simple_competition/registration_codes.html:4
+#: templates/bober_simple_competition/registration_codes.html:6
+#: templates/bober_simple_competition/send_codes.html:4
+#: templates/bober_simple_competition/send_codes.html:6
+#: templates/bober_simple_competition/submit_answer.html:4
+#: templates/bober_simple_competition/submit_answer.html:6
+#: templates/bober_simple_competition/user_registration.html:4
+#: templates/bober_simple_competition/user_registration.html:6
+msgid "Registration"
+msgstr "Clárú"
+
+#: templates/bober_simple_competition/codeformat_create.html:4
+#: templates/bober_simple_competition/codeformat_create.html:6
+msgid "Create code format"
+msgstr "Cruthaigh bhformáid cód"
+
+#: templates/bober_simple_competition/codeformat_create.html:9
+msgid "Code format successfully created!"
+msgstr "Format Cód cruthaíodh go rathúil!"
+
+#: templates/bober_simple_competition/codeformat_index.html:4
+#: templates/bober_simple_competition/codeformat_index.html:6
+#: templates/bober_simple_competition/codeformat_list.html:4
+#: templates/bober_simple_competition/codeformat_list.html:6
+#: templates/bober_simple_competition/index.html:17
+#: templates/code_based_auth/codeformat_list.html:4
+#: templates/code_based_auth/codeformat_list.html:6
+msgid "Code formats"
+msgstr "Formáidí Cód"
+
+#: templates/bober_simple_competition/codeformat_index.html:9
+msgid "Back to index"
+msgstr "Ar ais go innéacs"
+
+#: templates/bober_simple_competition/codeformat_index.html:10
+msgid "Competitor code formats"
+msgstr "Formáidí cód Iomaitheoir"
+
+#: templates/bober_simple_competition/codeformat_index.html:11
+msgid "Create competitor code format"
+msgstr "Cruthaigh bhformáid cód iomaitheoir"
+
+#: templates/bober_simple_competition/codeformat_index.html:12
+msgid "Admin code formats"
+msgstr "Formáidí cód admin"
+
+#: templates/bober_simple_competition/codeformat_index.html:13
+msgid "Create administrator code format"
+msgstr "Cruthaigh bhformáid cód riarthóir"
+
+#: templates/bober_simple_competition/codeformat_list.html:8
+msgid "Back to code format index"
+msgstr "Ar ais go innéacs cód bhformáid"
+
+#: templates/bober_simple_competition/competition_attempt_list.html:4
+#: templates/bober_simple_competition/competition_attempt_list.html:6
+msgid "Competition attempts"
+msgstr "Iarrachtaí Comórtas"
+
+#: templates/bober_simple_competition/competition_attempt_list.html:9
+#: templates/bober_simple_competition/competition_code_list.html:9
+#: templates/bober_simple_competition/competition_detail.html:12
+msgid "Back to competitions"
+msgstr "Ar ais go comórtais"
+
+#: templates/bober_simple_competition/competition_attempt_list.html:11
+#: templates/bober_simple_competition/competition_code_list.html:11
+msgid "Competition details"
+msgstr "Sonraí Comórtas"
+
+#: templates/bober_simple_competition/competition_code_create.html:4
+#: templates/bober_simple_competition/competition_code_create.html:6
+msgid "Create code"
+msgstr "Cruthaigh cód"
+
+#: templates/bober_simple_competition/competition_code_list.html:4
+#: templates/bober_simple_competition/competition_code_list.html:6
+#: templates/bober_simple_competition/profile_detail.html:66
+#: templates/bober_simple_competition/profile_form.html:28
+msgid "Codes"
+msgstr "Cóid"
+
+#: templates/bober_simple_competition/competition_code_list.html:12
+msgid "Current code"
+msgstr "Cód atá ann faoi láthair"
+
+#: templates/bober_simple_competition/competition_code_list.html:16
+msgid "Admin codes"
+msgstr "Cóid admin"
+
+#: templates/bober_simple_competition/competition_code_list.html:18
+#: templates/bober_simple_competition/competition_code_list.html:27
+msgid "Generate code"
+msgstr "Gin cód"
+
+#: templates/bober_simple_competition/competition_code_list.html:25
+msgid "Competitor codes"
+msgstr "Cóid Iomaitheoir"
+
+#: templates/bober_simple_competition/competition_detail.html:6
+#: templates/bober_simple_competition/competition_detail.html:8
+#: templates/bober_simple_competition/competition_list.html:4
+msgid "Competition"
+msgstr "Comórtas"
+
+#: templates/bober_simple_competition/competition_detail.html:15
+msgid "codes"
+msgstr "cóid"
+
+#: templates/bober_simple_competition/competition_detail.html:16
+msgid "edit"
+msgstr "in eagar"
+
+#: templates/bober_simple_competition/competition_detail.html:18
+#: templates/bober_simple_competition/competition_form.html:36
+#: templates/bober_simple_competition/index.html:15
+#: templates/bober_simple_competition/questionset_list.html:4
+#: templates/bober_simple_competition/questionset_list.html:6
+msgid "Question sets"
+msgstr "Leagann Ceist"
+
+#: templates/bober_simple_competition/competition_form.html:6
+#: templates/bober_simple_competition/competition_form.html:8
+msgid "Edit competition"
+msgstr "Iomaíocht in Eagar"
+
+#: templates/bober_simple_competition/competition_form.html:43
+#: templates/bober_simple_competition/competition_form.html:71
+msgid "Show more"
+msgstr "Taispeáin níos mó"
+
+#: templates/bober_simple_competition/competition_form.html:68
+msgid "Show less"
+msgstr "Taispeáin níos lú"
+
+#: templates/bober_simple_competition/competition_guest.html:4
+#: templates/bober_simple_competition/competition_guest.html:6
+msgid "Compete as a guest"
+msgstr "Dul san iomaíocht mar aoi"
+
+#: templates/bober_simple_competition/competition_guest.html:13
+msgid "Guest access not allowed."
+msgstr "Aoirochtain ní cheadaítear."
+
+#: templates/bober_simple_competition/competition_guest.html:14
+msgid "Compete using a code"
+msgstr "Dul san iomaíocht ag baint úsáide as cód"
+
+#: templates/bober_simple_competition/competition_guest.html:16
+msgid "If you are not redirected automatically, click on the link below."
+msgstr "Mura bhfuil tú a atreorú go huathoibríoch, cliceáil ar an nasc thíos."
+
+#: templates/bober_simple_competition/competition_guest.html:17
+#: templates/bober_simple_competition/competition_registration.html:16
+#: templates/bober_simple_competition/questionset_registration.html:14
+msgid "Compete"
+msgstr "Dul san iomaíocht"
+
+#: templates/bober_simple_competition/competition_index.html:57
+msgid "Answered"
+msgstr "Freagraíodh"
+
+#: templates/bober_simple_competition/competition_index.html:64
+msgid "Time left"
+msgstr "Am Fágtha"
+
+#: templates/bober_simple_competition/competition_index.html:70
+msgid "Finish"
+msgstr "Críochnaigh"
+
+#: templates/bober_simple_competition/competition_index.html:81
+#: templates/bober_simple_competition/competition_index.html:93
+msgid "Clear Answer"
+msgstr "Freagra Glan"
+
+#: templates/bober_simple_competition/competition_list.html:5
+msgid "Competitions in progress"
+msgstr "Comórtais ar siúl"
+
+#: templates/bober_simple_competition/competition_list.html:20
+msgid "Create competition"
+msgstr "Cruthaigh iomaíocht"
+
+#: templates/bober_simple_competition/competition_registration.html:19
+msgid "Login as a teacher"
+msgstr "Logáil isteach mar mhúinteoir"
+
+#: templates/bober_simple_competition/index.html:4
+msgid "Welcome to the Bober competition"
+msgstr "Fáilte go dtí an comórtas Bober"
+
+#: templates/bober_simple_competition/index.html:6
+msgid "Bober"
+msgstr "Bober"
+
+#: templates/bober_simple_competition/index.html:9
+msgid "Competitions"
+msgstr "Comórtais"
+
+#: templates/bober_simple_competition/index.html:11
+#: templates/registration/login.html:5
+msgid "Login"
+msgstr "Logáil isteach"
+
+#: templates/bober_simple_competition/index.html:13
+msgid "Managed users"
+msgstr "Úsáideoirí a bhainistiú"
+
+#: templates/bober_simple_competition/index.html:14
+msgid "My profile"
+msgstr "Mo phróifíl"
+
+#: templates/bober_simple_competition/index.html:16
+#: templates/bober_simple_competition/question_list.html:4
+#: templates/bober_simple_competition/question_list.html:6
+#: templates/bober_simple_competition/question_table.html:4
+#: templates/bober_simple_competition/question_table.html:6
+msgid "Questions"
+msgstr "Ceisteanna"
+
+#: templates/bober_simple_competition/profile_detail.html:19
+msgid "Profile Details"
+msgstr "Sonraí Próifíl"
+
+#: templates/bober_simple_competition/profile_detail.html:30
+msgid "Email"
+msgstr "Ríomhphost"
+
+#: templates/bober_simple_competition/profile_detail.html:39
+msgid "Former profiles"
+msgstr "Próifílí Iar"
+
+#: templates/bober_simple_competition/profile_detail.html:54
+msgid "Attempts"
+msgstr "Iarrachtaí"
+
+#: templates/bober_simple_competition/profile_detail.html:68
+#: templates/bober_simple_competition/profile_detail.html:106
+#: templates/bober_simple_competition/profile_form.html:30
+#: templates/bober_simple_competition/profile_form.html:68
+msgid "Show codes"
+msgstr "Cóid Taispeáin"
+
+#: templates/bober_simple_competition/profile_detail.html:71
+#: templates/bober_simple_competition/profile_form.html:33
+msgid "Used codes"
+msgstr "Cóid Úsáidte"
+
+#: templates/bober_simple_competition/profile_detail.html:80
+#: templates/bober_simple_competition/profile_form.html:42
+msgid "Received codes"
+msgstr "Cóid Faighte"
+
+#: templates/bober_simple_competition/profile_detail.html:89
+#: templates/bober_simple_competition/profile_form.html:51
+msgid "Created codes"
+msgstr "Cóid Cruthaithe"
+
+#: templates/bober_simple_competition/profile_detail.html:103
+#: templates/bober_simple_competition/profile_form.html:65
+msgid "Hide codes"
+msgstr "Cóid Folaigh"
+
+#: templates/bober_simple_competition/profile_form.html:4
+#: templates/bober_simple_competition/profile_form.html:6
+msgid "Edit user"
+msgstr "Faoi úsáideoir Edit"
+
+#: templates/bober_simple_competition/profile_list.html:4
+#: templates/bober_simple_competition/profile_list.html:5
+#: templates/bober_simple_competition/profile_table_list.html:4
+#: templates/bober_simple_competition/profile_table_list.html:5
+msgid "Users"
+msgstr "Úsáideoirí"
+
+#: templates/bober_simple_competition/profile_list.html:14
+msgid "Update profile"
+msgstr "Próifíl Nuashonraigh"
+
+#: templates/bober_simple_competition/questionset_create.html:4
+#: templates/bober_simple_competition/questionset_create.html:6
+msgid "Create question set"
+msgstr "Cruthaigh leagtha cheist"
+
+#: templates/bober_simple_competition/questionset_detail.html:6
+#: templates/bober_simple_competition/questionset_detail.html:8
+#: templates/bober_simple_competition/questionset_form.html:6
+#: templates/bober_simple_competition/questionset_form.html:8
+msgid "Question set"
+msgstr "Leagtha Ceist"
+
+#: templates/bober_simple_competition/questionset_detail.html:18
+msgid "Edit questionset"
+msgstr "Questionset Edit"
+
+#: templates/bober_simple_competition/user_files.html:4
+#: templates/bober_simple_competition/user_files.html:6
+msgid "Files"
+msgstr "Comhaid"
+
+#: templates/bober_simple_competition/user_registration_confirmation.html:4
+#: templates/bober_simple_competition/user_registration_confirmation.html:6
+msgid "User created"
+msgstr "Úsáideoir cruthaíodh"
+
+#: templates/registration/logged_out.html:5
+msgid "Thank you for using Bober"
+msgstr "Go raibh maith agat as úsáid a bhaint as Bober"
+
+#: templates/registration/logged_out.html:6
+#: templates/registration/logged_out.html:7
+msgid "Back to first page"
+msgstr "Ar ais go dtí an chéad leathanach"
+
+#: templates/registration/login.html:9
+msgid "Hello,"
+msgstr "Dia duit,"
+
+#: templates/registration/login.html:13 templates/registration/login.html:16
+msgid "Login with"
+msgstr "Logáil isteach le"
+
+msgid "Edit my profile"
+msgstr "Athraigh mo phróifíl"
+
+msgid "attempts"
+msgstr "iarrachtaí"
+
+msgid "Competition Name"
+msgstr "Comórtas Ainm"
+
+msgid "Options"
+msgstr "Roghanna"
+
+msgid "Compete as guest"
+msgstr "Dul san iomaíocht mar aoi"
+
+msgid "Create new account"
+msgstr "Cruthaigh cuntas nua"
+
+msgid "Advanced details"
+msgstr "Sonraí chun cinn"
+
+msgid "In Cooperation With"
+msgstr "I Comhar Le"
+
+msgid "Create code format for admin users (teachers)"
+msgstr "Cruthaigh bhformáid cód le haghaidh úsáideoirí admin (múinteoirí)"
+
+msgid "Create code format for competitors"
+msgstr "Cruthaigh bhformáid cód le haghaidh iomaitheoirí"
+
+msgid "Try it!"
+msgstr "Bain triail as!"
+
+msgid ""
+"You have attempted to leave this page. Your last question answer will be "
+"saved automatically. Are you sure you want to exit this page?"
+msgstr "Tá iarracht tú a fhágáil ar an leathanach seo. Dearbhófar do fhreagra cheist seo caite a shábháil go huathoibríoch. An bhfuil tú cinnte go bhfuil tú ag iarraidh a scoir an leathanach seo?"
+
+msgid "You are out of time for solving the competition."
+msgstr "Tá tú as am chun a réiteach ar an gcomórtas."
+
+msgid "Thank you for participating in the competition"
+msgstr "Go raibh maith agat le bheith rannpháirteach sa chomórtas"
+
+msgid "Your answer was successfully saved!"
+msgstr "Bhí Do fhreagra éirigh le sábháil!"
+
+msgid "Are you sure you want to clear answer?"
+msgstr "An bhfuil tú cinnte gur mian leat freagra a ghlanadh?"
+
+msgid "You left %s question unanswered. "
+msgid_plural "You left %s questions unanswered. "
+msgstr[0] "D'fhág %s ceist unanswered."
+msgstr[1] "D'fhág %s ceist unanswered."
+msgstr[2] "D'fhág %s ceist unanswered."
+msgstr[3] "D'fhág %s ceist unanswered."
+
+msgid "%(n)s competitor"
+msgid_plural "%s competitors"
+msgstr[0] "% (n) s iomaitheoir"
+msgstr[1] "% (n) s iomaitheoir"
+msgstr[2] "% (n) s iomaitheoir"
+msgstr[3] "% (n) s iomaitheoir"
+
+msgid "Are you sure you want to finish the competition?"
+msgstr "An bhfuil tú cinnte go bhfuil tú ag iarraidh a chríochnú an gcomórtas?"
+
+msgid "An error has occured. Please try to finish competition again."
+msgstr "Tá Tharla earráid. Déan iarracht an iomaíocht a chríochnú arís."
+

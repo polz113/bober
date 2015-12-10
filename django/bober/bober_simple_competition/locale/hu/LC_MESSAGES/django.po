@@ -1,0 +1,595 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-11-16 08:23+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=4; plural=(n%100==1 ? 0 : n%100==2 ? 1 : n%100==3 || n"
+"%100==4 ? 2 : 3);\n"
+
+#: forms.py:20 forms.py:29 forms.py:102 forms.py:173
+msgid "Access code"
+msgstr "Hozzáférési kód"
+
+#: forms.py:22
+msgid "Update used codes later"
+msgstr "Frissítés használt kódok késõbb"
+
+#: forms.py:25
+msgid "Execute effects later"
+msgstr "Végrehajtás hatások később"
+
+#: forms.py:128 forms.py:162 forms.py:193 forms.py:237
+msgid "Wrong access code"
+msgstr "Helytelen hozzáférési kód"
+
+#: forms.py:148 forms.py:223
+msgid "Group"
+msgstr "Csoport"
+
+#: forms.py:165 forms.py:244
+msgid "This field is required"
+msgstr "Ez a mező kötelező"
+
+#: models.py:56
+msgid "Participate in the competition"
+msgstr "Vegyen részt a versenyben"
+
+#: models.py:57
+msgid "Attempt competition before start"
+msgstr "Kísérlet a verseny kezdete előtt"
+
+#: models.py:58
+msgid "See results before official end of competition"
+msgstr "Lásd az eredményeket, mielőtt hivatalos vége a versenyt"
+
+#: models.py:59
+msgid "Resume existing attempts"
+msgstr "Folytatás meglévő kísérletek"
+
+#: models.py:63
+msgid "Allow the creator to manage the profile of anyone using this code"
+msgstr "Hagyja, hogy a szerző a profilok kezelését, hogy valaki használ ez a kód"
+
+#: models.py:64
+msgid ""
+"Allow the creator and their managers to manage the profile of anyone using "
+"this code"
+msgstr "Hagyja, hogy a Teremtő és a vezetők, hogy a profilok kezelését, hogy valaki használ ez a kód"
+
+#: models.py:68
+msgid "Create administrator codes"
+msgstr "Rendszergazda létrehozása kódok"
+
+#: models.py:69
+msgid "Create comeptitor codes"
+msgstr "Hozzon létre comeptitor kódok"
+
+#: models.py:70
+msgid "View all attempts for this competition"
+msgstr "Az összes kísérletet erre a versenyre"
+
+#: models.py:71
+msgid "View all administrator codes for this competition"
+msgstr "Az összes adminisztrátor kódok erre a versenyre"
+
+#: models.py:72
+msgid "View all competitor codes for this competition"
+msgstr "Az összes versenyző kódokat erre a versenyre"
+
+#: models.py:73
+msgid "Use question sets for new competitions"
+msgstr "Használja kérdést készlet új versenyek"
+
+#: models.py:74
+msgid "Modify this competition"
+msgstr "Módosítsa ezt a versenyt"
+
+#: models.py:76
+msgid "Use questions for new question sets"
+msgstr "Használja Kérdések új kérdést készletek"
+
+#: models.py:89
+msgid "Reduced functionality"
+msgstr "Csökkentett funkcionalitású"
+
+#: models.py:90
+msgid "Basic features only"
+msgstr "Alapvető funkciók csak akkor"
+
+#: models.py:91
+msgid "Commonly used features"
+msgstr "A leggyakrabban használt funkciók"
+
+#: models.py:92
+msgid "All features"
+msgstr "Minden funkció"
+
+#: models.py:730 templates/bober_simple_competition/profile_detail.html:22
+msgid "First Name"
+msgstr "Keresztnév"
+
+#: models.py:731 templates/bober_simple_competition/profile_detail.html:26
+msgid "Last Name"
+msgstr "Családnév"
+
+#: templates/base.html:37
+msgid "Beaver"
+msgstr "Hód"
+
+#: templates/base.html:42
+msgid "Logout"
+msgstr "Kijelentkezés"
+
+#: templates/bober_simple_competition/access_code.html:4
+#: templates/bober_simple_competition/access_code.html:6
+#: templates/bober_simple_competition/compete_with_short_code.html:4
+#: templates/bober_simple_competition/compete_with_short_code.html:6
+msgid "Enter access code"
+msgstr "Írja be a hozzáférési kódot"
+
+#: templates/bober_simple_competition/access_code.html:10
+#: templates/bober_simple_competition/compete_with_short_code.html:10
+#: templates/bober_simple_competition/competition_guest.html:10
+#: templates/bober_simple_competition/competition_list.html:10
+#: templates/bober_simple_competition/profile_detail.html:14
+#: templates/bober_simple_competition/profile_table_list.html:11
+msgid "Back to Menu"
+msgstr "Vissza Menü"
+
+#: templates/bober_simple_competition/access_code.html:18
+#: templates/bober_simple_competition/basic_registration.html:11
+#: templates/bober_simple_competition/codeformat_create.html:14
+#: templates/bober_simple_competition/compete_with_short_code.html:18
+#: templates/bober_simple_competition/competition_code_create.html:13
+#: templates/bober_simple_competition/competition_form.html:59
+#: templates/bober_simple_competition/profile_form.html:25
+#: templates/bober_simple_competition/questionset_form.html:15
+#: templates/bober_simple_competition/user_registration.html:21
+msgid "Submit"
+msgstr "Submit"
+
+#: templates/bober_simple_competition/attempt_results.html:4
+#: templates/bober_simple_competition/attempt_results.html:6
+msgid "Results"
+msgstr "Eredmények"
+
+#: templates/bober_simple_competition/attempt_results.html:13
+#: templates/bober_simple_competition/competition_attempt_list.html:18
+msgid "Question"
+msgstr "Kérdés"
+
+#: templates/bober_simple_competition/attempt_results.html:14
+#: templates/bober_simple_competition/competition_attempt_list.html:19
+msgid "Not graded yet"
+msgstr "Nem osztályozott még"
+
+#: templates/bober_simple_competition/attempt_results.html:15
+#: templates/bober_simple_competition/competition_attempt_list.html:20
+msgid "Wrong Answer"
+msgstr "Rossz válasz"
+
+#: templates/bober_simple_competition/attempt_results.html:16
+#: templates/bober_simple_competition/competition_attempt_list.html:21
+msgid "Correct"
+msgstr "Helyes"
+
+#: templates/bober_simple_competition/basic_registration.html:5
+#: templates/bober_simple_competition/competition_data.html:4
+#: templates/bober_simple_competition/competition_data.html:6
+#: templates/bober_simple_competition/competition_registration.html:4
+#: templates/bober_simple_competition/competition_registration.html:6
+#: templates/bober_simple_competition/competition_resources.html:4
+#: templates/bober_simple_competition/competition_resources.html:6
+#: templates/bober_simple_competition/invalidate_attempt.html:4
+#: templates/bober_simple_competition/invalidate_attempt.html:6
+#: templates/bober_simple_competition/profile_merge.html:4
+#: templates/bober_simple_competition/profile_merge.html:6
+#: templates/bober_simple_competition/question_import.html:4
+#: templates/bober_simple_competition/question_import.html:6
+#: templates/bober_simple_competition/questionset_registration.html:4
+#: templates/bober_simple_competition/questionset_registration.html:6
+#: templates/bober_simple_competition/registration_codes.html:4
+#: templates/bober_simple_competition/registration_codes.html:6
+#: templates/bober_simple_competition/send_codes.html:4
+#: templates/bober_simple_competition/send_codes.html:6
+#: templates/bober_simple_competition/submit_answer.html:4
+#: templates/bober_simple_competition/submit_answer.html:6
+#: templates/bober_simple_competition/user_registration.html:4
+#: templates/bober_simple_competition/user_registration.html:6
+msgid "Registration"
+msgstr "Bejegyzés"
+
+#: templates/bober_simple_competition/codeformat_create.html:4
+#: templates/bober_simple_competition/codeformat_create.html:6
+msgid "Create code format"
+msgstr "Hozzon létre formátum"
+
+#: templates/bober_simple_competition/codeformat_create.html:9
+msgid "Code format successfully created!"
+msgstr "Formátum sikeresen létrehozva!"
+
+#: templates/bober_simple_competition/codeformat_index.html:4
+#: templates/bober_simple_competition/codeformat_index.html:6
+#: templates/bober_simple_competition/codeformat_list.html:4
+#: templates/bober_simple_competition/codeformat_list.html:6
+#: templates/bober_simple_competition/index.html:17
+#: templates/code_based_auth/codeformat_list.html:4
+#: templates/code_based_auth/codeformat_list.html:6
+msgid "Code formats"
+msgstr "Kód formátumok"
+
+#: templates/bober_simple_competition/codeformat_index.html:9
+msgid "Back to index"
+msgstr "Vissza az index"
+
+#: templates/bober_simple_competition/codeformat_index.html:10
+msgid "Competitor code formats"
+msgstr "Versenyző kódot formátumok"
+
+#: templates/bober_simple_competition/codeformat_index.html:11
+msgid "Create competitor code format"
+msgstr "Hozzon létre versenyző formátum"
+
+#: templates/bober_simple_competition/codeformat_index.html:12
+msgid "Admin code formats"
+msgstr "Admin kód formátumok"
+
+#: templates/bober_simple_competition/codeformat_index.html:13
+msgid "Create administrator code format"
+msgstr "Rendszergazda létrehozása formátum"
+
+#: templates/bober_simple_competition/codeformat_list.html:8
+msgid "Back to code format index"
+msgstr "Vissza a formátum index"
+
+#: templates/bober_simple_competition/competition_attempt_list.html:4
+#: templates/bober_simple_competition/competition_attempt_list.html:6
+msgid "Competition attempts"
+msgstr "Verseny kísérletek"
+
+#: templates/bober_simple_competition/competition_attempt_list.html:9
+#: templates/bober_simple_competition/competition_code_list.html:9
+#: templates/bober_simple_competition/competition_detail.html:12
+msgid "Back to competitions"
+msgstr "Vissza a versenyek"
+
+#: templates/bober_simple_competition/competition_attempt_list.html:11
+#: templates/bober_simple_competition/competition_code_list.html:11
+msgid "Competition details"
+msgstr "Verseny részletei"
+
+#: templates/bober_simple_competition/competition_code_create.html:4
+#: templates/bober_simple_competition/competition_code_create.html:6
+msgid "Create code"
+msgstr "Kód"
+
+#: templates/bober_simple_competition/competition_code_list.html:4
+#: templates/bober_simple_competition/competition_code_list.html:6
+#: templates/bober_simple_competition/profile_detail.html:66
+#: templates/bober_simple_competition/profile_form.html:28
+msgid "Codes"
+msgstr "Kódok"
+
+#: templates/bober_simple_competition/competition_code_list.html:12
+msgid "Current code"
+msgstr "Jelenlegi kód"
+
+#: templates/bober_simple_competition/competition_code_list.html:16
+msgid "Admin codes"
+msgstr "Admin kódok"
+
+#: templates/bober_simple_competition/competition_code_list.html:18
+#: templates/bober_simple_competition/competition_code_list.html:27
+msgid "Generate code"
+msgstr "Generál kódot"
+
+#: templates/bober_simple_competition/competition_code_list.html:25
+msgid "Competitor codes"
+msgstr "Versenyző kódok"
+
+#: templates/bober_simple_competition/competition_detail.html:6
+#: templates/bober_simple_competition/competition_detail.html:8
+#: templates/bober_simple_competition/competition_list.html:4
+msgid "Competition"
+msgstr "Verseny"
+
+#: templates/bober_simple_competition/competition_detail.html:15
+msgid "codes"
+msgstr "kódok"
+
+#: templates/bober_simple_competition/competition_detail.html:16
+msgid "edit"
+msgstr "szerkesztés"
+
+#: templates/bober_simple_competition/competition_detail.html:18
+#: templates/bober_simple_competition/competition_form.html:36
+#: templates/bober_simple_competition/index.html:15
+#: templates/bober_simple_competition/questionset_list.html:4
+#: templates/bober_simple_competition/questionset_list.html:6
+msgid "Question sets"
+msgstr "Kérdés készletek"
+
+#: templates/bober_simple_competition/competition_form.html:6
+#: templates/bober_simple_competition/competition_form.html:8
+msgid "Edit competition"
+msgstr "Szerkesztés verseny"
+
+#: templates/bober_simple_competition/competition_form.html:43
+#: templates/bober_simple_competition/competition_form.html:71
+msgid "Show more"
+msgstr "Mutass többet"
+
+#: templates/bober_simple_competition/competition_form.html:68
+msgid "Show less"
+msgstr "Kevesebb megjelenítése"
+
+#: templates/bober_simple_competition/competition_guest.html:4
+#: templates/bober_simple_competition/competition_guest.html:6
+msgid "Compete as a guest"
+msgstr "Versenyezz, mint vendég"
+
+#: templates/bober_simple_competition/competition_guest.html:13
+msgid "Guest access not allowed."
+msgstr "Vendég belépés nem engedélyezett."
+
+#: templates/bober_simple_competition/competition_guest.html:14
+msgid "Compete using a code"
+msgstr "Versenyezz kóddal"
+
+#: templates/bober_simple_competition/competition_guest.html:16
+msgid "If you are not redirected automatically, click on the link below."
+msgstr "Ha nem irányítja automatikusan, kattintson az alábbi linkre."
+
+#: templates/bober_simple_competition/competition_guest.html:17
+#: templates/bober_simple_competition/competition_registration.html:16
+#: templates/bober_simple_competition/questionset_registration.html:14
+msgid "Compete"
+msgstr "Versenyez"
+
+#: templates/bober_simple_competition/competition_index.html:57
+msgid "Answered"
+msgstr "Válaszol"
+
+#: templates/bober_simple_competition/competition_index.html:64
+msgid "Time left"
+msgstr "Idő maradt"
+
+#: templates/bober_simple_competition/competition_index.html:70
+msgid "Finish"
+msgstr "befejezés"
+
+#: templates/bober_simple_competition/competition_index.html:81
+#: templates/bober_simple_competition/competition_index.html:93
+msgid "Clear Answer"
+msgstr "Egyértelmű válasz"
+
+#: templates/bober_simple_competition/competition_list.html:5
+msgid "Competitions in progress"
+msgstr "Versenyek folyamatban"
+
+#: templates/bober_simple_competition/competition_list.html:20
+msgid "Create competition"
+msgstr "Versennyel"
+
+#: templates/bober_simple_competition/competition_registration.html:19
+msgid "Login as a teacher"
+msgstr "Bejelentkezés tanárként"
+
+#: templates/bober_simple_competition/index.html:4
+msgid "Welcome to the Bober competition"
+msgstr "Üdvözöljük a Bober verseny"
+
+#: templates/bober_simple_competition/index.html:6
+msgid "Bober"
+msgstr "Bober"
+
+#: templates/bober_simple_competition/index.html:9
+msgid "Competitions"
+msgstr "Versenyek"
+
+#: templates/bober_simple_competition/index.html:11
+#: templates/registration/login.html:5
+msgid "Login"
+msgstr "Bejelentkezés"
+
+#: templates/bober_simple_competition/index.html:13
+msgid "Managed users"
+msgstr "Sikerült felhasználók"
+
+#: templates/bober_simple_competition/index.html:14
+msgid "My profile"
+msgstr "A profilom"
+
+#: templates/bober_simple_competition/index.html:16
+#: templates/bober_simple_competition/question_list.html:4
+#: templates/bober_simple_competition/question_list.html:6
+#: templates/bober_simple_competition/question_table.html:4
+#: templates/bober_simple_competition/question_table.html:6
+msgid "Questions"
+msgstr "Kérdések"
+
+#: templates/bober_simple_competition/profile_detail.html:19
+msgid "Profile Details"
+msgstr "Profil Részletek"
+
+#: templates/bober_simple_competition/profile_detail.html:30
+msgid "Email"
+msgstr "Email"
+
+#: templates/bober_simple_competition/profile_detail.html:39
+msgid "Former profiles"
+msgstr "Korábbi profilok"
+
+#: templates/bober_simple_competition/profile_detail.html:54
+msgid "Attempts"
+msgstr "Kísérletek"
+
+#: templates/bober_simple_competition/profile_detail.html:68
+#: templates/bober_simple_competition/profile_detail.html:106
+#: templates/bober_simple_competition/profile_form.html:30
+#: templates/bober_simple_competition/profile_form.html:68
+msgid "Show codes"
+msgstr "Mutass kódok"
+
+#: templates/bober_simple_competition/profile_detail.html:71
+#: templates/bober_simple_competition/profile_form.html:33
+msgid "Used codes"
+msgstr "Használt kódok"
+
+#: templates/bober_simple_competition/profile_detail.html:80
+#: templates/bober_simple_competition/profile_form.html:42
+msgid "Received codes"
+msgstr "Kapott kódok"
+
+#: templates/bober_simple_competition/profile_detail.html:89
+#: templates/bober_simple_competition/profile_form.html:51
+msgid "Created codes"
+msgstr "Létrehozott kódok"
+
+#: templates/bober_simple_competition/profile_detail.html:103
+#: templates/bober_simple_competition/profile_form.html:65
+msgid "Hide codes"
+msgstr "Hide kódok"
+
+#: templates/bober_simple_competition/profile_form.html:4
+#: templates/bober_simple_competition/profile_form.html:6
+msgid "Edit user"
+msgstr "Felhasználó szerkesztése"
+
+#: templates/bober_simple_competition/profile_list.html:4
+#: templates/bober_simple_competition/profile_list.html:5
+#: templates/bober_simple_competition/profile_table_list.html:4
+#: templates/bober_simple_competition/profile_table_list.html:5
+msgid "Users"
+msgstr "Felhasználók"
+
+#: templates/bober_simple_competition/profile_list.html:14
+msgid "Update profile"
+msgstr "Profil frissítése"
+
+#: templates/bober_simple_competition/questionset_create.html:4
+#: templates/bober_simple_competition/questionset_create.html:6
+msgid "Create question set"
+msgstr "Hozzon létre kérdést szett"
+
+#: templates/bober_simple_competition/questionset_detail.html:6
+#: templates/bober_simple_competition/questionset_detail.html:8
+#: templates/bober_simple_competition/questionset_form.html:6
+#: templates/bober_simple_competition/questionset_form.html:8
+msgid "Question set"
+msgstr "Kérdés szett"
+
+#: templates/bober_simple_competition/questionset_detail.html:18
+msgid "Edit questionset"
+msgstr "Szerkesztés questionset"
+
+#: templates/bober_simple_competition/user_files.html:4
+#: templates/bober_simple_competition/user_files.html:6
+msgid "Files"
+msgstr "Fájlok"
+
+#: templates/bober_simple_competition/user_registration_confirmation.html:4
+#: templates/bober_simple_competition/user_registration_confirmation.html:6
+msgid "User created"
+msgstr "Felhasználó által létrehozott"
+
+#: templates/registration/logged_out.html:5
+msgid "Thank you for using Bober"
+msgstr "Köszönjük, hogy igénybe Bober"
+
+#: templates/registration/logged_out.html:6
+#: templates/registration/logged_out.html:7
+msgid "Back to first page"
+msgstr "Vissza az első oldalra"
+
+#: templates/registration/login.html:9
+msgid "Hello,"
+msgstr "Helló,"
+
+#: templates/registration/login.html:13 templates/registration/login.html:16
+msgid "Login with"
+msgstr "Bejelentkezés ezzel"
+
+msgid "Edit my profile"
+msgstr "Profil szerkesztése"
+
+msgid "attempts"
+msgstr "próbálkozás"
+
+msgid "Competition Name"
+msgstr "Verseny neve"
+
+msgid "Options"
+msgstr "Beállítások"
+
+msgid "Compete as guest"
+msgstr "Versenyezz a vendég"
+
+msgid "Create new account"
+msgstr "Új fiók létrehozása"
+
+msgid "Advanced details"
+msgstr "Részletes részletei"
+
+msgid "In Cooperation With"
+msgstr "Együttműködésben"
+
+msgid "Create code format for admin users (teachers)"
+msgstr "Kód formátumot admin felhasználók (tanárok)"
+
+msgid "Create code format for competitors"
+msgstr "Kód formátumot versenytársak"
+
+msgid "Try it!"
+msgstr "Próbáld ki!"
+
+msgid ""
+"You have attempted to leave this page. Your last question answer will be "
+"saved automatically. Are you sure you want to exit this page?"
+msgstr "Kísérletet tett, hogy elhagyja ezt az oldalt. Az utolsó kérdés válasz automatikusan mentésre kerül. Biztosan ki akar lépni ezen az oldalon?"
+
+msgid "You are out of time for solving the competition."
+msgstr "Ön elkésett megoldására versenyt."
+
+msgid "Thank you for participating in the competition"
+msgstr "Köszönjük, hogy a versenyben részt vevő"
+
+msgid "Your answer was successfully saved!"
+msgstr "Az Ön válasza sikeresen mentve!"
+
+msgid "Are you sure you want to clear answer?"
+msgstr "Biztosan törölni szeretné a válasz?"
+
+msgid "You left %s question unanswered. "
+msgid_plural "You left %s questions unanswered. "
+msgstr[0] "Itt %s kérdés megválaszolatlan."
+msgstr[1] "Itt %s kérdés megválaszolatlan."
+msgstr[2] "Itt %s kérdés megválaszolatlan."
+msgstr[3] "Itt %s kérdés megválaszolatlan."
+
+msgid "%(n)s competitor"
+msgid_plural "%s competitors"
+msgstr[0] "% (N) S-versenyző"
+msgstr[1] "% (N) S-versenyző"
+msgstr[2] "% (N) S-versenyző"
+msgstr[3] "% (N) S-versenyző"
+
+msgid "Are you sure you want to finish the competition?"
+msgstr "Biztos benne, hogy szeretné befejezni a versenyt?"
+
+msgid "An error has occured. Please try to finish competition again."
+msgstr "Hiba történt. Kérjük, próbálja befejezni a versenyt újra."
+

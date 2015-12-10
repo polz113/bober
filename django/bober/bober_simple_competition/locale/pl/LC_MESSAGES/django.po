@@ -1,0 +1,595 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-11-16 08:23+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=4; plural=(n%100==1 ? 0 : n%100==2 ? 1 : n%100==3 || n"
+"%100==4 ? 2 : 3);\n"
+
+#: forms.py:20 forms.py:29 forms.py:102 forms.py:173
+msgid "Access code"
+msgstr "Kod dostępu"
+
+#: forms.py:22
+msgid "Update used codes later"
+msgstr "Aktualizuj stosowane kody później"
+
+#: forms.py:25
+msgid "Execute effects later"
+msgstr "Realizujemy efekty później"
+
+#: forms.py:128 forms.py:162 forms.py:193 forms.py:237
+msgid "Wrong access code"
+msgstr "Błędny kod dostępu"
+
+#: forms.py:148 forms.py:223
+msgid "Group"
+msgstr "Grupa"
+
+#: forms.py:165 forms.py:244
+msgid "This field is required"
+msgstr "To pole jest wymagane"
+
+#: models.py:56
+msgid "Participate in the competition"
+msgstr "Wziąć udział w konkursie"
+
+#: models.py:57
+msgid "Attempt competition before start"
+msgstr "Próba konkurencji przed rozpoczęciem"
+
+#: models.py:58
+msgid "See results before official end of competition"
+msgstr "Zobacz wyniki przed oficjalnym zakończeniem konkursu"
+
+#: models.py:59
+msgid "Resume existing attempts"
+msgstr "Wznowić istniejące próby"
+
+#: models.py:63
+msgid "Allow the creator to manage the profile of anyone using this code"
+msgstr "Pozwól twórca zarządzać profil nikogo przy użyciu tego kodu"
+
+#: models.py:64
+msgid ""
+"Allow the creator and their managers to manage the profile of anyone using "
+"this code"
+msgstr "Pozwól twórcą i ich menedżerów do zarządzania profil nikogo przy użyciu tego kodu"
+
+#: models.py:68
+msgid "Create administrator codes"
+msgstr "Tworzenie kodów administratora"
+
+#: models.py:69
+msgid "Create comeptitor codes"
+msgstr "Tworzenie kodów comeptitor"
+
+#: models.py:70
+msgid "View all attempts for this competition"
+msgstr "Zobacz wszystkie próby do tego konkursu"
+
+#: models.py:71
+msgid "View all administrator codes for this competition"
+msgstr "Zobacz wszystkie kody administratora do tego konkursu"
+
+#: models.py:72
+msgid "View all competitor codes for this competition"
+msgstr "Zobacz wszystkie kody konkurentem dla tej konkurencji"
+
+#: models.py:73
+msgid "Use question sets for new competitions"
+msgstr "Użyj zestawów pytań dla nowych zawodów"
+
+#: models.py:74
+msgid "Modify this competition"
+msgstr "Modyfikuj ten konkurs"
+
+#: models.py:76
+msgid "Use questions for new question sets"
+msgstr "Użyj pytania do nowych zestawów pytań"
+
+#: models.py:89
+msgid "Reduced functionality"
+msgstr "Ograniczona funkcjonalność"
+
+#: models.py:90
+msgid "Basic features only"
+msgstr "Tylko podstawowe funkcje"
+
+#: models.py:91
+msgid "Commonly used features"
+msgstr "Często używane funkcje"
+
+#: models.py:92
+msgid "All features"
+msgstr "Wszystkie funkcje"
+
+#: models.py:730 templates/bober_simple_competition/profile_detail.html:22
+msgid "First Name"
+msgstr "Imię"
+
+#: models.py:731 templates/bober_simple_competition/profile_detail.html:26
+msgid "Last Name"
+msgstr "Nazwisko"
+
+#: templates/base.html:37
+msgid "Beaver"
+msgstr "Bóbr"
+
+#: templates/base.html:42
+msgid "Logout"
+msgstr "Wyloguj"
+
+#: templates/bober_simple_competition/access_code.html:4
+#: templates/bober_simple_competition/access_code.html:6
+#: templates/bober_simple_competition/compete_with_short_code.html:4
+#: templates/bober_simple_competition/compete_with_short_code.html:6
+msgid "Enter access code"
+msgstr "Wprowadź kod dostępu"
+
+#: templates/bober_simple_competition/access_code.html:10
+#: templates/bober_simple_competition/compete_with_short_code.html:10
+#: templates/bober_simple_competition/competition_guest.html:10
+#: templates/bober_simple_competition/competition_list.html:10
+#: templates/bober_simple_competition/profile_detail.html:14
+#: templates/bober_simple_competition/profile_table_list.html:11
+msgid "Back to Menu"
+msgstr "Powrót do menu"
+
+#: templates/bober_simple_competition/access_code.html:18
+#: templates/bober_simple_competition/basic_registration.html:11
+#: templates/bober_simple_competition/codeformat_create.html:14
+#: templates/bober_simple_competition/compete_with_short_code.html:18
+#: templates/bober_simple_competition/competition_code_create.html:13
+#: templates/bober_simple_competition/competition_form.html:59
+#: templates/bober_simple_competition/profile_form.html:25
+#: templates/bober_simple_competition/questionset_form.html:15
+#: templates/bober_simple_competition/user_registration.html:21
+msgid "Submit"
+msgstr "Zgłaszać"
+
+#: templates/bober_simple_competition/attempt_results.html:4
+#: templates/bober_simple_competition/attempt_results.html:6
+msgid "Results"
+msgstr "Wyniki"
+
+#: templates/bober_simple_competition/attempt_results.html:13
+#: templates/bober_simple_competition/competition_attempt_list.html:18
+msgid "Question"
+msgstr "Pytanie"
+
+#: templates/bober_simple_competition/attempt_results.html:14
+#: templates/bober_simple_competition/competition_attempt_list.html:19
+msgid "Not graded yet"
+msgstr "Jeszcze nie sklasyfikowane"
+
+#: templates/bober_simple_competition/attempt_results.html:15
+#: templates/bober_simple_competition/competition_attempt_list.html:20
+msgid "Wrong Answer"
+msgstr "Zła odpowiedź"
+
+#: templates/bober_simple_competition/attempt_results.html:16
+#: templates/bober_simple_competition/competition_attempt_list.html:21
+msgid "Correct"
+msgstr "Poprawny"
+
+#: templates/bober_simple_competition/basic_registration.html:5
+#: templates/bober_simple_competition/competition_data.html:4
+#: templates/bober_simple_competition/competition_data.html:6
+#: templates/bober_simple_competition/competition_registration.html:4
+#: templates/bober_simple_competition/competition_registration.html:6
+#: templates/bober_simple_competition/competition_resources.html:4
+#: templates/bober_simple_competition/competition_resources.html:6
+#: templates/bober_simple_competition/invalidate_attempt.html:4
+#: templates/bober_simple_competition/invalidate_attempt.html:6
+#: templates/bober_simple_competition/profile_merge.html:4
+#: templates/bober_simple_competition/profile_merge.html:6
+#: templates/bober_simple_competition/question_import.html:4
+#: templates/bober_simple_competition/question_import.html:6
+#: templates/bober_simple_competition/questionset_registration.html:4
+#: templates/bober_simple_competition/questionset_registration.html:6
+#: templates/bober_simple_competition/registration_codes.html:4
+#: templates/bober_simple_competition/registration_codes.html:6
+#: templates/bober_simple_competition/send_codes.html:4
+#: templates/bober_simple_competition/send_codes.html:6
+#: templates/bober_simple_competition/submit_answer.html:4
+#: templates/bober_simple_competition/submit_answer.html:6
+#: templates/bober_simple_competition/user_registration.html:4
+#: templates/bober_simple_competition/user_registration.html:6
+msgid "Registration"
+msgstr "Rejestracja"
+
+#: templates/bober_simple_competition/codeformat_create.html:4
+#: templates/bober_simple_competition/codeformat_create.html:6
+msgid "Create code format"
+msgstr "Tworzenie formatu kodu"
+
+#: templates/bober_simple_competition/codeformat_create.html:9
+msgid "Code format successfully created!"
+msgstr "Format kodu utworzony pomyślnie!"
+
+#: templates/bober_simple_competition/codeformat_index.html:4
+#: templates/bober_simple_competition/codeformat_index.html:6
+#: templates/bober_simple_competition/codeformat_list.html:4
+#: templates/bober_simple_competition/codeformat_list.html:6
+#: templates/bober_simple_competition/index.html:17
+#: templates/code_based_auth/codeformat_list.html:4
+#: templates/code_based_auth/codeformat_list.html:6
+msgid "Code formats"
+msgstr "Formaty Code"
+
+#: templates/bober_simple_competition/codeformat_index.html:9
+msgid "Back to index"
+msgstr "Powrót do indeksu"
+
+#: templates/bober_simple_competition/codeformat_index.html:10
+msgid "Competitor code formats"
+msgstr "Formaty kodów zawodnik"
+
+#: templates/bober_simple_competition/codeformat_index.html:11
+msgid "Create competitor code format"
+msgstr "Tworzenie formatu kodu konkurenta"
+
+#: templates/bober_simple_competition/codeformat_index.html:12
+msgid "Admin code formats"
+msgstr "Formaty kodów Admin"
+
+#: templates/bober_simple_competition/codeformat_index.html:13
+msgid "Create administrator code format"
+msgstr "Tworzenie formatu kodu administratora"
+
+#: templates/bober_simple_competition/codeformat_list.html:8
+msgid "Back to code format index"
+msgstr "Powrót do indeksu formatu kodu"
+
+#: templates/bober_simple_competition/competition_attempt_list.html:4
+#: templates/bober_simple_competition/competition_attempt_list.html:6
+msgid "Competition attempts"
+msgstr "Próby konkursowe"
+
+#: templates/bober_simple_competition/competition_attempt_list.html:9
+#: templates/bober_simple_competition/competition_code_list.html:9
+#: templates/bober_simple_competition/competition_detail.html:12
+msgid "Back to competitions"
+msgstr "Powrót do konkursów"
+
+#: templates/bober_simple_competition/competition_attempt_list.html:11
+#: templates/bober_simple_competition/competition_code_list.html:11
+msgid "Competition details"
+msgstr "Szczegóły konkursu"
+
+#: templates/bober_simple_competition/competition_code_create.html:4
+#: templates/bober_simple_competition/competition_code_create.html:6
+msgid "Create code"
+msgstr "Tworzenie kodu"
+
+#: templates/bober_simple_competition/competition_code_list.html:4
+#: templates/bober_simple_competition/competition_code_list.html:6
+#: templates/bober_simple_competition/profile_detail.html:66
+#: templates/bober_simple_competition/profile_form.html:28
+msgid "Codes"
+msgstr "Kody"
+
+#: templates/bober_simple_competition/competition_code_list.html:12
+msgid "Current code"
+msgstr "Aktualny kod"
+
+#: templates/bober_simple_competition/competition_code_list.html:16
+msgid "Admin codes"
+msgstr "Kody Admin"
+
+#: templates/bober_simple_competition/competition_code_list.html:18
+#: templates/bober_simple_competition/competition_code_list.html:27
+msgid "Generate code"
+msgstr "Generowanie kodu"
+
+#: templates/bober_simple_competition/competition_code_list.html:25
+msgid "Competitor codes"
+msgstr "Kody konkurenta"
+
+#: templates/bober_simple_competition/competition_detail.html:6
+#: templates/bober_simple_competition/competition_detail.html:8
+#: templates/bober_simple_competition/competition_list.html:4
+msgid "Competition"
+msgstr "Konkurencja"
+
+#: templates/bober_simple_competition/competition_detail.html:15
+msgid "codes"
+msgstr "Kody"
+
+#: templates/bober_simple_competition/competition_detail.html:16
+msgid "edit"
+msgstr "edytować"
+
+#: templates/bober_simple_competition/competition_detail.html:18
+#: templates/bober_simple_competition/competition_form.html:36
+#: templates/bober_simple_competition/index.html:15
+#: templates/bober_simple_competition/questionset_list.html:4
+#: templates/bober_simple_competition/questionset_list.html:6
+msgid "Question sets"
+msgstr "Zestawów pytań"
+
+#: templates/bober_simple_competition/competition_form.html:6
+#: templates/bober_simple_competition/competition_form.html:8
+msgid "Edit competition"
+msgstr "Edycja konkursu"
+
+#: templates/bober_simple_competition/competition_form.html:43
+#: templates/bober_simple_competition/competition_form.html:71
+msgid "Show more"
+msgstr "Pokaż więcej"
+
+#: templates/bober_simple_competition/competition_form.html:68
+msgid "Show less"
+msgstr "Pokaż mniej"
+
+#: templates/bober_simple_competition/competition_guest.html:4
+#: templates/bober_simple_competition/competition_guest.html:6
+msgid "Compete as a guest"
+msgstr "Zmierz się jako gość"
+
+#: templates/bober_simple_competition/competition_guest.html:13
+msgid "Guest access not allowed."
+msgstr "Dostęp gościnny zabronione."
+
+#: templates/bober_simple_competition/competition_guest.html:14
+msgid "Compete using a code"
+msgstr "Rywalizuj z użyciem kodu"
+
+#: templates/bober_simple_competition/competition_guest.html:16
+msgid "If you are not redirected automatically, click on the link below."
+msgstr "Jeśli nie jesteś przekierowany automatycznie, kliknij na link poniżej."
+
+#: templates/bober_simple_competition/competition_guest.html:17
+#: templates/bober_simple_competition/competition_registration.html:16
+#: templates/bober_simple_competition/questionset_registration.html:14
+msgid "Compete"
+msgstr "Rywalizować"
+
+#: templates/bober_simple_competition/competition_index.html:57
+msgid "Answered"
+msgstr "Odpowiedź"
+
+#: templates/bober_simple_competition/competition_index.html:64
+msgid "Time left"
+msgstr "Pozostały czas"
+
+#: templates/bober_simple_competition/competition_index.html:70
+msgid "Finish"
+msgstr "Wykończenie"
+
+#: templates/bober_simple_competition/competition_index.html:81
+#: templates/bober_simple_competition/competition_index.html:93
+msgid "Clear Answer"
+msgstr "Jasnej odpowiedzi"
+
+#: templates/bober_simple_competition/competition_list.html:5
+msgid "Competitions in progress"
+msgstr "Zawody w toku"
+
+#: templates/bober_simple_competition/competition_list.html:20
+msgid "Create competition"
+msgstr "Tworzenie konkurencji"
+
+#: templates/bober_simple_competition/competition_registration.html:19
+msgid "Login as a teacher"
+msgstr "Zaloguj się jako nauczyciel"
+
+#: templates/bober_simple_competition/index.html:4
+msgid "Welcome to the Bober competition"
+msgstr "Zapraszamy do konkursu Bober"
+
+#: templates/bober_simple_competition/index.html:6
+msgid "Bober"
+msgstr "Bober"
+
+#: templates/bober_simple_competition/index.html:9
+msgid "Competitions"
+msgstr "Konkursy"
+
+#: templates/bober_simple_competition/index.html:11
+#: templates/registration/login.html:5
+msgid "Login"
+msgstr "Zaloguj się"
+
+#: templates/bober_simple_competition/index.html:13
+msgid "Managed users"
+msgstr "Zarządzane użytkowników"
+
+#: templates/bober_simple_competition/index.html:14
+msgid "My profile"
+msgstr "Mój profil"
+
+#: templates/bober_simple_competition/index.html:16
+#: templates/bober_simple_competition/question_list.html:4
+#: templates/bober_simple_competition/question_list.html:6
+#: templates/bober_simple_competition/question_table.html:4
+#: templates/bober_simple_competition/question_table.html:6
+msgid "Questions"
+msgstr "Pytania"
+
+#: templates/bober_simple_competition/profile_detail.html:19
+msgid "Profile Details"
+msgstr "Profil Szczegóły"
+
+#: templates/bober_simple_competition/profile_detail.html:30
+msgid "Email"
+msgstr "E-mail"
+
+#: templates/bober_simple_competition/profile_detail.html:39
+msgid "Former profiles"
+msgstr "Dawne profile"
+
+#: templates/bober_simple_competition/profile_detail.html:54
+msgid "Attempts"
+msgstr "Próbowanie"
+
+#: templates/bober_simple_competition/profile_detail.html:68
+#: templates/bober_simple_competition/profile_detail.html:106
+#: templates/bober_simple_competition/profile_form.html:30
+#: templates/bober_simple_competition/profile_form.html:68
+msgid "Show codes"
+msgstr "Pokaż kody"
+
+#: templates/bober_simple_competition/profile_detail.html:71
+#: templates/bober_simple_competition/profile_form.html:33
+msgid "Used codes"
+msgstr "Używane kody"
+
+#: templates/bober_simple_competition/profile_detail.html:80
+#: templates/bober_simple_competition/profile_form.html:42
+msgid "Received codes"
+msgstr "Otrzymane kody"
+
+#: templates/bober_simple_competition/profile_detail.html:89
+#: templates/bober_simple_competition/profile_form.html:51
+msgid "Created codes"
+msgstr "Utworzony kody"
+
+#: templates/bober_simple_competition/profile_detail.html:103
+#: templates/bober_simple_competition/profile_form.html:65
+msgid "Hide codes"
+msgstr "Ukryj kody"
+
+#: templates/bober_simple_competition/profile_form.html:4
+#: templates/bober_simple_competition/profile_form.html:6
+msgid "Edit user"
+msgstr "Edycja użytkownika"
+
+#: templates/bober_simple_competition/profile_list.html:4
+#: templates/bober_simple_competition/profile_list.html:5
+#: templates/bober_simple_competition/profile_table_list.html:4
+#: templates/bober_simple_competition/profile_table_list.html:5
+msgid "Users"
+msgstr "Użytkownicy"
+
+#: templates/bober_simple_competition/profile_list.html:14
+msgid "Update profile"
+msgstr "Aktualizacja profilu"
+
+#: templates/bober_simple_competition/questionset_create.html:4
+#: templates/bober_simple_competition/questionset_create.html:6
+msgid "Create question set"
+msgstr "Tworzenie zestawu zapytania"
+
+#: templates/bober_simple_competition/questionset_detail.html:6
+#: templates/bober_simple_competition/questionset_detail.html:8
+#: templates/bober_simple_competition/questionset_form.html:6
+#: templates/bober_simple_competition/questionset_form.html:8
+msgid "Question set"
+msgstr "Zestaw Pytanie"
+
+#: templates/bober_simple_competition/questionset_detail.html:18
+msgid "Edit questionset"
+msgstr "Edycja questionset"
+
+#: templates/bober_simple_competition/user_files.html:4
+#: templates/bober_simple_competition/user_files.html:6
+msgid "Files"
+msgstr "Akta"
+
+#: templates/bober_simple_competition/user_registration_confirmation.html:4
+#: templates/bober_simple_competition/user_registration_confirmation.html:6
+msgid "User created"
+msgstr "Użytkownik nie stworzył"
+
+#: templates/registration/logged_out.html:5
+msgid "Thank you for using Bober"
+msgstr "Dziękujemy za korzystanie z Bober"
+
+#: templates/registration/logged_out.html:6
+#: templates/registration/logged_out.html:7
+msgid "Back to first page"
+msgstr "Powrót do pierwszej strony"
+
+#: templates/registration/login.html:9
+msgid "Hello,"
+msgstr "Halo,"
+
+#: templates/registration/login.html:13 templates/registration/login.html:16
+msgid "Login with"
+msgstr "Zaloguj się z"
+
+msgid "Edit my profile"
+msgstr "Edytuj mój profil"
+
+msgid "attempts"
+msgstr "próbowanie"
+
+msgid "Competition Name"
+msgstr "Nazwa konkurencja"
+
+msgid "Options"
+msgstr "Opcje"
+
+msgid "Compete as guest"
+msgstr "Zmierz się jako gość"
+
+msgid "Create new account"
+msgstr "Stwórz nowe konto"
+
+msgid "Advanced details"
+msgstr "Zaawansowane szczegóły"
+
+msgid "In Cooperation With"
+msgstr "We współpracy z"
+
+msgid "Create code format for admin users (teachers)"
+msgstr "Tworzenie formatu kodu dla użytkowników administracyjnych (nauczyciele)"
+
+msgid "Create code format for competitors"
+msgstr "Tworzenie formatu kodu dla zawodników"
+
+msgid "Try it!"
+msgstr "Spróbuj!"
+
+msgid ""
+"You have attempted to leave this page. Your last question answer will be "
+"saved automatically. Are you sure you want to exit this page?"
+msgstr "Próbowano opuścić tę stronę. Twoje ostatnie pytanie odpowiedź zostanie zapisany automatycznie. Czy na pewno chcesz opuścić tę stronę?"
+
+msgid "You are out of time for solving the competition."
+msgstr "Jesteś na czas na rozwiązanie konkursu."
+
+msgid "Thank you for participating in the competition"
+msgstr "Dziękujemy za udział w konkursie"
+
+msgid "Your answer was successfully saved!"
+msgstr "Twoja odpowiedź została pomyślnie!"
+
+msgid "Are you sure you want to clear answer?"
+msgstr "Czy na pewno chcesz usunąć odpowiedź?"
+
+msgid "You left %s question unanswered. "
+msgid_plural "You left %s questions unanswered. "
+msgstr[0] "%s pytanie bez odpowiedzi."
+msgstr[1] "%s pytanie bez odpowiedzi."
+msgstr[2] "%s pytanie bez odpowiedzi."
+msgstr[3] "%s pytanie bez odpowiedzi."
+
+msgid "%(n)s competitor"
+msgid_plural "%s competitors"
+msgstr[0] "% (n) s zawodnik"
+msgstr[1] "% (n) s zawodnik"
+msgstr[2] "% (n) s zawodnik"
+msgstr[3] "% (n) s zawodnik"
+
+msgid "Are you sure you want to finish the competition?"
+msgstr "Czy na pewno chcesz zakończyć konkurencję?"
+
+msgid "An error has occured. Please try to finish competition again."
+msgstr "Wystąpił błąd. Spróbuj ponownie zakończyć konkurencję."
+

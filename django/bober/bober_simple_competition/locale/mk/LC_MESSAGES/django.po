@@ -1,0 +1,595 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-11-16 08:23+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=4; plural=(n%100==1 ? 0 : n%100==2 ? 1 : n%100==3 || n"
+"%100==4 ? 2 : 3);\n"
+
+#: forms.py:20 forms.py:29 forms.py:102 forms.py:173
+msgid "Access code"
+msgstr "Код за пристап"
+
+#: forms.py:22
+msgid "Update used codes later"
+msgstr "Ажурирање кодови се користи подоцна"
+
+#: forms.py:25
+msgid "Execute effects later"
+msgstr "Изврши ефекти подоцна"
+
+#: forms.py:128 forms.py:162 forms.py:193 forms.py:237
+msgid "Wrong access code"
+msgstr "Погрешен код за пристап"
+
+#: forms.py:148 forms.py:223
+msgid "Group"
+msgstr "Група"
+
+#: forms.py:165 forms.py:244
+msgid "This field is required"
+msgstr "Ова поле е задолжително"
+
+#: models.py:56
+msgid "Participate in the competition"
+msgstr "Учествува во натпреварот"
+
+#: models.py:57
+msgid "Attempt competition before start"
+msgstr "Обиде конкуренција пред почеток"
+
+#: models.py:58
+msgid "See results before official end of competition"
+msgstr "Види резултатите пред официјалното завршување на натпреварот"
+
+#: models.py:59
+msgid "Resume existing attempts"
+msgstr "Продолжи со постојните обиди"
+
+#: models.py:63
+msgid "Allow the creator to manage the profile of anyone using this code"
+msgstr "Овозможи да управуваат со креаторот на профилот на некој користење на овој код"
+
+#: models.py:64
+msgid ""
+"Allow the creator and their managers to manage the profile of anyone using "
+"this code"
+msgstr "Им овозможи на креаторот и нивните менаџери да ги водат на профилот на некој користење на овој код"
+
+#: models.py:68
+msgid "Create administrator codes"
+msgstr "Создаде администратор кодови"
+
+#: models.py:69
+msgid "Create comeptitor codes"
+msgstr "Создаде comeptitor кодови"
+
+#: models.py:70
+msgid "View all attempts for this competition"
+msgstr "Прикажи ги сите обиди за овој натпревар"
+
+#: models.py:71
+msgid "View all administrator codes for this competition"
+msgstr "Прикажи ги сите администратор кодови за овој натпревар"
+
+#: models.py:72
+msgid "View all competitor codes for this competition"
+msgstr "Прикажи ги сите кодови конкурент за овој натпревар"
+
+#: models.py:73
+msgid "Use question sets for new competitions"
+msgstr "Користете поставува прашањето за нови натпревари"
+
+#: models.py:74
+msgid "Modify this competition"
+msgstr "Менување на овој натпревар"
+
+#: models.py:76
+msgid "Use questions for new question sets"
+msgstr "Користете прашања за ново прашање сетови"
+
+#: models.py:89
+msgid "Reduced functionality"
+msgstr "Намалена функционалност"
+
+#: models.py:90
+msgid "Basic features only"
+msgstr "Само основните карактеристики"
+
+#: models.py:91
+msgid "Commonly used features"
+msgstr "Најчесто се користи карактеристики"
+
+#: models.py:92
+msgid "All features"
+msgstr "Сите карактеристики"
+
+#: models.py:730 templates/bober_simple_competition/profile_detail.html:22
+msgid "First Name"
+msgstr "Име"
+
+#: models.py:731 templates/bober_simple_competition/profile_detail.html:26
+msgid "Last Name"
+msgstr "Презиме"
+
+#: templates/base.html:37
+msgid "Beaver"
+msgstr "Дабар"
+
+#: templates/base.html:42
+msgid "Logout"
+msgstr "Одјава"
+
+#: templates/bober_simple_competition/access_code.html:4
+#: templates/bober_simple_competition/access_code.html:6
+#: templates/bober_simple_competition/compete_with_short_code.html:4
+#: templates/bober_simple_competition/compete_with_short_code.html:6
+msgid "Enter access code"
+msgstr "Внесете код за пристап"
+
+#: templates/bober_simple_competition/access_code.html:10
+#: templates/bober_simple_competition/compete_with_short_code.html:10
+#: templates/bober_simple_competition/competition_guest.html:10
+#: templates/bober_simple_competition/competition_list.html:10
+#: templates/bober_simple_competition/profile_detail.html:14
+#: templates/bober_simple_competition/profile_table_list.html:11
+msgid "Back to Menu"
+msgstr "Вратете се на менито"
+
+#: templates/bober_simple_competition/access_code.html:18
+#: templates/bober_simple_competition/basic_registration.html:11
+#: templates/bober_simple_competition/codeformat_create.html:14
+#: templates/bober_simple_competition/compete_with_short_code.html:18
+#: templates/bober_simple_competition/competition_code_create.html:13
+#: templates/bober_simple_competition/competition_form.html:59
+#: templates/bober_simple_competition/profile_form.html:25
+#: templates/bober_simple_competition/questionset_form.html:15
+#: templates/bober_simple_competition/user_registration.html:21
+msgid "Submit"
+msgstr "Достават"
+
+#: templates/bober_simple_competition/attempt_results.html:4
+#: templates/bober_simple_competition/attempt_results.html:6
+msgid "Results"
+msgstr "Резултати"
+
+#: templates/bober_simple_competition/attempt_results.html:13
+#: templates/bober_simple_competition/competition_attempt_list.html:18
+msgid "Question"
+msgstr "Прашање"
+
+#: templates/bober_simple_competition/attempt_results.html:14
+#: templates/bober_simple_competition/competition_attempt_list.html:19
+msgid "Not graded yet"
+msgstr "Уште не е оценет"
+
+#: templates/bober_simple_competition/attempt_results.html:15
+#: templates/bober_simple_competition/competition_attempt_list.html:20
+msgid "Wrong Answer"
+msgstr "Погрешен одговор"
+
+#: templates/bober_simple_competition/attempt_results.html:16
+#: templates/bober_simple_competition/competition_attempt_list.html:21
+msgid "Correct"
+msgstr "Правилен"
+
+#: templates/bober_simple_competition/basic_registration.html:5
+#: templates/bober_simple_competition/competition_data.html:4
+#: templates/bober_simple_competition/competition_data.html:6
+#: templates/bober_simple_competition/competition_registration.html:4
+#: templates/bober_simple_competition/competition_registration.html:6
+#: templates/bober_simple_competition/competition_resources.html:4
+#: templates/bober_simple_competition/competition_resources.html:6
+#: templates/bober_simple_competition/invalidate_attempt.html:4
+#: templates/bober_simple_competition/invalidate_attempt.html:6
+#: templates/bober_simple_competition/profile_merge.html:4
+#: templates/bober_simple_competition/profile_merge.html:6
+#: templates/bober_simple_competition/question_import.html:4
+#: templates/bober_simple_competition/question_import.html:6
+#: templates/bober_simple_competition/questionset_registration.html:4
+#: templates/bober_simple_competition/questionset_registration.html:6
+#: templates/bober_simple_competition/registration_codes.html:4
+#: templates/bober_simple_competition/registration_codes.html:6
+#: templates/bober_simple_competition/send_codes.html:4
+#: templates/bober_simple_competition/send_codes.html:6
+#: templates/bober_simple_competition/submit_answer.html:4
+#: templates/bober_simple_competition/submit_answer.html:6
+#: templates/bober_simple_competition/user_registration.html:4
+#: templates/bober_simple_competition/user_registration.html:6
+msgid "Registration"
+msgstr "Регистрација"
+
+#: templates/bober_simple_competition/codeformat_create.html:4
+#: templates/bober_simple_competition/codeformat_create.html:6
+msgid "Create code format"
+msgstr "Создаде кодот формат"
+
+#: templates/bober_simple_competition/codeformat_create.html:9
+msgid "Code format successfully created!"
+msgstr "Кодот формат успешно создале!"
+
+#: templates/bober_simple_competition/codeformat_index.html:4
+#: templates/bober_simple_competition/codeformat_index.html:6
+#: templates/bober_simple_competition/codeformat_list.html:4
+#: templates/bober_simple_competition/codeformat_list.html:6
+#: templates/bober_simple_competition/index.html:17
+#: templates/code_based_auth/codeformat_list.html:4
+#: templates/code_based_auth/codeformat_list.html:6
+msgid "Code formats"
+msgstr "Код формати"
+
+#: templates/bober_simple_competition/codeformat_index.html:9
+msgid "Back to index"
+msgstr "Вратете се на индекс"
+
+#: templates/bober_simple_competition/codeformat_index.html:10
+msgid "Competitor code formats"
+msgstr "Конкурент код формати"
+
+#: templates/bober_simple_competition/codeformat_index.html:11
+msgid "Create competitor code format"
+msgstr "Создаде конкурент кодот формат"
+
+#: templates/bober_simple_competition/codeformat_index.html:12
+msgid "Admin code formats"
+msgstr "Admin код формати"
+
+#: templates/bober_simple_competition/codeformat_index.html:13
+msgid "Create administrator code format"
+msgstr "Создаде администратор формат код"
+
+#: templates/bober_simple_competition/codeformat_list.html:8
+msgid "Back to code format index"
+msgstr "Назад на индексот кодот формат"
+
+#: templates/bober_simple_competition/competition_attempt_list.html:4
+#: templates/bober_simple_competition/competition_attempt_list.html:6
+msgid "Competition attempts"
+msgstr "Обиди конкуренција"
+
+#: templates/bober_simple_competition/competition_attempt_list.html:9
+#: templates/bober_simple_competition/competition_code_list.html:9
+#: templates/bober_simple_competition/competition_detail.html:12
+msgid "Back to competitions"
+msgstr "Назад на натпревари"
+
+#: templates/bober_simple_competition/competition_attempt_list.html:11
+#: templates/bober_simple_competition/competition_code_list.html:11
+msgid "Competition details"
+msgstr "Детали за конкуренција"
+
+#: templates/bober_simple_competition/competition_code_create.html:4
+#: templates/bober_simple_competition/competition_code_create.html:6
+msgid "Create code"
+msgstr "Создаде код"
+
+#: templates/bober_simple_competition/competition_code_list.html:4
+#: templates/bober_simple_competition/competition_code_list.html:6
+#: templates/bober_simple_competition/profile_detail.html:66
+#: templates/bober_simple_competition/profile_form.html:28
+msgid "Codes"
+msgstr "Кодови"
+
+#: templates/bober_simple_competition/competition_code_list.html:12
+msgid "Current code"
+msgstr "Тековниот код"
+
+#: templates/bober_simple_competition/competition_code_list.html:16
+msgid "Admin codes"
+msgstr "Admin кодови"
+
+#: templates/bober_simple_competition/competition_code_list.html:18
+#: templates/bober_simple_competition/competition_code_list.html:27
+msgid "Generate code"
+msgstr "Генерира код"
+
+#: templates/bober_simple_competition/competition_code_list.html:25
+msgid "Competitor codes"
+msgstr "Конкурент кодови"
+
+#: templates/bober_simple_competition/competition_detail.html:6
+#: templates/bober_simple_competition/competition_detail.html:8
+#: templates/bober_simple_competition/competition_list.html:4
+msgid "Competition"
+msgstr "Конкуренцијата"
+
+#: templates/bober_simple_competition/competition_detail.html:15
+msgid "codes"
+msgstr "кодови"
+
+#: templates/bober_simple_competition/competition_detail.html:16
+msgid "edit"
+msgstr "уредување"
+
+#: templates/bober_simple_competition/competition_detail.html:18
+#: templates/bober_simple_competition/competition_form.html:36
+#: templates/bober_simple_competition/index.html:15
+#: templates/bober_simple_competition/questionset_list.html:4
+#: templates/bober_simple_competition/questionset_list.html:6
+msgid "Question sets"
+msgstr "Поставува прашањето"
+
+#: templates/bober_simple_competition/competition_form.html:6
+#: templates/bober_simple_competition/competition_form.html:8
+msgid "Edit competition"
+msgstr "Измени конкуренција"
+
+#: templates/bober_simple_competition/competition_form.html:43
+#: templates/bober_simple_competition/competition_form.html:71
+msgid "Show more"
+msgstr "Прикажи повеќе"
+
+#: templates/bober_simple_competition/competition_form.html:68
+msgid "Show less"
+msgstr "Покажуваат помалку"
+
+#: templates/bober_simple_competition/competition_guest.html:4
+#: templates/bober_simple_competition/competition_guest.html:6
+msgid "Compete as a guest"
+msgstr "Натпреварува како гостин"
+
+#: templates/bober_simple_competition/competition_guest.html:13
+msgid "Guest access not allowed."
+msgstr "Не се дозволени пристап како гостин."
+
+#: templates/bober_simple_competition/competition_guest.html:14
+msgid "Compete using a code"
+msgstr "Натпреваруваат со користење на кодот"
+
+#: templates/bober_simple_competition/competition_guest.html:16
+msgid "If you are not redirected automatically, click on the link below."
+msgstr "Ако не сте пренасочени автоматски, кликнете на врската подолу."
+
+#: templates/bober_simple_competition/competition_guest.html:17
+#: templates/bober_simple_competition/competition_registration.html:16
+#: templates/bober_simple_competition/questionset_registration.html:14
+msgid "Compete"
+msgstr "Натпреварува"
+
+#: templates/bober_simple_competition/competition_index.html:57
+msgid "Answered"
+msgstr "Одговориле"
+
+#: templates/bober_simple_competition/competition_index.html:64
+msgid "Time left"
+msgstr "Преостанато време"
+
+#: templates/bober_simple_competition/competition_index.html:70
+msgid "Finish"
+msgstr "Финиш"
+
+#: templates/bober_simple_competition/competition_index.html:81
+#: templates/bober_simple_competition/competition_index.html:93
+msgid "Clear Answer"
+msgstr "Јасен одговор"
+
+#: templates/bober_simple_competition/competition_list.html:5
+msgid "Competitions in progress"
+msgstr "Конкурси во тек"
+
+#: templates/bober_simple_competition/competition_list.html:20
+msgid "Create competition"
+msgstr "Создаде конкуренција"
+
+#: templates/bober_simple_competition/competition_registration.html:19
+msgid "Login as a teacher"
+msgstr "Пријавете се како учител"
+
+#: templates/bober_simple_competition/index.html:4
+msgid "Welcome to the Bober competition"
+msgstr "Добредојдовте на конкуренцијата Бобер"
+
+#: templates/bober_simple_competition/index.html:6
+msgid "Bober"
+msgstr "Бобер"
+
+#: templates/bober_simple_competition/index.html:9
+msgid "Competitions"
+msgstr "Натпревари"
+
+#: templates/bober_simple_competition/index.html:11
+#: templates/registration/login.html:5
+msgid "Login"
+msgstr "Логирај Се"
+
+#: templates/bober_simple_competition/index.html:13
+msgid "Managed users"
+msgstr "Успеа корисници"
+
+#: templates/bober_simple_competition/index.html:14
+msgid "My profile"
+msgstr "Мој Профил"
+
+#: templates/bober_simple_competition/index.html:16
+#: templates/bober_simple_competition/question_list.html:4
+#: templates/bober_simple_competition/question_list.html:6
+#: templates/bober_simple_competition/question_table.html:4
+#: templates/bober_simple_competition/question_table.html:6
+msgid "Questions"
+msgstr "Прашања"
+
+#: templates/bober_simple_competition/profile_detail.html:19
+msgid "Profile Details"
+msgstr "Профил Детали"
+
+#: templates/bober_simple_competition/profile_detail.html:30
+msgid "Email"
+msgstr "Е-маил"
+
+#: templates/bober_simple_competition/profile_detail.html:39
+msgid "Former profiles"
+msgstr "Поранешниот профили"
+
+#: templates/bober_simple_competition/profile_detail.html:54
+msgid "Attempts"
+msgstr "Обиди"
+
+#: templates/bober_simple_competition/profile_detail.html:68
+#: templates/bober_simple_competition/profile_detail.html:106
+#: templates/bober_simple_competition/profile_form.html:30
+#: templates/bober_simple_competition/profile_form.html:68
+msgid "Show codes"
+msgstr "Шоуто кодови"
+
+#: templates/bober_simple_competition/profile_detail.html:71
+#: templates/bober_simple_competition/profile_form.html:33
+msgid "Used codes"
+msgstr "Користени кодови"
+
+#: templates/bober_simple_competition/profile_detail.html:80
+#: templates/bober_simple_competition/profile_form.html:42
+msgid "Received codes"
+msgstr "Доби кодови"
+
+#: templates/bober_simple_competition/profile_detail.html:89
+#: templates/bober_simple_competition/profile_form.html:51
+msgid "Created codes"
+msgstr "Создадена кодови"
+
+#: templates/bober_simple_competition/profile_detail.html:103
+#: templates/bober_simple_competition/profile_form.html:65
+msgid "Hide codes"
+msgstr "Скриј кодови"
+
+#: templates/bober_simple_competition/profile_form.html:4
+#: templates/bober_simple_competition/profile_form.html:6
+msgid "Edit user"
+msgstr "Уреди кориснички"
+
+#: templates/bober_simple_competition/profile_list.html:4
+#: templates/bober_simple_competition/profile_list.html:5
+#: templates/bober_simple_competition/profile_table_list.html:4
+#: templates/bober_simple_competition/profile_table_list.html:5
+msgid "Users"
+msgstr "Корисници"
+
+#: templates/bober_simple_competition/profile_list.html:14
+msgid "Update profile"
+msgstr "Профил на ажурирање"
+
+#: templates/bober_simple_competition/questionset_create.html:4
+#: templates/bober_simple_competition/questionset_create.html:6
+msgid "Create question set"
+msgstr "Создаде прашањето сет"
+
+#: templates/bober_simple_competition/questionset_detail.html:6
+#: templates/bober_simple_competition/questionset_detail.html:8
+#: templates/bober_simple_competition/questionset_form.html:6
+#: templates/bober_simple_competition/questionset_form.html:8
+msgid "Question set"
+msgstr "Прашањето сет"
+
+#: templates/bober_simple_competition/questionset_detail.html:18
+msgid "Edit questionset"
+msgstr "Измени questionset"
+
+#: templates/bober_simple_competition/user_files.html:4
+#: templates/bober_simple_competition/user_files.html:6
+msgid "Files"
+msgstr "Додадени фајлови:"
+
+#: templates/bober_simple_competition/user_registration_confirmation.html:4
+#: templates/bober_simple_competition/user_registration_confirmation.html:6
+msgid "User created"
+msgstr "Корисникот креиран"
+
+#: templates/registration/logged_out.html:5
+msgid "Thank you for using Bober"
+msgstr "Ви благодариме за користење Бобер"
+
+#: templates/registration/logged_out.html:6
+#: templates/registration/logged_out.html:7
+msgid "Back to first page"
+msgstr "Вратете се на првата страница"
+
+#: templates/registration/login.html:9
+msgid "Hello,"
+msgstr "Здраво,"
+
+#: templates/registration/login.html:13 templates/registration/login.html:16
+msgid "Login with"
+msgstr "Пријавете се со"
+
+msgid "Edit my profile"
+msgstr "Уредување на мојот профил"
+
+msgid "attempts"
+msgstr "обиди"
+
+msgid "Competition Name"
+msgstr "Име на конкуренцијата"
+
+msgid "Options"
+msgstr "Опции"
+
+msgid "Compete as guest"
+msgstr "Натпреварува како гостин"
+
+msgid "Create new account"
+msgstr "Креирање нова сметка"
+
+msgid "Advanced details"
+msgstr "Напредно детали"
+
+msgid "In Cooperation With"
+msgstr "Во соработка со"
+
+msgid "Create code format for admin users (teachers)"
+msgstr "Создаде кодот формат за корисниците на админ (наставниците)"
+
+msgid "Create code format for competitors"
+msgstr "Создаде кодот формат за конкурентите"
+
+msgid "Try it!"
+msgstr "Пробај!"
+
+msgid ""
+"You have attempted to leave this page. Your last question answer will be "
+"saved automatically. Are you sure you want to exit this page?"
+msgstr "Сте се обиделе да ја напуштат оваа страница. Вашиот последното прашање одговор ќе бидат снимени автоматски. Дали сте сигурни дека сакате да излезете од оваа страница?"
+
+msgid "You are out of time for solving the competition."
+msgstr "Сте надвор од времето за решавање на конкуренцијата."
+
+msgid "Thank you for participating in the competition"
+msgstr "Ви благодариме за учество во натпреварот"
+
+msgid "Your answer was successfully saved!"
+msgstr "Вашиот одговор е успешно зачувано!"
+
+msgid "Are you sure you want to clear answer?"
+msgstr "Дали сте сигурни дека сакате да ја избришете одговор сте вие?"
+
+msgid "You left %s question unanswered. "
+msgid_plural "You left %s questions unanswered. "
+msgstr[0] "Си %s прашање без одговор."
+msgstr[1] "Си %s прашање без одговор."
+msgstr[2] "Си %s прашање без одговор."
+msgstr[3] "Си %s прашање без одговор."
+
+msgid "%(n)s competitor"
+msgid_plural "%s competitors"
+msgstr[0] "% (n) е конкурент"
+msgstr[1] "% (n) е конкурент"
+msgstr[2] "% (n) е конкурент"
+msgstr[3] "% (n) е конкурент"
+
+msgid "Are you sure you want to finish the competition?"
+msgstr "Дали сте сигурни дека сакате да го заврши натпреварот?"
+
+msgid "An error has occured. Please try to finish competition again."
+msgstr "Грешка настанала. Ве молиме обидете се да се заврши натпреварот повторно."
+
