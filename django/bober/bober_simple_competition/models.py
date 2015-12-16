@@ -97,8 +97,10 @@ class Competition(models.Model):
         s = self.slug
         s += ": " + ", ".join([i.slug for i in self.questionsets.all()])
         return s
+
     def get_absolute_url(self):
         return reverse('competition_detail', kwargs={'slug': str(self.slug)})
+
     title = CharField(max_length=256, null=True, blank=True)
     promoted = models.BooleanField(default=False)
     slug = SlugField(unique=True)
@@ -109,6 +111,10 @@ class Competition(models.Model):
     # duration in seconds
     duration = IntegerField(default=60*60) # 60s * 60 = 1h.
     end = DateTimeField()
+
+    @property
+    def is_over(self):
+        return self.end < timezone.now()
     
     @classmethod
     def get_cached_by_slug(cls, slug):

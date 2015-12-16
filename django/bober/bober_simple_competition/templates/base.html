@@ -41,20 +41,21 @@
             <div id='profile'>{% if request.user.is_authenticated %}
             <a class="navbar-brand" href="{% url "django.contrib.auth.views.logout" %}">{% trans "Logout" %} {{request.user}}</a>{% endif %}
             </div>
-        <!--{% get_current_language as LANGUAGE_CODE %}
+        {% get_current_language as LANGUAGE_CODE %}
         {% get_available_languages as LANGUAGES %}
             <div id="lang">
                 <form action="{% url "django.views.i18n.set_language" %}" method="post">
                 {% csrf_token %}
                 <input name="next" type="hidden" value="{{ request.get_full_path }}" />
-                <select name="language">
+                {% get_current_language as LANGUAGE_CODE %}
+                <select name="language" onchange="this.form.submit()">
                     {% for lang in LANGUAGES %}
-                    <option value="{{ lang.0 }}">{{ lang.1 }}</option>
+                    <option value="{{ lang.0 }}" {% if lang.0 == LANGUAGE_CODE %}selected="selected"{% endif %}>{{ lang.1 }}</option>
                     {% endfor %}
                 </select>
-                <input type="submit" value="Go" />
+                <!-- <input type="submit" value="{% trans "Apply" %}"/> -->
                 </form>
-            </div>-->
+            </div>
         </div>
     </div><!--.header-->
     <div id='content'>

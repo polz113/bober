@@ -938,6 +938,8 @@ class QuestionSetCompete(CreateView):
         return d
 
     def get_form(self, form_class=None):
+        if form_class is None:
+            form_class = self.form_class
         kwargs = self.get_form_kwargs()
         kwargs['competitionquestionset'] = self.competitionquestionset
         if self.request.user.is_authenticated():

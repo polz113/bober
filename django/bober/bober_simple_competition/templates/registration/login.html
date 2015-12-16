@@ -34,5 +34,7 @@
 <input type="hidden" name="next" value="{{ next }}" />
 </form>
  </p>
+ <p>
+<a href="{% url "password_reset_recover" %}">{% trans "I have forgotten my password" %}</a>
  </div>
 {% endblock %}

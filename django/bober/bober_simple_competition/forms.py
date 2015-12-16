@@ -180,9 +180,10 @@ class QuestionSetCompetitorForm(forms.ModelForm):
         model = Competitor
         fields = ['first_name', 'last_name']
     # profile = forms.ModelChoiceField(required=False, queryset=Profile.objects.all(), widget=forms.HiddenInput())
-    short_access_code = forms.CharField(label=_('Access code'))
+    short_access_code = forms.CharField(label=_('Access code'), required=False)
     def __init__(self, *args, **kwargs):
         cqs = kwargs.pop('competitionquestionset')
+        self.guest_code = cqs.guest_code
         self.profile = kwargs.pop('profile', False)
         self.questionset_slug = cqs.slug_str()
         self.codegen = cqs.competition.competitor_code_generator
@@ -199,9 +200,20 @@ class QuestionSetCompetitorForm(forms.ModelForm):
         return cleaned_data
 
     def clean_short_access_code(self):
-        full_code = self.questionset_slug + self.codegen.format.separator + self.cleaned_data['short_access_code']
+        short_code = self.cleaned_data.get('short_access_code', '')
+        if len(short_code):
+            full_code = self.questionset_slug \
+                + self.codegen.format.separator \
+                + short_code
+        else:
+            full_code = None
+            if self.guest_code is not None:
+                full_code = self.guest_code.value
+            if full_code is None:
+                self.errors['short_access_code']=[_('Wrong access code')]
         if not self.codegen.code_matches(full_code, 
-            {'competitor_privileges':['attempt']}):
+                {'competitor_privileges':['attempt']}):
+            print "No attempty for", full_code
             raise ValidationError(_('Wrong access code'), code='short_access_code')
         if self.codegen.code_matches(full_code,
             {'competitor_privileges':['resume_attempt']}):
@@ -254,7 +266,16 @@ class CompetitionCompetitorForm(QuestionSetCompetitorForm):
         cqs = self.cleaned_data.get('competition_questionset', None)
         if cqs is not None:
             questionset_slug = self.cleaned_data['competition_questionset'].slug_str()
-            full_code = questionset_slug + self.codegen.format.separator + self.cleaned_data['short_access_code']
+            short_code = self.cleaned_data.get('short_access_code', '')
+            if len(short_code):
+                full_code = questionset_slug + self.codegen.format.separator \
+                    + short_code
+            else:
+                full_code = None
+                if cqs.guest_code is not None:
+                    full_code = cqs.guest_code.value
+                if full_code is None:
+                    self.errors['short_access_code']=[_('Wrong access code')]
             if not self.codegen.code_matches(full_code, 
                     {'competitor_privileges':['attempt']}):
                 self.errors['short_access_code']=[_('Wrong access code')]
@@ -263,6 +284,7 @@ class CompetitionCompetitorForm(QuestionSetCompetitorForm):
                 if not self.profile:
                     self.profile = None
             self.cleaned_data['full_code'] = full_code
+            print self.cleaned_data
         else:
             self.errors['competition_questionset']=[_('This field is required')]
         return super(CompetitionCompetitorForm, self).clean()
