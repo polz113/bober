@@ -4,7 +4,7 @@ from django.utils.decorators import method_decorator
 from django.utils.translation import ugettext as _
 from django.views.generic import TemplateView, FormView
 from django.core.urlresolvers import reverse
-from django.http import HttpResponse
+from django.http import HttpResponse, Http404
 from django.core.exceptions import PermissionDenied
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
@@ -35,7 +35,10 @@ class TeacherOverview(SmartCompetitionAdminCodeRequiredMixin,
     template_name="bober_si/teacher_overview.html"
 
     def dispatch(self, *args, **kwargs):
-        competition = SchoolCompetition.get_cached_by_slug(slug=kwargs['slug'])
+        try:
+            competition = SchoolCompetition.get_cached_by_slug(slug=kwargs['slug'])
+        except:
+            raise Http404
         access_code = self.request.session['access_code']
         self.competition = competition
         return super(TeacherOverview, self).dispatch(*args, **kwargs)

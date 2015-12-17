@@ -228,7 +228,7 @@ class AttemptAward(models.Model):
 
 
 class AwardFile(models.Model):
-    file = models.FileField()    
+    file = models.FileField(upload_to='/tmp')
     recipients = models.ManyToManyField(Profile, blank=True)
 
 

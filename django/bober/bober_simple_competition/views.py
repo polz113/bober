@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.shortcuts import render, redirect, resolve_url, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse, QueryDict, HttpResponseRedirect
+from django.http import HttpResponse, QueryDict, HttpResponseRedirect, Http404
 from bober_simple_competition.forms import *
 from bober_simple_competition import tables
 from bober_simple_competition import filters
@@ -780,7 +780,7 @@ def attempt_results(request, competition_questionset_id, attempt_id):
     access_code = request.session['access_code']
     if codegen.code_matches(
             access_code, {'competitor_privileges':['results_before_end']}):
-        attempt.grade_answers()
+        attempt.grade_answers(update_graded = True)
     elif competition.end > timezone.now():
         return redirect('competition_compete', slug = competition.slug)
     object_list = attempt.latest_answers()

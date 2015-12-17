@@ -65,6 +65,7 @@ def shorten_schools(data):
                u"OŠ Log - Dragomer,*Podružnična šola Bevke",
                u"OŠ Prežihovega Voranca*Ravne na Koroškem"
                u"Šolski center Nova Gorica,*Gimnazija in zdravstvena šola",
+               u"Osnovna šola Franca Rozmana - Staneta*Ljubljana",
                u"OŠ Franca Lešnika - Vuka*Slivnica pri Mariboru",)
              }
 

@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load render_table from django_tables2 %}
+{% block title %}{% trans "Competition" %}{% endblock %}
+{% block headline %}{% trans "Competitions in progress" %}{% endblock %}
+{% block extrahead %}
+{% endblock %}
+{% block content %}
+<div style="margin:1%";>
+<a href="{% url "index" %}" class="btn">{% trans "Back to Menu" %}</a>
+</div>
+<div class="competitions-list">
+<ul>
+{% for i in object_list %}<li {% if i.promoted %}class="promoted"{% endif %}><a href={% url "competition_compete" slug=i.slug %}>{{i.title}}</a>{% if i.award_set.count %} - <a href={% url "teacher_overview" slug=i.slug %}>{% trans "Certificates available" %}.</a>{% endif %}{% if i.is_over %} - <a href={% url "teacher_overview" slug=i.slug %}>{% trans "Results (for mentors)" %}.</a>{% endif %}</li>
+{% endfor %}
+</ul>
+</div>
+<!--<div class="toLeft">
+	<br>
+	<a href="{% url "competition_create" %}" class="btn">{% trans "Create competition" %}</a>
+	<br>
+</div> -->
+
+{% endblock %}
