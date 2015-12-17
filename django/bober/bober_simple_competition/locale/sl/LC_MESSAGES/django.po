@@ -596,3 +596,12 @@ msgstr "Ste prepričani, da želite zaključiti s tekmovanjem?"
 
 msgid "An error has occured. Please try to finish competition again."
 msgstr "Prišlo je do napake. Poizkusite še enkrat zaključiti tekmovanje."
+
+msgid "I have forgotten my password"
+msgstr "Ne spomnim se gesla"
+
+msgid "Certificates available"
+msgstr "Potrdila so pripravljena"
+
+msgid "Results (for mentors)"
+msgstr "Rezultati (za mentorje)"

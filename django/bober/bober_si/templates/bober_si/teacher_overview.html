@@ -134,16 +134,10 @@ function edit_name(obj) {
                  {% for cqs, attempts in cqsa %}{% if attempts %}
                     <a style="padding-left: 20px" href="{% url "award_pdf" slug=competition.slug username=request.user.username cqs_name=cqs.name school_id=school.id %}">{{ cqs.name }}</a>
                  {% else %}
-                    <span style="padding-left: 20px">{{cqs.name}}: ni tekmovalcev</span>
+                 <!--   <span style="padding-left: 20px">{{cqs.name}}: {% trans "no competitors" %}</span> -->
                  {% endif %}{% endfor %}
                  </p>
             {% endfor %}           
-            <p>Morebitna zatipkana imena tekmovalcev lahko popravite v spodnjih seznamih.</p>
-            <p style="margin-top: 30px; font-weight: bold">Meje za uvrstitev na državno tekmovanje:</p>
-               <table>
-                 <tr><td><b>6. razred:</b> 13 točk</td><td><b>7. razred:</b> 14 točk</td><td><b>8. razred:</b> 13 točk</td><td><b>9. razred</b>: 14 točk</td></tr>
-                 <tr><td><b>1. letnik:</b> 12 točk</td><td><b>2. letnik:</b> 13 točk</td><td><b>3. letnik:</b> 13 točk</td><td><b>4. letnik:</b> 14 točk</td></tr>
-               </table>
         </td>
     </tr>
 </table>
