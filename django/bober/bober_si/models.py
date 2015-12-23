@@ -74,10 +74,13 @@ class School(models.Model):
             ).distinct()
             if attempts.count() < 1:
                 continue
-            l = attempts.values_list('score', flat=True)
+            l = [a.score for a in attempts.all()]
+            #print len(attempts), attempts
+            #print len(l), l
             # print "    ", c.attempt.competitor, c.attempt.access_code, c.by
             bronze_threshold = min(l[(len(l) - 1) // 3], bronze_award.threshold)
             bronze_threshold = max(bronze_threshold, max_score / 2)
+            print bronze_threshold
             for attempt in attempts:
                 to_assign = set()
                 if attempt.score >= bronze_threshold:

@@ -111,6 +111,7 @@ class Competition(models.Model):
     # duration in seconds
     duration = IntegerField(default=60*60) # 60s * 60 = 1h.
     end = DateTimeField()
+    motd = TextField(blank=True)
 
     @property
     def is_over(self):
