@@ -45,6 +45,7 @@ class Command(BaseCommand):
         # print attempt_ids
         for award in awards:
             for attempt in Attempt.objects.filter(
+                    competitionquestionset = award.questionset,
                     id__in = attempt_ids).exclude(
                     confirmed_by = None):
                 c = attempt.competitor
