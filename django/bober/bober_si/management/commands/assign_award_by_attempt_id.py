@@ -23,13 +23,13 @@ class Command(BaseCommand):
         print "haha"
 
     def add_arguments(self, parser):
-        parser.add_argument('competition_slug', nargs='1')
-        parser.add_argument('award_name', nargs='1')
-        parser.add_argument('attempt_list_filename', nargs='1')
+        parser.add_argument('competition_slug', nargs=1)
+        parser.add_argument('award_name', nargs=1)
+        parser.add_argument('attempt_list_filename', nargs=1)
 
     def handle(self, *args, **options):
         if len(args) < 3:
-            args += [None] * (3 - len(args))
+            args += (None,) * (3 - len(args))
         cslug = unicode(options.get('competition_slug', args[0])[0])
         award_name = unicode(options.get('award_name', args[1])[0])
         fname = unicode(options.get('attempt_list_filename', args[2])[0])
@@ -42,15 +42,17 @@ class Command(BaseCommand):
             attempt_ids = f.read().split()
         awards = Award.objects.filter(questionset__competition = competition,
                 name = award_name)
+        # print attempt_ids
         for award in awards:
             for attempt in Attempt.objects.filter(
                     id__in = attempt_ids).exclude(
-                    confirmation_set = None):
+                    confirmed_by = None):
                 c = attempt.competitor
                 serial = "{}{:06}".format(award.serial_prefix, attempt.id)
                 aa = AttemptAward(award = award,
                     attempt = attempt,
-                    competitor_name = c.name,
+                    competitor_name = u" ".join([c.first_name, c.last_name]),
+                    group_name = award.questionset.name,
                     serial = serial)
                 aa.save()
             #for school, attempts in attempts_by_school.iteritems():
