@@ -30,9 +30,9 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         if len(args) < 3:
             args += (None,) * (3 - len(args))
-        cslug = unicode(options.get('competition_slug', args[0])[0])
-        award_name = unicode(options.get('award_name', args[1])[0])
-        fname = unicode(options.get('attempt_list_filename', args[2])[0])
+        cslug = unicode(options.get('competition_slug', [args[0]])[0])
+        award_name = unicode(options.get('award_name', [args[1]])[0])
+        fname = unicode(options.get('attempt_list_filename', [args[2]])[0])
         competition = SchoolCompetition.objects.get(slug=cslug)
         organizer = competition.administrator_code_generator.codes.filter(
                 code_parts__name='admin_privileges', 
