@@ -23,35 +23,35 @@ class Command(BaseCommand):
         print "haha"
 
     def add_arguments(self, parser):
-        parser.add_argument('competition_slug', nargs='1')
-        parser.add_argument('questionset_name', nargs='1')
+        parser.add_argument('competition_slug', nargs=1)
+        parser.add_argument('questionset_name', nargs=1)
 
     def handle(self, *args, **options):
         if len(args) < 3:
-            args += [None] * (3 - len(args))
-        cslug = unicode(options.get('competition_slug', args[0])[0])
-        cqs_name = unicode(options.get('questionset_name', args[1])[0])
+            args += (None,) * (3 - len(args))
+        cslug = unicode(options.get('competition_slug', [args[0]])[0])
+        cqs_name = unicode(options.get('questionset_name', [args[1]])[0])
         cqss = CompetitionQuestionSet.objects.filter(
-            competition_slug = cslug,
+            competition__slug = cslug,
             name = cqs_name
         )
-        fname = unicode(options.get('attempt_list_filename', args[2])[0])
         competition = SchoolCompetition.objects.get(slug=cslug)
         organizer = competition.administrator_code_generator.codes.filter(
                 code_parts__name='admin_privileges', 
                 code_parts__value='view_all_admin_codes'
             )[0].creator_set.all()[0]
         for cqs in cqss:
+            # Janez, ustvariti je treba nagrade.
             gold_award = Award.objects.get(
                 name = 'zlato',
-                questionset = cqs,)
+                questionset = cqs)
             silver_award = Award.objects.get(
                 name = 'srebrno',
                 questionset = cqs)
             for attempt in Attempt.objects.filter(
                     competitionquestionset = cqs,
                 ).exclude(
-                    attemptconfirmation_set = None):
+                    confirmed_by = None):
                 attempt.grade_answers(update_graded = True,
                     regrade = True)
                 first_name = attempt.competitor.first_name
@@ -63,7 +63,6 @@ class Command(BaseCommand):
                     code__value = attempt.access_code)[0]
                 max_score = cqs.questionset.questions.all().aggregate(
                     Sum('max_score'))['max_score__sum']
-
                 school = sct.school
                 teacher = sct.teacher
                 # Veselo kodiranje, Janez!
