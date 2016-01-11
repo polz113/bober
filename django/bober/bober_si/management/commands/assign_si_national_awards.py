@@ -48,31 +48,42 @@ class Command(BaseCommand):
             silver_award = Award.objects.get(
                 name = 'srebrno',
                 questionset = cqs)
-            for attempt in Attempt.objects.filter(
-                    competitionquestionset = cqs,
-                ).exclude(
-                    confirmed_by = None):
-                attempt.grade_answers(update_graded = True,
-                    regrade = True)
+            awards = (silver_award, gold_award)
+            attempts = Attempt.objects.filter(competitionquestionset=cqs)
+            data = []
+            for attempt in attempts:
+                attempt.grade_answers(update_graded=True, regrade=True)
                 first_name = attempt.competitor.first_name
                 last_name = attempt.competitor.last_name
                 duration = attempt.finish - attempt.start
-                score = attempt.score
                 sct = SchoolTeacherCode.objects.filter(
-                    competition_questionset = cqs,
-                    code__value = attempt.access_code)[0]
-                max_score = cqs.questionset.questions.all().aggregate(
-                    Sum('max_score'))['max_score__sum']
-                school = sct.school
-                teacher = sct.teacher
-                # Veselo kodiranje, Janez!
-                # Spodaj je primer, kako se dodeli zlato priznanje.
-                award = gold_award
-                serial = "{}{:06}".format(award.serial_prefix, attempt.id)
+                    competition_questionset=cqs, code__value=attempt.access_code)[0]
+                data.append(attempt.score, -duration, attempt.id
+                              first_name + u" " + last_name, sct.school, sct.teacher)
+            data.sort(reverse=True)
+            n_attemps = len(data)
+            # with 4 competitors, (3 - 1) // 4 = 0, so the 0th (+ tied) gets gold
+            # with 5, (8 - 1) // 4 = 1 so the 0th and 1st (+tied) get gold
+            # with 8, (8 - 1) // 4 = 1, so the 0th and 1st (+ tied) get gold
+            # with 9, (9 - 1) // 4 = 2, so 0th, 1st and 2nd (+ tied) get gold
+            gold_thresh = data[(n_attempts - 1) // 4][0]
+            silver_thresh = data[(n_attempts - 1) // 2][0]
+            awarded_names = ([], []) # names of those getting (silver, gold)
+            for score, duration, aid, name, school, teacher in data:
+                if score < silver_thresh:
+                    break
+                is_gold = score >= gold_thresh
+                award = awards[is_gold]
+                awarded_names[is_gold].append(name)
+                serial = "{}{:06}".format(award.serial_prefix, aid)
                 aa = AttemptAward(
-                    award = award,
-                    attempt = attempt,
-                    competitor_name = u" ".join([first_name, last_name]),
-                    school_name = school.name,
-                    group_name = award.group_name,
-                    serial = serial)
+                    award=award, attempt=attempt, competitor_name=name,
+                    school_name=school, group_name=award.group_name, serial=serial)
+            print("Gold awards", "\n".join(sorted(awarded_names[1]))
+            print("Silver awards", "\n".join(sorted(awarded_names[0]))
+            i = 3
+            while i < n_attempts and scores[i][:2] == scores[i - 1][:2]: # while tied
+                i += 1
+            print("First three", "\n".join("%s, %s (%i, %i)" % (a[3], a[4], a[0], -a[1])
+                                           for a in scores)
+            # Manjka se izpis priznanj za prve tri. Kako bomo naredili to?
