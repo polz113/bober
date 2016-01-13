@@ -98,4 +98,4 @@ class Command(BaseCommand):
                         competitor_name = u"{} {}".format(
                             a.competitor.first_name,
                             a.competitor.last_name)
-                        print u"\t".join([school.name, teacher_name, competitor_name, short_code_value]).encode('utf-8')
+                        print u"\t".join([str(a.id), school.name, teacher_name, competitor_name, short_code_value]).encode('utf-8')
