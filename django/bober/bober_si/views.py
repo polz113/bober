@@ -253,6 +253,7 @@ class CompetitionXlsResults(SmartCompetitionAdminCodeRequiredMixin, TemplateView
                 'First name',
                 'Last name',
                 'Awards',
+                'Revoked awards',
                 'Score'
             ]
             question_none_scores = dict()
@@ -268,9 +269,9 @@ class CompetitionXlsResults(SmartCompetitionAdminCodeRequiredMixin, TemplateView
             # print "    got data in ", datetime.datetime.now() - t0
             gradedanswers = dict()
             for attempt_id, question_id, score in GradedAnswer.objects.filter(
-                    attempt__competitionquestionset__id = cqs.id
-                ).distinct().values_list(
-                    'attempt_id', 'question_id', 'score'):
+                        attempt__competitionquestionset__id = cqs.id
+                    ).distinct().values_list(
+                        'attempt_id', 'question_id', 'score'):
                 gradedanswers[(attempt_id, question_id)] = score
             confirmations = defaultdict(list)
             for by_id, attempt_id, username, email in AttemptConfirmation.objects.filter(
@@ -284,10 +285,16 @@ class CompetitionXlsResults(SmartCompetitionAdminCodeRequiredMixin, TemplateView
                     u"{} <{}>".format(username, email)
                 ))
             awards = defaultdict(list)
-            for attempt_id, award_name in AttemptAward.objects.filter(
+            revoked_awards = defaultdict(list)
+            for attempt_id, revoked_by, award_name in AttemptAward.objects.filter(
                         attempt__competitionquestionset__id = cqs.id
-                    ).distinct().values_list('attempt_id', 'award__name'):
-                awards[attempt_id].append(award_name)
+                    ).distinct().values_list('attempt_id', 
+                        'revoked_by',
+                        'award__name'):
+                if revoked_by is not None:
+                    revoked_awards[attempt_id].append(award_name)
+                else:
+                    awards[attempt_id].append(award_name)
             attempts = cqs.attempt_set.all()
             for (
                     attempt_id,
@@ -339,6 +346,7 @@ class CompetitionXlsResults(SmartCompetitionAdminCodeRequiredMixin, TemplateView
                     first_name,
                     last_name,
                     u", ".join(awards[attempt_id]),
+                    u", ".join(revoked_awards[attempt_id]),
                     attempt_score,
                 ]
                 for q in questions:
