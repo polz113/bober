@@ -4,7 +4,7 @@ from code_based_auth.models import Code
 from django.db.models import Q, F, Sum
 from django.utils.translation import ugettext as _
 from collections import OrderedDict, defaultdict
-
+import os
 # Create your models here.
 
 SCHOOL_CATEGORIES = (
@@ -13,6 +13,7 @@ SCHOOL_CATEGORIES = (
     ('KINDERGARDEN', _('Kindergarden')),
 )
 
+AWARD_TEMPLATE_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'award_templates')
 
 class School(models.Model):
     def __unicode__(self):

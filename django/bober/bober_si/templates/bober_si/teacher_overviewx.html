@@ -135,7 +135,7 @@ function edit_name(obj) {
             {% for mentorship in junior_mentorships %}
                 {% for junior_year in mentorship.junioryear_set.all %}
                     {% if junior_year.juniorattempt_set.count %}
-                        <p><a href="{% url "award_pdf" slug=competition.slug cqs_name=junior_year.cqs.name school_id=mentorship.school_id %}">{{ mentorship.school }} - {{ junior_year.name }}</a></p>
+                        <p><a href="{% url "school_awards_pdf" slug=competition.slug cqs_name=junior_year.cqs.name school_id=mentorship.school_id %}">{{ mentorship.school }} - {{ junior_year.name }}</a></p>
                     {% endif %}
                 {% endfor %}
             {% endfor %}

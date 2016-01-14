@@ -159,8 +159,9 @@ class Command(BaseCommand):
                 gold_award.save()
             silver_thresh = data[(n_attempts - 1) // 2][0]
             if silver_thresh != silver_award.threshold:
-                silver_award.threshold = gold_thresh
+                silver_award.threshold = silver_thresh
                 silver_award.save()
+            print data
             for i, (score, duration, aid, name, school, teacher) in enumerate(data):
                 if i < len(first_awards):
                     award = first_awards[i]
@@ -168,6 +169,8 @@ class Command(BaseCommand):
                     aa = AttemptAward(
                         award=award, attempt_id=aid, competitor_name=name,
                         school_name=school, group_name=award.group_name, serial=serial)
+                    aa.save()
+                    print "    ", aa
                 if score < silver_thresh:
                     break 
                 is_gold = score >= gold_thresh
@@ -176,6 +179,6 @@ class Command(BaseCommand):
                 aa = AttemptAward(
                     award=award, attempt_id=aid, competitor_name=name,
                     school_name=school, group_name=award.group_name, serial=serial)
-                print aa
                 aa.save()
+                print "    ", aa
             # Manjka se izpis priznanj za prve tri. Kako bomo naredili to?

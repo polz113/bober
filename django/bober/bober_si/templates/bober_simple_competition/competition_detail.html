@@ -19,7 +19,10 @@
 {% trans "Question sets" %}
 <ul>
 {% for cqs in object.competitionquestionset_set.all %}
-  <li>{{cqs.name}} ({{cqs.attempt_set.all.count}}) <a class="btn" href="{% url 'questionset_compete' competition_questionset_id=cqs.id %}">{% trans "Compete" %}</a> <a href="{% url "competitionquestionset_results.xls" slug=cqs.competition.slug cqs_id=cqs.id cqs_slug=cqs.slug %}">{% trans "Results" %}</a></li>
+  <li>{{cqs.name}} ({{cqs.attempt_set.all.count}}) <a class="btn" href="{% url 'questionset_compete' competition_questionset_id=cqs.id %}">{% trans "Compete" %}</a>
+<a href="{% url "competitionquestionset_results.xls" slug=cqs.competition.slug cqs_id=cqs.id cqs_slug=cqs.slug %}">{% trans "Results" %}</a>
+<a href="{% url "all_awards_pdf" slug=cqs.competition.slug username=request.user.username cqs_name=cqs.name %}">{% trans "Awards pdf" %}</a>
+</li>
 {% endfor %}
 </ul>
 </div>

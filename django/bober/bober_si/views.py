@@ -28,8 +28,6 @@ import os
 from award_gen import generate_award_pdf
 # Create your views here.
 
-AWARD_TEMPLATE_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'award_templates')
-
 class TeacherOverview(SmartCompetitionAdminCodeRequiredMixin, 
         TemplateView):
     template_name="bober_si/teacher_overview.html"
@@ -254,7 +252,8 @@ class CompetitionXlsResults(SmartCompetitionAdminCodeRequiredMixin, TemplateView
                 'Group',
                 'First name',
                 'Last name',
-                'Awards'
+                'Awards',
+                'Score'
             ]
             question_none_scores = dict()
             for q in questions:
@@ -297,6 +296,7 @@ class CompetitionXlsResults(SmartCompetitionAdminCodeRequiredMixin, TemplateView
                     access_code,
                     first_name,
                     last_name,
+                    attempt_score,
                 ) in attempts.values_list(
                     'id',
                     'start',
@@ -304,6 +304,7 @@ class CompetitionXlsResults(SmartCompetitionAdminCodeRequiredMixin, TemplateView
                     'access_code',
                     'competitor__first_name',
                     'competitor__last_name',
+                    'score',
                 ).distinct():
                 # print "  attempt:", attempt.id
                 mentors = profiles_by_code[access_code]
@@ -338,6 +339,7 @@ class CompetitionXlsResults(SmartCompetitionAdminCodeRequiredMixin, TemplateView
                     first_name,
                     last_name,
                     u", ".join(awards[attempt_id]),
+                    attempt_score,
                 ]
                 for q in questions:
                     l1.append(gradedanswers.get((attempt_id, q.id), 
@@ -362,7 +364,7 @@ class CompetitionXlsResults(SmartCompetitionAdminCodeRequiredMixin, TemplateView
 
 
 @login_required
-def award_pdf(request, username, slug, school_id, cqs_name):
+def school_awards_pdf(request, username, slug, school_id, cqs_name):
     profile = Profile.objects.get(user__username=username)
     
     if profile.user != request.user and \
@@ -420,6 +422,64 @@ def award_pdf(request, username, slug, school_id, cqs_name):
                         'template': award.award.template,
                     }
                 )
+        generate_award_pdf(cert_full_fname,
+            data, template_file)
+    #return None
+    return safe_media_redirect(cert_path)
+
+@login_required
+def all_awards_pdf(request, username, slug, cqs_name):
+    profile = Profile.objects.get(user__username=username)
+    
+    if profile.user != request.user and \
+            request.user.profile.managed_profiles.filter(
+                id=profile.id).count() <= 0:
+        raise PermissionDenied
+    cert_dir = os.path.join(_user_file_path(profile, 
+        os.path.join(slug)))
+    cert_fname = cqs_name + '.pdf'
+    cert_path = os.path.join(cert_dir, cert_fname)
+    cert_full_fname = os.path.join(settings.MEDIA_ROOT, cert_path)
+    try:
+        # print "f:", os.path.join(settings.MEDIA_ROOT, cert_path)
+        assert os.path.isfile(cert_full_fname)
+    except:
+        try:
+            cert_full_dir = os.path.join(settings.MEDIA_ROOT, cert_dir)
+            os.makedirs(cert_full_dir)
+        except Exception, e:
+            pass
+        #    print e
+        # regenerate award. Ignore the template
+        template_file = os.path.join(AWARD_TEMPLATE_DIR, 'all_si.svg')
+        #print "generating..."
+        data = []
+        competition = SchoolCompetition.get_cached_by_slug(slug=slug)
+        #print cqs_name
+        #for i in profile.schoolteachercode_set.all():
+        #    print "  ", i.competition_questionset.name
+        #print profile.schoolteachercode_set.filter(school_id = school_id,
+        #    competition_questionset__name=cqs_name)
+        # print stcs
+        awards = AttemptAward.objects.filter(
+                attempt__competitionquestionset__competition = competition,
+                attempt__competitionquestionset__name = cqs_name,
+                revoked_by = None,
+            ).order_by(
+                'attempt__competitor__last_name',
+                'attempt__competitor__first_name'
+            ).select_related(
+                'award')
+        for award in awards:
+            data.append(
+                {
+                    'name': award.competitor_name,
+                    'school': award.school_name,
+                    'group': award.group_name,
+                    'serial': award.serial,
+                    'template': award.award.template,
+                }
+            )
         generate_award_pdf(cert_full_fname,
             data, template_file)
     #return None
