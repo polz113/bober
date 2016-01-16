@@ -139,14 +139,25 @@ class Command(BaseCommand):
                     questionset=cqs))
             data = []
             for attempt in attempts:
-                attempt.grade_answers(update_graded=False, regrade=False)
+                attempt.grade_answers(update_graded=True, regrade=True)
                 first_name = attempt.competitor.first_name
                 last_name = attempt.competitor.last_name
                 duration = attempt.finish - attempt.start
+                n_correct = attempt.gradedanswer_set.filter(score=1.0).count()
+                attempt.score = n_correct
+                attempt.save()
+                print attempt.access_code
                 sct = SchoolTeacherCode.objects.filter(
-                    competition_questionset=cqs, code__value=attempt.access_code)[0]
-                data.append((attempt.score, -duration, attempt.id,
+                    competition_questionset=cqs, 
+                    code__value=attempt.access_code)
+                if len(sct) == 1:
+                    sct = sct[0]
+                    data.append((attempt.score, -duration, attempt.id,
                               first_name + u" " + last_name, sct.school, sct.teacher))
+                else:
+                    print "PROBLEM:", attempt.id, attempt.access_code
+                    data.append((attempt.score, -duration, attempt.id,
+                              first_name + u" " + last_name, '', ''))
             data.sort(reverse=True)
             n_attempts = len(data)
             # with 4 competitors, (3 - 1) // 4 = 0, so the 0th (+ tied) gets gold

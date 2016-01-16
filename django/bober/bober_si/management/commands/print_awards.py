@@ -42,13 +42,13 @@ class Command(BaseCommand):
             )[0].creator_set.all()[0]
         for cqs in cqss:
             for award in cqs.award_set.order_by('-threshold'):
-                print award.name.encode("utf-8")
+                print "{}\n\r".format(award.name.encode("utf-8")),
                 for aaward in award.attemptaward_set.filter(
                         revoked_by = None).order_by(
                         'attempt__competitor__last_name',
                         'attempt__competitor__first_name',
                     ):
-                    print u"{} {}".format(
+                    print u"{} {}\n\r".format(
                         aaward.attempt.competitor.first_name,
-                        aaward.attempt.competitor.last_name).title().encode('utf-8')
+                        aaward.attempt.competitor.last_name).title().encode('utf-8'),
 
