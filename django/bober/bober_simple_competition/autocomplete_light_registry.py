@@ -21,7 +21,7 @@ class ManagedUsersAutocomplete(autocomplete_light.AutocompleteModelBase):
 
     def choices_for_request(self):
         try:
-            self.choices = self.request.user.profile.managed_profiles.all()
+            self.choices = self.request.profile.managed_profiles.all()
         except Exception, e:
             # print e
             self.choices = Profile.objects.none()

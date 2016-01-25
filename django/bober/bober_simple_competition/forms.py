@@ -61,7 +61,11 @@ class BasicProfileForm(forms.ModelForm):
         unordered_fields = self.fields
         unordered_fields.update(fields_for_model(User, _fields))
         self.fields = OrderedDict()
-        for k in ['first_name', 'last_name', 'email', 'password', 'merged_with']:
+        for k in ['first_name',
+                'last_name',
+                'email', 
+                'password', 
+                'merged_with']:
             try:
                 self.fields[k] = unordered_fields.pop(k)
             except:

@@ -20,7 +20,7 @@ import os
 
 @login_required
 def mentorship_list(request, slug):
-    profile = request.user.profile
+    profile = request.profile
     competition = Competition.objects.get(slug=slug)
     #mentorship_list = JuniorMentorship.objects.filter(
     #    competition=competition, teacher = profile)
@@ -56,7 +56,7 @@ class JuniorResults(UpdateWithInlinesView, LoginRequiredMixin):
         for inline_set in inlines:
             for inline in inline_set:
                 inline.instance.save_results(
-                    inline.competitor_data, self.request.user.profile)
+                    inline.competitor_data, self.request.profile)
         return super(JuniorResults, self).forms_valid(form, inlines)
 
     def get_success_url(self):
