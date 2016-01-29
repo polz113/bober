@@ -124,7 +124,7 @@ msgid "Preliminary results"
 msgstr "Privremeni rezultati"
 
 msgid "not available yet"
-msgstr "u pripremi"
+msgstr "nije još dostupno"
 
 msgid "Username"
 msgstr "Korisničko ime"
