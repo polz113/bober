@@ -9,9 +9,9 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-11-01 19:36+0000\n"
 "PO-Revision-Date: 2015-11-14 17:22+0100\n"
-"Last-Translator: Bojan Milosavljević <bmilosavljevic@gmail.com>\n"
+"Last-Translator: Lidija Kralj <lkralj15@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: sr\n"
+"Language: hr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -47,7 +47,7 @@ msgstr "Dodaj školu"
 
 #: bober_si/templates/bober_si/school_codes_create.html:19
 msgid "Submit"
-msgstr "Prosledi"
+msgstr "Predaj"
 
 #: bober_si/templates/bober_si/teacher_overview.html:9
 msgid "Codes for each school"
@@ -59,15 +59,15 @@ msgstr "Dodaj školu"
 
 #: bober_si/templates/bober_si/teacher_overview.html:29
 msgid "Competition on paper"
-msgstr "Takmičenje na papiru"
+msgstr "Natjecanje na papiru"
 
 #: bober_si/templates/bober_si/teacher_overview.html:33
 msgid "Competition sheets"
-msgstr "Stranice za takmičenje"
+msgstr "Stranice za natjecanje"
 
 #: bober_si/templates/bober_si/teacher_overview.html:36
 msgid "Result entry for tasks on paper"
-msgstr "Unos rezultata takmičenja na papiru"
+msgstr "Unos rezultata natjecanja na papiru"
 
 #: bober_si/templates/bober_si/teacher_overview.html:41
 msgid "Certificates"
@@ -75,7 +75,7 @@ msgstr "Priznanja"
 
 #: bober_si/templates/bober_si/teacher_overview.html:43
 msgid "Certificates of achievement"
-msgstr "Priznanja za takmičenje"
+msgstr "Priznanja za natjecanje"
 
 #: bober_si/templates/bober_si/teacher_overview.html:44
 msgid "Certificates for mentors"
@@ -88,11 +88,11 @@ msgstr "Rezultati"
 #: bober_si/templates/bober_simple_competition/competition_detail.html:6
 #: bober_si/templates/bober_simple_competition/competition_detail.html:8
 msgid "Competition"
-msgstr "Takmičenje"
+msgstr "Natjecanje"
 
 #: bober_si/templates/bober_simple_competition/competition_detail.html:12
 msgid "Back to competitions"
-msgstr "Nazad na takmičenja"
+msgstr "Nazad na natjecanja"
 
 #: bober_si/templates/bober_simple_competition/competition_detail.html:15
 msgid "codes"
@@ -117,11 +117,11 @@ msgstr "Skupovi pitanja"
 #: bober_si/templates/bober_simple_competition/no_hidden_code.html:27
 msgid "Did you copy the whole URL? The hidden access code is wrong or missing."
 msgstr ""
-"Da li ste kopirali celokupnu URL? Skriveni kôd za pristup je pogrešan ili "
+"Jeste li ste kopirali cijelu URL adresu? Skriveni kôd za pristup je pogrešan ili "
 "nedostaje."
 
 msgid "Preliminary results"
-msgstr "Preliminarni rezultati"
+msgstr "Privremeni rezultati"
 
 msgid "not available yet"
 msgstr "u pripremi"
@@ -133,8 +133,8 @@ msgstr "Korisničko ime"
 #, python-format
 msgid "%(n)s attempt"
 msgid_plural "%(n)s attempts"
-msgstr[0] "%(n)s pokušaj"
-msgstr[1] "%(n)s pokušaja"
+msgstr[0] "%(n)s pokušaja"
+msgstr[1] "%(n)s pokušaj"
 msgstr[2] "%(n)s pokušaja"
 msgstr[3] "%(n)s pokušaja"
 
