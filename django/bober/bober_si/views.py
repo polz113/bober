@@ -1,3 +1,6 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
 from django.shortcuts import render, redirect, resolve_url, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
@@ -26,6 +29,8 @@ from openpyxl.writer.excel import save_virtual_workbook
 import datetime
 import os
 from award_gen import generate_award_pdf
+import cairosvg
+
 # Create your views here.
 
 class TeacherOverview(SmartCompetitionAdminCodeRequiredMixin, 
@@ -369,6 +374,109 @@ class CompetitionXlsResults(SmartCompetitionAdminCodeRequiredMixin, TemplateView
         if cqs_id is not None:
             self.competitionquestionsets = self.competitionquestionsets.filter(id=cqs_id)
         return super(CompetitionXlsResults, self).dispatch(*args, **kwargs)
+
+
+
+@login_required
+def mentor_certificate_pdf(request, username):
+    
+    def _compose_text(name, nschool, awards):
+        class Plural:
+            def __init__(self, *forms):
+                self.forms = forms
+
+            def __getitem__(self, n):
+                n %= 100
+                if n == 4: n = 3
+                elif n >= 5: n = 4
+                n -= 1
+                if n >= len(self.forms): n = 2
+                return self.forms[n]
+
+        class Numbers:
+            def __init__(self, *forms):
+                self.forms = forms
+
+            def __getitem__(self, n):
+                return self.forms[n - 1] if n - 1 < len(self.forms) else str(n)
+
+        p_tekmovalcu = Plural(u"tekmovalcu", u"tekmovalcema", u"tekmovalcem")
+        p_tekmovalec = Plural(u"tekmovalec", u"tekmovalca", u"tekmovalci", u"tekmovalcev")
+        p_je = Plural(u"je", u"sta", u"so", u"je")
+        p_se_je = Plural(u"se je", u"sta se", u"so se", u"se je")
+        p_osvojil = Plural(u"osvojil", u"osvojila", u"osvojili", u"osvojilo")
+        p_uvrstil = Plural(u"uvrstil", u"uvrstila", u"uvrstili", u"uvrstilo")
+        n_nom = Numbers(u"En", u"Dva", u"Trije", u"Štirje", u"Pet", u"Šest", u"Sedem", u"Osem", u"Devet")
+        n_dativ = Numbers(u"enemu", u"dvema", u"trem", u"štirim", u"petim", u"šestim", u"sedmim", u"osmim", u"devetim")
+
+        res = u"{} je bil(a) mentor(ica)\n" \
+              u"{} {} na šolskem nivoju\n" \
+              u"mednarodnega tekmovanja Bober, 9. - 13. novembra 2015.\n \n".\
+                  format(name, n_dativ[nschool], p_tekmovalcu[nschool])
+        awards.pop(u"priznanje", 0)
+        n = awards.pop(u"napreduje", 0)
+        if n:
+            res += u"{} {} {} {} na\ndržavno tekmovanje 16. januarja 2016.\n\n". \
+                   format(n_nom[n], p_tekmovalec[n], p_se_je[n], p_uvrstil[n])
+        for a in (u"bronasto", u"srebrno", u"zlato"):
+            n = awards.pop(a, 0)
+            if n:
+                res += u"{} {} {} na {} nivoju {} {} priznanje.\n".format(
+                       n_nom[n], p_tekmovalec[n], p_je[n],
+                       [u"šolskem", u"državnem"][a != u"bronasto"], p_osvojil[n], a)
+        if awards:
+            res += u"\nUvrstitve na državnem tekmovanju:\n" + \
+                   u",\n".join(u"- {} {} {} {} na {} mesto".format(
+                       n_nom[n], p_tekmovalec[n], p_se_je[n], p_uvrstil[n], nm)
+                      for n, nm in (
+                           (awards[a], nm)
+                           for a, nm in ((u"prva", u"prvo"), (u"druga", u"drugo"), (u"tretja", u"tretje"))
+                           if awards.get(a, 0))) + \
+                   u".\n"
+        return res
+
+    def _create_mentor_certificate(user, sc_slug, st_slug):
+        icodes = user.created_codes.all()
+        nschool = nstate = 0
+        awards = defaultdict(int)
+        for icode in icodes:
+            for attempt in Attempt.objects.filter(access_code=icode):
+                if attempt.competition.slug == sc_slug:
+                    if list(attempt.confirmed_by.all()) != [user]:
+                        continue
+                    nschool += 1
+                elif attempt.competition.slug == st_slug:
+                    nstate += 1
+                else:
+                    continue
+                for award in set(award.award.name for award in attempt.attemptaward_set.all()):
+                    awards[award] += 1
+        name = (user.first_name.strip() + u" " + user.last_name.strip()).title()
+        text = _compose_text(name, nschool, awards)
+        text = "\n".join(map(u'<tspan x="0" dy="1.2em">{}</tspan>'.format, text.splitlines()))
+        cert_dir = os.path.join(settings.MEDIA_ROOT, _user_file_path(user, ""))
+        try:
+            os.mkdir(cert_dir)
+        except:
+            pass
+        template_file = os.path.join(AWARD_TEMPLATE_DIR, 'certificate.svg')
+        with open(template_file) as f:
+            template = f.read()
+        template = template.replace("ime_in_priimek", name.encode("utf-8")).replace("kategorija", text.encode("utf-8"))
+        return cairosvg.svg2pdf(template)
+    
+    profile = Profile.objects.get(user__username=username)
+
+    if profile.user != request.user and \
+            request.user.profile.managed_profiles.filter(
+                id=profile.id).count() <= 0:
+        raise PermissionDenied
+
+    pdf = _create_mentor_certificate(profile, 'drzavno2015', 'finale2015')
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="potrdilo.pdf"'
+    response.write(pdf)
+    return response
 
 
 @login_required
