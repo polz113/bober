@@ -115,7 +115,7 @@ function edit_name(obj) {
             <a href="{% url 'school_codes_create' slug=competition.slug %}?next_url={{request.path}}">{% trans "Add school" %}</a>
         </td>
     </tr>-->
-    {% if show_paper_results %}<tr>
+<!--    {% if show_paper_results %}<tr>
         <th>
             {%  trans "Competition on paper" %}
         </th>
@@ -125,7 +125,7 @@ function edit_name(obj) {
             </p>
         </td>
     </tr>{% endif %}
-    <tr>
+   --> <tr>
         <th>{% trans "Certificates" %}</th>
         <td>
             {% for school, cqsa in attempts.iteritems %}
