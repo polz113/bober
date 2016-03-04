@@ -448,7 +448,7 @@ class Users(models.Model):
         return self.password == hashlib.sha512(password).hexdigest()
     @property
     def profile(self):
-        return self.profile_set.all()[0];
+        return self.profiles;
     id = models.AutoField(primary_key=True)
     username = models.CharField(unique=True, max_length=20)
     password = models.CharField(max_length=128)
