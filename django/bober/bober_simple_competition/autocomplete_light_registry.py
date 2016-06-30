@@ -1,9 +1,9 @@
-import autocomplete_light
+import autocomplete_light.shortcuts as autocomplete_light
 from models import Profile, Question
 
 class ManagedUsersAutocomplete(autocomplete_light.AutocompleteModelBase):
     search_fields = [
-        'user__first_name', 
+        'user__first_name',
         'user__last_name',
         'user__email',
         'user__username',
@@ -21,7 +21,7 @@ class ManagedUsersAutocomplete(autocomplete_light.AutocompleteModelBase):
 
     def choices_for_request(self):
         try:
-            self.choices = self.request.profile.managed_profiles.all()
+            self.choices = self.request.user.profile.managed_profiles.all()
         except Exception, e:
             # print e
             self.choices = Profile.objects.none()

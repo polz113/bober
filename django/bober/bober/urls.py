@@ -15,9 +15,9 @@ import bober_si
 import bober_si.urls
 import password_reset.urls
 from django.views.generic import RedirectView
-import autocomplete_light
+import autocomplete_light, autocomplete_light.registry
 
-autocomplete_light.autodiscover()
+autocomplete_light.registry.autodiscover()
 admin.autodiscover()
 
 js_info_dict = {

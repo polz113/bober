@@ -64,13 +64,13 @@ def smart_competition_admin_code_required(function = None):
                 codes = [access_code]
             if len(codes) < 1:
                 codes = codegen.codes.filter(
-                    recipient_set__id = request.profile.id).values_list('value', flat=True)
+                    recipient_set__id = request.user.profile.id).values_list('value', flat=True)
             if len(codes) < 1:
                 codes = codegen.codes.filter(
-                    user_set__id = request.profile.id).values_list('value', flat=True)
+                    user_set__id = request.user.profile.id).values_list('value', flat=True)
             if len(codes) < 1:
                 codes = codegen.codes.filter(
-                    creator_set__id = request.profile.id).values_list('value', flat=True)
+                    creator_set__id = request.user.profile.id).values_list('value', flat=True)
             access_code = codes[0]
         except Exception, e:
             pass
@@ -114,7 +114,7 @@ def _use_access_code(request, access_code,
     # print access_code, defer_update_used_codes, defer_code_effects
     try:
         if not defer_update_used_codes:
-            profile = request.profile
+            profile = request.user.profile
             code = Code.objects.get(value = access_code)
             profile.used_codes.add(code)
     except Exception, e:
@@ -122,7 +122,7 @@ def _use_access_code(request, access_code,
         pass
     try:
         if not defer_code_effects:
-            profile = request.profile
+            profile = request.user.profile
             for effect in code.codeeffect_set.all():
                 effect.apply(users=[profile])
     except Exception, e:
@@ -210,7 +210,7 @@ class CompetitionUpdate(SmartCompetitionAdminCodeRequiredMixin,
                             f.instance.guest_code is None:
                         # print "Creating guest code!"
                         f.save()
-                        self.request.profile.created_codes.add(
+                        self.request.user.profile.created_codes.add(
                             f.instance.guest_code)
                     # print f.instance, f.cleaned_data['create_guest_code']
         return retval
@@ -246,8 +246,8 @@ class CompetitionCreate(LoginRequiredMixin, CreateWithInlinesView):
         competition.competitor_code_generator = competitor_codegen
         competition.save()
         master_code = competition.master_code_create()
-        self.request.profile.received_codes.add(master_code)
-        self.request.profile.created_codes.add(master_code)
+        self.request.user.profile.received_codes.add(master_code)
+        self.request.user.profile.created_codes.add(master_code)
         retval = super(CompetitionCreate, self).forms_valid(form, inlines)
         for i in inlines:
             for f in i:
@@ -384,11 +384,11 @@ def competition_code_list(request, slug):
     if not admin_codegen.code_matches(
             access_code, {'admin_privileges': ['view_all_admin_codes']}):
         admin_codes = admin_codes.filter(
-            Q(creator_set=request.profile) | Q(recipient_set=request.profile) | Q(user_set=request.profile))
+            Q(creator_set=request.user.profile) | Q(recipient_set=request.user.profile) | Q(user_set=request.user.profile))
     if not admin_codegen.code_matches(
             access_code, {'admin_privileges': ['view_all_competitor_codes']}):
         all_competitor_codes = all_competitor_codes.filter(
-            Q(creator_set=request.profile) | Q(recipient_set=request.profile) | Q(user_set=request.profile))
+            Q(creator_set=request.user.profile) | Q(recipient_set=request.user.profile) | Q(user_set=request.user.profile))
     competitor_codes = dict()
     for cqs in CompetitionQuestionSet.objects.filter(competition=competition):
         c_list = list()
@@ -460,7 +460,7 @@ def competition_code_create(request, slug, user_type='admin'):
             else:
                 cqs = None
             c = generator.create_code(data)
-            request.profile.created_codes.add(c)
+            request.user.profile.created_codes.add(c)
             return redirect('competition_code_list',
                 slug = competition.slug)
     else:
@@ -492,10 +492,10 @@ def competition_attempt_list(request, slug, regrade=False):
                     {'competitor_privileges': ['results_before_end']}) \
                 or competition.end < timezone.now():
             values = competition.competitor_code_generator.codes.filter(
-                creator_set = request.profile).values_list('value', flat=True)
+                creator_set = request.user.profile).values_list('value', flat=True)
             # print "  values:", values
             object_list = object_list.filter(
-                Q(user=request.profile) | Q(access_code__in=values))
+                Q(user=request.user.profile) | Q(access_code__in=values))
         else:
             object_list = object_list.none()
     runtime_manager = None
@@ -513,9 +513,8 @@ def competition_attempt_list(request, slug, regrade=False):
 @login_required
 def invalidate_attempt(request, slug, attempt_id):
     attempt = Attempt.objects.get(id=attempt.id)
-    attempt.invalidated_by = request.profile
+    attempt.invalidated_by = request.user.profile
     return render(request, "bober_simple_competition/invalidate_attempt.html", locals())
-
 # 2.1.5 use questionsets
 #@login_required
 #@access_code_required
@@ -544,7 +543,6 @@ def use_questionsets(request, slug, competition_questionset_id=None):
         success = False
     return render(request,
         "bober_simple_competition/use_questionset.html", locals())
-
 # 2.2 competitor
 #     2.2.1 get question page
 # @login_required
@@ -624,7 +622,7 @@ def competition_resources(request, competition_questionset_id, resource_path):
 @login_required
 def question_resources(request, pk, resource_path):
     try:
-        q = request.profile.questions.get(pk=pk)
+        q = request.user.profile.questions.get(pk=pk)
     except:
         raise PermissionDenied
     resource_dir = 'resources/' + str(pk) + '/resources'
@@ -802,8 +800,8 @@ def attempt_confirm(request, competition_questionset_id, attempt_id):
         raise PermissionDenied
     attempt = get_object_or_404(Attempt, id=attempt_id)
     cqs = get_object_or_404(CompetitionQuestionSet, id=competition_questionset_id)
-    profile = request.profile
-    if request.profile.created_codes.filter(
+    profile = request.user.profile
+    if request.user.profile.created_codes.filter(
             codegenerator = cqs.competition.competitor_code_generator,
             value = attempt.access_code
         ).count() < 1:
@@ -820,8 +818,8 @@ def attempt_unconfirm(request, competition_questionset_id, attempt_id):
         raise PermissionDenied
     attempt = get_object_or_404(Attempt, id=attempt_id)
     cqs = get_object_or_404(CompetitionQuestionSet, id=competition_questionset_id)
-    profile = request.profile
-    if request.profile.created_codes.filter(
+    profile = request.user.profile
+    if request.user.profile.created_codes.filter(
             codegenerator = cqs.competition.competitor_code_generator,
             value = attempt.access_code
         ).count() < 1:
@@ -841,8 +839,8 @@ class CompetitorUpdateJson(LoginRequiredMixin, UpdateView):
             raise PermissionDenied
         cqs = get_object_or_404(CompetitionQuestionSet, 
             id=form.cleaned_data['cqs_id'])
-        profile = self.request.profile
-        if profile.created_codes.filter(
+        profile = self.request.user.profile
+        if self.request.user.profile.created_codes.filter(
             codegenerator = cqs.competition.competitor_code_generator,
             value = attempt.access_code
         ).count() < 1:
@@ -861,21 +859,19 @@ class ProfileListView(LoginRequiredMixin, ListView):
         # print c
         return c
     def get_queryset(self):
-        return self.request.profile.managed_profiles.filter(merged_with=None) 
+        return self.request.user.profile.managed_profiles.filter(merged_with=None) 
 
 class ProfileTableView(LoginRequiredMixin, FilteredSingleTableView):
     table_class = tables.ProfileTable
     filter_class = filters.ProfileFilter
     template_name = 'bober_simple_competition/profile_table_list.html'
     def get_queryset(self):
-        return self.request.profile.managed_profiles.filter(merged_with=None)
+        return self.request.user.profile.managed_profiles.filter(merged_with=None)
 
 class ProfileDetail(LoginRequiredMixin, DetailView):
     model = Profile
     def get_queryset(self):
-        print "Haha!"
-        print self.request.profile
-        return self.request.profile.managed_profiles.all()
+        return self.request.user.profile.managed_profiles.all()
 #    def get(self, request):
 #        try:
 #            f = self.request.user.profile.managed_profiles.get(id=self.object.id)
@@ -895,7 +891,7 @@ class ProfileUpdate(LoginRequiredMixin, UpdateView):
     success_url = reverse_lazy('teacher_overview', args=["drzavno2015"])
 
     def get_queryset(self):
-        return self.request.profile.managed_profiles.all()
+        return self.request.user.profile.managed_profiles.all()
 
     def get_form(self, form_class=ProfileEditForm):
         form = super(UpdateView, self).get_form(form_class)
@@ -935,7 +931,7 @@ class QuestionSetCompete(CreateView):
     def get_initial(self):
         d = super(QuestionSetCompete, self).get_initial()
         if self.request.user.is_authenticated():
-            profile = self.request.profile
+            profile = self.request.user.profile
             d['first_name'] = profile.user.first_name
             d['last_name'] = profile.user.last_name
         d['short_access_code'] = self.request.session.get('short_access_code', '')
@@ -947,7 +943,7 @@ class QuestionSetCompete(CreateView):
         kwargs = self.get_form_kwargs()
         kwargs['competitionquestionset'] = self.competitionquestionset
         if self.request.user.is_authenticated():
-            kwargs['profile'] = self.request.profile
+            kwargs['profile'] = self.request.user.profile
         f = form_class(**kwargs) 
         return f
 
@@ -974,7 +970,7 @@ class CompetitionCompete(QuestionSetCompete):
         kwargs = self.get_form_kwargs()
         kwargs['competition'] = self.competition
         if self.request.user.is_authenticated():
-            kwargs['profile'] = self.request.profile
+            kwargs['profile'] = self.request.user.profile
         f = form_class(**kwargs) 
         return f
 
@@ -1066,10 +1062,9 @@ class CompetitionRegistration(QuestionSetRegistration):
 def _user_file_path(profile, path):
     resource_dir = os.path.join('user_files', profile.user.username)
     return os.path.join(resource_dir, path)
-
 @login_required
 def user_files(request, pk, resource_path):
-    profile = request.profile
+    profile = request.user.profile
     if int(pk) not in profile.managed_profiles.all().values_list(
             'id', flat=True):
         raise PermissionDenied
@@ -1090,7 +1085,7 @@ class QuestionList(LoginRequiredMixin, ListView):
     template_name = 'bober_simple_competition/question_list.html'
 
     def get_queryset(self):
-        return self.request.profile.questions.all()
+        return self.request.user.profile.questions.all()
 
 
 class QuestionTableView(LoginRequiredMixin, FilteredSingleTableView):
@@ -1099,14 +1094,14 @@ class QuestionTableView(LoginRequiredMixin, FilteredSingleTableView):
     template_name = 'bober_simple_competition/question_table_list.html'
 
     def get_queryset(self):
-        return self.request.profile.questions.all()
+        return self.request.user.profile.questions.all()
 
 
 class QuestionDetail(LoginRequiredMixin, DetailView):
     model = Question
 
     def get_queryset(self):
-        return self.request.profile.questions.all()
+        return self.request.user.profile.questions.all()
 #
 # 7. create questionset from questions
 
@@ -1115,14 +1110,14 @@ class QuestionSetList(LoginRequiredMixin, ListView):
     model = QuestionSet
 
     def get_queryset(self):
-        return self.request.profile.question_sets.all() 
+        return self.request.user.profile.question_sets.all() 
 
 
 class QuestionSetDetail(LoginRequiredMixin, DetailView):
     model = QuestionSet
 
     def get_queryset(self):
-        return self.request.profile.question_sets.all() 
+        return self.request.user.profile.question_sets.all() 
 
 
 class QuestionSetCreate(LoginRequiredMixin, CreateView):
@@ -1143,27 +1138,11 @@ class QuestionSetUpdate(LoginRequiredMixin, UpdateView):
     form_class = QuestionSetForm
 
     def get_queryset(self):
-        return self.request.profile.created_question_sets.all() 
+        return self.request.user.profile.created_question_sets.all() 
         
 class QuestionSetDelete(LoginRequiredMixin, DeleteView):
     model = QuestionSet
 
     def get_queryset(self):
-        return self.request.profile.created_question_sets.all() 
+        return self.request.user.profile.created_question_sets.all() 
 
-def login(request, *args, **kwargs):
-    retval = django.contrib.auth.login(request, *args, **kwargs)
-    user = None
-    try:
-        u = request.user
-    except:
-        u = None
-    if u is not None and u.is_authenticated():
-        try:
-            p = u.profile
-            if p.merged_with is not None:
-                p = p.merged_with
-            request.profile = p
-        except:
-            pass
-    return retval

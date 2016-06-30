@@ -48,7 +48,7 @@ class TeacherOverview(SmartCompetitionAdminCodeRequiredMixin,
 
     def get_context_data(self, **kwargs):
         context = super(TeacherOverview, self).get_context_data(**kwargs)
-        profile = self.request.profile
+        profile = self.request.user.profile
         context['profile'] = profile 
         context['competition'] = self.competition
         school = None
@@ -132,7 +132,7 @@ class SchoolCodesCreate(SmartCompetitionAdminCodeRequiredMixin, FormView):
     def form_valid(self, form):
         school = form.cleaned_data['school']
         self.competition.school_codes_create(
-            school, self.request.profile, 
+            school, self.request.user.profile, 
             self.request.session['access_code']) 
         return super(SchoolCodesCreate, self).form_valid(form)
 
@@ -481,12 +481,11 @@ def mentor_certificate_pdf(request, username):
 
 @login_required
 def school_awards_pdf(request, username, slug, school_id, cqs_name):
-    profile = Profile.objects.get(user__username=username) 
-    if not hasattr(request, 'profile') or (
-                profile != request.profile \
-                and request.profile.managed_profiles.filter(
-                    id=profile.id).count() <= 0
-            ):
+    profile = Profile.objects.get(user__username=username)
+    
+    if profile.user != request.user and \
+            request.user.profile.managed_profiles.filter(
+                id=profile.id).count() <= 0:
         raise PermissionDenied
     cert_dir = os.path.join(_user_file_path(profile, 
         os.path.join(slug, school_id)))
@@ -547,11 +546,10 @@ def school_awards_pdf(request, username, slug, school_id, cqs_name):
 @login_required
 def all_awards_pdf(request, username, slug, cqs_name):
     profile = Profile.objects.get(user__username=username)
-    if not hasattr(request, 'profile') or (
-                profile != request.profile\
-                and request.profile.managed_profiles.filter(
-                    id=profile.id).count() <= 0
-            ):
+    
+    if profile.user != request.user and \
+            request.user.profile.managed_profiles.filter(
+                id=profile.id).count() <= 0:
         raise PermissionDenied
     cert_dir = os.path.join(_user_file_path(profile, 
         os.path.join(slug)))
@@ -632,7 +630,7 @@ def __update_juniorattempt(attempt):
 def revalidate_awards(request, attempt_id, *args, **kwargs):
     attempt = get_object_or_404(Attempt, id=attempt_id)
     # TODO check permissions, determine the actual teacher
-    teacher = request.profile
+    teacher = request.user.profile
     # TODO update all possible awards files containing this attempt
     # print attempt
     __update_juniorattempt(attempt)

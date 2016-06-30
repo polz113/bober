@@ -87,7 +87,7 @@ function edit_name(obj) {
 {% endblock %}
 {% block context_menu %}
 {% if request.user.is_authenticated %}
-    <a class="navbar-brand" href="{% url 'profile_update' pk=request.profile.pk %}">{% trans "Edit my profile" %}</a>
+    <a class="navbar-brand" href="{% url 'profile_update' pk=request.user.profile.pk %}">{% trans "Edit my profile" %}</a>
 {% endif %}
 {% endblock %}
 {% block content %}
@@ -132,7 +132,7 @@ function edit_name(obj) {
                  <p>{{ school }}</p>
                  <p style="padding-bottom: 20px">
                  {% for cqs, attempts in cqsa %}{% if attempts %}
-                    <a style="padding-left: 20px" href="{% url "school_awards_pdf" slug=competition.slug username=request.profile.user.username cqs_name=cqs.name school_id=school.id %}">{{ cqs.name }}</a>
+                    <a style="padding-left: 20px" href="{% url "school_awards_pdf" slug=competition.slug username=request.user.username cqs_name=cqs.name school_id=school.id %}">{{ cqs.name }}</a>
                  {% else %}
                  <!--   <span style="padding-left: 20px">{{cqs.name}}: {% trans "no competitors" %}</span> -->
                  {% endif %}{% endfor %}

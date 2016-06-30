@@ -39,7 +39,7 @@
             {% block context_menu %}
             {% endblock %}
             <div id='profile'>{% if request.user.is_authenticated %}
-            <a class="navbar-brand" href="{% url "django.contrib.auth.views.logout" %}">{% trans "Logout" %} {{request.profile.user}}</a>{% endif %}
+            <a class="navbar-brand" href="{% url "django.contrib.auth.views.logout" %}">{% trans "Logout" %} {{request.user}}</a>{% endif %}
             </div>
         {% get_current_language as LANGUAGE_CODE %}
         {% get_available_languages as LANGUAGES %}
