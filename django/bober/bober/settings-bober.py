@@ -37,7 +37,15 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'bober_competition',
-    'bober_paper_submissions'
+    'bober_paper_submissions',
+    'code_based_auth',
+    'bober_simple_competition',
+    'bober_si',
+    'bober_tasks',
+    'social.apps.django_app.default',
+    'taggit',
+    'django_tables2'
+    # 'autocomplete_light'
 )
 
 MIDDLEWARE_CLASSES = (
@@ -62,7 +70,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'bober',
         'USER': 'bober',
-        'PASSWORD': 'CHANGE THIS',
+        'PASSWORD': 'YOURPASSWORD',
         'HOST': 'localhost',
     }
 }
@@ -85,3 +93,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.6/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = '/Users/batuhantozun/boberstatic/'
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = '/var/www/django/media_files'
