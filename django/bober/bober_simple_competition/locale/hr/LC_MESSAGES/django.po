@@ -77,12 +77,12 @@ msgstr ""
 #: models.py:67
 #| msgid "Create admin codes"
 msgid "Create administrator codes"
-msgstr "Kreiraj kôdove administratora"
+msgstr "Napravi kôdove administratora"
 
 #: models.py:68
 #| msgid "Competitor codes"
 msgid "Create comeptitor codes"
-msgstr "Kreiraj kôdove natjecatelja"
+msgstr "Napravi kôdove natjecatelja"
 
 #: models.py:69
 #| msgid "Use question sets for new competitions"
@@ -561,11 +561,11 @@ msgid ""
 "You have attempted to leave this page. Your last question answer will be "
 "saved automatically. Are you sure you want to exit this page?"
 msgstr ""
-"Pokušali ste napustiti stranicu. Vaš poslednji odgovor će se automatski "
+"Pokušali ste napustiti stranicu. Vaš posljednji odgovor će se automatski "
 "sačuvati. Jeste li sigurni da želite napustiti stranicu?"
 
 msgid "You are out of time for solving the competition."
-msgstr "Isteklo vam je vreme za natjecanje."
+msgstr "Isteklo vam je vrijeeme za natjecanje."
 
 msgid "Thank you for participating in the competition"
 msgstr "Hvala na sudjelovanju."
@@ -579,8 +579,8 @@ msgstr "Jeste li sigurni da želite izbrisati odgovor?"
 msgid "You left %s question unanswered. "
 msgid_plural "Ostavili ste %s neodgovorenih pitanja."
 msgstr[0] "Ostavili ste %s neodgovoreno pitanje. "
-msgstr[1] "Ostavili ste %s neodgovorena pitanja. "
-msgstr[2] "Ostavili ste %s neodgovorenih pitanja. "
+msgstr[1] "Ostavili ste %s neodgovoreno pitanja. "
+msgstr[2] "Ostavili ste %s neodgovorena pitanja. "
 
 msgid "Are you sure you want to finish the competition?"
 msgstr "Jeste li sigurni da želite napustiti natjecanje?"
@@ -589,7 +589,7 @@ msgid "An error has occured. Please try to finish competition again."
 msgstr "Došlo je do problema. Pokušajte još jednom završiti natjecanje."
 
 #~ msgid "In Cooperation With"
-#~ msgstr "U uaradnji s"
+#~ msgstr "U suradnji s"
 
 #~ msgid "Create code format for admin users (teachers)"
 #~ msgstr "Napravi format kôda za administratorske korisnike (učitelje)"

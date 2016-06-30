@@ -892,7 +892,7 @@ class ProfileDetail(LoginRequiredMixin, DetailView):
 class ProfileUpdate(LoginRequiredMixin, UpdateView):
     model = Profile
     form_class = ProfileEditForm
-    success_url = reverse_lazy('profile_list')
+    success_url = reverse_lazy('teacher_overview', args=["drzavno2015"])
 
     def get_queryset(self):
         return self.request.profile.managed_profiles.all()

@@ -92,10 +92,10 @@ function edit_name(obj) {
 {% endblock %}
 {% block content %}
 <table id="sections">
-    <tr>
+    <!--<tr>
         <th>
             {% trans "Codes for each school" %}<br/>
-            <!--<span style="font-weight: normal; font-size: 13px">(Kode, ki jih bodo tekmovalci<br/>uporabili za vstop v sistem.)</span>-->
+            <!--<span style="font-weight: normal; font-size: 13px">(Kode, ki jih bodo tekmovalci<br/>uporabili za vstop v sistem.)</span>
         </th>
         <td>
             {% for school, codes in schools.iteritems %}
@@ -114,16 +114,12 @@ function edit_name(obj) {
             {% endfor %}
             <a href="{% url 'school_codes_create' slug=competition.slug %}?next_url={{request.path}}">{% trans "Add school" %}</a>
         </td>
-    </tr>
+    </tr>-->
     {% if show_paper_results %}<tr>
         <th>
             {%  trans "Competition on paper" %}
         </th>
         <td>
-            <p>
-                <a href="/static/cn87gy8nyq38g5y3qv8t7yg23y/Bober-pole-2-5-razred.zip
-">{% trans "Competition sheets" %}</a>
-            </p>
             <p>
                 <a href="{% url "mentorship_list" slug=competition.slug %}">{% trans "Result entry for tasks on paper" %}</a>
             </p>
@@ -132,30 +128,37 @@ function edit_name(obj) {
     <tr>
         <th>{% trans "Certificates" %}</th>
         <td>
-            {% for mentorship in junior_mentorships %}
-                {% for junior_year in mentorship.junioryear_set.all %}
-                    {% if junior_year.juniorattempt_set.count %}
-                        <p><a href="{% url "school_awards_pdf" slug=competition.slug cqs_name=junior_year.cqs.name school_id=mentorship.school_id %}">{{ mentorship.school }} - {{ junior_year.name }}</a></p>
-                    {% endif %}
-                {% endfor %}
-            {% endfor %}
             {% for school, cqsa in attempts.iteritems %}
+                 <p>{{ school }}</p>
+                 <p style="padding-bottom: 20px">
                  {% for cqs, attempts in cqsa %}{% if attempts %}
-                    <p><a href="{% url "award_pdf" slug=competition.slug cqs_name=cqs.name school_id=school.id %}">{{ school }} - {{ cqs.name }}</a></p>
+                    <a style="padding-left: 20px" href="{% url "school_awards_pdf" slug=competition.slug username=request.user.username cqs_name=cqs.name school_id=school.id %}">{{ cqs.name }}</a>
+                 {% else %}
+                 <!--   <span style="padding-left: 20px">{{cqs.name}}: {% trans "no competitors" %}</span> -->
                  {% endif %}{% endfor %}
-            {% endfor %}
-            <p>Priznanja za 2. - 5. razred OŠ bodo objavljena v prihodnjih dneh.
-               Bronasto priznanje dobi gornja tretjina učencev vsake generacije,
-               vendar le tisti, ki so dosegli vsaj polovico možnih točk.</p>
+                 </p>
+            {% endfor %}           
         </td>
     </tr>
+    <tr>
+        <th>Potrdilo za mentorja</th>
+        <td>
+           {% if profile.first_name and profile.last_name %}
+               <a href="{% url "mentor_certificate_pdf" username=request.user.username %}">
+                   {{ profile.first_name }} {{ profile.last_name }}
+               </a>
+           {% else %}
+               Da prejmete potrdilo, morate najprej <a href="{% url 'profile_update' pk=request.user.profile.pk %}">vnesti svoje ime in priimek</a>
+           {% endif %}
+       </td>
 </table>
 <div>
 
 <div>
+{{competition.motd | safe}}
+<!--
 <div style="color: blue; font-weight: bold; margin-top: 20px; padding: 5px; border: thin solid blue">
 
-<p style="color: black">{% trans "Preliminary results" %}</p>
 <p>S klikom na kljukico dodajte vse tekmovalce,
 ki so vaši. Tedaj boste videli tudi, koliko točk je tekmovalec dosegel.
 Če je moral kateri izmed tekmovalcev iz tehničnih razlogov ponoviti
@@ -165,7 +168,7 @@ je bil pravi), ga lahko ponovno izločite s klikom na križec.</p>
 <p>Prosimo, da preverite tudi, ali so imena pravilno črkovana. Po potrebi jih
 popravite, saj bodo na priznanjih izpisana natančno tako, kot so zapisana tu.
 </p>
-</div>
+--></div>
 
 {% for school, cqsa in attempts.iteritems %}
     <div class="results-school">{{ school }}</div>
@@ -193,13 +196,13 @@ popravite, saj bodo na priznanjih izpisana natančno tako, kot so zapisana tu.
                              <input name="last_name" type="text" value="{{attempt.competitor.last_name}}"/>
                              <input name="cqs_id" type="hidden" value="{{cqs.id}}">
                              <input name="attempt_id" type="hidden" value="{{attempt.id}}">
-                             <input name="invalidate_url" class="invalidate-url" type="hidden" value="{% url "invalidate_award" competition_questionset_id=cqs.id profile_id=profile.id slug=competition.slug school_id=school.id %}" />
+                             <input name="invalidate_url" class="invalidate-url" type="hidden" value="{% url "revalidate_awards" profile_id=profile.id slug=competition.slug attempt_id=attempt.id %}" />
               
                          </form>
                          </span>
                          <img class="pencil" src="/static/img/pencil.png" onclick="edit_name(this); " />
-                         <img src="/static/img/qualify.png" class="confirm" onclick="switch_qualify(this, '{% url "attempt_confirm" attempt_id=attempt.id competition_questionset_id=cqs.id %}', true); invalidate_award('{% url "invalidate_award" competition_questionset_id=cqs.id profile_id=profile.id slug=competition.slug school_id=school.id %}')" />
-                         <img src="/static/img/disqualify.png" class="confirm" onclick="switch_qualify(this, '{% url "attempt_unconfirm" attempt_id=attempt.id competition_questionset_id=cqs.id %}', false); invalidate_award('{% url "invalidate_award" competition_questionset_id=cqs.id profile_id=profile.id slug=competition.slug school_id=school.id %}')" />
+                         <img src="/static/img/qualify.png" class="confirm" onclick="switch_qualify(this, '{% url "attempt_confirm" attempt_id=attempt.id competition_questionset_id=cqs.id %}', true); invalidate_award('{% url "revalidate_awards" profile_id=profile.id slug=competition.slug attempt_id=attempt.id %}')" />
+                         <img src="/static/img/disqualify.png" class="confirm" onclick="switch_qualify(this, '{% url "attempt_unconfirm" attempt_id=attempt.id competition_questionset_id=cqs.id %}', false); invalidate_award('{% url "revalidate_awards" profile_id=profile.id slug=competition.slug attempt_id=attempt.id %}')" />
                     </th>
                     {% for q, answer in attempt.graded_answers_by_question_id.iteritems %}
                         <td>
@@ -222,12 +225,12 @@ popravite, saj bodo na priznanjih izpisana natančno tako, kot so zapisana tu.
     </div>{% endif %}{% endfor %}
 {%  endfor %}
 </div>
-{% if junior_mentorships %}
+{% if False and junior_mentorships %}
 <div>
 <div class="prelim">{% trans "Results on paper" %}</div>
 {% for mentorship in junior_mentorships %}
     {% for junior_year in mentorship.junioryear_set.all %}
-    {% if junior_year.attempts.count %}<div>
+    {% if junior_year.juniorattempt_set.count %}<div>
         <div class="results-school">{{mentorship.school}} - {{junior_year.name}}</div>
         <p>Seznam spreminjate v <a href="{% url "mentorship_list" slug=competition.slug %}">obrazcu za vnos rezultatov</a>
         </p>
