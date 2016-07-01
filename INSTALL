@@ -7,50 +7,32 @@
     cd bober
     export BOBER_HOME=$PWD
 
-* Install the dependencies:
+* Install the MySQL Server:
 
-    apt-get update
-    apt-get install nginx mysql-server memcached php5-memcache python-django uwsgi php5-fpm python-mysqldb php5-mysql
-    apt-get install nginx mysql-server memcached php5-memcache python-django uwsgi php5-fpm python-mysqldb uwsgi-plugin-python
+    sudo apt-get update
+    sudo apt-get install mysql-server
+    sudo mysql_secure_installation
+    sudo mysql_install_db
 
 * Create the databases. Pick your own passwords.
 
     mysql -u root -p mysql
 
 * Create the database for the competition system
-    
+
     create database bober character set utf8 collate utf8_general_ci;
     grant all on bober.* to bober@localhost; set password for bober@localhost=password('YOUR PASSWORD'); flush privileges;
 
 * Create tje database for the task creation system
 
-create database bober_tasks character set utf8 collate utf8_general_ci;
-grant all on bober_tasks.* to bober@localhost; set password for bober@localhost=password('YOUR PASSWORD'); flush privileges;
-
-* Create and edit the configuration for the competition system:
-
-    cd $BOBER_HOME/backend/config/
-    cp sample-main.php main.php
-    vim main.php
-
-* In main.php, change the gii password:
-
-      'gii' => array(
-            'class' => 'system.gii.GiiModule',
-            'password' => 'gii secret',
-
-* Still in main.php, change the database settings:
-
-      'db'=>array(
-                'connectionString'=>'mysql:host=127.0.0.1;dbname=bober',
-                'username'=>'bober',
-                'password'=>'YOUR PASSWORD',
+    create database bober_tasks character set utf8 collate utf8_general_ci;
+    grant all on bober_tasks.* to bober@localhost; set password for bober@localhost=password('YOUR PASSWORD'); flush privileges;
 
 * Create and edit the configuration for the task creation system:
 
-    cd $BOBER_HOME/rvp/app/application/
+    cd $BOBER_HOME/django/bober/
     cp settings-bober.py settings.py
-    vim settings.py 
+    vim settings.py
 
 * Change the database settings:
 
@@ -61,13 +43,27 @@ grant all on bober_tasks.* to bober@localhost; set password for bober@localhost=
             'USER': 'bober',
             'PASSWORD': 'YOUR PASSWORD',
 
-* Create the initial database for the competition system:
+* Install the Virtualenv and create the virtual folder in the another directory:
 
-    mysql -u bober -p bober < backend/migrations/bober_fixture.sql 
+      pip install virtualenv
+      virtualenv bober_env
+      source bober_env/bin/activate
 
-* Create the initial database for the task entry system:
+* Install the all package with use the requirements.txt
 
-    python $BOBER_HOME/rvp/app/manage.py syncdb
+      pip install -r $BOBER_HOME/django/bober/requirements.txt
+
+* Migrate the database
+
+      python manage.py migrate
+
+* Finally, start the development web server:
+
+      python manage.py runserver
+
+
+If you want to deploy bober in a production environment, you will also have
+to set up nginx. To do this, you can follow the instructions below.
 
 * Create and edit the web server configuration files
 
@@ -80,7 +76,7 @@ grant all on bober_tasks.* to bober@localhost; set password for bober@localhost=
     vim bober
 
 * In /etc/nginx/sites-enabled/bober, change:
-    
+
     server_name BOBER_COMPETITION_SERVER_NAME;
 
 * Still in /etc/nginx/sites-enabled/bober, change:
@@ -88,8 +84,8 @@ grant all on bober_tasks.* to bober@localhost; set password for bober@localhost=
     root BOBER_HOME/backend/www/;
 
 * Edit the task entry system virtual host file:
-    
-    vim bober-tasks 
+
+    vim bober-tasks
 
 * In /etc/nginx/sites-enabled/bober-tasks, change:
 
@@ -104,10 +100,10 @@ grant all on bober_tasks.* to bober@localhost; set password for bober@localhost=
     cp $BOBER_HOME/webconfig/uwsgi/bober-tasks.ini /etc/uwsgi/apps-available/
     cd /etc/uwsgi/apps-enabled/
     ln -s ../apps-available/bober-tasks.ini .
-    vim bober-tasks.ini 
+    vim bober-tasks.ini
 
 * Change the location of the application:
-    
+
     chdir           = BOBER_HOME/rvp/app
 
 * For the competition system to work, the web server must have access to some directories:
@@ -126,5 +122,3 @@ grant all on bober_tasks.* to bober@localhost; set password for bober@localhost=
 * If you are using the task creation system, restart uwsgi:
 
     service uwsgi restart
-
-
