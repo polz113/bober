@@ -25,11 +25,11 @@ msgstr "Giriş kodu"
 
 #: forms.py:22
 msgid "Update used codes later"
-msgstr "Güncelleme kullanılan kodlar sonra"
+msgstr "Kullanılan kodları sonra güncelle"
 
 #: forms.py:25
 msgid "Execute effects later"
-msgstr "Yürütme etkileri daha sonra"
+msgstr "Etkileri sonra yürüt"
 
 #: forms.py:128 forms.py:162 forms.py:193 forms.py:237
 msgid "Wrong access code"
@@ -45,37 +45,37 @@ msgstr "Bu alan gereklidir"
 
 #: models.py:56
 msgid "Participate in the competition"
-msgstr "Yarışmaya katılmak"
+msgstr "Yarışmaya katıl"
 
 #: models.py:57
 msgid "Attempt competition before start"
-msgstr "Başlamadan önce rekabeti girişiminde"
+msgstr "Başlamadan önce yarışma girişiminde bulun"
 
 #: models.py:58
 msgid "See results before official end of competition"
-msgstr "Yarışmanın resmi sonundan önce sonuçlara bakın"
+msgstr "Yarışma bitiminden önce sonuçları gör"
 
 #: models.py:59
 msgid "Resume existing attempts"
-msgstr "Mevcut girişimleri Özgeçmiş"
+msgstr "Mevcut girişime devam et"
 
 #: models.py:63
 msgid "Allow the creator to manage the profile of anyone using this code"
-msgstr "Creator Bu kodu kullanan herkes profilini yönetmek için izin"
+msgstr "Bu kodu kullanan tüm profilleri yönetmesi için kurucuya izin ver"
 
 #: models.py:64
 msgid ""
 "Allow the creator and their managers to manage the profile of anyone using "
 "this code"
-msgstr "Yaratıcısı ve onların yöneticileri bu kodu kullanan herkes profilini yönetmek için izin"
+msgstr "Bu kodu kullanan tüm profilleri yönetmesi için kurucu ve yöneticilerine izin ver"
 
 #: models.py:68
 msgid "Create administrator codes"
 msgstr "Yönetici kodları oluşturun"
 
 #: models.py:69
-msgid "Create comeptitor codes"
-msgstr "Comeptitor kodları oluşturun"
+msgid "Create competitor codes"
+msgstr "Yarışmacı kodları oluşturun"
 
 #: models.py:70
 msgid "View all attempts for this competition"
@@ -87,7 +87,7 @@ msgstr "Bu yarışma için tüm yönetici kodlarını görüntüle"
 
 #: models.py:72
 msgid "View all competitor codes for this competition"
-msgstr "Bu yarışma için tüm rakip kodlarını görüntüle"
+msgstr "Bu yarışma için tüm yarışmacı kodlarını görüntüle"
 
 #: models.py:73
 msgid "Use question sets for new competitions"
@@ -95,11 +95,11 @@ msgstr "Yeni yarışmalar için soru setleri kullanın"
 
 #: models.py:74
 msgid "Modify this competition"
-msgstr "Bu yarışmayı değiştirme"
+msgstr "Bu yarışma üzerinde değişiklik yapın"
 
 #: models.py:76
 msgid "Use questions for new question sets"
-msgstr "Yeni soru setleri soruları kullanın"
+msgstr "Yeni soru setleri için soruları kullanın"
 
 #: models.py:89
 msgid "Reduced functionality"
@@ -107,7 +107,7 @@ msgstr "Azaltılmış işlevsellik"
 
 #: models.py:90
 msgid "Basic features only"
-msgstr "Temel özellikler yalnızca"
+msgstr "Yanlızca temel özellikler"
 
 #: models.py:91
 msgid "Commonly used features"
@@ -119,11 +119,11 @@ msgstr "Tüm özellikler"
 
 #: models.py:730 templates/bober_simple_competition/profile_detail.html:22
 msgid "First Name"
-msgstr "İsim"
+msgstr "Ad"
 
 #: models.py:731 templates/bober_simple_competition/profile_detail.html:26
 msgid "Last Name"
-msgstr "Soyadı"
+msgstr "Soyad"
 
 #: templates/base.html:37
 msgid "Beaver"
@@ -147,7 +147,7 @@ msgstr "Erişim kodunu girin"
 #: templates/bober_simple_competition/profile_detail.html:14
 #: templates/bober_simple_competition/profile_table_list.html:11
 msgid "Back to Menu"
-msgstr "Geri Menü"
+msgstr "Menüye Dön"
 
 #: templates/bober_simple_competition/access_code.html:18
 #: templates/bober_simple_competition/basic_registration.html:11
@@ -174,7 +174,7 @@ msgstr "Soru"
 #: templates/bober_simple_competition/attempt_results.html:14
 #: templates/bober_simple_competition/competition_attempt_list.html:19
 msgid "Not graded yet"
-msgstr "Henüz kademeli"
+msgstr "Henüz seçilmemiş"
 
 #: templates/bober_simple_competition/attempt_results.html:15
 #: templates/bober_simple_competition/competition_attempt_list.html:20
@@ -215,7 +215,7 @@ msgstr "Kayıt"
 #: templates/bober_simple_competition/codeformat_create.html:4
 #: templates/bober_simple_competition/codeformat_create.html:6
 msgid "Create code format"
-msgstr "Kod biçimi oluşturmak"
+msgstr "Kod formatı oluştur"
 
 #: templates/bober_simple_competition/codeformat_create.html:9
 msgid "Code format successfully created!"
@@ -229,19 +229,19 @@ msgstr "Kod formatı başarıyla oluşturuldu!"
 #: templates/code_based_auth/codeformat_list.html:4
 #: templates/code_based_auth/codeformat_list.html:6
 msgid "Code formats"
-msgstr "Kod biçimleri"
+msgstr "Kod formatları"
 
 #: templates/bober_simple_competition/codeformat_index.html:9
 msgid "Back to index"
-msgstr "Dönünüz"
+msgstr "Dizine geri dön"
 
 #: templates/bober_simple_competition/codeformat_index.html:10
 msgid "Competitor code formats"
-msgstr "Rakip kodu formatları"
+msgstr "Yarışmacı kodu formatları"
 
 #: templates/bober_simple_competition/codeformat_index.html:11
 msgid "Create competitor code format"
-msgstr "Rakip kod biçimi oluşturmak"
+msgstr "Yarışmacı kod biçimi oluştur"
 
 #: templates/bober_simple_competition/codeformat_index.html:12
 msgid "Admin code formats"
@@ -249,11 +249,11 @@ msgstr "Yönetici kodu formatları"
 
 #: templates/bober_simple_competition/codeformat_index.html:13
 msgid "Create administrator code format"
-msgstr "Yönetici kodu biçimi oluşturmak"
+msgstr "Yönetici kod formatı oluştur"
 
 #: templates/bober_simple_competition/codeformat_list.html:8
 msgid "Back to code format index"
-msgstr "Geri kodu formatı endeksi"
+msgstr "Kod formatı dizinine geri dön"
 
 #: templates/bober_simple_competition/competition_attempt_list.html:4
 #: templates/bober_simple_competition/competition_attempt_list.html:6
@@ -264,17 +264,17 @@ msgstr "Yarışma girişimleri"
 #: templates/bober_simple_competition/competition_code_list.html:9
 #: templates/bober_simple_competition/competition_detail.html:12
 msgid "Back to competitions"
-msgstr "Geri yarışmalar"
+msgstr "Yarışmalara geri dön"
 
 #: templates/bober_simple_competition/competition_attempt_list.html:11
 #: templates/bober_simple_competition/competition_code_list.html:11
 msgid "Competition details"
-msgstr "Yarışma ayrıntıları"
+msgstr "Yarışma detayları"
 
 #: templates/bober_simple_competition/competition_code_create.html:4
 #: templates/bober_simple_competition/competition_code_create.html:6
 msgid "Create code"
-msgstr "Kodu oluşturun"
+msgstr "Kod oluştur"
 
 #: templates/bober_simple_competition/competition_code_list.html:4
 #: templates/bober_simple_competition/competition_code_list.html:6
@@ -294,11 +294,11 @@ msgstr "Yönetici kodları"
 #: templates/bober_simple_competition/competition_code_list.html:18
 #: templates/bober_simple_competition/competition_code_list.html:27
 msgid "Generate code"
-msgstr "Kodu üretmek"
+msgstr "Kod üret"
 
 #: templates/bober_simple_competition/competition_code_list.html:25
 msgid "Competitor codes"
-msgstr "Rakip kodları"
+msgstr "Yarışmacı kodları"
 
 #: templates/bober_simple_competition/competition_detail.html:6
 #: templates/bober_simple_competition/competition_detail.html:8
@@ -308,11 +308,11 @@ msgstr "Yarışma"
 
 #: templates/bober_simple_competition/competition_detail.html:15
 msgid "codes"
-msgstr "kodlar"
+msgstr "Kodlar"
 
 #: templates/bober_simple_competition/competition_detail.html:16
 msgid "edit"
-msgstr "düzenlemek"
+msgstr "Eüzenle"
 
 #: templates/bober_simple_competition/competition_detail.html:18
 #: templates/bober_simple_competition/competition_form.html:36
@@ -325,7 +325,7 @@ msgstr "Soru setleri"
 #: templates/bober_simple_competition/competition_form.html:6
 #: templates/bober_simple_competition/competition_form.html:8
 msgid "Edit competition"
-msgstr "Düzenleme yarışması"
+msgstr "Yarışmayı düzenle"
 
 #: templates/bober_simple_competition/competition_form.html:43
 #: templates/bober_simple_competition/competition_form.html:71
@@ -339,25 +339,25 @@ msgstr "Daha az göster"
 #: templates/bober_simple_competition/competition_guest.html:4
 #: templates/bober_simple_competition/competition_guest.html:6
 msgid "Compete as a guest"
-msgstr "Misafir olarak yarışın"
+msgstr "Misafir olarak yarış"
 
 #: templates/bober_simple_competition/competition_guest.html:13
 msgid "Guest access not allowed."
-msgstr "Misafir erişimi izin verilmiyor."
+msgstr "Misafir erişimine izin verilmiyor"
 
 #: templates/bober_simple_competition/competition_guest.html:14
 msgid "Compete using a code"
-msgstr "Bir kodu kullanarak yarışın"
+msgstr "kod kullanarak yarışın"
 
 #: templates/bober_simple_competition/competition_guest.html:16
 msgid "If you are not redirected automatically, click on the link below."
-msgstr "Otomatik olarak yönlendirilir değilseniz, aşağıdaki linke tıklayın."
+msgstr "Otomatik olarak yönlendirilmezseniz, aşağıdaki linke tıklayın."
 
 #: templates/bober_simple_competition/competition_guest.html:17
 #: templates/bober_simple_competition/competition_registration.html:16
 #: templates/bober_simple_competition/questionset_registration.html:14
 msgid "Compete"
-msgstr "Rekabet etmek"
+msgstr "Yarış"
 
 #: templates/bober_simple_competition/competition_index.html:57
 msgid "Answered"
@@ -369,24 +369,24 @@ msgstr "Kalan zaman"
 
 #: templates/bober_simple_competition/competition_index.html:70
 msgid "Finish"
-msgstr "Finish"
+msgstr "Bitir"
 
 #: templates/bober_simple_competition/competition_index.html:81
 #: templates/bober_simple_competition/competition_index.html:93
 msgid "Clear Answer"
-msgstr "Temizle Cevap"
+msgstr "Cevabı temizle"
 
 #: templates/bober_simple_competition/competition_list.html:5
 msgid "Competitions in progress"
-msgstr "Devam eden Oyuncu"
+msgstr "Devam eden oyuncu"
 
 #: templates/bober_simple_competition/competition_list.html:20
 msgid "Create competition"
-msgstr "Rekabet yaratmak"
+msgstr "Yarışma oluştur"
 
 #: templates/bober_simple_competition/competition_registration.html:19
 msgid "Login as a teacher"
-msgstr "Bir öğretmen olarak oturum"
+msgstr "Öğretmen oturumu aç"
 
 #: templates/bober_simple_competition/index.html:4
 msgid "Welcome to the Bober competition"
@@ -411,7 +411,7 @@ msgstr "Yönetilen kullanıcılar"
 
 #: templates/bober_simple_competition/index.html:14
 msgid "My profile"
-msgstr "Benim profilim"
+msgstr "Profilim"
 
 #: templates/bober_simple_competition/index.html:16
 #: templates/bober_simple_competition/question_list.html:4
@@ -423,7 +423,7 @@ msgstr "Sorular"
 
 #: templates/bober_simple_competition/profile_detail.html:19
 msgid "Profile Details"
-msgstr "Profil Detaylar"
+msgstr "Profil Detayları"
 
 #: templates/bober_simple_competition/profile_detail.html:30
 msgid "Email"
@@ -435,19 +435,19 @@ msgstr "Eski profiller"
 
 #: templates/bober_simple_competition/profile_detail.html:54
 msgid "Attempts"
-msgstr "Girişimleri"
+msgstr "Girişimler"
 
 #: templates/bober_simple_competition/profile_detail.html:68
 #: templates/bober_simple_competition/profile_detail.html:106
 #: templates/bober_simple_competition/profile_form.html:30
 #: templates/bober_simple_competition/profile_form.html:68
 msgid "Show codes"
-msgstr "Göster kodları"
+msgstr "Kodları göster"
 
 #: templates/bober_simple_competition/profile_detail.html:71
 #: templates/bober_simple_competition/profile_form.html:33
 msgid "Used codes"
-msgstr "İkinci kodları"
+msgstr "Kullanılan kodlar"
 
 #: templates/bober_simple_competition/profile_detail.html:80
 #: templates/bober_simple_competition/profile_form.html:42
@@ -457,17 +457,17 @@ msgstr "Alınan kodlar"
 #: templates/bober_simple_competition/profile_detail.html:89
 #: templates/bober_simple_competition/profile_form.html:51
 msgid "Created codes"
-msgstr "Oluşturuldu kodları"
+msgstr "Oluşturulan kodlar"
 
 #: templates/bober_simple_competition/profile_detail.html:103
 #: templates/bober_simple_competition/profile_form.html:65
 msgid "Hide codes"
-msgstr "Gizle kodları"
+msgstr "Kodları gizle"
 
 #: templates/bober_simple_competition/profile_form.html:4
 #: templates/bober_simple_competition/profile_form.html:6
 msgid "Edit user"
-msgstr "Düzenleme kullanıcı"
+msgstr "Kullanıcı Düzenle"
 
 #: templates/bober_simple_competition/profile_list.html:4
 #: templates/bober_simple_competition/profile_list.html:5
@@ -483,7 +483,7 @@ msgstr "Profili güncelle"
 #: templates/bober_simple_competition/questionset_create.html:4
 #: templates/bober_simple_competition/questionset_create.html:6
 msgid "Create question set"
-msgstr "Soru kümesi oluşturma"
+msgstr "Soru seti oluştur"
 
 #: templates/bober_simple_competition/questionset_detail.html:6
 #: templates/bober_simple_competition/questionset_detail.html:8
@@ -494,7 +494,7 @@ msgstr "Soru seti"
 
 #: templates/bober_simple_competition/questionset_detail.html:18
 msgid "Edit questionset"
-msgstr "Düzenleme questionset"
+msgstr "Soru setini düzenle"
 
 #: templates/bober_simple_competition/user_files.html:4
 #: templates/bober_simple_competition/user_files.html:6
@@ -508,12 +508,12 @@ msgstr "Kullanıcı oluşturuldu"
 
 #: templates/registration/logged_out.html:5
 msgid "Thank you for using Bober"
-msgstr "BOBER kullandığınız için teşekkür ederiz"
+msgstr "BOBER'i kullandığınız için teşekkür ederiz"
 
 #: templates/registration/logged_out.html:6
 #: templates/registration/logged_out.html:7
 msgid "Back to first page"
-msgstr "Geri ilk sayfaya"
+msgstr "İlk sayfaya geri dön"
 
 #: templates/registration/login.html:9
 msgid "Hello,"
@@ -527,7 +527,7 @@ msgid "Edit my profile"
 msgstr "Profilimi düzenle"
 
 msgid "attempts"
-msgstr "girişimleri"
+msgstr "girişimler"
 
 msgid "Competition Name"
 msgstr "Yarışma Adı"
@@ -548,10 +548,10 @@ msgid "In Cooperation With"
 msgstr "İşbirliği ile"
 
 msgid "Create code format for admin users (teachers)"
-msgstr "Yönetici kullanıcıları için kod biçimi oluşturmak (öğretmenler)"
+msgstr "Yöneticiler (öğretmenler) için kod formatı oluştur"
 
 msgid "Create code format for competitors"
-msgstr "Rakipleri için kod biçimi oluşturmak"
+msgstr "Yarışmacılar için kod formatı oluştur"
 
 msgid "Try it!"
 msgstr "Dene!"
@@ -559,37 +559,36 @@ msgstr "Dene!"
 msgid ""
 "You have attempted to leave this page. Your last question answer will be "
 "saved automatically. Are you sure you want to exit this page?"
-msgstr "Bu sayfayı terk etmeye çalıştılar. Sizin son soru cevap otomatik olarak kaydedilir. Bu sayfayı çıkmak istediğinizden emin misiniz?"
+msgstr "Bu sayfayı terk etme girişiminde bulundunuz. Verdiğiniz son cevap otomatik olarak kaydedilecektir. Bu sayfadan çıkmak istediğinizden emin misiniz?"
 
 msgid "You are out of time for solving the competition."
-msgstr "Sen rekabet çözümü için zamanın dışında bulunmaktadır."
+msgstr "Yarışmayı çözmek için geç kaldınız"
 
 msgid "Thank you for participating in the competition"
 msgstr "Yarışmaya katıldığınız için teşekkür ederiz"
 
 msgid "Your answer was successfully saved!"
-msgstr "Yanıtınız başarıyla kaydedildi!"
+msgstr "Cevabınız başarıyla kaydedildi!"
 
 msgid "Are you sure you want to clear answer?"
-msgstr "Eğer cevabı silmek istediğinizden emin misiniz?"
+msgstr "Cevabı silmek istediğinizden emin misiniz?"
 
 msgid "You left %s question unanswered. "
 msgid_plural "You left %s questions unanswered. "
-msgstr[0] "Sen %s sorusu cevapsız."
+msgstr[0] "%s soruyu cevaplamadan ayrıldınız."
 msgstr[1] "Sen %s sorusu cevapsız."
-msgstr[2] "Sen %s sorusu cevapsız."
+msgstr[2] "%s sorusu cevapsız."
 msgstr[3] "Sen %s sorusu cevapsız."
 
 msgid "%(n)s competitor"
 msgid_plural "%s competitors"
-msgstr[0] "% (n) s rakip"
+msgstr[0] "% (n) s yarışmacı"
 msgstr[1] "% (n) s rakip"
 msgstr[2] "% (n) s rakip"
 msgstr[3] "% (n) s rakip"
 
 msgid "Are you sure you want to finish the competition?"
-msgstr "Eğer rekabet bitirmek istiyorum emin misin?"
+msgstr "Yarışmayı tamamlamak istediğinizden emin misiniz?"
 
 msgid "An error has occured. Please try to finish competition again."
-msgstr "Bir hata oluştu. Yine rekabeti bitirmek için deneyin."
-
+msgstr "Bir hata oluştu. Yarışmayı tamamlamak için tekrar deneyin"
