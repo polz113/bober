@@ -1,0 +1,55 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-11-07 19:24+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=4; plural=(n%100==1 ? 0 : n%100==2 ? 1 : n%100==3 || n"
+"%100==4 ? 2 : 3);\n"
+
+#: forms.py:25
+msgid "Remove the provided examples"
+msgstr "Sağlanan örnekleri kaldır"
+
+#: forms.py:49
+#| msgid "Error in line %d."
+msgid "Error in line %(line)d."
+msgstr "Satır %(line)d hata oluştu."
+
+#: templates/bober_paper_submissions/junior_results.html:7
+msgid "Result entry form"
+msgstr "Sonuç giriş formu"
+
+#: templates/bober_paper_submissions/junior_results.html:12
+msgid "Use the fields below to enter the competition results for each class."
+msgstr "Her sınıfa yarışma sonuçlarını girmek için aşağıdakı alanları kullanınız"
+
+#: templates/bober_paper_submissions/junior_results.html:13
+msgid ""
+"If you did not organize a competition for some of the classes, leave those "
+"fields empty."
+msgstr "Bazı sınıflar için yarışma organize edilmediyse, bu alanları boş bırakınız"
+
+#: templates/bober_paper_submissions/junior_results.html:16
+msgid "Submit data"
+msgstr "Veri gönder"
+
+#: templates/bober_paper_submissions/school_mentor.html:7
+msgid "Pick a school"
+msgstr "Okul seçiniz"
+
+#: templates/bober_paper_submissions/junior_results.html:36
+msgid "Example"
+msgstr "Örnek"
