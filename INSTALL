@@ -49,9 +49,23 @@
       virtualenv bober_env
       source bober_env/bin/activate
 
-* Install the all package with use the requirements.txt
+* Install the all package with use the requirements.txt:
 
       pip install -r $BOBER_HOME/django/bober/requirements.txt
+
+* Create the new directories for the static and media files:
+
+      mkdir boberstatic
+      mkdir bobermedia
+
+* And change the STATIC_ROOT and MEDIA_ROOT on the settings.py:
+
+      STATIC_ROOT = '/your/static/dir/path'
+      MEDIA_ROOT = '/your/media/directory/path'
+
+* Run the collectstatic management command:
+
+      python manage.py collectstatic
 
 * Migrate the database
 
@@ -81,19 +95,17 @@ to set up nginx. To do this, you can follow the instructions below.
 
 * Still in /etc/nginx/sites-enabled/bober, change:
 
-    root BOBER_HOME/backend/www/;
+    root BOBER_HOME/django/bober/;
 
-* Edit the task entry system virtual host file:
+* Add the location for static and media files:
 
-    vim bober-tasks
+    location /media/  {
+        alias /your/media/dir/path;
+    }
 
-* In /etc/nginx/sites-enabled/bober-tasks, change:
-
-    server_name BOBER_TASK_SERVER_NAME;
-
-* Still in /etc/nginx/sites-enabled/bober, change:
-
-    root BOBER_HOME/rvp/;
+    location  /static/ {
+        alias /your/static/dir/path;
+    }
 
 * Configure the uwsgi daemon which is used by the task entry system to run the WSGI application:
 
@@ -102,23 +114,21 @@ to set up nginx. To do this, you can follow the instructions below.
     ln -s ../apps-available/bober-tasks.ini .
     vim bober-tasks.ini
 
-* Change the location of the application:
+* Edit the bober-tasks.ini:
 
-    chdir           = BOBER_HOME/rvp/app
+    wsgi-file       = BOBER_HOME/django/bober/bober/wsgi.py
+    chdir           = BOBER_HOME/django/bober
+    virtualenv      = /path/to/your/bober_env
 
 * For the competition system to work, the web server must have access to some directories:
 
     cd $BOBER_HOME
-    chown -R www-data.www-data backend/www/assets backend/runtime
+    chown -R www-data.www-data /path/to/your/static/dir /path/to/your/media/dir
 
-* For the task creation system's export functionality to work, the web server must have access to the temporary directory for the creation of zip files:
-
-    chown -R www-data.www-data rvp/app/application/private/
-
-* Finally, restart the web server:
+* Restart the web server:
 
     service nginx restart
 
-* If you are using the task creation system, restart uwsgi:
+* And, finally, the uwsgi daemon
 
     service uwsgi restart
