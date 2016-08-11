@@ -37,10 +37,50 @@ ul.nav li {
         </div>
     </div>
     <div class="row-fluid">
-    {% trans "Language: " %}{{object.get_language_locale_display}}
+    {% trans "Language: " %}{{object.get_language_locale_display}}<br><br>
     <form action="" method="POST">
     {% csrf_token %}
-{{form.as_p}}
+<!-- {{form.as_p}} -->
+      <div class="row">
+        <div class="col-md-3">
+          <div class="form-group">
+            {{form.title.errors}}
+            {{form.title.label_tag}}
+            {{form.title}}
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            {{form.template.errors}}
+            {{form.template.label_tag}}
+            {{form.template}}
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          {{form.body.errors}}
+          {{form.body.label_tag}}
+          {{form.body}}
+        </div>
+        <div class="col-md-6">
+          {{form.solution.errors}}
+          {{form.solution.label_tag}}
+          {{form.solution}}
+        </div>
+      </div><br><br>
+      <div class="row">
+        <div class="col-md-6">
+          {{form.it_is_informatics.errors}}
+          {{form.it_is_informatics.label_tag}}
+          {{form.it_is_informatics}}
+        </div>
+        <div class="col-md-6">
+          {{form.comment.errors}}
+          {{form.comment.label_tag}}
+          {{form.comment}}
+        </div>
+      </div>
 <h2>{% trans "Answers" %}</h2>
     {%for inline in inlines %}
         {{inline.management_form}}

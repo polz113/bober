@@ -17,6 +17,9 @@ from django.utils.translation import ugettext_lazy as _
 from django.views.generic import ListView, DetailView, CreateView, DeleteView, UpdateView, FormView, TemplateView
 import django.forms
 from django.forms.models import modelform_factory, model_to_dict
+from django_tables2 import RequestConfig
+from bober_tasks.tables import TaskTable
+from bober_tasks.filters import TaskFilter
 from extra_views import CreateWithInlinesView, UpdateWithInlinesView, InlineFormSet
 from braces.views import LoginRequiredMixin
 import StringIO
@@ -105,7 +108,7 @@ def export_task_translation( request, task_translation ):
 
         # ZIP archive filename, Open StringIO to grab in-memory ZIP contents, The zip compressor
         #zip_filename = "task-" + str(task.id) + "-" + task_translation.language_locale + "-v" + task_translation.version
-        zip_filename = '%s-%d_%s_v%d' % (slugify(task_translation.title), 
+        zip_filename = '%s-%d_%s_v%d' % (slugify(task_translation.title),
             task_translation.task_id, task_translation.language_locale, task_translation.version)
         #zip_filename = task_translation.title
         s = StringIO.StringIO()
@@ -257,11 +260,11 @@ def index( request ):
 
     tasks=[]
 
-    """"
+    """
 
     ORDERING THE TASK LIST
 
-    """
+    ""
     order_by = "timestamp"
     if request.method == "GET" and 'order' in request.GET:
         order = request.GET.get('order')
@@ -277,19 +280,20 @@ def index( request ):
         else:
             direction = ''
         order_by = direction + order_translation_dict.get(order, order)
-       
+
     """
+"""
 
     SEARCHING THE TASK LIST
 
-    """
+    ""
 
     if request.method == "GET" and 'search' in request.GET:
-        """
+        ""
 
         getting all the search values
 
-        """
+        ""
 
         q_obj= Q()
 
@@ -405,25 +409,33 @@ def index( request ):
     #tasks_translations = TaskTranslation.objects.filter(language_locale=language).order_by(order_by)
 
     return render_to_response("index.html", locals(), context_instance = RequestContext( request ) )
+"""
 
 @login_required
-def tasks_list_language(request, language_locale = None):
-    language = language_locale
-    languages = settings.LANGUAGES
-    all_task_translations = TaskTranslation.objects.all()
-    if language:
-        all_task_translations = task_translations.filter(
-            language_locale = language_locale)
-    all_task_translation = all_task_translations.order_by('task', '-version')
-    task_translations = []
-    prev_task = None
-    # collect the tasks with largest versions
-    for translation in all_task_translations:
-        if prev_task != translation.task:
-            task_translations.append(translation)
-        prev_task = translation.task
-    return render(request, "bober_tasks/list.html", locals())
 
+#def tasks_list_language(request, language_locale = None):
+    #language = language_locale
+    #languages = settings.LANGUAGES
+    #all_task_translations = TaskTranslation.objects.all()
+    #if language:
+        #all_task_translations = task_translations.filter(
+            #language_locale = language_locale)
+    #all_task_translation = all_task_translations.order_by('task', '-version')
+    #task_translations = []
+    #prev_task = None
+    # collect the tasks with largest versions
+    #for translation in all_task_translations:
+        #if prev_task != translation.task:
+            #task_translations.append(translation)
+        #prev_task = translation.task
+    #return render(request, "bober_tasks/list.html", locals())
+
+def tasks_list_language(request, language_locale):
+    queryset = TaskTranslation.objects.select_related().all()
+    f = TaskFilter(request.GET, queryset=queryset)
+    table = TaskTable(f.qs)
+    RequestConfig(request, paginate={'per_page': 10}).configure(table)
+    return render(request, "bober_tasks/list.html", {'table': table})
 
 @login_required
 def tasks_upload(request, id=0):
@@ -604,14 +616,14 @@ class TaskDetail(LoginRequiredMixin, DetailView):
 class TaskTranslationUpdate(UpdateWithInlinesView, LoginRequiredMixin):
     model = TaskTranslation
     form_class = forms.TaskTranslationForm
-    template_name = 'bober_tasks/tasktranslation_form.html' 
+    template_name = 'bober_tasks/tasktranslation_form.html'
     inlines = [ forms.AnswerInline ]
     def get_success_url(self):
         return reverse('tasktranslation_preview', kwargs = {'pk': self.object.pk})
     def get(self, request, *args, **kwargs):
         self.remark_form = forms.InlineRemarkForm()
         return super(TaskTranslationUpdate, self).get(request, *args, **kwargs)
-    def get_form_kwargs(self): 
+    def get_form_kwargs(self):
         kwargs = super(TaskTranslationUpdate, self).get_form_kwargs()
         return kwargs
     def get_context_data(self, *args, **kwargs):
@@ -880,4 +892,3 @@ def set_interface_lang(request):
         messages.success(request, _("Your interface language has been changed."))
 
     return redirect("index")
-

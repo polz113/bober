@@ -2,14 +2,17 @@
 {% load i18n %}
 {% load static %}
 {% load url_sort %}
+{% load render_table from django_tables2 %}
 {% block headline %}{% trans "Task list" %}{% endblock headline %}
 {% block content %}
 
-    <h1>{% trans "List of tasks in language " %}{{ language.value }}:</h1>
+<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+
+    <h3>{% trans "List of tasks in language " %}{{ language.value }}:</h3>
     <div class="well">
         {% trans "Change language" %}
-        {% for lang in languages %}
-            | <a href="{{ lang.id }}">{{ lang.value }}</a>
+        {% for lang in LANGUAGES %}
+            | <a href="?language_locale={{ lang.0 }}">{{ lang.1 }}</a>
         {% endfor %}
         <a class="btn btn-primary pull-right" href="{% url "tasks.new" %} ">{% trans "New task" %}</a>
     </div>
@@ -17,53 +20,73 @@
     <div class="well custom">
         <div class="row">
             <div class="span12" style="height: 40px;">
-                <form action="{% url "index" %} " method="GET" class="form-search form-horizontal"
+              <form action="" method="get">
+                <input class="span2" id="search" name="title" placeholder="{% trans "Search" %}..."
+                        type="text" >
+                <button class="btn" id="searchButton" type="submit"><i class="glyphicon glyphicon-search"></i></button>
+            </form>
+              <!--  <form action="" method="" class="form-search form-horizontal"
                       style="margin:0px;display:inline;">
 
                     <div class="input-append" style="position:relative; left:20px;">
-                        <input class="span2" id="searchFull" name="searchFull" placeholder="{% trans "Search" %}..."
-                               id="appendedInputButtons" type="text">
-                        <button class="btn" id="searchFullButton" type="submit"><i class="icon-search"></i></button>
+
+                        <input class="span2" id="search" name="search" placeholder="{% trans "Search" %}..."
+                                type="text" >
+                        <button class="btn" id="searchButton" type="submit"><i class="glyphicon glyphicon-search"></i></button>
                     </div>
-                </form>
+                </form> -->
             </div>
         </div>
 
-        <table class="table">
+        <form class="" action="" method="get">
+          {% render_table table %} <br>
+          <input type="button" name="name" value="Export Tasks">
+        </form>
 
-            <tr>
-                <th><a class="sort" href="?{% url_sort request 'order' 'title' %}">{% trans "Title" %}</a></th>
-                <th class="tcol4"><a class="sort"
-                                     href="?{% url_sort request 'order' 'description' %}">{% trans "Description" %}</a>
-                </th>
-                <th><a class="sort"
-                                     href="?{% url_sort request 'order' 'timestamp' %}">{% trans "Last edit" %}</a>
-                </th>
 
-            </tr>
+
+      <!--  <table class="taskTable table table-hover">
+
+            <thead>
+              <tr>
+                  <th data-sort="string">{% trans "Title" %}<i class="fa fa-fw fa-sort"></i></th>
+                  <th data-sort="string">{% trans "Description" %}<i class="fa fa-fw fa-sort"></a>
+                  </th>
+                  <th data-sort="string">{% trans "Last edit" %}<i class="fa fa-fw fa-sort"></a>
+                  </th>
+
+              </tr>
+            </thead>
             {% comment %} SEARCH  {% endcomment %}
 
             {% if task_translations %}
+            <tbody id="fbody">
                 {% for task_translation in task_translations %}
-                    <tr>
-                        <td>
-                            <a href="{% url "tasktranslation_detail" task_translation.id %} ">
-                                {{ task_translation.title }}
-                            </a>
-                        </td>
+
+                      <tr>
+                          <td>
+                              <a href="{% url "tasktranslation_detail" task_translation.id %} ">
+                                  {{ task_translation.title }}
+                              </a>
+                          </td>
 
 
-                        <td>
-                            {{ task_translation.body|safe|striptags|truncatechars:150 }}
-                        </td>
-                        <td>
-                            {{ task_translation.timestamp }}
-                        </td>
-                    </tr>
+                          <td>
+                              {{ task_translation.body|safe|striptags|truncatechars:150 }}
+                          </td>
+                          <td>
+                              {{ task_translation.timestamp }}
+                          </td>
+                      </tr>
+
                 {% endfor %}
+                </tbody>
+                <tfoot>
+        				</tfoot>
             {% endif %}
-        </table>
+        </table> -->
 
+        <!--
         <div class="pagination pagination-centered">
             <ul>
                 {% if task_translations.has_previous %}
@@ -78,13 +101,8 @@
                     <li><a href="?page={{ task_translations.next_page_number }}">Next</a></li>
                 {% endif %}
             </ul>
-        </div>
+        </div> //-->
     </div>
-
-
-
-
-
 
     <div id="erorrModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
          aria-hidden="true">

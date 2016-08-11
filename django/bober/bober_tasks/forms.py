@@ -16,7 +16,7 @@ class TaskForm(forms.ModelForm):
         model = Task
         fields = ['international_id', 'country', 'author']
     language_locale = forms.ChoiceField(choices=settings.LANGUAGES,
-        required = True, 
+        required = True,
         label=_('The language for the first version of the task'))
 
 class AgeGroupForm(forms.ModelForm):
@@ -42,7 +42,7 @@ class DifficultyForm(forms.ModelForm):
 class TaskTranslationForm(forms.ModelForm):
     class Meta:
         model = TaskTranslation
-        fields = ['title', 'template', 'body', 'solution', 
+        fields = ['title', 'template', 'body', 'solution',
             'it_is_informatics', 'comment'
             ]
         widgets = {
@@ -85,4 +85,3 @@ class RemarkInline(InlineFormSet):
     form_class = InlineRemarkForm
     can_delete = False
     extra = 1
-
