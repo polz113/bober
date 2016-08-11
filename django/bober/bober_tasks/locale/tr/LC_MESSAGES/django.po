@@ -176,6 +176,7 @@ msgstr "Kategori"
 #: bober_tasks/templates/index.html:32 bober_tasks/templates/index.html:59
 #: bober_tasks/templates/task/list.html:37
 #: bober_tasks/templates/bober_tasks/list.html: 37
+#: bober_tasks/tables.py: 6
 msgid "Description"
 msgstr "Açıklama"
 
@@ -242,6 +243,7 @@ msgstr "İleri derece"
 #: bober_tasks/templates/task/translate.html: 31
 #: bober_tasks/templates/task/translate.html: 244
 #: bober_tasks/templates/task/edit.html: 23
+#: bober_tasks/tables.py: 8
 msgid "Title"
 msgstr "Başlık"
 
@@ -300,6 +302,12 @@ msgstr "Dili değiştir"
 #| msgid "Last name"
 msgid "Last edit"
 msgstr "Son Düzenleme"
+
+#: bober_tasks/templates/bober_tasks/list.html: 43
+msgid "Export Tasks"
+msgstr "Aktar"
+
+
 
 #: bober_tasks/templates/user/profile.html:5
 msgid "My Profile"
@@ -449,16 +457,16 @@ msgid "List of tasks in language"
 msgstr "Dildeki Görevlerin Listesi"
 
 #: bober_tasks/templates/bober_tasks/list.html: 70
-msgid "Prev"
+msgid "Previous"
 msgstr "Önceki"
 
-#: bober_tasks/templates/bober_tasks/list.html: 74
+#: bober_tasks/templates/bober_tasks/list.html: 97
 msgid "Page"
 msgstr "Sayfa"
 
-#: bober_tasks/templates/bober_tasks/list.html: 74
+#: bober_tasks/templates/bober_tasks/list.html: 97
 msgid "of"
-msgstr " "
+msgstr "/"
 
 #: bober_tasks/templates/bober_tasks/list.html: 78
 msgid "Next"
@@ -643,12 +651,22 @@ msgid "There is no author!"
 msgstr "Yazar bilgisi yok!"
 
 #: bober_tasks/templates/bober_tasks/tasktranslation_preview.html: 50
+#: bober_tasks/tables.py: 9
 msgid "Export"
 msgstr "Dışa Aktar"
 
 #: bober_tasks/templates/bober_tasks/tasktranslation_form.html: 156
 msgid "newdocument"
 msgstr "Yeni Belge"
+
+#: bober_tasks/tables.py: 7
+msgid "Last Edit"
+msgstr "Güncellenme"
+
+
+
+
+
 
 
 
