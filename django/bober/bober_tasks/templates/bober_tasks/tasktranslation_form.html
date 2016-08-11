@@ -21,51 +21,179 @@ ul.nav li {
 {% block content %}
     <div class="row">
         <div class="navbar span12">
-            <div class="navbar-inner">
+            <div class="navbar-inner"><center>
                 <ul class="nav">
-                    <li><a href="#title"><i class="icon-chevron-right"></i> Title</a></li>
-                    <li><a href="#body"><i class="icon-chevron-right"></i> Body</a></li>
-                    <li><a href="#answers"><i class="icon-chevron-right"></i> answers</a></li>
-                    <li><a href="#correctness"><i class="icon-chevron-right"></i> Correctness</a></li>
-                    <li><a href="#solution"><i class="icon-chevron-right"></i> Solution</a></li>
-                    <li><a href="#informatics"><i class="icon-chevron-right"></i> Informatics</a></li>
-                    <li><a href="#content_category"><i class="icon-chevron-right"></i> Content category</a></li>
-                    <li><a href="#age_groups"><i class="icon-chevron-right"></i> Age groups</a></li>
-                    <li><a href="#summary"><i class="icon-chevron-right"></i> Summary</a></li>
-                </ul>
+                    <li><a href="#title"><i class="icon-chevron-right"></i> {% trans "Title" %} </a></li>
+                    <li><a href="#body"><i class="icon-chevron-right"></i> {% trans "Body" %} </a></li>
+                    <li><a href="#answers"><i class="icon-chevron-right"></i> {% trans "Answers"%} </a></li>
+                    <li><a href="#correctness"><i class="icon-chevron-right"></i> {% trans "Correctness" %} </a></li>
+                    <li><a href="#solution"><i class="icon-chevron-right"></i> {% trans "Solution" %} </a></li>
+                    <li><a href="#informatics"><i class="icon-chevron-right"></i> {% trans "Informatics" %} </a></li>
+                    <li><a href="#content_category"><i class="icon-chevron-right"></i> {% trans "Content Category" %} </a></li>
+                    <li><a href="#age_groups"><i class="icon-chevron-right"></i> {% trans "Age Groups" %} </a></li>
+                    <li><a href="#summary"><i class="icon-chevron-right"></i> {% trans "Summary" %} </a></li>
+                </ul></center>
             </div>
         </div>
     </div>
     <div class="row-fluid">
-    {% trans "Language: " %}{{object.get_language_locale_display}}
+    {% trans "Language: " %}{{object.get_language_locale_display}}<br><br>
     <form action="" method="POST">
     {% csrf_token %}
-{{form.as_p}}
-<h2>{% trans "Answers" %}</h2>
-    {%for inline in inlines %}
+<!-- {{form.as_p}} -->
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-group">
+            <a name = "title"></a>
+            {{form.title.errors}}
+            {{form.title.label_tag}}
+            {{form.title}}
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <a name= "template"></a>
+            {{form.template.errors}}
+            {{form.template.label_tag}}
+            {{form.template}}
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <a name = "body"></a>
+          {{form.body.errors}}
+          {{form.body.label_tag}}
+          {{form.body}}
+        </div>
+        <div class="col-md-6">
+          <a name = "solution"></a>
+          {{form.solution.errors}}
+          {{form.solution.label_tag}}
+          {{form.solution}}
+        </div>
+      </div><br><br>
+      <div class="row">
+        <div class="col-md-6">
+          <a name = "informatics"></a>
+          {{form.it_is_informatics.errors}}
+          {{form.it_is_informatics.label_tag}}
+          {{form.it_is_informatics}}
+        </div>
+        <div class="col-md-6">
+          <a name = "comment"></a>
+          {{form.comment.errors}}
+          {{form.comment.label_tag}}
+          {{form.comment}}
+        </div>
+      </div>
+
+      <a name = "answers"></a>
+      <h2>{% trans "Answers" %}</h2>
+
+      {%for inline in inlines %}
+
         {{inline.management_form}}
-        {% for inlineform in inline %}
+          {% for inlineform in inline %}
+
             {{inlineform.as_p}}
-        {% endfor %}
-    {%endfor%}
-    {{remark_form.as_p}}
-        <div class="form-actions form-inline">
+
+          {% endfor %}
+
+           {%endfor%}
+      {{remark_form.as_p}}
+
+
+      <div class="form-actions form-inline">
             <div class="control-group">
             <fieldset id="summary">
                 <button type="submit" class="btn btn-primary">{% trans "Save" %}</button>
-                <a href="{% url "index" %} " class="btn btn-danger">{% trans "Cancel" %}</a>
+                <a href="{% url "tasks.list" %} " class="btn btn-danger">{% trans "Cancel" %}</a>
             </fieldset>
             </div>
         </div>
+        <img id="ScrollTop" src="https://cdn1.iconfinder.com/data/icons/fs-icons-ubuntu-by-franksouza-/128/arrow-up.png" title="Yukarı Çık"/>
+        <style type="text/css">
+                #ScrollTop{
+                  position: fixed;
+          left: 15px;
+          bottom: 15px;
+          top: 250px;
+          height: 40px;
+          width: 40px;
+          cursor: pointer;
+          display: none;
+        }
+        </style>
+        <script type="text/javascript">
+          $("#ScrollTop").click(function() {
+          $("html,body").stop().animate({ scrollTop: "0" }, 1000);
+          });
+          $(window).scroll(function() {
+    var length = $(document).scrollTop();
+    if (length > 200){
+        $("#ScrollTop").fadeIn(500);
+    }
+    else{
+        $("#ScrollTop").fadeOut(500);
+    }
+});
+        </script>
 
-    </form>
-    </div>
+<head>
+  <script type="text/javascript" src="{% static "js/tinymce/tinymce.min.js" %}"></script>
+</head> 
+<head>
+<script type="text/javascript">
+		tinymce.init({
+	        selector: "textarea",
+	        plugins: [
+	                "advlist autolink autosave link image lists charmap print preview hr anchor pagebreak spellchecker",
+	                "searchreplace wordcount visualblocks visualchars code fullscreen insertdatetime media nonbreaking",
+	                "table contextmenu directionality emoticons template textcolor paste fullpage textcolor"
+	        ],
 
-    <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
-    <script type="text/javascript" src="{% static "js/tinymce/tinymce.min.js" %}"></script>
+	        toolbar1: "newdocument | bold italic underline strikethrough | alignleft aligncenter alignright alignjustify | formatselect fontselect fontsizeselect",
+	        toolbar2: "cut copy paste | searchreplace | bullist numlist | outdent indent blockquote | undo redo |  image media code | inserttime preview | ",
+	        toolbar3: "table | hr removeformat | subscript superscript | charmap emoticons | print fullscreen | ltr rtl | spellchecker | visualchars visualblocks nonbreaking template pagebreak restoredraft",
+
+	        menubar: false,
+	        toolbar_items_size: 'small',
+
+	        style_formats: [
+	                {title: 'Bold text', inline: 'b'},
+	                {title: 'Red text', inline: 'span', styles: {color: '#ff0000'}},
+	                {title: 'Red header', block: 'h1', styles: {color: '#ff0000'}},
+	                {title: 'Example 1', inline: 'span', classes: 'example1'},
+	                {title: 'Example 2', inline: 'span', classes: 'example2'},
+	                {title: 'Table styles'},
+	                {title: 'Table row 1', selector: 'tr', classes: 'tablerow1'}
+	        ],
+
+	        templates: [
+	                {title: 'Test template 1', content: 'Test 1'},
+	                {title: 'Test template 2', content: 'Test 2'}
+	        ]
+	        });
+</script>
+
+</head>
+
+
+
+
+
+      <!--  <script src="{% static "js/tinymce/tinymce.min.js" %}"></script>
+   	<script src="js/tinymce/tinymce.min.js"></script>
+  <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+ <script type="text/javascript" src="{% static "js/tinymce/tinymce.min.js" %}"></script>
     <script type="text/javascript" src="{% static "js/ajaxupload.js" %}" charset="utf-8"></script>
-    <script type="text/javascript" src="{% static "js/editor.js" %}"></script>
+    <script type="text/javascript" src="{% static "js/editor.js" %}"></script>-->
     <!-- script type="text/javascript" src="{% static "js/validate.js"}></script -->
+
+
+
+
 
 
 {% endblock content %}

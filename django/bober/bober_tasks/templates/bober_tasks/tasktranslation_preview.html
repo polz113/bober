@@ -11,11 +11,11 @@
 
 
                     {% if object.title %}<h1>{{ object.title }}</h1>{% endif %}
-                    
+
                     {{ object.body|safe }}
 
 
-                    <h2>Answers:</h2>
+                    <h2> {% trans "Answers:" %}</h2>
 
                         {% for solution in answers %}
                             <div class="answer">
@@ -24,16 +24,16 @@
                                 {{ solution.value|safe }}
                             </div>
                         {% endfor %}
-                    <h2>Solution</h2>
+                    <h2>{% trans "Solution" %}</h2>
                     {% if object.solution %}{{ object.solution|safe }}{% endif %}
 
 
-                    <h2>It's informatics</h2>
+                    <h2>{% trans "It's informatics" %}</h2>
                     {% if object.it_is_informatics %}
                         {{ object.it_is_informatics|safe }}{% endif %}
                 </div>
                 <div class="well">
-                    <h2>Version history</h2>
+                    <h2>{% trans "Version history" %}</h2>
                 <ul>
                     {% for version in object.versions %}
                         <li><a href="{% url "tasktranslation_detail" pk=version.pk %}">{{ version.version }} - {{ version.title }}</a> ({{ version.timestamp }}), {{ version.comment }}</li>
@@ -44,24 +44,23 @@
             <div class="span3 sidebar">
                 <div class="well">
 
-                    <h3>Task</h3>
+                    <h3>{% trans "Task" %}</h3>
                     <ul class="nav nav-list">
-                        <li><a href="{% url "tasktranslation_update" object.id %} ">Edit</a></li>
-                        <li><a href="/export/task/{{ task.id }}/{{ object.language_locale.id }}/{{ object.version }}">Export</a></li> <!-- make dynamic url -->
-                        <li><a href="{% url "tasks.translate" object.id %} ">Translate</a></li>
+                        <li><a href="{% url "tasktranslation_update" object.id %} ">{% trans "Edit" %}</a></li>
+                        <li><a href="/export/task/{{ task.id }}/{{ object.language_locale.id }}/{{ object.version }}">{% trans "Export" %}</a></li> <!-- make dynamic url -->
+                        <li><a href="{% url "tasks.translate" object.id %} ">{% trans "Translate" %}</a></li>
                         <li style="display: none"><a href="{% url "tasks.new_form" object.id %} ">New from this version</a></li>
                     </ul>
 
                 </div>
                 <div class="well">
-                    <h3>International ID:</h3> {% if task.international_id %}{{ task.international_id }}{% else %} No ID was set. {% endif %}
-                    
-                    <h3>Author:</h3>
-                    {% if task.author %}{{ task.author.first_name }} {{ task.author.last_name }}{% else %} There is no
-                        author! {% endif %}
-                    
+                    <h3>{% trans "International ID:" %}</h3> {% if task.international_id %}{{ task.international_id }}{% else %}{% trans "No ID was set." %} {% endif %}
 
-                    <h3>Available in languages:</h3>
+                    <h3>{% trans "Author:" %}</h3>
+                    {% if task.author %}{{ task.author.first_name }} {{ task.author.last_name }}{% else %} {% trans "There is no author!" %} {% endif %}
+
+
+                    <h3>{% trans "Available in languages:" %}</h3>
                     <ul class="nav">
                         {% for language in languages %}
 
@@ -72,14 +71,14 @@
                             </li>
                         {% endfor %}
                     </ul>
-                    
-                    <h3>Age group:</h3>
+
+                    <h3>{% trans "Age group:" %}</h3>
                     <ul class="nav">
                         {% for a in task.agegrouptask_set.all %}
                             <li>{{ a.difficulty_level.value }} - {{ a.age_group.value }}</li>
                         {% endfor %}
                     </ul>
-                    <h3>Category:</h3>
+                    <h3>{% trans "Category:" %}</h3>
                     <ul class="nav">
                         {% for a in task.categories.all %}
                             <li>{{ a.title }}</li>
@@ -90,7 +89,7 @@
                         <a href="javascript:window.print()"><img src="{{ STATIC_URL }}img/print.png" alt="print this page" id="print" class="no-print"/></a>
                     </p>
                     <p>
-                        <a href="{% url "tasks.task" object.task.id %}">Edit task details</a>
+                        <a href="{% url "tasks.task" object.task.id %}">{% trans "Edit task details" %}</a>
                     </p>
                 </div>
             </div>

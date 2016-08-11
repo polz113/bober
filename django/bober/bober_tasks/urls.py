@@ -55,9 +55,14 @@ urlpatterns = [
     url(r'^difficulty-levels/(\d+)?$', edit_difficulty, name="control_panel.edit_difficulty"),
     url(r'^difficulty-levels/new?$', new_difficulty, name="control_panel.new_difficulty"),
     url(r'^difficulty-levels/delete/(\d+)?$', delete_difficulty, name="control_panel.delete_difficulty"),
-
     # International
     # url(r'^i18n/', include('django.conf.urls.i18n'), name="i18n"),
+    
+
+    #tinymce
+    url(r'^tinymce/', include('tinymce.urls')),
+
+
 
     # API
     url(r'^export/task/(\d+)/([A-Za-z]+)$', export_task_language, name="api.export_task"), #vrne zadnji prevod za doloceno nalogo
@@ -73,6 +78,7 @@ urlpatterns = [
     # url(r'^admin/', include(admin.site.urls)),
     #(r'^ckeditor/', include('ckeditor.urls')),
     # Show static HTML
+
 ]
 
 urlpatterns += staticfiles_urlpatterns()

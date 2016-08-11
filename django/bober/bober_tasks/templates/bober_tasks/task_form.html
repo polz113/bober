@@ -14,13 +14,25 @@ ul.nav li {
     <div class="row-fluid">
     <form action="" method="POST">
     {% csrf_token %}
-{{form.as_p}}
+<!--
+    {{form.as_p}}
     {{remark_form.as_p}}
+-->
+
+
+    <table>
+        {{ form.as_table }}
+  <!--{{remark_form.as_table}}-->
+    </table>
+
+
+
         <div class="form-actions form-inline">
             <div class="control-group">
             <fieldset id="summary">
                 <button type="submit" class="btn btn-primary">{% trans "Save" %}</button>
-                <a href="{% url "index" %} " class="btn btn-danger">{% trans "Cancel" %}</a>
+                <!--<a href="{% url "index" %} " class="btn btn-danger">{% trans "Cancel" %}</a>-->
+                <a href="{% url "tasks.list" %} " class="btn btn-danger">{% trans "Cancel" %}</a>
             </fieldset>
             </div>
         </div>

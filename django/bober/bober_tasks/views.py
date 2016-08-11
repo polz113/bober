@@ -105,7 +105,7 @@ def export_task_translation( request, task_translation ):
 
         # ZIP archive filename, Open StringIO to grab in-memory ZIP contents, The zip compressor
         #zip_filename = "task-" + str(task.id) + "-" + task_translation.language_locale + "-v" + task_translation.version
-        zip_filename = '%s-%d_%s_v%d' % (slugify(task_translation.title), 
+        zip_filename = '%s-%d_%s_v%d' % (slugify(task_translation.title),
             task_translation.task_id, task_translation.language_locale, task_translation.version)
         #zip_filename = task_translation.title
         s = StringIO.StringIO()
@@ -277,7 +277,7 @@ def index( request ):
         else:
             direction = ''
         order_by = direction + order_translation_dict.get(order, order)
-       
+
     """
 
     SEARCHING THE TASK LIST
@@ -604,14 +604,14 @@ class TaskDetail(LoginRequiredMixin, DetailView):
 class TaskTranslationUpdate(UpdateWithInlinesView, LoginRequiredMixin):
     model = TaskTranslation
     form_class = forms.TaskTranslationForm
-    template_name = 'bober_tasks/tasktranslation_form.html' 
+    template_name = 'bober_tasks/tasktranslation_form.html'
     inlines = [ forms.AnswerInline ]
     def get_success_url(self):
         return reverse('tasktranslation_preview', kwargs = {'pk': self.object.pk})
     def get(self, request, *args, **kwargs):
         self.remark_form = forms.InlineRemarkForm()
         return super(TaskTranslationUpdate, self).get(request, *args, **kwargs)
-    def get_form_kwargs(self): 
+    def get_form_kwargs(self):
         kwargs = super(TaskTranslationUpdate, self).get_form_kwargs()
         return kwargs
     def get_context_data(self, *args, **kwargs):
@@ -880,4 +880,3 @@ def set_interface_lang(request):
         messages.success(request, _("Your interface language has been changed."))
 
     return redirect("index")
-

@@ -7,8 +7,8 @@
 
     <h1>{% trans "List of tasks in language " %}{{ language.value }}:</h1>
     <div class="well">
-        {% trans "Change language" %}
-        {% for lang in languages %}
+      {% trans "Change language" %}
+         {% for lang in languages %}
             | <a href="{{ lang.id }}">{{ lang.value }}</a>
         {% endfor %}
         <a class="btn btn-primary pull-right" href="{% url "tasks.new" %} ">{% trans "New task" %}</a>
@@ -67,11 +67,11 @@
         <div class="pagination pagination-centered">
             <ul>
                 {% if task_translations.has_previous %}
-                    <li><a href="?page={{ task_translations.previous_page_number }}">Prev</a></li>
+                    <li><a href="?page={{ task_translations.previous_page_number }}">{% trans "Prev" %}</a></li>
                 {% endif %}
                 <li>
               <span class="current">
-                  Page {{ task_translations.number }} of {{ task_translations.paginator.num_pages }}
+                  {% trans "Page" %}{{ task_translations.number }} {% trans "of" %} {{ task_translations.paginator.num_pages }}
               </span>
                 </li>
                 {% if task_translations.has_next %}

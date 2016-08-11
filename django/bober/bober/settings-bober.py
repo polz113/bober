@@ -44,7 +44,8 @@ INSTALLED_APPS = (
     'bober_tasks',
     'social.apps.django_app.default',
     'taggit',
-    'django_tables2'
+    'django_tables2',  
+    #'tinymce',
     # 'autocomplete_light'
 )
 

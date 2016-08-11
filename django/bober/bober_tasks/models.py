@@ -10,11 +10,14 @@ import os
 from bs4 import BeautifulSoup
 from django.utils.text import slugify
 import mimetypes
+from tinymce.models import HTMLField
 
 import bober_simple_competition
 
 TASK_TEMPLATE_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'task_templates')
 TASK_TEMPLATES = tuple([(i[:-len('.html')], i) for i in os.listdir(TASK_TEMPLATE_DIR) if i.endswith('.html')])
+class MyModel(models.Model):
+	content = HTMLField()
 
 class AgeGroup(models.Model):
     value = models.CharField(max_length=45)
