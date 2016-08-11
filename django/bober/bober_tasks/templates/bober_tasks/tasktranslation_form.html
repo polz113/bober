@@ -41,92 +41,61 @@ ul.nav li {
     <form action="" method="POST">
     {% csrf_token %}
 <!-- {{form.as_p}} -->
-      <div class="row">
-<<<<<<< HEAD
-        <div class="col-md-3">
-          <div class="form-group">
-=======
-        <div class="col-md-6">
-          <div class="form-group">
-            <a name = "title"></a>
->>>>>>> origin/master
-            {{form.title.errors}}
-            {{form.title.label_tag}}
-            {{form.title}}
-          </div>
-        </div>
-        <div class="col-md-6">
-          <div class="form-group">
-<<<<<<< HEAD
-=======
-            <a name= "template"></a>
->>>>>>> origin/master
-            {{form.template.errors}}
-            {{form.template.label_tag}}
-            {{form.template}}
-          </div>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-md-6">
-<<<<<<< HEAD
-=======
-          <a name = "body"></a>
->>>>>>> origin/master
-          {{form.body.errors}}
-          {{form.body.label_tag}}
-          {{form.body}}
-        </div>
-        <div class="col-md-6">
-<<<<<<< HEAD
-=======
-          <a name = "solution"></a>
->>>>>>> origin/master
-          {{form.solution.errors}}
-          {{form.solution.label_tag}}
-          {{form.solution}}
-        </div>
-      </div><br><br>
-      <div class="row">
-        <div class="col-md-6">
-<<<<<<< HEAD
-=======
-          <a name = "informatics"></a>
->>>>>>> origin/master
-          {{form.it_is_informatics.errors}}
-          {{form.it_is_informatics.label_tag}}
-          {{form.it_is_informatics}}
-        </div>
-        <div class="col-md-6">
-<<<<<<< HEAD
-=======
-          <a name = "comment"></a>
->>>>>>> origin/master
-          {{form.comment.errors}}
-          {{form.comment.label_tag}}
-          {{form.comment}}
-        </div>
-      </div>
-<<<<<<< HEAD
+<div class="row">
+  <div class="col-md-6">
+    <div class="form-group">
+      <a name = "title"></a>
+      {{form.title.errors}}
+      {{form.title.label_tag}}
+      {{form.title}}
+    </div>
+  </div>
+  <div class="col-md-6">
+    <div class="form-group">
+      <a name= "template"></a>
+      {{form.template.errors}}
+      {{form.template.label_tag}}
+      {{form.template}}
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-6">
+    <a name = "body"></a>
+    {{form.body.errors}}
+    {{form.body.label_tag}}
+    {{form.body}}
+  </div>
+  <div class="col-md-6">
+    <a name = "solution"></a>
+    {{form.solution.errors}}
+    {{form.solution.label_tag}}
+    {{form.solution}}
+  </div>
+</div><br><br>
+<div class="row">
+  <div class="col-md-6">
+    <a name = "informatics"></a>
+    {{form.it_is_informatics.errors}}
+    {{form.it_is_informatics.label_tag}}
+    {{form.it_is_informatics}}
+  </div>
+  <div class="col-md-6">
+    <a name = "comment"></a>
+    {{form.comment.errors}}
+    {{form.comment.label_tag}}
+    {{form.comment}}
+  </div>
+</div>
+<a name = "answers"></a>
 <h2>{% trans "Answers" %}</h2>
-    {%for inline in inlines %}
-=======
-
-      <a name = "answers"></a>
-      <h2>{% trans "Answers" %}</h2>
-
-      {%for inline in inlines %}
-
->>>>>>> origin/master
-        {{inline.management_form}}
-          {% for inlineform in inline %}
-
-            {{inlineform.as_p}}
-
-          {% endfor %}
-
-           {%endfor%}
-      {{remark_form.as_p}}
+{%for inline in inlines %}
+  {{inline.management_form}}
+    {% for inlineform in inline %}
+      {{inlineform.as_p}}
+    {% endfor %}
+     {%endfor%}
+{{remark_form.as_p}}
 
 
       <div class="form-actions form-inline">
@@ -167,7 +136,7 @@ ul.nav li {
 
 <head>
   <script type="text/javascript" src="{% static "js/tinymce/tinymce.min.js" %}"></script>
-</head> 
+</head>
 <head>
 <script type="text/javascript">
 		tinymce.init({
