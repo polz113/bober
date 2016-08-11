@@ -44,7 +44,7 @@ INSTALLED_APPS = (
     'bober_tasks',
     'social.apps.django_app.default',
     'taggit',
-    'django_tables2',  
+    'django_tables2',
     #'tinymce',
     # 'autocomplete_light'
 )
@@ -56,6 +56,14 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+)
+
+TEMPLATE_CONTEXT_PROCESSORS = (
+    'django.core.context_processors.i18n',
+    'django.core.context_processors.static',
+    'django.core.context_processors.request',
+    'django.contrib.auth.context_processors.auth',
+    'django.contrib.messages.context_processors.messages',
 )
 
 ROOT_URLCONF = 'bober.urls'
