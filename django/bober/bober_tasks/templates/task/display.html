@@ -12,7 +12,7 @@
 
 
                     {% if task_translation.title %}<h1>{{ task_translation.title }}</h1>{% endif %}
-                    
+
                     {{ task_translation.body|safe }}
 
 
@@ -63,11 +63,11 @@
                 </div>
                 <div class="well">
                     <h3>International ID:</h3> {% if task.international_id %}{{ task.international_id }}{% else %} No ID was set. {% endif %}
-                    
+
                     <h3>Author:</h3>
                     {% if task.author %}{{ task.author.first_name }} {{ task.author.last_name }}{% else %} There is no
                         author! {% endif %}
-                    
+
 
                     <h3>Available in languages:</h3>
                     <ul class="nav">
@@ -80,7 +80,7 @@
                             </li>
                         {% endfor %}
                     </ul>
-                    
+
                     <h3>Age group:</h3>
                     <ul class="nav">
                         {% for a in task.agegrouptask_set.all %}

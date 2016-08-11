@@ -22,7 +22,7 @@
 
                         <div class="span12">
                             <fieldset id="content_category">
-                                <legend>Content category</legend>
+                                <legend>{% trans "Content category" %}</legend>
 
                                 <div id="categoriesContainter" style="margin-bottom: 20px;">
                                     {% for category in task_categories %}
@@ -51,7 +51,7 @@
                                         <i class="icon-trash icon-white"></i>
                                     </a>
                                 </div>
-                                <a href="#" id="add_category" class="btn btn-primary">Dodaj Category</a>
+                                <a href="#" id="add_category" class="btn btn-primary">{% trans "Dodaj Category" %}</a>
 
                             </fieldset>
                         </div>
@@ -60,7 +60,7 @@
                         <div class="span12">
 
                             <fieldset id="age_groups">
-                                <legend>Age groups</legend>
+                                <legend>{% trans "Age groups" %}</legend>
 
                                 <div id="ageGroupContainter">
 
@@ -112,13 +112,13 @@
                                     </a>
 
                                 </div>
-                                <a href="#" id="add_age_group" class="btn btn-primary">Dodaj Age Group</a>
+                                <a href="#" id="add_age_group" class="btn btn-primary">{% trans "Dodaj Age Group" %}</a>
 
                             </fieldset>
                         </div>
                     </div>
                         <input type="hidden" value="{{ task.id }}" name="id"/>
-                        <input type="submit" value="Save" class="btn btn-primary"/>
+                        <input type="submit" value={% trans "Save" %} class="btn btn-primary"/>
                 </form>
             </div>
 
@@ -126,15 +126,14 @@
         <div class="span3 sidebar">
 
             <div class="well">
-                <h3>ID:</h3>
-                {% if task.international_id %}{{ task.international_id }}{% else %} No ID was set. {% endif %}
+                <h3>{% trans "ID:" %}</h3>
+                {% if task.international_id %}{{ task.international_id }}{% else %}{% trans "No ID was set." %} {% endif %}
 
-                <h3>Author:</h3>
-                {% if task.author %}{{ task.author.first_name }} {{ task.author.last_name }}{% else %} There is no
-                    author! {% endif %}
+                <h3>{% trans "Author:" %}</h3>
+                {% if task.author %}{{ task.author.first_name }} {{ task.author.last_name }}{% else %}{% trans "There is no author!" %} {% endif %}
 
 
-                <h3>Available in languages:</h3>
+                <h3>{% trans "Available in languages:" %}</h3>
                 <ul class="nav">
                     {% for language in languages %}
 
@@ -146,13 +145,13 @@
                     {% endfor %}
                 </ul>
 
-                <h3>Age group:</h3>
+                <h3>{% trans "Age group:" %}</h3>
                 <ul class="nav">
                     {% for a in task.agegrouptask_set.all %}
                         <li>{{ a.difficulty_level.value }} - {{ a.age_group.value }}</li>
                     {% endfor %}
                 </ul>
-                <h3>Category:</h3>
+                <h3>{% trans "Category:" %} </h3>
                 <ul class="nav">
                     {% for a in task.categories.all %}
                         <li>{{ a.title }}</li>

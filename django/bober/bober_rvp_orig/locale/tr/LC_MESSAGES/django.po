@@ -20,68 +20,68 @@ msgstr ""
 
 #: bober_tasks/forms.py:16
 msgid "First name"
-msgstr ""
+msgstr "Ad"
 
 #: bober_tasks/forms.py:17
 msgid "Last name"
-msgstr ""
+msgstr "Soyad"
 
 #: bober_tasks/forms.py:18 bober_tasks/templates/control-panel/users.html:32
 msgid "Email"
-msgstr ""
+msgstr "E-posta"
 
 #: bober_tasks/forms.py:19
 msgid "Password"
-msgstr ""
+msgstr "Şifre"
 
 #: bober_tasks/forms.py:20
 msgid "Confirm password"
-msgstr ""
+msgstr "Şifrenizi onaylayın"
 
 #: bober_tasks/templates/control-panel/control-panel.html:7
 #: bober_tasks/templates/control-panel/control-panel.html:36
 #: bober_tasks/templates/main.html:32
 msgid "Control Panel"
-msgstr ""
+msgstr "Kontrol Paneli"
 
 #: bober_tasks/templates/control-panel/control-panel.html:17
 msgid "Parameters settings"
-msgstr ""
+msgstr "Parametre ayarları"
 
 #: bober_tasks/templates/control-panel/control-panel.html:18
 #: bober_tasks/templates/control-panel/parameters.html:15
 msgid "Age Groups"
-msgstr ""
+msgstr "Yaş grupları"
 
 #: bober_tasks/templates/control-panel/control-panel.html:19
 #: bober_tasks/templates/control-panel/parameters.html:47
 msgid "Categories"
-msgstr ""
+msgstr "Kategoriler"
 
 #: bober_tasks/templates/control-panel/control-panel.html:20
 #: bober_tasks/templates/control-panel/edit-difficultys.html:5
 #: bober_tasks/templates/control-panel/parameters.html:80
 msgid "Difficulty Levels"
-msgstr ""
+msgstr "Zorluk seviyeler"
 
 #: bober_tasks/templates/control-panel/control-panel.html:21
 #: bober_tasks/templates/control-panel/edit-language.html:5
 #: bober_tasks/templates/control-panel/parameters.html:109
 msgid "Languages"
-msgstr ""
+msgstr "Diller"
 
 #: bober_tasks/templates/control-panel/control-panel.html:25
 msgid "Users settings"
-msgstr ""
+msgstr "Kullanıcı ayarları"
 
 #: bober_tasks/templates/control-panel/control-panel.html:26
 #: bober_tasks/templates/control-panel/users.html:5
 msgid "User Management"
-msgstr ""
+msgstr "Kullanıcı Yönetimi"
 
 #: bober_tasks/templates/control-panel/edit-age-group.html:5
 msgid "Edit Age Group"
-msgstr ""
+msgstr "Yaş grubunu düzenle"
 
 #: bober_tasks/templates/control-panel/edit-age-group.html:9
 #: bober_tasks/templates/control-panel/edit-category.html:9
@@ -89,51 +89,51 @@ msgstr ""
 #: bober_tasks/templates/control-panel/edit-language.html:9
 #: bober_tasks/templates/control-panel/edit-user.html:9
 msgid "Back"
-msgstr ""
+msgstr "Geri"
 
 #: bober_tasks/templates/control-panel/edit-category.html:5
 msgid "Edit Category"
-msgstr ""
+msgstr "Kategoriyi düzenle"
 
 #: bober_tasks/templates/control-panel/edit-user.html:5
 #: bober_tasks/templates/control-panel/edit-user.html:15
 msgid "User"
-msgstr ""
+msgstr "Kullanıcı"
 
 #: bober_tasks/templates/control-panel/edit-user.html:18
 #: bober_tasks/templates/control-panel/edit-user.html:28
 #: bober_tasks/templates/user/profile.html:39
 #: bober_tasks/templates/user/profile.html:63
 msgid "Save"
-msgstr ""
+msgstr "Kaydet"
 
 #: bober_tasks/templates/control-panel/edit-user.html:23
 msgid "User Profile Settings"
-msgstr ""
+msgstr "Kullanıcı profili ayarları"
 
 #: bober_tasks/templates/control-panel/edit-user.html:31
 msgid "You can choose among next languages:"
-msgstr ""
+msgstr "Sıradaki dili seçebilirsiniz"
 
 #: bober_tasks/templates/control-panel/edit-user.html:43
 msgid "User Permissions"
-msgstr ""
+msgstr "Kullanıcı izinleri"
 
 #: bober_tasks/templates/control-panel/parameters.html:5
 msgid "Parameters Settings"
-msgstr ""
+msgstr "Parametre ayarları"
 
 #: bober_tasks/templates/control-panel/parameters.html:17
 #: bober_tasks/templates/control-panel/parameters.html:49
 #: bober_tasks/templates/control-panel/parameters.html:82
 #: bober_tasks/templates/control-panel/parameters.html:111
 msgid "New"
-msgstr ""
+msgstr "Yeni"
 
 #: bober_tasks/templates/control-panel/parameters.html:24
 #: bober_tasks/templates/index.html:29
 msgid "Age Group"
-msgstr ""
+msgstr "Yaş grubu"
 
 #: bober_tasks/templates/control-panel/parameters.html:25
 #: bober_tasks/templates/control-panel/parameters.html:58
@@ -141,7 +141,7 @@ msgstr ""
 #: bober_tasks/templates/control-panel/parameters.html:119
 #: bober_tasks/templates/control-panel/users.html:35
 msgid "Actions"
-msgstr ""
+msgstr "Eylemler"
 
 #: bober_tasks/templates/control-panel/parameters.html:33
 #: bober_tasks/templates/control-panel/parameters.html:67
@@ -149,7 +149,7 @@ msgstr ""
 #: bober_tasks/templates/control-panel/parameters.html:127
 #: bober_tasks/templates/control-panel/users.html:52
 msgid "Edit"
-msgstr ""
+msgstr "Düzenle"
 
 #: bober_tasks/templates/control-panel/parameters.html:36
 #: bober_tasks/templates/control-panel/parameters.html:69
@@ -157,60 +157,60 @@ msgstr ""
 #: bober_tasks/templates/control-panel/parameters.html:130
 #: bober_tasks/templates/control-panel/users.html:53
 msgid "Delete"
-msgstr ""
+msgstr "Sil"
 
 #: bober_tasks/templates/control-panel/parameters.html:55
 #: bober_tasks/templates/control-panel/parameters.html:118
 msgid "Acronym"
-msgstr ""
+msgstr "Akronim"
 
 #: bober_tasks/templates/control-panel/parameters.html:56
 #: bober_tasks/templates/index.html:26 bober_tasks/templates/index.html:57
 msgid "Category"
-msgstr ""
+msgstr "Kategori"
 
 #: bober_tasks/templates/control-panel/parameters.html:57
 #: bober_tasks/templates/index.html:32 bober_tasks/templates/index.html:59
 #: bober_tasks/templates/task/list.html:37
 msgid "Description"
-msgstr ""
+msgstr "Açıklama"
 
 #: bober_tasks/templates/control-panel/parameters.html:88
 msgid "Difficulty level"
-msgstr ""
+msgstr "Zorluk seviyesi"
 
 #: bober_tasks/templates/control-panel/parameters.html:117
 #: bober_tasks/templates/index.html:35 bober_tasks/templates/index.html:60
 msgid "Language"
-msgstr ""
+msgstr "Dil"
 
 #: bober_tasks/templates/control-panel/users.html:11
 msgid "Display:"
-msgstr ""
+msgstr "Görüntüle:"
 
 #: bober_tasks/templates/control-panel/users.html:31
 msgid "Username"
-msgstr ""
+msgstr "Kullanıcı adı"
 
 #: bober_tasks/templates/control-panel/users.html:33
 msgid "Interface"
-msgstr ""
+msgstr "Arayüz"
 
 #: bober_tasks/templates/control-panel/users.html:34
 msgid "Group"
-msgstr ""
+msgstr "Grup"
 
 #: bober_tasks/templates/index.html:13 bober_tasks/templates/task/list.html:14
 msgid "New task"
-msgstr ""
+msgstr "Yeni görev"
 
 #: bober_tasks/templates/index.html:20
 msgid "Display"
-msgstr ""
+msgstr "Görüntüle"
 
 #: bober_tasks/templates/index.html:23
 msgid "Interaction Type"
-msgstr ""
+msgstr "Etkileşim tipi"
 
 #: bober_tasks/templates/index.html:42 bober_tasks/templates/index.html:70
 #: bober_tasks/templates/index.html:79 bober_tasks/templates/index.html:87
@@ -218,143 +218,143 @@ msgstr ""
 #: bober_tasks/templates/index.html:121
 #: bober_tasks/templates/task/list.html:24
 msgid "Search"
-msgstr ""
+msgstr "Ara"
 
 #: bober_tasks/templates/index.html:48
 msgid "Advanced"
-msgstr ""
+msgstr "Geşlişmiş"
 
 #: bober_tasks/templates/index.html:55 bober_tasks/templates/task/list.html:35
 msgid "Title"
-msgstr ""
+msgstr "Başlık"
 
 #: bober_tasks/templates/index.html:56
 msgid "Type"
-msgstr ""
+msgstr "Tip"
 
 #: bober_tasks/templates/index.html:58
 msgid "Age"
-msgstr ""
+msgstr "Yaş"
 
 #: bober_tasks/templates/index.html:149
 msgid "Select"
-msgstr ""
+msgstr "Seç"
 
 #: bober_tasks/templates/index.html:208
 #: bober_tasks/templates/task/list.html:99
 msgid "Field cannot be empty"
-msgstr ""
+msgstr "Bu alan boş geçilemez"
 
 #: bober_tasks/templates/main.html:29
 #: bober_tasks/templates/user/profile.html:9
 msgid "Home"
-msgstr ""
+msgstr "Anasayfa"
 
 #: bober_tasks/templates/main.html:45
 msgid "Logout"
-msgstr ""
+msgstr "Çıkış"
 
 #: bober_tasks/templates/task/details.html:5
 #: bober_tasks/templates/task/display.html:5
 msgid "Displaying task"
-msgstr ""
+msgstr "Görüntülene görevler"
 
 #: bober_tasks/templates/task/history.html:36
 msgid "Author does not exist"
-msgstr ""
+msgstr "Yazar mevcut değil"
 
 #: bober_tasks/templates/task/history.html:72
 msgid "Are you sure you want to delete this task?"
-msgstr ""
+msgstr "Bu görevi silmek istediğinizden emin misiniz?"
 
 #: bober_tasks/templates/task/list.html:8
 msgid "List of tasks in language "
-msgstr ""
+msgstr "Dildeki görev listeleri"
 
 #: bober_tasks/templates/task/list.html:10
 msgid "Change language"
-msgstr ""
+msgstr "Dili değiştir"
 
 #: bober_tasks/templates/task/list.html:40
 msgid "Last edit"
-msgstr ""
+msgstr "Son güncelleme"
 
 #: bober_tasks/templates/user/profile.html:5
 msgid "My Profile"
-msgstr ""
+msgstr "Profilim"
 
 #: bober_tasks/templates/user/profile.html:16
 msgid "My Profile Settings   "
-msgstr ""
+msgstr "Profil Ayarlarım"
 
 #: bober_tasks/templates/user/profile.html:46
 msgid "Language settings"
-msgstr ""
+msgstr "Dil ayarları"
 
 #: bober_tasks/templates/user/profile.html:51
 msgid "Interface language"
-msgstr ""
+msgstr "Arayüz Dili"
 
 #: bober_tasks/templates/user/show.html:5
 msgid "Displaying user"
-msgstr ""
+msgstr "Görüntülenen kullanıcılar"
 
 #: bober_tasks/views/index.py:157
 msgid "No search field filled."
-msgstr ""
+msgstr "Hiçbir arama alanı doldurulmadı"
 
 #: bober_tasks/views/users.py:16
 msgid "You have been logged out."
-msgstr ""
+msgstr "Çıkış yaptınız"
 
 #: bober_tasks/views/users.py:24
 msgid "You are already logged in."
-msgstr ""
+msgstr "Zaten giriş yapmışsınız"
 
 #: bober_tasks/views/users.py:47
 msgid "You have been successfully logged in!"
-msgstr ""
+msgstr "Başarı ile çıkış yaptınız"
 
 #: bober_tasks/views/users.py:53
 msgid "The username or password are incorrect."
-msgstr ""
+msgstr "Yanlış kullanıcı adı veya parola"
 
 #: bober_tasks/views/users.py:55
 msgid "Please fill the form below."
-msgstr ""
+msgstr "Lütfen aşağıdaki formu doldurunuz"
 
 #: bober_tasks/views/users.py:108
 msgid "You have been successfully registered."
-msgstr ""
+msgstr "Başarıyla kayıt oldunuz"
 
 #: bober_tasks/views/users.py:129
 msgid "Passwords have to be the same!"
-msgstr ""
+msgstr "Parolalar eşleşmeli"
 
 #: bober_tasks/views/users.py:138
 msgid "Your profile has been updated!"
-msgstr ""
+msgstr "Profiliniz güncellendi"
 
 #: bober_tasks/views/users.py:142
 msgid "Form is not valid!"
-msgstr ""
+msgstr "Geçersiz form"
 
 #: bober_tasks/views/users.py:158
 msgid "Your interface language has been changed."
-msgstr ""
+msgstr "Arayüz diliniz değiştirildi."
 
 #: bober_tasks/views/users.py:179
 msgid "User settings are updated."
-msgstr ""
+msgstr "Kullanıcı ayarları güncellendi"
 
 #: bober_tasks/views/users.py:186
 msgid "User profile is updated."
-msgstr ""
+msgstr "Kullanıcı profili güncellendi"
 
 #: bober_tasks/views/users.py:196
 msgid "User is deleted!"
-msgstr ""
+msgstr "Kullanıcı silindi"
 
 #: bober_tasks/views/users.py:198
 msgid "User cannot be deleted! User is still active."
-msgstr ""
+msgstr "Kullanıcı hala aktif olduğundan silinemez."

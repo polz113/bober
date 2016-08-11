@@ -3,6 +3,7 @@ from django import forms
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import User
 from extra_views import InlineFormSet
+#from django import forms
 
 class profileForm(forms.Form):
     first_name = forms.CharField(required=False, label=_("First name"))
@@ -13,11 +14,22 @@ class profileForm(forms.Form):
 
 class TaskForm(forms.ModelForm):
     class Meta:
+        #model= Post
         model = Task
+        #fields= ['ulke kod','ulke', 'yazar']
         fields = ['international_id', 'country', 'author']
+        labels={
+            #'international_id': ('aa'),
+            'international_id': _('international_id'),
+            'country': _('country'),
+            'author': _('author')}
+
     language_locale = forms.ChoiceField(choices=settings.LANGUAGES,
         required = True,
         label=_('The language for the first version of the task'))
+
+
+
 
 class AgeGroupForm(forms.ModelForm):
   value = forms.CharField(required=True)
@@ -45,6 +57,15 @@ class TaskTranslationForm(forms.ModelForm):
         fields = ['title', 'template', 'body', 'solution',
             'it_is_informatics', 'comment'
             ]
+        labels={
+            'title': _('Title'),
+            'template': _('Template'),
+            'body': _('Body'),
+            'solution': _('Solution'),
+            'it_is_informatics': _('it_is_informatics'),
+            'comment': _('Comment'),
+            }
+
         widgets = {
             'comment': forms.Textarea(),
             'body': forms.Textarea(),
@@ -56,8 +77,14 @@ class InlineAnswerForm(forms.ModelForm):
     class Meta:
         model = Answer
         fields = ['label', 'correct', 'value']
+        labels={
+        'label': _('label'),
+        'correct': _('correct'),
+        'value': _('value'),
+        }
         widgets = {'value': forms.Textarea()}
-    correct = forms.BooleanField(initial=True, required=False)
+
+    correct = forms.BooleanField(label=_('correct'), initial=True, required=False)
 
 class AnswerInline(InlineFormSet):
     model = Answer
@@ -69,6 +96,7 @@ class InlineRemarkForm(forms.ModelForm):
     class Meta:
         model = Remark
         fields = ["comment"]
+        labels={'comment': _('comment')}
         widgets = {'comment': forms.TextInput()}
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None)

@@ -11,7 +11,7 @@
 
 
                     {% if object.title %}<h1>{{ object.title }}</h1>{% endif %}
-                    
+
                     {{ object.body|safe }}
 
 
@@ -48,17 +48,17 @@
                         <li><a href="{% url "tasktranslation_clone" object.id %} ">{% trans "Edit" %}</a></li>
                         <li><a href="/export/task/{{ task.id }}/{{ object.language_locale.id }}/{{ object.version }}">{% trans "Export as ZIP" %}</a></li> <!-- make dynamic url -->
                         <li><a href="{% url "export_to_simple_competition" pk=object.id %}">{% trans "Export to competition system" %}</a></li> <!-- make dynamic url -->
-                        <li><a href="{% url "tasks.translate" object.id %} ">Translate</a></li>
+                        <li><a href="{% url "tasks.translate" object.id %} ">{% trans "Translate" %}</a></li>
                         <li style="display: none"><a href="{% url "tasks.new_form" object.id %} ">New from this version</a></li>
                     </ul>
 
                 </div>
                 <div class="well">
-                    <h3>{% trans "International ID:" %}</h3>{{ object.task.international_id }}                    
-                    <h3>{% trans "Country of origin:" %}</h3>{{ object.task.country }}                    
+                    <h3>{% trans "International ID:" %}</h3>{{ object.task.international_id }}
+                    <h3>{% trans "Country of origin:" %}</h3>{{ object.task.country }}
                     <h3>{% trans "Author:" %}</h3>
                     {{object.task.author}}
-                    <h3>{% trans "Translator:" %}</h3> 
+                    <h3>{% trans "Translator:" %}</h3>
                     {{object.author}}
                     <h3>{% trans "Available in languages:" %}</h3>
                     <ul class="nav">
@@ -70,7 +70,7 @@
                             </li>
                         {% endfor %}
                     </ul>
-                    
+
                     <h3>{% trans "Age group:" %}</h3>
                     <ul class="nav">
                         {% for a in object.task.agegrouptask_set.all %}

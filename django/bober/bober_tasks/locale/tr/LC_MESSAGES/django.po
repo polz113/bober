@@ -24,6 +24,8 @@ msgstr ""
 msgid "First name"
 msgstr "Ad"
 
+
+
 #: bober_tasks/forms.py:8
 msgid "Last name"
 msgstr "Soyad"
@@ -52,8 +54,9 @@ msgstr "Parametre ayarları"
 
 #: bober_tasks/templates/control-panel/control-panel.html:18
 #: bober_tasks/templates/control-panel/parameters.html:15
+#: bober_tasks/templates/bober_tasks/tasktranslation_form.html: 33
 msgid "Age Groups"
-msgstr "Yaş grubu"
+msgstr "Yaş Grubu"
 
 #: bober_tasks/templates/control-panel/control-panel.html:19
 #: bober_tasks/templates/control-panel/parameters.html:47
@@ -105,6 +108,9 @@ msgstr "Kullanıcı"
 #: bober_tasks/templates/control-panel/edit-user.html:28
 #: bober_tasks/templates/user/profile.html:39
 #: bober_tasks/templates/user/profile.html:63
+#: bober_tasks/templates/bober_tasks/tasktranslation_form.html: 110
+#: bober_tasks/templates/bober_tasks/task_form.hmtl: 33
+#: bober_tasks/templates/task/details.html: 121
 msgid "Save"
 msgstr "Kaydet"
 
@@ -146,6 +152,7 @@ msgstr "Eylemler"
 #: bober_tasks/templates/control-panel/parameters.html:67
 #: bober_tasks/templates/control-panel/parameters.html:96
 #: bober_tasks/templates/control-panel/users.html:52
+#: bober_tasks/templates/bober_tasks/tasktranslation_detail.html: 48
 msgid "Edit"
 msgstr "Düzenle"
 
@@ -168,6 +175,7 @@ msgstr "Kategori"
 #: bober_tasks/templates/control-panel/parameters.html:57
 #: bober_tasks/templates/index.html:32 bober_tasks/templates/index.html:59
 #: bober_tasks/templates/task/list.html:37
+#: bober_tasks/templates/bober_tasks/list.html: 37
 msgid "Description"
 msgstr "Açıklama"
 
@@ -192,8 +200,9 @@ msgid "Group"
 msgstr "Grup"
 
 #: bober_tasks/templates/index.html:13 bober_tasks/templates/task/list.html:14
+#: bober_tasks/templates/bober_tasks/list.html: 14
 msgid "New task"
-msgstr "Yeni görev"
+msgstr "Yeni Görev"
 
 #: bober_tasks/templates/index.html:20
 msgid "Display"
@@ -204,8 +213,16 @@ msgid "Interaction Type"
 msgstr "Etkileşim tipi"
 
 #: bober_tasks/templates/index.html:35 bober_tasks/templates/index.html:60
+#: bober_tasks/templates/bober_tasks/tasktranslation_form.html: 40
+#: bober_tasks/templates/task/translate.html: 21
+#: bober_tasks/templates/task/translate.html: 234
+#: bober_tasks/templates/task/edit.html: 22
 msgid "Language"
 msgstr "Dil"
+
+#: bober_tasks/templates/bober_tasks/tasktranslation_form.html: 40
+msgid "Language: "
+msgstr "Dil: "
 
 #: bober_tasks/templates/index.html:42 bober_tasks/templates/index.html:70
 #: bober_tasks/templates/index.html:79 bober_tasks/templates/index.html:87
@@ -220,12 +237,18 @@ msgid "Advanced"
 msgstr "İleri derece"
 
 #: bober_tasks/templates/index.html:55 bober_tasks/templates/task/list.html:35
+#: bober_tasks/templates/bober_tasks/tasktranslation_form.html: 26
+#: bober_tasks/templates/bober_tasks/list.html: 35
+#: bober_tasks/templates/task/translate.html: 31
+#: bober_tasks/templates/task/translate.html: 244
+#: bober_tasks/templates/task/edit.html: 23
 msgid "Title"
 msgstr "Başlık"
 
 #: bober_tasks/templates/index.html:56
 msgid "Type"
 msgstr "Tip"
+
 
 #: bober_tasks/templates/index.html:58
 msgid "Age"
@@ -252,7 +275,7 @@ msgstr "Çıkış"
 #: bober_tasks/templates/task/details.html:5
 #: bober_tasks/templates/task/display.html:5
 msgid "Displaying task"
-msgstr "Gösterilen görevler"
+msgstr "Gösterilen görev"
 
 #: bober_tasks/templates/task/history.html:36
 msgid "Author does not exist"
@@ -267,22 +290,24 @@ msgid "List of tasks in language "
 msgstr "Dildeki görevlerin listesi"
 
 #: bober_tasks/templates/task/list.html:10
+#: bober_tasks/templates/bober_tasks/list.html: 10
 #| msgid "Interface language"
 msgid "Change language"
 msgstr "Dili değiştir"
 
 #: bober_tasks/templates/task/list.html:40
+#: bober_tasks/templates/bober_tasks/list.html: 40
 #| msgid "Last name"
 msgid "Last edit"
-msgstr "Son düzenleme"
+msgstr "Son Düzenleme"
 
 #: bober_tasks/templates/user/profile.html:5
 msgid "My Profile"
 msgstr "Profilim"
 
 #: bober_tasks/templates/user/profile.html:16
-msgid "My Profile Settings   "
-msgstr "Profil ayarlarım"
+msgid "My Profile Settings"
+msgstr "Profil Ayarlarım"
 
 #: bober_tasks/templates/user/profile.html:46
 msgid "Language settings"
@@ -307,6 +332,335 @@ msgstr "Çıkış yaptınız"
 #: bober_tasks/views.py:823
 msgid "Your interface language has been changed."
 msgstr "Arayüz diliniz değiştirildi."
+
+#. from here
+
+#: bober_tasks/forms.py:98
+msgid "comment"
+msgstr "Yorum"
+
+
+
+#: bober_tasks/templates/bober_tasks/tasktranslation_form.html: 27
+#: bober_tasks/templates/task/translate.html: 42
+#: bober_tasks/templates/task/translate.html: 255
+#: bober_tasks/templates/task/edit.html: 24
+msgid "Body"
+msgstr "İçerik"
+
+#: bober_tasks/templates/bober_tasks/tasktranslation_form.html: 28
+#: bober_tasks/templates/bober_tasks/tasktranslation_form.html: 91
+#: bober_tasks/templates/task/translate.html: 48
+#: bober_tasks/templates/task/edit.html: 25
+#: bober_tasks/templates/task/translate.html: 261
+msgid "Answers"
+msgstr "Cevaplar"
+
+#: bober_tasks/templates/bober_tasks/tasktranslation_form.html: 29
+#: bober_tasks/templates/task/translate.html: 105
+#: bober_tasks/templates/task/translate.html: 318
+#: bober_tasks/templates/task/edit.html: 26
+msgid "Correctness"
+msgstr "Doğruluk"
+
+#: bober_tasks/templates/bober_tasks/tasktranslation_form.html: 30
+#: bober_tasks/templates/bober_tasks/tasktranslation_detail.html: 26
+#: bober_tasks/templates/task/translate.html: 116
+#: bober_tasks/templates/task/translate.html: 329
+#: bober_tasks/templates/task/edit.html: 27
+msgid "Solution"
+msgstr "Çözüm"
+
+#: bober_tasks/templates/bober_tasks/tasktranslation_form.html: 31
+#: bober_tasks/templates/task/translate.html: 122
+#: bober_tasks/templates/task/translate.html: 335
+#: bober_tasks/templates/task/edit.html: 28
+msgid "Informatics"
+msgstr "İnformatik"
+
+#: bober_tasks/templates/bober_tasks/tasktranslation_form.html: 32
+#: bober_tasks/templates/task/edit.html: 29
+msgid "Content Category"
+msgstr "İçerik Kategorisi"
+
+
+
+#: bober_tasks/templates/bober_tasks/tasktranslation_form.html: 34
+#: bober_tasks/templates/task/translate.html: 440
+#: bober_tasks/templates/task/edit.html: 31
+msgid "Summary"
+msgstr "Özet"
+
+
+
+#: bober_tasks/templates/bober_tasks/tasktranslation_form.html: 47
+#: bober_tasks/forms.py: 57
+msgid "title"
+msgstr "Baslik"
+
+#: bober_tasks/templates/bober_tasks/tasktranslation_form.html: 55
+#: bober_tasks/forms.py: 57
+msgid "Template"
+msgstr "Şablon"
+
+#: bober_tasks/templates/bober_tasks/tasktranslation_form.html: 64
+msgid "body"
+msgstr "İçerik"
+
+#: bober_tasks/templates/bober_tasks/tasktranslation_form.html: 70
+msgid "solution"
+msgstr "Çözüm"
+
+#: bober_tasks/templates/bober_tasks/tasktranslation_form.html: 78
+#: bober_tasks/forms.py: 57
+msgid "it_is_informatics"
+msgstr "İnformatik"
+
+#: bober_tasks/templates/bober_tasks/tasktranslation_form.html: 84
+#: bober_tasks/forms.py: 57
+msgid "Comment"
+msgstr "Yorum"
+
+
+
+
+#: bober_tasks/forms.py: 79
+msgid "label"
+msgstr "Şık"
+
+#: bober_tasks/forms.py: 87
+msgid "correct"
+msgstr "Doğru Cevap"
+
+#: bober_tasks/forms.py: 79
+msgid "value"
+msgstr "Şık İçeriği"
+
+
+
+#: bober_tasks/templates/bober_tasks/tasktranslation_form.html: 111
+#: bober_tasks/templates/bober_tasks/task_form.hmtl: 35
+#: bober_tasks/templates/task/translate.html: 451
+msgid "Cancel"
+msgstr "İptal"
+
+#: bober_tasks/templates/bober_tasks/list.html: 8
+msgid "List of tasks in language"
+msgstr "Dildeki Görevlerin Listesi"
+
+#: bober_tasks/templates/bober_tasks/list.html: 70
+msgid "Prev"
+msgstr "Önceki"
+
+#: bober_tasks/templates/bober_tasks/list.html: 74
+msgid "Page"
+msgstr "Sayfa"
+
+#: bober_tasks/templates/bober_tasks/list.html: 74
+msgid "of"
+msgstr " "
+
+#: bober_tasks/templates/bober_tasks/list.html: 78
+msgid "Next"
+msgstr "Sonraki"
+
+#: bober_tasks/forms.py: 20
+msgid "international_id"
+msgstr "Uluslararasi No"
+
+#: bober_tasks/forms.py: 20
+msgid "country"
+msgstr "Ülke"
+
+#: bober_tasks/forms.py: 20
+msgid "author"
+msgstr "Yazar"
+
+#: bober_tasks/forms.py: 29
+msgid "The language for the first version of the task"
+msgstr "Görevin ilk versiyonu için dili seçiniz"
+
+#: bober_tasks/templates/bober_tasks/tasktranslation_detail.html: 18
+#: bober_tasks/templates/bober_tasks/tasktranslation_preview.html: 18
+msgid "Answers:"
+msgstr "Cevaplar:"
+
+
+
+#: bober_tasks/templates/bober_tasks/tasktranslation_detail.html: 30
+msgid "It's informatics"
+msgstr "İnformatik"
+
+#: bober_tasks/templates/bober_tasks/tasktranslation_detail.html: 35
+msgid "Version history"
+msgstr "Versiyon Tarihleri"
+
+#: bober_tasks/templates/bober_tasks/tasktranslation_detail.html: 46
+msgid "Task"
+msgstr "Görev"
+
+
+
+#: bober_tasks/templates/bober_tasks/tasktranslation_detail.html: 49
+msgid "Export as ZIP"
+msgstr "ZIP olarak dışarıya aktar"
+
+#: bober_tasks/templates/bober_tasks/tasktranslation_detail.html: 50
+msgid "Export to competition system"
+msgstr "Yarışma sistemine aktar"
+
+#: bober_tasks/templates/bober_tasks/tasktranslation_detail.html: 51
+msgid "Translate"
+msgstr "Çevir"
+
+#: bober_tasks/templates/bober_tasks/tasktranslation_detail.html: 57
+msgid "International ID:"
+msgstr "Uluslararasi  No:"
+
+#: bober_tasks/templates/bober_tasks/tasktranslation_detail.html: 58
+msgid "Country of origin:"
+msgstr "Menşei Ülke:"
+
+#: bober_tasks/templates/bober_tasks/tasktranslation_detail.html: 59
+#: bober_tasks/templates/task/details.html: 132
+msgid "Author:"
+msgstr "Yazar:"
+
+#: bober_tasks/templates/bober_tasks/tasktranslation_detail.html: 61
+msgid "Translator:"
+msgstr "Çevirmen:"
+
+#: bober_tasks/templates/bober_tasks/tasktranslation_detail.html: 63
+#: bober_tasks/templates/task/details.html: 137
+msgid "Available in languages:"
+msgstr "Şu dillerde kullanılabilir:"
+
+#: bober_tasks/templates/bober_tasks/tasktranslation_detail.html: 74
+#: bober_tasks/templates/task/details.html: 149
+msgid "Age group:"
+msgstr "Yaş Grubu:"
+
+#: bober_tasks/templates/bober_tasks/tasktranslation_detail.html: 80
+#: bober_tasks/templates/task/details.html: 155
+msgid "Category:"
+msgstr "Kategori:"
+
+#: bober_tasks/templates/bober_tasks/tasktranslation_detail.html: 91
+msgid "Edit task details"
+msgstr "Görev detaylarını düzenle"
+
+
+#: bober_tasks/templates/task/translate.html: 32
+#: bober_tasks/templates/task/translate.html: 245
+msgid "Title ..."
+msgstr "Başlık ..."
+
+
+#: bober_tasks/templates/task/translate.html: 43
+#: bober_tasks/templates/task/translate.html: 256
+msgid "Body ..."
+msgstr "İçerik ..."
+
+#: bober_tasks/templates/task/translate.html: 49
+#: bober_tasks/templates/task/translate.html: 262
+msgid "Answers ..."
+msgstr "Cevaplar ..."
+
+
+
+#: bober_tasks/templates/task/translate.html: 106
+#: bober_tasks/templates/task/translate.html: 319
+msgid "Correctness ..."
+msgstr "Doğruluk ..."
+
+
+#: bober_tasks/templates/task/translate.html: 117
+#: bober_tasks/templates/task/translate.html: 330
+msgid "Solution ..."
+msgstr "Çözüm ..."
+
+
+
+#: bober_tasks/templates/task/translate.html: 123
+#: bober_tasks/templates/task/translate.html: 336
+msgid "Informatics ..."
+msgstr "İnformatik ..."
+
+#: bober_tasks/templates/task/translate.html: 129
+#: bober_tasks/templates/task/translate.html: 342
+#: bober_tasks/templates/task/details.html: 25
+msgid "Content category"
+msgstr "İçerik Kategorisi"
+
+#: bober_tasks/templates/task/translate.html: 130
+#: bober_tasks/templates/task/translate.html: 343
+msgid "Content category ..."
+msgstr "İçerik Kategorisi ..."
+
+#: bober_tasks/templates/task/translate.html: 170
+#: bober_tasks/templates/task/translate.html: 383
+#: bober_tasks/templates/task/details.html: 63
+#: bober_tasks/templates/task/edit.html: 30
+msgid "Age groups"
+msgstr "Yaş Grubu"
+
+#: bober_tasks/templates/task/translate.html: 171
+#: bober_tasks/templates/task/translate.html: 384
+msgid "Age groups ..."
+msgstr "Yaş Grubu ..."
+
+#: bober_tasks/templates/task/translate.html: 378
+#: bober_tasks/templates/task/details.html: 54
+#: bober_tasks/templates/task/translate.html: 165
+msgid "Dodaj Category"
+msgstr "Kategori Ekle"
+
+#: bober_tasks/templates/task/translate.html: 435
+#: bober_tasks/templates/task/details.html: 115
+#: bober_tasks/templates/task/translate.html: 222
+msgid "Dodaj Age Group"
+msgstr "Yaş Grubu Ekle"
+
+#: bober_tasks/templates/task/translate.html: 441
+msgid "Summary ..."
+msgstr "Özet ..."
+
+#: bober_tasks/templates/task/translate.html: 450
+msgid "Shrani"
+msgstr "Kaydet"
+
+#: bober_tasks/templates/task/details.html: 129
+msgid "ID:"
+msgstr "NO:"
+
+#: bober_tasks/templates/task/details.html: 130
+msgid "No ID was set."
+msgstr "Atanmış No yok."
+
+#: bober_tasks/templates/task/details.html: 133
+#: bober_tasks/templates/bober_tasks/tasktranslation_preview.html: 60
+msgid "There is no author!"
+msgstr "Yazar bilgisi yok!"
+
+#: bober_tasks/templates/bober_tasks/tasktranslation_preview.html: 50
+msgid "Export"
+msgstr "Dışa Aktar"
+
+#: bober_tasks/templates/bober_tasks/tasktranslation_form.html: 156
+msgid "newdocument"
+msgstr "Yeni Belge"
+
+
+
+
+
+
+
+
+
+
+
+
 
 #~ msgid "You are already logged in."
 #~ msgstr "Zaten giriş yaptınız."

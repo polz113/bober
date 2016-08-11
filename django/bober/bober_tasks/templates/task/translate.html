@@ -2,6 +2,7 @@
 {% load staticfiles %}
 {% block pageTitle %}Prevajanje - New task{% endblock pageTitle %}
 {% block content %}
+{% load i18n %}
     <style type="text/css" media="screen">
         .answer_lang {
             width: 100px;
@@ -18,7 +19,7 @@
     <div class="span6 disabled">
 
     <fieldset id="language">
-        <legend>Language</legend>
+        <legend>{% trans "Language" %}</legend>
         <select class="answerLanguage span10" name="language">
             {% for lang in all_languages %}
                 <option value="{{ lang.value_short }}"
@@ -28,8 +29,8 @@
     </fieldset>
 
     <fieldset id="title">
-        <legend>Title</legend>
-        <label>Title ...</label>
+        <legend>{% trans "Title" %}</legend>
+        <label>{% trans "Title ..." %}</label>
         <input class="span12 title" name="title" type="text" value="{{ task_translation.title }}">
     </fieldset>
     <style type="text/css" media="screen">
@@ -39,14 +40,14 @@
         }
     </style>
     <fieldset id="body">
-        <legend>Body</legend>
-        <label>Body ...</label>
+        <legend>{% trans "Body" %}</legend>
+        <label>{% trans "Body ..." %}</label>
         <textarea class="span12 text" name="body" rows="10">{{ task_translation.body }}</textarea>
     </fieldset>
 
     <fieldset id="answers">
-        <legend>Answers</legend>
-        <label>Answers ...</label>
+        <legend>{% trans "Answers" %}</legend>
+        <label>{% trans "Answers ..." %}</label>
 
         <div class="input-append span12">
             <label class="control-label" style="display:inline;"><b>A</b> </label>
@@ -102,8 +103,8 @@
     </fieldset>
 
     <fieldset id="correctness">
-        <legend>Correctness</legend>
-        <label>Correctness ...</label>
+        <legend>{% trans "Correctness" %}</legend>
+        <label>{% trans "Correctness ..." %}</label>
         <select name="correctness" value="" id="correctness">
             <option value="0">A</option>
             <option value="1">B</option>
@@ -113,21 +114,21 @@
     </fieldset>
 
     <fieldset id="solution">
-        <legend>Solution</legend>
-        <label>Solution ...</label>
+        <legend>{% trans "Solution" %}</legend>
+        <label>{% trans "Solution ..." %}</label>
         <textarea class="span12 text" name="solution" rows="10">{{ task_translation.solution }}</textarea>
     </fieldset>
 
     <fieldset id="informatics">
-        <legend>Informatics</legend>
-        <label>Informatics ...</label>
+        <legend>{% trans "Informatics" %}</legend>
+        <label>{% trans "Informatics ..." %}</label>
         <textarea class="span12 text" name="informatics"
                   rows="10">{{ task_translation.it_is_informatics }}</textarea>
     </fieldset>
 
     <fieldset id="content_category">
-        <legend>Content category</legend>
-        <label>Content category ...</label>
+        <legend>{% trans "Content category" %}</legend>
+        <label>{% trans "Content category ..." %}</label>
 
         <div id="categoriesContainter">
             {% for category in task_categories %}
@@ -161,14 +162,14 @@
                 <i class="icon-trash icon-white"></i>
             </a>
         </div>
-        <a href="#" id="add_category" class="btn btn-primary">Dodaj Category</a>
+        <a href="#" id="add_category" class="btn btn-primary">{% trans "Dodaj Category" %}</a>
         <br/>
         <br/>
     </fieldset>
 
     <fieldset id="age_groups">
-        <legend>Age groups</legend>
-        <label>Age groups ...</label>
+        <legend>{% trans "Age groups" %}</legend>
+        <label>{% trans "Age groups ..." %}</label>
 
         <div id="ageGroupContainter">
 
@@ -218,7 +219,7 @@
             </a>
 
         </div>
-        <a href="#" id="add_age_group" class="btn btn-primary">Dodaj Age Group</a>
+        <a href="#" id="add_age_group" class="btn btn-primary">{% trans "Dodaj Age Group" %}</a>
         <br/>
         <br/>
     </fieldset>
@@ -229,9 +230,9 @@
 
     <div class="span6">
     <form id="translateTask" action="" method="POST">
-
+      
     <fieldset id="language">
-        <legend>Language</legend>
+        <legend>{% trans "Language" %}</legend>
         <select class="answerLanguage span10" name="language" {% if language_disabled %}disabled{% endif %}>
             {% for lang in all_languages %}
                 <option value="{{ lang.0 }}"
@@ -241,8 +242,8 @@
     </fieldset>
 
     <fieldset id="title">
-        <legend>Title</legend>
-        <label>Title ...</label>
+        <legend>{% trans "Title" %}</legend>
+        <label>{% trans "Title ..." %}</label>
         <input class="span12 title" name="title" type="text" value="{{ task_translation.title }}">
     </fieldset>
     <style type="text/css" media="screen">
@@ -252,14 +253,14 @@
         }
     </style>
     <fieldset id="body">
-        <legend>Body</legend>
-        <label>Body ...</label>
+        <legend>{% trans "Body" %}</legend>
+        <label>{% trans "Body ..." %}</label>
         <textarea class="span12 text" name="body" rows="10">{{ task_translation.body }}</textarea>
     </fieldset>
 
     <fieldset id="answers">
-        <legend>Answers</legend>
-        <label>Answers ...</label>
+        <legend>{% trans "Answers" %}</legend>
+        <label>{% trans "Answers ..." %}</label>
 
         <div class="input-append span12">
             <label class="control-label" style="display:inline;"><b>A</b> </label>
@@ -315,8 +316,8 @@
     </fieldset>
 
     <fieldset id="correctness">
-        <legend>Correctness</legend>
-        <label>Correctness ...</label>
+        <legend>{% trans "Correctness" %}</legend>
+        <label>{% trans "Correctness ..." %}</label>
         <select name="correctness" value="" id="correctness">
             <option value="0">A</option>
             <option value="1">B</option>
@@ -326,21 +327,21 @@
     </fieldset>
 
     <fieldset id="solution">
-        <legend>Solution</legend>
-        <label>Solution ...</label>
+        <legend>{% trans "Solution" %}</legend>
+        <label>{% trans "Solution ..." %}</label>
         <textarea class="span12 text" name="solution" rows="10">{{ task_translation.solution }}</textarea>
     </fieldset>
 
     <fieldset id="informatics">
-        <legend>Informatics</legend>
-        <label>Informatics ...</label>
+        <legend>{% trans "Informatics" %}</legend>
+        <label>{% trans "Informatics ..." %}</label>
         <textarea class="span12 text" name="informatics"
                   rows="10">{{ task_translation.it_is_informatics }}</textarea>
     </fieldset>
 
     <fieldset id="content_category">
-        <legend>Content category</legend>
-        <label>Content category ...</label>
+        <legend>{% trans "Content category" %}</legend>
+        <label>{% trans "Content category ..." %}</label>
 
         <div id="categoriesContainter">
             {% for category in task_categories %}
@@ -374,14 +375,14 @@
                 <i class="icon-trash icon-white"></i>
             </a>
         </div>
-        <a href="#" id="add_category" class="btn btn-primary">Dodaj Category</a>
+        <a href="#" id="add_category" class="btn btn-primary">{% trans "Dodaj Category" %}</a>
         <br/>
         <br/>
     </fieldset>
 
     <fieldset id="age_groups">
-        <legend>Age groups</legend>
-        <label>Age groups ...</label>
+        <legend>{% trans "Age groups" %}</legend>
+        <label>{% trans "Age groups ..." %}</label>
 
         <div id="ageGroupContainter">
 
@@ -431,14 +432,14 @@
             </a>
 
         </div>
-        <a href="#" id="add_age_group" class="btn btn-primary">Dodaj Age Group</a>
+        <a href="#" id="add_age_group" class="btn btn-primary">{% trans "Dodaj Age Group" %}</a>
         <br/>
         <br/>
     </fieldset>
 
     <fieldset id="summary">
-        <legend>Summary</legend>
-        <label>Summary ...</label>
+        <legend>{% trans "Summary" %}</legend>
+        <label>{% trans "Summary ..." %}</label>
         <input type="text" class="span12" name="diff">
     </fieldset>
 
@@ -447,8 +448,8 @@
 
     </div>
     <div class="form-actions">
-        <button id="translate" type="submit" class="btn btn-primary">Shrani</button>
-        <a href="/" class="btn btn-danger">Cancel</a>
+        <button id="translate" type="submit" class="btn btn-primary">{% trans "Shrani" %}</button>
+        <a href="{% url "tasks.list" %}" class="btn btn-danger">{% trans "Cancel" %}</a>
     </div>
 
     </div>
