@@ -23,12 +23,7 @@
     create database bober character set utf8 collate utf8_general_ci;
     grant all on bober.* to bober@localhost; set password for bober@localhost=password('YOUR PASSWORD'); flush privileges;
 
-* Create tje database for the task creation system
-
-    create database bober_tasks character set utf8 collate utf8_general_ci;
-    grant all on bober_tasks.* to bober@localhost; set password for bober@localhost=password('YOUR PASSWORD'); flush privileges;
-
-* Create and edit the configuration for the task creation system:
+* Create and edit the django configuration:
 
     cd $BOBER_HOME/django/bober/
     cp settings-bober.py settings.py
@@ -39,7 +34,7 @@
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.mysql',
-            'NAME': 'bober_tasks',
+            'NAME': 'bober',
             'USER': 'bober',
             'PASSWORD': 'YOUR PASSWORD',
 
@@ -70,6 +65,10 @@
 * Migrate the database
 
       python manage.py migrate
+
+* Create the translation files
+   
+      for i in bober_* code_based_auth; do cd $i; ../manage.py compilemessages; cd ..; done
 
 * Finally, start the development web server:
 
