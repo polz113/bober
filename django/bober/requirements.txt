@@ -40,3 +40,5 @@ requests-oauthlib==0.6.1
 selenium==2.53.6
 six==1.10.0
 splinter==0.7.3
+django-tinymce==2.3.0
+Django-tinymce-filebrowser==0.2.1
