@@ -46,7 +46,7 @@ INSTALLED_APPS = (
     'social.apps.django_app.default',
     'taggit',
     'django_tables2',
-    #'tinymce',
+    'tinymce',
     # 'autocomplete_light'
 )
 
