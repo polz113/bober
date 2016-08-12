@@ -78,10 +78,10 @@ class TaskTranslationForm(forms.ModelForm):
             }
 
         widgets = {
-            'comment': forms.Textarea(),
-            'body': forms.Textarea(),
-            'it_is_informatics': forms.Textarea(),
-            'solution': forms.Textarea(),
+            'comment': TinyMCE(attrs={'cols': 80, 'rows': 30}),
+            'body': TinyMCE(attrs={'cols': 80, 'rows': 30}),
+            'it_is_informatics': TinyMCE(attrs={'cols': 80, 'rows': 30}),
+            'solution': TinyMCE(attrs={'cols': 80, 'rows': 30}),
         }
 
 class InlineAnswerForm(forms.ModelForm):
