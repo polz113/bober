@@ -4,6 +4,16 @@ from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import User
 from extra_views import InlineFormSet
 #from django import forms
+from django.contrib.flatpages.models import FlatPage
+from tinymce.widgets import TinyMCE
+
+class FlatPageForm(forms.ModelForm):
+
+    content = forms.CharField(widget=TinyMCE(attrs={'cols': 80, 'rows': 30}))
+    
+
+    class Meta:
+        model = FlatPage
 
 class profileForm(forms.Form):
     first_name = forms.CharField(required=False, label=_("First name"))
