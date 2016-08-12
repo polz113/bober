@@ -10,10 +10,11 @@ from tinymce.widgets import TinyMCE
 class FlatPageForm(forms.ModelForm):
 
     content = forms.CharField(widget=TinyMCE(attrs={'cols': 80, 'rows': 30}))
-    
+
 
     class Meta:
         model = FlatPage
+        fields='__all__'
 
 class profileForm(forms.Form):
     first_name = forms.CharField(required=False, label=_("First name"))
