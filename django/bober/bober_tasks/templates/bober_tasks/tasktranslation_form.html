@@ -3,7 +3,15 @@
 {% load static %}
 {% block headline %}{% trans "Edit task" %}{% endblock %}
 {% block extrahead %}
-{{ form.media }}
+<script type="text/javascript" charset="utf-8">
+    task_upload_url = "{% url "tasks.upload" object.id %}"
+    task_translation_id = "{{object.id}}";
+    csrf_token = "{{csrf_token}}";
+    task_id = "{{object.task_id}}";
+    language = "{{object.language_locale}}";
+    version = "{{tobject.version}}";
+    tinyMCEbaseURL = "{% url "tasktranslation_preview" object.id %}";
+</script>
 <style>
 ul.nav li {
     display: inline-block;
@@ -31,66 +39,69 @@ ul.nav li {
     <div class="row-fluid">
     {% trans "Language: " %}{{object.get_language_locale_display}}<br><br>
     <form action="" method="POST">
-    {% csrf_token %}
-{{form.as_p}}
+    {% csrf_token %} {{form.media}}
+<!-- {{form.as_p}} -->
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-group">
+            <a name = "title"></a>
+            {{form.title.errors}}
+            {{form.title.label_tag}}
+            {{form.title}}
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <a name= "template"></a>
+            {{form.template.errors}}
+            {{form.template.label_tag}}
+            {{form.template}}
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <a name = "body"></a>
+          {{form.body.errors}}
+          {{form.body.label_tag}}
+          {{form.body}}
+        </div>
+        <div class="col-md-6">
+          <a name = "solution"></a>
+          {{form.solution.errors}}
+          {{form.solution.label_tag}}
+          {{form.solution}}
+        </div>
+      </div><br><br>
+      <div class="row">
+        <div class="col-md-6">
+          <a name = "informatics"></a>
+          {{form.it_is_informatics.errors}}
+          {{form.it_is_informatics.label_tag}}
+          {{form.it_is_informatics}}
+        </div>
+        <div class="col-md-6">
+          <a name = "comment"></a>
+          {{form.comment.errors}}
+          {{form.comment.label_tag}}
+          {{form.comment}}
+        </div>
+      </div>
 
-Hahah
+      <a name = "answers"></a>
+      <h2>{% trans "Answers" %}</h2>
 
-<div class="row">
-  <div class="col-md-6">
-    <div class="form-group">
-      <a name = "title"></a>
-      {{form.title.errors}}
-      {{form.title.label_tag}}
-      {{form.title}}
-    </div>
-  </div>
-  <div class="col-md-6">
-    <div class="form-group">
-      <a name= "template"></a>
-      {{form.template.errors}}
-      {{form.template.label_tag}}
-      {{form.template}}
-    </div>
-  </div>
-</div>
-<div class="row">
-  <div class="col-md-6">
-    <a name = "body"></a>
-    {{form.body.errors}}
-    {{form.body.label_tag}}
-    {{form.body}}
-  </div>
-  <div class="col-md-6">
-    <a name = "solution"></a>
-    {{form.solution.errors}}
-    {{form.solution.label_tag}}
-    {{form.solution}}
-  </div>
-</div><br><br>
-<div class="row">
-  <div class="col-md-6">
-    <a name = "informatics"></a>
-    {{form.it_is_informatics.errors}}
-    {{form.it_is_informatics.label_tag}}
-    {{form.it_is_informatics}}
-  </div>
-  <div class="col-md-6">
-    <a name = "comment"></a>
-    {{form.comment.errors}}
-    {{form.comment.label_tag}}
-    {{form.comment}}
-  </div>
-</div>
-<a name = "answers"></a>
-<h2>{% trans "Answers" %}</h2>
-{%for inline in inlines %}
-  {{inline.management_form}}
-    {% for inlineform in inline %}
-      {{inlineform.as_p}}
-    {% endfor %}
-     {%endfor%}
-{{remark_form.as_p}}
+      {%for inline in inlines %}
+
+        {{inline.management_form}}
+          {% for inlineform in inline %}
+
+            {{inlineform.as_p}}
+
+          {% endfor %}
+
+           {%endfor%}
+      {{remark_form.as_p}}
 
 
       <div class="form-actions form-inline">
@@ -101,7 +112,7 @@ Hahah
             </fieldset>
             </div>
         </div>
-        <img id="ScrollTop" src="https://cdn1.iconfinder.com/data/icons/fs-icons-ubuntu-by-franksouza-/128/arrow-up.png" title="Yukarı Çık"/>
+        <img id="ScrollTop" src="/static/img/arrow_up.png" title="Yukarı Çık"/>
         <style type="text/css">
                 #ScrollTop{
                   position: fixed;
@@ -127,20 +138,12 @@ Hahah
         $("#ScrollTop").fadeOut(500);
     }
 });
-        </script>
 
-
-      <!--  <script src="{% static "js/tinymce/tinymce.min.js" %}"></script>
+        </script>  <!--  <script src="{% static "js/tinymce/tinymce.min.js" %}"></script>
    	<script src="js/tinymce/tinymce.min.js"></script>
   <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
  <script type="text/javascript" src="{% static "js/tinymce/tinymce.min.js" %}"></script>
     <script type="text/javascript" src="{% static "js/ajaxupload.js" %}" charset="utf-8"></script>
     <script type="text/javascript" src="{% static "js/editor.js" %}"></script>-->
     <!-- script type="text/javascript" src="{% static "js/validate.js"}></script -->
-
-
-
-
-
-
 {% endblock content %}
