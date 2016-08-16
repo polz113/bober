@@ -62,8 +62,6 @@ urlpatterns = [
     #tinymce
     url(r'^tinymce/', include('tinymce.urls')),
 
-
-
     # API
     url(r'^export/task/(\d+)/([A-Za-z]+)$', export_task_language, name="api.export_task"), #vrne zadnji prevod za doloceno nalogo
     url(r'^export/task/(\d+)/([A-Za-z]+)/(\d+)$', export_task_language_version, name="api.export_task_version"), #vrne doloceno verzijo prevode za doloceno nalogo
