@@ -31,13 +31,14 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = (
     'django.contrib.admin',
+    'django.contrib.sites',
+    'django.contrib.flatpages',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
-    'django.contrib.sites',
-    'django.contrib.flatpages',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'bober_competition',
     'bober_paper_submissions',
     'code_based_auth',
     'bober_simple_competition',
@@ -47,6 +48,9 @@ INSTALLED_APPS = (
     'taggit',
     'django_tables2',
     'tinymce',
+    'sorl.thumbnail',
+    'mce_filebrowser',
+    #'PIL',
     # 'autocomplete_light'
 )
 
@@ -118,6 +122,13 @@ DATABASES = {
 # https://docs.djangoproject.com/en/1.6/topics/i18n/
 
 # LANGUAGE_CODE = 'en-us'
+
+TINYMCE_DEFAULT_CONFIG = {
+  #'plugins': "table,spellchecker,paste,searchreplace",
+  #'theme': "advanced",
+  'file_browser_callback': 'mce_filebrowser',
+  #'paste_as_text': True,
+}
 
 LANGUAGES = (
 #    ('sl', _('Slovenian')),
