@@ -3,6 +3,7 @@
 {% load static %}
 {% block headline %}{% trans "Edit task" %}{% endblock %}
 {% block extrahead %}
+{{form.media}}
 <script type="text/javascript" charset="utf-8">
     task_upload_url = "{% url "tasks.upload" object.id %}"
     task_translation_id = "{{object.id}}";

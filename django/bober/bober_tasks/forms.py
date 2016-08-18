@@ -87,6 +87,8 @@ class TaskTranslationForm(forms.ModelForm):
             'it_is_informatics': TinyMCE(attrs={'cols': 45, 'rows': 25}),
             'solution': TinyMCE(attrs={'cols': 45, 'rows': 25}),
         }
+    class Media:
+        js = ('mce_filebrowser/js/filebrowser_init.js',)
 
 class InlineAnswerForm(forms.ModelForm):
     class Meta:
