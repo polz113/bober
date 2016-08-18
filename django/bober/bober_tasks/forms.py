@@ -6,15 +6,19 @@ from extra_views import InlineFormSet
 #from django import forms
 from django.contrib.flatpages.models import FlatPage
 from tinymce.widgets import TinyMCE
+#from mce_filebrowser.models import FileBrowserFile
 
 class FlatPageForm(forms.ModelForm):
-
     content = forms.CharField(widget=TinyMCE(attrs={'cols': 80, 'rows': 30}))
-
-
     class Meta:
         model = FlatPage
         fields='__all__'
+'''
+class FileUploadForm(forms.ModelForm):
+    """ File/Image Upload form """
+    class Meta:
+        model = FileBrowserFile
+        fields = ('uploaded_file',)'''
 
 class profileForm(forms.Form):
     first_name = forms.CharField(required=False, label=_("First name"))
@@ -78,10 +82,10 @@ class TaskTranslationForm(forms.ModelForm):
             }
 
         widgets = {
-            'comment': TinyMCE(attrs={'cols': 80, 'rows': 30}),
-            'body': TinyMCE(attrs={'cols': 80, 'rows': 30}),
-            'it_is_informatics': TinyMCE(attrs={'cols': 80, 'rows': 30}),
-            'solution': TinyMCE(attrs={'cols': 80, 'rows': 30}),
+            'comment': TinyMCE(attrs={'cols': 45, 'rows': 25}),
+            'body': TinyMCE(attrs={'cols': 45, 'rows': 25}),
+            'it_is_informatics': TinyMCE(attrs={'cols': 45, 'rows': 25}),
+            'solution': TinyMCE(attrs={'cols': 45, 'rows': 25}),
         }
 
 class InlineAnswerForm(forms.ModelForm):
@@ -93,7 +97,7 @@ class InlineAnswerForm(forms.ModelForm):
         'correct': _('correct'),
         'value': _('value'),
         }
-        widgets = {'value': forms.Textarea()}
+        widgets = {'value': TinyMCE(attrs={'cols': 100, 'rows': 25})}
 
     correct = forms.BooleanField(label=_('correct'), initial=True, required=False)
 

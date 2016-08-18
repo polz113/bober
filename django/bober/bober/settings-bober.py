@@ -152,6 +152,6 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATIC_ROOT = '/your/static/dir/path'
-
-MEDIA_URL = '/media/'
-MEDIA_ROOT = '/your/media/directory/path'
+#filebrowser media settings
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+MEDIA_URL = '/image/'
