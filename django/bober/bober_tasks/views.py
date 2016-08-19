@@ -452,6 +452,15 @@ def tasks_upload(request, id=0):
     handle_uploaded_file(request.FILES.get('images'), file, task_translation)
     return HttpResponse(to_json({'status': 'ok', 'filename': file, 'filepath': urlpath }))
 
+def export_multiple_tasks(request):
+    export_values = request.POST.getlist('taskValues')
+    for i in range(len(export_values)):
+        #TaskTranslation.export_to_simple_competition(export_values[i])
+        t = TaskTranslation.objects.get(pk=export_values[i])
+        t.export_to_simple_competition()
+
+    return redirect("/tasks")
+
 
 def handle_uploaded_file(f,name, task_translation):
     #save_path  = path( MEDIA_ROOT , 'taskresources', 'Image', task_id , task_language )

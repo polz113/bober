@@ -31,6 +31,7 @@ urlpatterns = [
     url(r'^display/(\d+)/$', display_task, name="tasks.display"),
     # url(r'^display/(\d+)/$', TaskDetail., name="tasks.display"),
     url(r'^display/(\d+)/resources/(\w.+)$', tasks_resource, name="tasks.resource"),
+    url(r'^export-multiple-tasks$', export_multiple_tasks, name="export_multiple_tasks"),
 
     # Task
     url(r'^task/(\d+)/$', task_detail, name="tasks.task"),
@@ -57,7 +58,7 @@ urlpatterns = [
     url(r'^difficulty-levels/delete/(\d+)?$', delete_difficulty, name="control_panel.delete_difficulty"),
     # International
     # url(r'^i18n/', include('django.conf.urls.i18n'), name="i18n"),
-    
+
 
     #tinymce
     url(r'^tinymce/', include('tinymce.urls')),

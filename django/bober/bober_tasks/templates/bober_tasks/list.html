@@ -38,11 +38,15 @@
             </div>
         </div>
 
-        <form class="" action="" method="get">
-          {% render_table table %} <br>
-          <input type="button" name="name" value={%trans "Export Tasks" %}>
-        </form>
+        {% for item in export_values %}
+            {{ item }}
+        {% endfor %}
 
+        <form class="" action="/tasks/export-multiple-tasks" method="POST">
+          {% csrf_token %}
+          {% render_table table %} <br>
+          <input type="submit" name="export" value={%trans "Export Tasks" %}>
+        </form>
 
 
       <!--  <table class="taskTable table table-hover">
