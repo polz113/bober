@@ -523,6 +523,32 @@ msgstr "Merhaba,"
 msgid "Login with"
 msgstr "İle giriş"
 
+#: templates/bober_simple_competition/profile_table_list.html: 21
+msgid "Merge"
+msgstr "Birleştir"
+
+#templates/bober_simple_competition/profile_table_list.html: 22
+msgid "Send Mail"
+msgstr "'E-Posta Gönder'"
+
+# bober_simple_competition/tables.py : 9
+msgid "first_name"
+msgstr "Adı"
+
+# bober_simple_competition/tables.py: 13
+msgid "E-Mail"
+msgstr "E-Posta"
+
+
+
+
+
+
+
+
+
+
+
 msgid "Edit my profile"
 msgstr "Profilimi düzenle"
 
