@@ -27,6 +27,10 @@ import json
 import random
 import string
 
+def send_email(request):
+    form = MailForm()
+    return render(request, 'bober_simple_competition/send_email.html', {'form': form})
+
 # get rid of this when we stop supporting django 1.5
 def JsonResponse(data, **kwargs):
     return HttpResponse(json.dumps(data), content_type='application/json', **kwargs)
@@ -108,7 +112,7 @@ class FilteredSingleTableView(SingleTableView):
     return context
 
 def _use_access_code(request, access_code,
-        defer_update_used_codes = False, 
+        defer_update_used_codes = False,
         defer_code_effects = False):
     request.session['access_code'] = access_code
     # print access_code, defer_update_used_codes, defer_code_effects
@@ -277,10 +281,10 @@ class CompetitionCreate(LoginRequiredMixin, CreateWithInlinesView):
                     components__name = 'competition_questionset'
                 ).order_by('id')[:1] or [None])[0],
             'admin_salt': ''.join([
-                random.choice(string.letters+string.digits) 
+                random.choice(string.letters+string.digits)
                 for i in xrange(10)]),
             'competitor_salt': ''.join([
-                random.choice(string.letters+string.digits) 
+                random.choice(string.letters+string.digits)
                 for i in xrange(10)]),
             }
 
@@ -438,7 +442,7 @@ def competition_code_create(request, slug, user_type='admin'):
                 choices = allowed_effect_choices, required = False)
     else:
         generator = competition.competitor_code_generator
-        if not admin_codegen.code_matches(access_code, 
+        if not admin_codegen.code_matches(access_code,
                 {'admin_privileges': ['create_competitor_codes']}):
             raise PermissionDenied;
         class FormClass(forms.Form):
@@ -465,7 +469,7 @@ def competition_code_create(request, slug, user_type='admin'):
                 slug = competition.slug)
     else:
         form = FormClass()
-    return render(request, 
+    return render(request,
         "bober_simple_competition/competition_code_create.html",
         locals())
 
@@ -503,13 +507,13 @@ def competition_attempt_list(request, slug, regrade=False):
         if runtime_manager is None:
             runtime_manager = graders.RuntimeManager()
         attempt.grade_answers(runtime_manager, regrade)
-    return render(request, 
+    return render(request,
         "bober_simple_competition/competition_attempt_list.html", locals())
 
 
 # 2.1.4 mark attempts as invalid
 #     all attempts with codes created or distributed by
-#     the current user can be accessed 
+#     the current user can be accessed
 @login_required
 def invalidate_attempt(request, slug, attempt_id):
     attempt = Attempt.objects.get(id=attempt.id)
@@ -600,7 +604,7 @@ def _can_attempt(request, competition_questionset):
         access_allowed |= competition.start < timezone.now() and \
             codegen.code_matches(
                 access_code, {'competitor_privileges':['attempt']})
-        # print "access_allowed before competition_questionset", access_allowed 
+        # print "access_allowed before competition_questionset", access_allowed
         access_allowed &= codegen.code_matches(
             access_code, {'competition_questionset':[
                 competition_questionset.slug_str()]})
@@ -617,7 +621,7 @@ def competition_resources(request, competition_questionset_id, resource_path):
         cache_dir = "caches/" + str(cq.questionset.id) + "-" + cq.questionset.slug
         # print "redirect to ", os.path.join(cache_dir, resource_path)
         return safe_media_redirect(os.path.join(cache_dir, resource_path))
-    raise PermissionDenied 
+    raise PermissionDenied
 
 @login_required
 def question_resources(request, pk, resource_path):
@@ -702,13 +706,13 @@ def time_remaining(request, competition_questionset_id, attempt_id):
         _check_attempt_and_code(request, attempt)
         seconds_left = (attempt.finish - now).total_seconds()
         if seconds_left < 0:
-            all_data = {'success': False, "seconds_to_end": seconds_left, 
+            all_data = {'success': False, "seconds_to_end": seconds_left,
                 'errorCode': 9}
         else:
-            all_data = {'success': True, "seconds_to_end": seconds_left} 
+            all_data = {'success': True, "seconds_to_end": seconds_left}
     except Exception, e:
         all_data = {'success': False, "seconds_to_end": seconds_left,
-            'message': str(e)} 
+            'message': str(e)}
     return HttpResponse(json.dumps(all_data), content_type="application/json")
 
 # 2.2.5 submit answer
@@ -728,7 +732,7 @@ def submit_answer(request, competition_questionset_id, attempt_id):
         try:
             # uncomment the line below for offline checking
             raise Exception();
-            
+
             graded_answer, created = GradedAnswer.objects.get_or_create(
                 attempt_id = attempt_id,
                 question_id = a.question_id,
@@ -761,7 +765,7 @@ def finish_competition(request, competition_questionset_id, attempt_id):
         _check_attempt_and_code(request, attempt)
         attempt.finish = timezone.now()
         attempt.save()
-        data = {'success': True, 
+        data = {'success': True,
             'redirect_url': reverse('attempt_results', kwargs = {
                 'competition_questionset_id': competition_questionset_id,
                 'attempt_id': attempt_id})
@@ -837,7 +841,7 @@ class CompetitorUpdateJson(LoginRequiredMixin, UpdateView):
         attempt = get_object_or_404(Attempt, id=form.cleaned_data['attempt_id'])
         if attempt.competitor != self.object:
             raise PermissionDenied
-        cqs = get_object_or_404(CompetitionQuestionSet, 
+        cqs = get_object_or_404(CompetitionQuestionSet,
             id=form.cleaned_data['cqs_id'])
         profile = self.request.user.profile
         if self.request.user.profile.created_codes.filter(
@@ -847,8 +851,8 @@ class CompetitorUpdateJson(LoginRequiredMixin, UpdateView):
             raise PermissionDenied
         form.save()
         # print "obj:", self.object
-        return JsonResponse({'status': 'success', 
-            'first_name': self.object.first_name, 
+        return JsonResponse({'status': 'success',
+            'first_name': self.object.first_name,
             'last_name': self.object.last_name})
 
 class ProfileListView(LoginRequiredMixin, ListView):
@@ -859,7 +863,7 @@ class ProfileListView(LoginRequiredMixin, ListView):
         # print c
         return c
     def get_queryset(self):
-        return self.request.user.profile.managed_profiles.filter(merged_with=None) 
+        return self.request.user.profile.managed_profiles.filter(merged_with=None)
 
 class ProfileTableView(LoginRequiredMixin, FilteredSingleTableView):
     table_class = tables.ProfileTable
@@ -913,7 +917,7 @@ class QuestionSetCompete(CreateView):
     form_class = QuestionSetCompetitorForm
     template_name = "bober_simple_competition/questionset_registration.html"
     def get_success_url(self):
-        return reverse('competition_index', 
+        return reverse('competition_index',
             kwargs = {'competition_questionset_id': self.competitionquestionset.id})
 
     def dispatch(self, *args, **kwargs):
@@ -944,7 +948,7 @@ class QuestionSetCompete(CreateView):
         kwargs['competitionquestionset'] = self.competitionquestionset
         if self.request.user.is_authenticated():
             kwargs['profile'] = self.request.user.profile
-        f = form_class(**kwargs) 
+        f = form_class(**kwargs)
         return f
 
     def form_valid(self, form):
@@ -971,7 +975,7 @@ class CompetitionCompete(QuestionSetCompete):
         kwargs['competition'] = self.competition
         if self.request.user.is_authenticated():
             kwargs['profile'] = self.request.user.profile
-        f = form_class(**kwargs) 
+        f = form_class(**kwargs)
         return f
 
     def form_valid(self, form):
@@ -985,7 +989,7 @@ class QuestionSetRegistration(CreateView):
     template_name = "bober_simple_competition/questionset_registration.html"
 
     def get_success_url(self):
-        return reverse('competition_index', 
+        return reverse('competition_index',
             kwargs = {'competition_questionset_id': self.competitionquestionset.id})
 
     def dispatch(self, *args, **kwargs):
@@ -1010,15 +1014,15 @@ class QuestionSetRegistration(CreateView):
                     # print "No attempt for you!"
                     request.session.pop('access_code')
                 return redirect(self.get_success_url())
-            return redirect('competitionquestionset_access_code', 
-                competition_questionset_id = self.competitionquestionset.id, 
+            return redirect('competitionquestionset_access_code',
+                competition_questionset_id = self.competitionquestionset.id,
                 next=self.get_success_url())
         return super(QuestionSetRegistration, self).get(request, *args, **kwargs)
 
     def get_form(self, form_class=None):
         kwargs = self.get_form_kwargs()
         kwargs['competitionquestionset'] = self.competitionquestionset
-        f = form_class(**kwargs) 
+        f = form_class(**kwargs)
         return f
 
     def form_valid(self, form):
@@ -1045,7 +1049,7 @@ class CompetitionRegistration(QuestionSetRegistration):
     def get_form(self, form_class=None):
         kwargs = self.get_form_kwargs()
         kwargs['competition'] = self.competition
-        f = form_class(**kwargs) 
+        f = form_class(**kwargs)
         return f
 
     def get(self, request, *args, **kwargs):
@@ -1110,14 +1114,14 @@ class QuestionSetList(LoginRequiredMixin, ListView):
     model = QuestionSet
 
     def get_queryset(self):
-        return self.request.user.profile.question_sets.all() 
+        return self.request.user.profile.question_sets.all()
 
 
 class QuestionSetDetail(LoginRequiredMixin, DetailView):
     model = QuestionSet
 
     def get_queryset(self):
-        return self.request.user.profile.question_sets.all() 
+        return self.request.user.profile.question_sets.all()
 
 
 class QuestionSetCreate(LoginRequiredMixin, CreateView):
@@ -1138,11 +1142,10 @@ class QuestionSetUpdate(LoginRequiredMixin, UpdateView):
     form_class = QuestionSetForm
 
     def get_queryset(self):
-        return self.request.user.profile.created_question_sets.all() 
-        
+        return self.request.user.profile.created_question_sets.all()
+
 class QuestionSetDelete(LoginRequiredMixin, DeleteView):
     model = QuestionSet
 
     def get_queryset(self):
-        return self.request.user.profile.created_question_sets.all() 
-
+        return self.request.user.profile.created_question_sets.all()
