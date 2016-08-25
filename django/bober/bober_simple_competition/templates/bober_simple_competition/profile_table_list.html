@@ -5,6 +5,7 @@
 {% block headline %}{% trans "Users" %}{% endblock %}
 {% block extrahead %}
 <link rel="stylesheet" href="{{ STATIC_URL }}django_tables2/themes/paleblue/css/screen.css" />
+<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
 {% endblock %}
 {% block content %}
 <div style="margin:1%";>
@@ -13,6 +14,12 @@
 <form action="" method="get">
 {{filter.form.as_p}}
 <input type="submit">
+</form><br><br>
+<form class="" action="" method="post">
+  {% render_table table %}
+  <br><br>
+  <input type="button" class="btn btn-info" name="mergeUsers" value="Merge">
+  <input type="button" class="btn btn-info" name="mailUsers" value="Send Mail">
 </form>
-{% render_table table %}
+
 {% endblock %}

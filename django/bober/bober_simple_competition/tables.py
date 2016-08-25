@@ -6,7 +6,7 @@ class ProfileTable(dt2.Table):
     class Meta:
         model = Profile
         fields = ('first_name', 'last_name', 'email', 'username', 'vcard')
-        attrs = {"class": "paleblue"}
+        attrs = {'class': 'taskTable table table-hover'}
     first_name = dt2.Column(accessor='user.first_name')
     last_name = dt2.Column(accessor='user.last_name')
     email = dt2.Column(accessor='user.email')
