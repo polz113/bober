@@ -42,11 +42,11 @@ class BasicProfileForm(forms.ModelForm):
         widgets = {
             # the autocomplete: off is supposed to prevent firefox from filling in the form
             # with the current username
-        #    'merged_with': autocomplete_light.ChoiceWidget('ManagedUsersAutocomplete', 
+        #    'merged_with': autocomplete_light.ChoiceWidget('ManagedUsersAutocomplete',
         #        attrs={'class':'modern-style', 'autocomplete': 'off'}),
         #    'merged_with': django_widgets.Select()
         }
-    password = forms.CharField(required=False, 
+    password = forms.CharField(required=False,
         widget = forms.PasswordInput(attrs={'autocomplete': 'off'}))
 
     def __init__(self, *args, **kwargs):
@@ -82,7 +82,7 @@ class BasicProfileForm(forms.ModelForm):
         password = cleaned_data.get('password', '')
         if self.instance.id is None and len(password) < 1:
             password = cleaned_data[access_code]
-            self.cleaned_data["password"] = password 
+            self.cleaned_data["password"] = password
         if len(password) > 0:
             u.set_password(cleaned_data['password'])
         u.save()
@@ -93,7 +93,7 @@ class BasicProfileForm(forms.ModelForm):
                 p.merged_with = self.instance.merged_with
         profile = super(BasicProfileForm, self).save(*args,**kwargs)
         profile.managed_profiles.add(profile)
-        return profile 
+        return profile
 
 
 class ProfileEditForm(BasicProfileForm):
@@ -132,7 +132,7 @@ class QuestionSetRegistrationForm(forms.ModelForm):
         return cleaned_data
     def clean_access_code(self):
         full_code = self.questionset_slug + self.codegen.format.separator + self.cleaned_data['access_code']
-        if not self.codegen.code_matches(full_code, 
+        if not self.codegen.code_matches(full_code,
             {'competitor_privileges':['attempt']}):
             raise ValidationError(_('Wrong access code'), code='access_code')
         self.cleaned_data['full_code'] = full_code
@@ -166,7 +166,7 @@ class CompetitionRegistrationForm(QuestionSetRegistrationForm):
         if cqs is not None:
             questionset_slug = self.cleaned_data['competition_questionset'].slug_str()
             full_code = questionset_slug + self.codegen.format.separator + self.cleaned_data['access_code']
-            if not self.codegen.code_matches(full_code, 
+            if not self.codegen.code_matches(full_code,
                     {'competitor_privileges':['attempt']}):
                 self.errors['access_code']=[_('Wrong access code')]
             self.cleaned_data['full_code'] = full_code
@@ -211,7 +211,7 @@ class QuestionSetCompetitorForm(forms.ModelForm):
                 full_code = self.guest_code.value
             if full_code is None:
                 self.errors['short_access_code']=[_('Wrong access code')]
-        if not self.codegen.code_matches(full_code, 
+        if not self.codegen.code_matches(full_code,
                 {'competitor_privileges':['attempt']}):
             print "No attempty for", full_code
             raise ValidationError(_('Wrong access code'), code='short_access_code')
@@ -276,7 +276,7 @@ class CompetitionCompetitorForm(QuestionSetCompetitorForm):
                     full_code = cqs.guest_code.value
                 if full_code is None:
                     self.errors['short_access_code']=[_('Wrong access code')]
-            if not self.codegen.code_matches(full_code, 
+            if not self.codegen.code_matches(full_code,
                     {'competitor_privileges':['attempt']}):
                 self.errors['short_access_code']=[_('Wrong access code')]
             if self.codegen.code_matches(full_code,
@@ -306,7 +306,7 @@ class AdminCodeForm(CompetitorCodeForm):
 class CompetitionCreateForm(forms.ModelForm):
     class Meta:
         model = Competition
-        exclude = ('administrator_code_generator', 
+        exclude = ('administrator_code_generator',
             'competitor_code_generator',
             'questionsets')
         widgets = {
@@ -348,7 +348,7 @@ class CompetitorCodeFormatForm(CodeFormatForm):
     questionset_hash = forms.ChoiceField(
         initial = 'noop',
         choices = code_based_auth.models.HASH_ALGORITHMS)
- 
+
 class AdminCodeFormatForm(CodeFormatForm):
     admin_privilege_length = forms.IntegerField(min_value=1)
     admin_privilege_format = forms.ChoiceField(
@@ -414,5 +414,10 @@ class CompetitionQuestionSetUpdateInline(InlineFormSet):
 CompetitionCreateFormSet = inlineformset_factory(Competition,
     CompetitionQuestionSet, form = CompetitionQuestionSetCreateForm, can_delete = False)
 
-CompetitionUpdateFormSet = inlineformset_factory(Competition, 
+CompetitionUpdateFormSet = inlineformset_factory(Competition,
     CompetitionQuestionSet, form = CompetitionQuestionSetUpdateForm, fields='__all__')
+
+class MailForm(forms.Form):
+    mailFrom = forms.CharField()
+    mailTo = forms.CharField()
+    mailSubject = forms.CharField()
