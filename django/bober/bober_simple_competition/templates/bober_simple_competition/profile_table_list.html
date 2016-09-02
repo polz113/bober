@@ -16,10 +16,11 @@
 <input type="submit" value={% trans "Submit" %}>
 </form><br><br>
 <form action="" method="post">
+  {% csrf_token %}
   {% render_table table %}
   <br><br>
   <input type="button" class="btn btn-info" name="mergeUsers" value={% trans "Merge" %}>
-  <input type="button" class="btn btn-info" name="mailUsers" value={% trans "Send Mail" %}>
+  <button type="submit" class="btn btn-info" formaction="send-email/">{% trans "Send Mail" %}</button>
 </form>
 
 {% endblock %}
