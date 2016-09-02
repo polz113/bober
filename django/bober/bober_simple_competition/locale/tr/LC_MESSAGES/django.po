@@ -146,6 +146,7 @@ msgstr "Erişim kodunu girin"
 #: templates/bober_simple_competition/competition_list.html:10
 #: templates/bober_simple_competition/profile_detail.html:14
 #: templates/bober_simple_competition/profile_table_list.html:11
+# bober_simple_competition/templates/bober_simple_competition/send_email.html: 11
 msgid "Back to Menu"
 msgstr "Menüye Dön"
 
@@ -538,6 +539,25 @@ msgstr "Adı"
 # bober_simple_competition/tables.py: 13
 msgid "E-Mail"
 msgstr "E-Posta"
+
+# bober_simple_competition/forms.py :422
+msgid "From"
+msgstr "Gönderen"
+
+# bober_simple_competition/form.py: 423
+msgid "To"
+msgstr "Alıcı"
+
+# bober_simple_competition/forms.py: 424
+msgid "Subject"
+msgstr "Konu"
+
+# bober_simple_competition/forms.py: 425
+msgid "Content"
+msgstr "Mail İçeriği"
+
+
+
 
 
 
