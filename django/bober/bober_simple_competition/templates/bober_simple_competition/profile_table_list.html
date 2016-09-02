@@ -15,12 +15,12 @@
 {{filter.form.as_p}}
 <input type="submit" value={% trans "Submit" %}>
 </form><br><br>
-<form action="" method="post">
+<form action="" method="POST">
   {% csrf_token %}
   {% render_table table %}
   <br><br>
   <input type="button" class="btn btn-info" name="mergeUsers" value={% trans "Merge" %}>
-  <button type="submit" class="btn btn-info" formaction="send-email/">{% trans "Send Mail" %}</button>
+  <button type="submit" class="btn btn-info" formaction="send-email">{% trans "Send Mail" %}</button>
 </form>
 
 {% endblock %}

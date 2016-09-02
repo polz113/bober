@@ -5,6 +5,7 @@ from django.http import HttpResponse, QueryDict, HttpResponseRedirect, Http404
 from bober_simple_competition.forms import *
 from bober_simple_competition import tables
 from bober_simple_competition import filters
+from bober_simple_competition.models import Profile
 from django.contrib.auth import authenticate, login
 from django.core.serializers.json import DjangoJSONEncoder
 from django.core.exceptions import PermissionDenied
@@ -28,7 +29,16 @@ import random
 import string
 
 def send_email(request):
-    form = MailForm()
+    mail_users = request.POST.getlist('select')
+    emails = request.user.profile.managed_profiles.filter(
+        pk__in = mail_users
+    ).values_list('user__email', flat=True)
+    #email_list = []
+    #for i in range(len(mail_users)):
+    #    u = Profile.objects.get(pk=mail_users[i])
+    #    email_list.append(u.user.email)
+
+    form = MailForm(initial={'mailTo': ", ".join(emails)})
     return render(request, 'bober_simple_competition/send_email.html', {'form': form})
 
 # get rid of this when we stop supporting django 1.5
