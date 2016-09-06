@@ -104,14 +104,17 @@ class Competition(models.Model):
     title = CharField(max_length=256, null=True, blank=True, verbose_name=_("title"))
     promoted = models.BooleanField(default=False, verbose_name=_("promoted"))
     slug = SlugField(unique=True,verbose_name=_("slug"))
-    administrator_code_generator = ForeignKey(CodeGenerator, related_name='administrator_code_competition_set',verbose_name=("")) #adwasdadadad
-    competitor_code_generator = ForeignKey(CodeGenerator, related_name='competitor_code_competition_set',verbose_name=_("")) #fserfseggg
-    questionsets = ManyToManyField('QuestionSet', through='CompetitionQuestionSet',verbose_name=_(""))#adasdadadad
+    administrator_code_generator = ForeignKey(CodeGenerator, related_name='administrator_code_competition_set', 
+                                              verbose_name=_("administrator code generator"))
+    competitor_code_generator = ForeignKey(CodeGenerator, related_name='competitor_code_competition_set',
+                                           verbose_name=_("competitor code generator"))
+    questionsets = ManyToManyField('QuestionSet', through='CompetitionQuestionSet',
+                                   verbose_name=_("Question sets"))
     start = DateTimeField(verbose_name=_("start"))
     # duration in seconds
     duration = IntegerField(default=60*60,verbose_name=_("duration")) # 60s * 60 = 1h.
     end = DateTimeField(verbose_name=_("end"))
-    motd = TextField(blank=True,verbose_name=_("motd"))
+    motd = TextField(blank=True,verbose_name=_("message of the day"))
 
     @property
     def is_over(self):
@@ -896,8 +899,10 @@ class Attempt(models.Model):
 class Profile(models.Model):
     def __unicode__(self):
         return unicode(self.user)
+    
     def get_absolute_url(self):
         return reverse('profile_detail', kwargs={'pk': str(self.pk)})
+    
     user = models.OneToOneField(User)
     feature_level = IntegerField(choices=FEATURE_LEVELS, default=1)
     managed_profiles = models.ManyToManyField('Profile', related_name='managers',
@@ -1025,5 +1030,6 @@ def create_profile(sender, instance=None, **kwargs):
         p = Profile()
         p.user = instance
         p.save()
+        p.managed_profiles.add(p)
 
 signals.post_save.connect(create_profile, sender=User)
