@@ -14,7 +14,8 @@
 <table>
   {{form.as_table}}</table>
   <br><br>
-  <input type="button" class="btn btn-info" name="sendMail" value={% trans "Send Mail" %}>
+  <input type="button" class="btn btn-info" name="sendMail" value={% trans "Send" %}>
+  <a href="{% url "profile_list" %} " class="btn btn-danger">{% trans "Cancel" %}</a>
 </form>
 
 {% endblock %}

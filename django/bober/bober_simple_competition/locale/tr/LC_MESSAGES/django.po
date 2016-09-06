@@ -528,9 +528,9 @@ msgstr "İle giriş"
 msgid "Merge"
 msgstr "Birleştir"
 
-#templates/bober_simple_competition/profile_table_list.html: 22
+#: templates/bober_simple_competition/profile_table_list.html: 22
 msgid "Send Mail"
-msgstr "'E-Posta Gönder'"
+msgstr "E-Posta Gönder"
 
 # bober_simple_competition/tables.py : 9
 msgid "first_name"
@@ -556,6 +556,14 @@ msgstr "Konu"
 msgid "Content"
 msgstr "Mail İçeriği"
 
+
+#: templates/bober_simple_competition/send_email.html: 17
+msgid "Send"
+msgstr "Gönder"
+
+#: templates/bober_simple_competition/send_email.html: 18
+msgid "Cancel"
+msgstr "İptal"
 
 
 

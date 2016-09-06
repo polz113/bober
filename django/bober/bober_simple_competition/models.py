@@ -101,22 +101,22 @@ class Competition(models.Model):
     def get_absolute_url(self):
         return reverse('competition_detail', kwargs={'slug': str(self.slug)})
 
-    title = CharField(max_length=256, null=True, blank=True)
-    promoted = models.BooleanField(default=False)
-    slug = SlugField(unique=True)
-    administrator_code_generator = ForeignKey(CodeGenerator, related_name='administrator_code_competition_set')
-    competitor_code_generator = ForeignKey(CodeGenerator, related_name='competitor_code_competition_set')
-    questionsets = ManyToManyField('QuestionSet', through='CompetitionQuestionSet')
-    start = DateTimeField()
+    title = CharField(max_length=256, null=True, blank=True, verbose_name=_("title"))
+    promoted = models.BooleanField(default=False, verbose_name=_("promoted"))
+    slug = SlugField(unique=True,verbose_name=_("slug"))
+    administrator_code_generator = ForeignKey(CodeGenerator, related_name='administrator_code_competition_set',verbose_name=("")) #adwasdadadad
+    competitor_code_generator = ForeignKey(CodeGenerator, related_name='competitor_code_competition_set',verbose_name=_("")) #fserfseggg
+    questionsets = ManyToManyField('QuestionSet', through='CompetitionQuestionSet',verbose_name=_(""))#adasdadadad
+    start = DateTimeField(verbose_name=_("start"))
     # duration in seconds
-    duration = IntegerField(default=60*60) # 60s * 60 = 1h.
-    end = DateTimeField()
-    motd = TextField(blank=True)
+    duration = IntegerField(default=60*60,verbose_name=_("duration")) # 60s * 60 = 1h.
+    end = DateTimeField(verbose_name=_("end"))
+    motd = TextField(blank=True,verbose_name=_("motd"))
 
     @property
     def is_over(self):
         return self.end < timezone.now()
-    
+
     @classmethod
     def get_cached_by_slug(cls, slug):
         c = cache.get('competition_by_slug__' + slug, None)
@@ -131,12 +131,12 @@ class Competition(models.Model):
     def expand_competitor_code(self, short_code, competition_questionset):
         sep = self.competitor_code_generator.format.separator
         return competition_questionset.slug_str() + sep + short_code
-    
+
     def split_competitor_code(self, access_code):
         sep = self.competitor_code_generator.format.separator
         return access_code.split(sep)
-    
-    def grade_answers(self, grader_runtime_manager=None, 
+
+    def grade_answers(self, grader_runtime_manager=None,
             update_graded=False, regrade=False):
         grader_runtime_manager = graders.init_runtimes(
             grader_runtime_manager)
@@ -144,19 +144,19 @@ class Competition(models.Model):
             grader_runtime_manager = graders.RuntimeManager()
             grader_runtime_manager.start_runtimes()
         if update_graded:
-            self.update_graded_answers(regrade = regrade, 
+            self.update_graded_answers(regrade = regrade,
                 grader_runtime_manager = grader_runtime_manager)
             if regrade:
                 return
         for cq in CompetitionQuestionSet.objects.filter(competition=self):
             cq.grade_answers(grader_runtime_manager=grader_runtime_manager,
                 update_graded=False, regrade=regrade)
-    
+
     def update_graded_answers(self, regrade=False, grader_runtime_manager = None):
         grader_runtime_manager = graders.init_runtimes(
             grader_runtime_manager)
         for cq in CompetitionQuestionSet.objects.filter(competition=self):
-            cq.update_graded_answers(regrade=regrade, 
+            cq.update_graded_answers(regrade=regrade,
                 grader_runtime_manager=grader_runtime_manager)
 
     def admin_privilege_choices(self, access_code):
@@ -164,36 +164,36 @@ class Competition(models.Model):
             lambda x: self.administrator_code_generator.code_matches(access_code,
                 {'admin_privileges': [x[0]]}),
             ADMIN_PRIVILEGES)
-    
+
     def allowed_effect_choices(self, access_code):
         return filter(
             lambda x: self.administrator_code_generator.code_matches(access_code,
                 {'allowed_effects': [x[0]]}),
             CODE_EFFECTS)
-    
+
     def competitor_privilege_choices(self, access_code):
         return filter(
         lambda x: self.administrator_code_generator.code_matches(access_code,
             {'competitor_privileges': [x[0]]}),
         COMPETITOR_PRIVILEGES)
-    
+
     def max_admin_code_data(self, access_code):
         return {
-            'admin_privileges': 
+            'admin_privileges':
                 [i[0] for i in self.admin_privilege_choices(access_code)],
             'allowed_effects':
                 [i[0] for i in self.allowed_effect_choices(access_code)],
-            'competitor_privileges': 
+            'competitor_privileges':
                 [i[0] for i in self.competitor_privilege_choices(access_code)]
             }
-    
+
     def max_competitor_code_data(self, access_code):
         return {
-            'competitor_privileges': 
+            'competitor_privileges':
                 [i[0] for i in self.competitor_privilege_choices(access_code)]
             }
-    
-    def competitor_code_create(self, access_code, 
+
+    def competitor_code_create(self, access_code,
             competition_questionset = None,
             code_data = None):
         if code_data is None:
@@ -218,7 +218,7 @@ class Competition(models.Model):
             code_data = self.max_admin_code_data(access_code)
         c = self.administrator_code_generator.create_code(code_data)
         c.save()
-        return c 
+        return c
 
 
 ANSWER_BATCH_SIZE = 100000
@@ -230,7 +230,7 @@ def _create_graded(answer, regrade, grader_runtime_manager):
             print a
             g_a = GradedAnswer(
                 attempt_id = a.attempt_id, question_id=a.question_id,
-                answer = a 
+                answer = a
             )
             q = Question.objects.get(id=g_a.question_id)
             grader = grader_runtime_manager.get_grader(
@@ -258,14 +258,14 @@ class CompetitionQuestionSet(models.Model):
     questionset = models.ForeignKey('QuestionSet')
     competition = models.ForeignKey('Competition')
     guest_code = ForeignKey(Code, null=True, blank=True)
- 
+
     def slug_str(self):
         return unicode(self.id) + '.' + self.questionset.slug
-    
+
     @classmethod
     def get_by_slug(cls, slug):
         return cls.objects.get(id=slug[:slug.find('.')])
-    
+
     def grade_answers(self, grader_runtime_manager=None,
             update_graded=False, regrade=False):
         grader_runtime_manager = graders.init_runtimes(
@@ -276,7 +276,7 @@ class CompetitionQuestionSet(models.Model):
         #return
         #the implementation below should be faster.
         if update_graded:
-            self.update_graded_answers(regrade=regrade, 
+            self.update_graded_answers(regrade=regrade,
                 grader_runtime_manager=grader_runtime_manager)
             if regrade:
                 return
@@ -294,7 +294,7 @@ class CompetitionQuestionSet(models.Model):
             g_a.score = grader(g_a.answer.value, g_a.attempt.random_seed, q)
             g_a.save()
 
-    def update_graded_answers(self, check_timestamp = False, 
+    def update_graded_answers(self, check_timestamp = False,
             regrade=False, grader_runtime_manager=None):
         grader_runtime_manager = graders.init_runtimes(
             grader_runtime_manager)
@@ -376,7 +376,7 @@ class QuestionSet(models.Model):
             q_ids = self.questions.order_by('id').values_list(
                 'id', flat=True)
             cache.set(cache_id, q_ids)
-        return q_ids 
+        return q_ids
 
     def cache_dir(self):
         return str(self.id) + "-" + self.slug
@@ -407,8 +407,8 @@ class QuestionSet(models.Model):
                 objs = index_soup.find_all('object')
                 scripts = index_soup.find_all('script')
                 for items, item_type, url_property in [
-                    (imgs, 'image', 'src'), 
-                    (objs, 'image', 'data'), 
+                    (imgs, 'image', 'src'),
+                    (objs, 'image', 'data'),
                     (scripts, 'javascript', 'src')]:
                     for i in items:
                         url_str = i.get(url_property, None)
@@ -479,8 +479,8 @@ def _resource_list(soup):
     objs = soup.find_all('object')
     scripts = soup.find_all('script')
     for items, item_type, url_property in [
-        (imgs, 'image', 'src'), 
-        (objs, 'image', 'data'), 
+        (imgs, 'image', 'src'),
+        (objs, 'image', 'data'),
         (scripts, 'javascript', 'src')]:
         for i in items:
             url = i.get(url_property, None)
@@ -493,7 +493,7 @@ def _resource_list(soup):
 
 def _question_from_dirlike(cls, identifier = '-1',
         language = None,
-        regenerate_modules = True, 
+        regenerate_modules = True,
         regenerate_manifest = True,
         remove_correct_answer_class = True,
         my_open=None, my_path=None, my_close=None):
@@ -504,7 +504,7 @@ def _question_from_dirlike(cls, identifier = '-1',
         f = my_open(my_path('Manifest.json'))
         manifest = json.load(f)
     except Exception, e:
-        manifest = {'id': identifier, 
+        manifest = {'id': identifier,
             'language': language}
         print " no manifest? ", e
         regenerate_manifest = True
@@ -588,8 +588,8 @@ def _question_from_dirlike(cls, identifier = '-1',
             manifest[k] = v
     if question is None:
         print "creating question", manifest['title'], type(manifest['title'])
-        question = cls(country = manifest['country'], 
-            slug = slugify(manifest['title']) + '-' + manifest['id'], 
+        question = cls(country = manifest['country'],
+            slug = slugify(manifest['title']) + '-' + manifest['id'],
             identifier = manifest['id'], title = manifest['title'],
             version = manifest['version'], authors = manifest['authors'],
             verification_function = ",".join(manifest['acceptedAnswers']))
@@ -678,20 +678,20 @@ class Question(models.Model):
         manifest['solution_modules'] = []
         manifest['grader_modules'] = []
         for i in self.resource_set.filter(part_of_solution = False):
-            manifest['task'].append({"type":i.resource_type, 
+            manifest['task'].append({"type":i.resource_type,
                 'url': i.relative_url})
         if not safe:
             for i in self.resource_set.filter(part_of_solution = True):
-                manifest['solution'].append({"type":i.resource_type, 
+                manifest['solution'].append({"type":i.resource_type,
                     'url': i.relative_url})
-            manifest['acceptedAnswers'] = [int(i) for i in 
+            manifest['acceptedAnswers'] = [int(i) for i in
                 self.accepted_answers.split(',')]
         return manifest
 
     @classmethod
     def from_zip(cls, f, identifier = '-1',
             language = None,
-            regenerate_modules = True, 
+            regenerate_modules = True,
             regenerate_manifest = True,
             remove_correct_answer_class = True):
         z = zipfile.ZipFile(f)
@@ -718,7 +718,7 @@ class Answer(models.Model):
                 self.randomized_question_id, "??")),
             unicode(self.randomized_question_id),
             unicode(self.value))
-            
+
     attempt = ForeignKey('Attempt')
     randomized_question_id = IntegerField()
     timestamp = DateTimeField(auto_now_add = True)
@@ -768,7 +768,7 @@ class GradedAnswer(models.Model):
     answer = ForeignKey('Answer')
     score = FloatField(null=True)
 
- 
+
 class Attempt(models.Model):
     def __unicode__(self):
         return u"{}: {} - {}: {} ({} - {})".format(self.competitor,
@@ -791,28 +791,28 @@ class Attempt(models.Model):
     #graded_answers = ManyToManyField('Answer', through='GradedAnswer',
     #    related_name = 'graded_attempt',
     #    null=True, blank=True)
- 
+
     @property
     def competition(self):
         return self.competitionquestionset.competition
-    
+
     @property
     def questionset(self):
         return self.competitionquestionset.questionset
-    
+
     @property
     def valid(self):
         return self.invalidated_by == None
-    
+
     def reverse_question_mapping(self):
         return self.questionset.reverse_question_mapping(self.random_seed)
-    
+
     def reverse_question_id(self, randomized_question_id):
         return self.reverse_question_mapping()[randomized_question_id]
-    
+
     def question_mapping(self):
         return self.questionset.question_mapping(self.random_seed)
-    
+
     def grade_answers(self, grader_runtime_manager=None,
             update_graded=False, regrade=False):
         # print "grading...", self
@@ -866,7 +866,7 @@ class Attempt(models.Model):
     def latest_answers(self):
         # get only the latest answers
         return self.gradedanswer_set.all()
-    
+
     def graded_answers_by_question_id(self):
         # return self.graded_answers.order_by('gradedanswer__question_id')
         answered_questions = OrderedDict()
@@ -888,7 +888,7 @@ class Attempt(models.Model):
         #            return answered_questions
         # print "  ", answered_questions
         #return answered_questions
-    
+
     def latest_answers_sum(self):
         return int(sum([a.score for a in self.gradedanswer_set.all() if a.score is not None]))
 
@@ -900,7 +900,7 @@ class Profile(models.Model):
         return reverse('profile_detail', kwargs={'pk': str(self.pk)})
     user = models.OneToOneField(User)
     feature_level = IntegerField(choices=FEATURE_LEVELS, default=1)
-    managed_profiles = models.ManyToManyField('Profile', related_name='managers', 
+    managed_profiles = models.ManyToManyField('Profile', related_name='managers',
         blank=True)
     # managed_users = models.ManyToManyField(User, related_name='managers', null=True, blank=True)
     #first_competition = models.ForeignKey(Competition, null=True, blank=True)
@@ -912,7 +912,7 @@ class Profile(models.Model):
     used_codes = ManyToManyField(Code, blank=True,
         related_name='user_set')
     question_sets = ManyToManyField(QuestionSet, blank=True)
-    created_question_sets = ManyToManyField(QuestionSet, blank=True, 
+    created_question_sets = ManyToManyField(QuestionSet, blank=True,
         related_name='creator_set')
     questions = ManyToManyField(Question, blank=True)
     merged_with = ForeignKey('Profile', null = True, blank=True, related_name='former_profile_set')
@@ -958,7 +958,7 @@ class Profile(models.Model):
             try:
                 codegen = a.competitionquestionset.competition.competitor_code_generator
                 codes = Code.objects.filter(
-                    value = a.access_code, 
+                    value = a.access_code,
                     salt = codegen.salt,
                     format = codegen.format
                 )
@@ -1017,7 +1017,7 @@ class Profile(models.Model):
                                     competition.administrator_code_generator):
                                 u.managers.add(superior)
 
- 
+
 def create_profile(sender, instance=None, **kwargs):
     try:
         p = instance.profile

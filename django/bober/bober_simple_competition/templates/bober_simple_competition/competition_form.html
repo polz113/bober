@@ -27,11 +27,16 @@
 <form action="" method="post">
 {% csrf_token %}
 {{ form.non_field_errors }}
+
+
+
 <div id="normal_form_fields" class="form_table toLeft">
+<div class="col-md-6">
 <table>
 {{form}}
 </table>
 </div>
+<div class="col-md-6">
 <div id='questionsets'>
 {% trans "Question sets" %}
 {% for inline in inlines %}
@@ -40,7 +45,11 @@
     </table>
 {% endfor %}
 </div>
+</div>
+
+
 <a id="toggle_extended_form_fields1">{% trans "Show more" %}</a>
+
 <div id="extended_form_fields1">
 <table>
 {% if form.competitor_code_generator %}
@@ -53,13 +62,10 @@
 <tr><th><label for="{{ form.competitor_salt.id_for_label }}">{{form.competitor_salt.label}}:</label></th><td>
 {{ form.competitor_salt.errors }}{{ form.competitor_salt }}</td></tr>
 <tr><th><label for="{{ form.admin_salt.id_for_label }}">{{form.admin_salt.label}}:</label></th><td>
-{{ form.admin_salt.errors }}{{ form.admin_salt }}</td></tr>
-</table>
-</div>
+{{ form.admin_salt.errors }}{{ form.admin_salt }}</td></tr></div>
+</table></div>
 	<input type="submit" value='{% trans "Submit" %}' />
-	</form>
-</div>
-
+</form>
 <script type="text/javascript">
 $('#extended_form_fields1').css('visibility','hidden');
 $('#toggle_extended_form_fields1').click(function(){
