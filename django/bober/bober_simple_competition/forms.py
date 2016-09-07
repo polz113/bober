@@ -421,8 +421,8 @@ CompetitionUpdateFormSet = inlineformset_factory(Competition,
 class MailForm(forms.Form):
 
     #mailFrom = forms.CharField(widget=forms.Textarea(attrs={'cols':70,'rows':1,'style':'resize:none;'}),label=_("From"), required=True)
-    mailTo = forms.CharField(widget=forms.Textarea(attrs={'cols':70,'rows':1,'style':'resize:none;'}),label=_("To"), required=True)
-    mailSubject = forms.CharField(widget=forms.Textarea(attrs={'cols':70,'rows':1,'style':'resize:none;'}),label=_("Subject"), required=True)
-    mailContent=forms.CharField(widget=TinyMCE(attrs={'cols':70, 'rows': 15}),label=_("Content"), required=True)
+    mail_to = forms.CharField(widget=forms.Textarea(attrs={'cols':70,'rows':1,'style':'resize:none;'}),label=_("To"), required=True)
+    mail_subject = forms.CharField(widget=forms.Textarea(attrs={'cols':70,'rows':1,'style':'resize:none;'}),label=_("Subject"), required=True)
+    mail_content=forms.CharField(widget=TinyMCE(attrs={'cols':70, 'rows': 15}),label=_("Content"), required=True)
     class Media:
         js = ('mce_filebrowser/js/filebrowser_init.js',)

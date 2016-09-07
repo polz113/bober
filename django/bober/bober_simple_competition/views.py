@@ -29,6 +29,7 @@ import time
 import json
 import random
 import string
+import email.utils
 
 def send_email(request):
     mail_users = request.POST.getlist('select')
@@ -40,24 +41,22 @@ def send_email(request):
     #    u = Profile.objects.get(pk=mail_users[i])
     #    email_list.append(u.user.email)
 
-    form = MailForm(initial={'mailTo': ", ".join(emails)})
+    form = MailForm(initial={'mail_to': ", ".join(emails)})
     return render(request, 'bober_simple_competition/send_email.html', {'form': form})
 
 def send_to_mail(request):
     if request.method == 'POST':
         mail_form = MailForm(data = request.POST)
         if mail_form.is_valid():
-            from_email = 'batuhan.tozun@gmail.com'
-            to_emails = list(request.POST.get(
-                'mailTo'
-            , ''))
-            subject = request.POST.get(
-                'mailSubject'
-            , '')
-            text_content = request.POST.get(
-                'mailContent'
-            , '')
-            msg = EmailMultiAlternatives(subject, text_content, from_email, to_emails)
+            mail_from = request.profile.user.email
+            mail_to = mail_form.cleaned_data['mail_to']
+            mail_to_list = [
+                i[1] for i in email.utils.getaddresses([mail_to])
+            ]
+            subject = mail_form.cleaned_data['mail_subject']
+            mail_content = mail_form.cleaned_data['mail_content']
+            msg = EmailMultiAlternatives(subject, mail_content, mail_from, 
+                                         mail_to_list)
             msg.send()
     return redirect("/simple/users")
 
