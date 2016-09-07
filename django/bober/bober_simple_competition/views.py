@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.shortcuts import render, redirect, resolve_url, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, QueryDict, HttpResponseRedirect, Http404
-from django.core.mail import send_mail
+from django.core.mail import EmailMultiAlternatives
 from bober_simple_competition.forms import *
 from bober_simple_competition import tables
 from bober_simple_competition import filters
@@ -44,18 +44,21 @@ def send_email(request):
     return render(request, 'bober_simple_competition/send_email.html', {'form': form})
 
 def send_to_mail(request):
-    #if request.method == 'POST':
-    #    form = MailForm(request.POST)
-    #    if form.is_valid():
-    #        email = EmailMessage('Konu buraya gelecek.', 'Body buraya gelecek.', to=['batuhan.tozun@gmail.com'])
-    #        email.send()
-    send_mail(
-    'Subject here',
-    'Here is the message.',
-    'batuhan.tozun@gmail.com',
-    ['batuhantozun@hotmail.com'],
-    fail_silently=False,
-    )
+    if request.method == 'POST':
+        mail_form = MailForm(data = request.POST)
+        if mail_form.is_valid():
+            from_email = 'batuhan.tozun@gmail.com'
+            to_emails = list(request.POST.get(
+                'mailTo'
+            , ''))
+            subject = request.POST.get(
+                'mailSubject'
+            , '')
+            text_content = request.POST.get(
+                'mailContent'
+            , '')
+            msg = EmailMultiAlternatives(subject, text_content, from_email, to_emails)
+            msg.send()
     return redirect("/simple/users")
 
 
@@ -887,12 +890,12 @@ class CompetitorUpdateJson(LoginRequiredMixin, UpdateView):
 class ProfileListView(LoginRequiredMixin, ListView):
     model = Profile
     template_name = 'bober_simple_competition/profile_list.html'
-    
+
     def get_context_data(self, **kwargs):
         c = super(ProfileListView, self).get_context_data(**kwargs)
         # print c
         return c
-    
+
     def get_queryset(self):
         return self.request.profile.managed_profiles.filter(merged_with=None)
 
