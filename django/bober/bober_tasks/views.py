@@ -877,27 +877,3 @@ def get_categories(obj):
             i += 1
     except Exception, e:
         return categories
-
-@login_required()
-def logout( request ):
-    auth.logout( request )
-
-    messages.success(request, _("You have been logged out."))
-
-    return redirect('index')
-
-#TODO: write more robust and safe!
-@login_required()
-def set_interface_lang(request):
-    if request.POST:
-        user = User.objects.get(id = request.user.id)
-        user_profile = user.get_profile()
-
-        user_profile.interface_lang_code = request.POST.get("language", "en")
-        user_profile.save()
-
-        request.session['django_language'] = request.POST.get("language", "en")
-
-        messages.success(request, _("Your interface language has been changed."))
-
-    return redirect("index")

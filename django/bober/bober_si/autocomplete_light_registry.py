@@ -11,6 +11,7 @@ class SchoolAutocomplete(autocomplete_light.AutocompleteModelBase):
         #'^former_profile_set__user__last_name',
         #'^former_profile_set__user__email_name',
         #'^former_profile_set__user__username',
+        # something for filtering on competition mentorship
     ]
     model = School
     attrs={

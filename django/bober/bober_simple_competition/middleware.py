@@ -5,8 +5,7 @@ class ProfileMiddleware(object):
             profile = request.user.profile
             while profile.merged_with is not None:
                 profile = profile.merged_with
-            print "profile set to:", profile
-            request.session['profile'] = profile.pk
+            # print "profile set to:", profile
             request.profile = profile
         # Code to be executed for each request/response after
         # the view is called.
