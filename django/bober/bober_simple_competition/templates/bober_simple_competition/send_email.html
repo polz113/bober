@@ -10,11 +10,12 @@
 <div style="margin:1%";>
 <a href="{% url "index" %}" class="btn">{% trans "Back to Menu" %}</a>
 </div>
-<form class="" action="" method="post">
+<form class="" action="/simple/send_to_mail" method="post">
+  {% csrf_token %}
 <table>
   {{form.as_table}}</table>
   <br><br>
-  <input type="button" class="btn btn-info" name="sendMail" value={% trans "Send" %}>
+  <input type="submit" class="btn btn-info" name="sendMail" value={% trans "Send" %}>
   <a href="{% url "profile_list" %} " class="btn btn-danger">{% trans "Cancel" %}</a>
 </form>
 

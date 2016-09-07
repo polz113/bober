@@ -104,6 +104,7 @@ urlpatterns = [
     url(r'^users/$', views.ProfileTableView.as_view(), name="profile_list"),
     url(r'^users/(?P<pk>\d+)/$', views.ProfileDetail.as_view(), name="profile_detail"),
     url(r'^users/send-email$', views.send_email, name="send_email"),
+    url(r'^send_to_mail$', views.send_to_mail, name="send_to_mail"),
     #   5.1 merge users
     #    any users registered with codes created or distributed
     #    by the current user can be merged

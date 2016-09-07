@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.shortcuts import render, redirect, resolve_url, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, QueryDict, HttpResponseRedirect, Http404
+from django.core.mail import send_mail
 from bober_simple_competition.forms import *
 from bober_simple_competition import tables
 from bober_simple_competition import filters
@@ -40,6 +41,22 @@ def send_email(request):
 
     form = MailForm(initial={'mailTo': ", ".join(emails)})
     return render(request, 'bober_simple_competition/send_email.html', {'form': form})
+
+def send_to_mail(request):
+    #if request.method == 'POST':
+    #    form = MailForm(request.POST)
+    #    if form.is_valid():
+    #        email = EmailMessage('Konu buraya gelecek.', 'Body buraya gelecek.', to=['batuhan.tozun@gmail.com'])
+    #        email.send()
+    send_mail(
+    'Subject here',
+    'Here is the message.',
+    'batuhan.tozun@gmail.com',
+    ['batuhantozun@hotmail.com'],
+    fail_silently=False,
+    )
+    return redirect("/simple/users")
+
 
 # get rid of this when we stop supporting django 1.5
 def JsonResponse(data, **kwargs):

@@ -498,3 +498,20 @@ footer {
 	text-align:left;
 	width:100px;
 }
+
+#normal_form_fields th{
+  padding: 2%!important;
+  border-bottom: none!important;
+}
+
+.form_table table tbody tr td{
+  padding-bottom: 1%;
+    padding-top: 1%;
+    border-bottom: none!important;
+}
+
+#questionsets table tbody tr td{
+  padding-bottom: 2%;
+    padding-top: 2%;
+    border-bottom: none!important;
+}
