@@ -6,7 +6,7 @@
 {% block headline %}{% trans "Edit user" %}{% endblock %}
 {% block extrahead %}
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.js" type="text/javascript"></script>
-{% include 'autocomplete_light/static.html' %}
+{{form.media}}
 {% endblock %}
 {% block content %}
 {{ object }} [{{ object.pk }}]
