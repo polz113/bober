@@ -15,9 +15,9 @@ import bober_si
 import bober_si.urls
 import password_reset.urls
 from django.views.generic import RedirectView
-import autocomplete_light, autocomplete_light.registry
+# import autocomplete_light, autocomplete_light.registry
 
-autocomplete_light.registry.autodiscover()
+# autocomplete_light.registry.autodiscover()
 admin.autodiscover()
 
 js_info_dict = {
@@ -31,7 +31,7 @@ urlpatterns = [
     # url(r'^blog/', include('blog.urls')),
     url(r'^$', RedirectView.as_view(url='simple/')),
     #url(r'^saml2/', include('djangosaml2.urls')),
-    url(r'^autocomplete/', include('autocomplete_light.urls')),
+    #url(r'^autocomplete/', include('autocomplete_light.urls')),
     # url('', include('django.contrib.auth.urls')),
     url(r'^simple/', include(bober_si.urls)),
     url(r'^simple/', include(bober_paper_submissions.urls)),

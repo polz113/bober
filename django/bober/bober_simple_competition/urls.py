@@ -1,6 +1,7 @@
 from django.conf.urls import include, url
 from django.views.generic import ListView
 from bober_simple_competition.models import *
+from dal import autocomplete
 import views
 
 
@@ -9,6 +10,19 @@ urlpatterns = [
     # url(r'^blog/', include('blog.urls')),
     url(r'^$', views.index, name="simple_index"),
     url(r'^$', views.index, name="index"),
+    # autocompletion links
+    url(r'autocomplete/competition/$', 
+        autocomplete.Select2QuerySetView.as_view(model=Competition),
+        name='autocomplete_competition'),
+    url(r'autocomplete/questionset/$', 
+        autocomplete.Select2QuerySetView.as_view(model=QuestionSet),
+        name='autocomplete_questionset'),
+    url(r'autocomplete/question/$', 
+        autocomplete.Select2QuerySetView.as_view(model=Question),
+        name='autocomplete_question'),
+    url(r'autocomplete/profile/$', 
+        autocomplete.Select2QuerySetView.as_view(model=Profile),
+        name='autocomplete_profile'),
     # 1. login / enter access code
     url(r'^access_code/*(?P<next>.*)$', views.access_code, name="access_code"),
     # 2. pick competition

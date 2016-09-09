@@ -938,8 +938,8 @@ class ProfileUpdate(LoginRequiredMixin, UpdateView):
 
     def get_form(self, form_class=ProfileEditForm):
         form = super(UpdateView, self).get_form(form_class)
-        if 'merged_with' in form.fields:
-            form.fields['merged_with'].queryset = self.get_queryset()
+        #if 'merged_with' in form.fields:
+        #    form.fields['merged_with'].queryset = self.get_queryset()
         return form
 
     def form_valid(self, form):

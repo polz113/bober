@@ -7,11 +7,12 @@ from django.utils.translation import ugettext_lazy as _
 from extra_views import InlineFormSet
 import code_based_auth.models
 import django.forms.extras.widgets as django_widgets
-import autocomplete_light
 from django.forms import ModelForm, TextInput
 from django.core.validators import validate_email
 from django.contrib.flatpages.models import FlatPage
 from tinymce.widgets import TinyMCE
+from dal import autocomplete
+
 class ProfileForm(forms.ModelForm):
     class Meta:
         exclude = tuple()
@@ -38,11 +39,12 @@ class BasicProfileForm(forms.ModelForm):
         """exclude = ('user', 'created_codes', 'received_codes',
             'vcard', 'question_sets', 'managed_profiles', 'used_codes',
             'update_used_codes_timestamp', 'update_managers_timestamp')"""
-        # fields = ('merged_with',);
-        fields = ()
+        fields = ('merged_with',);
+        # fields = ()
         widgets = {
             # the autocomplete: off is supposed to prevent firefox from filling in the form
             # with the current username
+            'merged_with': autocomplete.ModelSelect2(url='autocomplete_profile'),
         #    'merged_with': autocomplete_light.ChoiceWidget('ManagedUsersAutocomplete',
         #        attrs={'class':'modern-style', 'autocomplete': 'off'}),
         #    'merged_with': django_widgets.Select()
@@ -66,8 +68,10 @@ class BasicProfileForm(forms.ModelForm):
             try:
                 self.fields[k] = unordered_fields.pop(k)
             except:
+                print "missing", k
                 pass
         # add the fields not listed above at the end
+        print "fields:", self.fields
         self.fields.update(unordered_fields)
 
     def save(self, *args, **kwargs):
