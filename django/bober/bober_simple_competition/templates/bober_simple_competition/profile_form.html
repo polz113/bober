@@ -6,7 +6,7 @@
 {% block headline %}{% trans "Edit user" %}{% endblock %}
 {% block extrahead %}
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.js" type="text/javascript"></script>
-{% include 'autocomplete_light/static.html' %}
+{{form.media}}
 {% endblock %}
 {% block content %}
 {{ object }} [{{ object.pk }}]
@@ -20,7 +20,7 @@
 <form action="" method="post" id="profile_form" class="form_compete_table" autocomplete="off">
 {% csrf_token %}
 <table>
-{{form}}
+{{form.as_table}}
 </table>
 <input type="submit" value='{% trans "Submit" %}' class="btn"/>
 

@@ -32,6 +32,8 @@ LOGIN_REDIRECT_URL="/"
 # Application definition
 
 INSTALLED_APPS = (
+    'dal',
+    'dal_select2',
     'django.contrib.admin',
     'django.contrib.sites',
     'django.contrib.flatpages',

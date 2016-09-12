@@ -14,7 +14,7 @@ from django.contrib.auth.decorators import login_required
 from django.conf import settings
 from forms import OverviewForm, SchoolCodesCreateForm
 from bober_simple_competition.views import AccessCodeRequiredMixin, SmartCompetitionAdminCodeRequiredMixin
-from bober_simple_competition.views import safe_media_redirect, user_files, _user_file_path, JsonResponse
+from bober_simple_competition.views import safe_media_redirect, _profile_file_path, JsonResponse
 from bober_simple_competition.models import Attempt, Profile, GradedAnswer, AttemptConfirmation
 from bober_paper_submissions.models import JuniorDefaultYear
 from django.contrib.auth.models import User
@@ -454,7 +454,7 @@ def mentor_certificate_pdf(request, username):
         name = (user.first_name.strip() + u" " + user.last_name.strip()).title()
         text = _compose_text(name, nschool, awards)
         text = "\n".join(map(u'<tspan x="0" dy="1.2em">{}</tspan>'.format, text.splitlines()))
-        cert_dir = os.path.join(settings.MEDIA_ROOT, _user_file_path(user, ""))
+        cert_dir = os.path.join(settings.MEDIA_ROOT, _profile_file_path(user, ""))
         try:
             os.mkdir(cert_dir)
         except:
@@ -487,7 +487,7 @@ def school_awards_pdf(request, username, slug, school_id, cqs_name):
             request.profile.managed_profiles.filter(
                 id=profile.id).count() <= 0:
         raise PermissionDenied
-    cert_dir = os.path.join(_user_file_path(profile, 
+    cert_dir = os.path.join(_profile_file_path(profile, 
         os.path.join(slug, school_id)))
     cert_fname = cqs_name + '.pdf'
     cert_path = os.path.join(cert_dir, cert_fname)
@@ -551,7 +551,7 @@ def all_awards_pdf(request, username, slug, cqs_name):
             request.profile.managed_profiles.filter(
                 id=profile.id).count() <= 0:
         raise PermissionDenied
-    cert_dir = os.path.join(_user_file_path(profile, 
+    cert_dir = os.path.join(_profile_file_path(profile, 
         os.path.join(slug)))
     cert_fname = cqs_name + '.pdf'
     cert_path = os.path.join(cert_dir, cert_fname)
@@ -676,7 +676,7 @@ def revalidate_awards(request, attempt_id, *args, **kwargs):
         award.save()
         serials.add(new_serial)
     if True or len(awards_changed):
-        cert_dir = os.path.join(_user_file_path(teacher, 
+        cert_dir = os.path.join(_profile_file_path(teacher, 
             os.path.join(cqs.competition.slug, str(school.id))))
         cert_fname = cqs.name + '.pdf'
         cert_path = os.path.join(cert_dir, cert_fname)

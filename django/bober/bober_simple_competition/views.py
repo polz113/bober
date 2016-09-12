@@ -933,8 +933,8 @@ class ProfileUpdate(LoginRequiredMixin, UpdateView):
 
     def get_form(self, form_class=ProfileEditForm):
         form = super(UpdateView, self).get_form(form_class)
-        if 'merged_with' in form.fields:
-            form.fields['merged_with'].queryset = self.get_queryset()
+        #if 'merged_with' in form.fields:
+        #    form.fields['merged_with'].queryset = self.get_queryset()
         return form
 
     def form_valid(self, form):
@@ -944,6 +944,21 @@ class ProfileUpdate(LoginRequiredMixin, UpdateView):
             # print "merged_with user not managed"
             raise PermissionDenied
         return super(ProfileUpdate, self).form_valid(form)
+
+
+class ProfileAutocomplete(autocomplete.Select2QuerySetView):
+    model=Profile
+    def get_queryset(self):
+        # Don't forget to filter out results depending on the visitor !
+        if not self.request.user.is_authenticated():
+            return Profile.objects.none()
+
+        qs = self.request.profile.managed_profiles.all()
+
+        if self.q:
+            qs = qs.filter(user__username__icontains=self.q)
+
+        return qs
 
 
 # 4. register competitor
@@ -1094,21 +1109,21 @@ class CompetitionRegistration(QuestionSetRegistration):
         self.competitionquestionset = form.cleaned_data[
             'competition_questionset']
         return super(CompetitionRegistration, self).form_valid(form)
-
+    
 
 #   5.3 get certificates, other files
-def _user_file_path(profile, path):
+def _profile_file_path(profile, path):
     resource_dir = os.path.join('user_files', profile.user.username)
     return os.path.join(resource_dir, path)
 
 
 @login_required
-def user_files(request, pk, resource_path):
+def profile_files(request, pk, resource_path):
     profile = request.profile
     if int(pk) not in profile.managed_profiles.all().values_list(
             'id', flat=True):
         raise PermissionDenied
-    return safe_media_redirect(_user_file_path(profile, path))
+    return safe_media_redirect(_profile_file_path(profile, resource_path))
 
 
 # 6. import question(s)
