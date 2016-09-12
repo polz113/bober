@@ -14,9 +14,9 @@
 <script type="text/javascript">window.__admin_media_prefix__ = "{% filter escapejs %}{% static "admin/" %}{% endfilter %}";</script>
 <!--[if lte IE 7]><link rel="stylesheet" type="text/css" href="{% block stylesheet_ie %}{% static "admin/css/ie.css" %}{% endblock %}" /><![endif]-->
 {% if LANGUAGE_BIDI %}<link rel="stylesheet" type="text/css" href="{% block stylesheet_rtl %}{% static "admin/css/rtl.css" %}{% endblock %}" />{% endif %}
+<script type="text/javascript" src="{% static "admin/js/vendor/jquery/jquery.js" %}"></script>
 <script type="text/javascript" src="{% static "admin/js/core.js" %}"></script>
 <script type="text/javascript" src="{% static "admin/js/admin/RelatedObjectLookups.js" %}"></script>
-<script type="text/javascript" src="{% static "js/jquery.js" %}"></script>
 <script type="text/javascript" src="{% static "admin/js/jquery.init.js" %}"></script>
 <script type="text/javascript" src="{% static "admin/js/actions.js" %}"></script>
 <script type="text/javascript" src="{% static "admin/js/inlines.js" %}"></script>
@@ -24,59 +24,138 @@
 {% endblock %}
 {% block content %}
 <br>
+<script>
+
+
+        (function($) {
+            $(document).ready(function() {
+                $('.add-another').click(function(e) {
+                    e.preventDefault();
+                    var event = $.Event('django:add-another-related');
+                    $(this).trigger(event);
+                    if (!event.isDefaultPrevented()) {
+                        showAddAnotherPopup(this);
+                    }
+                });
+
+
+                $('form#competition_form :input:visible:enabled:first').focus()
+
+            });
+        })(django.jQuery);
+
+
+$( document ).ready(function() {
+  {% if request.profile.feature_level == 0 %}
+    var userType = "reduced"
+  {% elif request.profile.feature_level == 1 %}
+    var userType = "basic"
+  {% elif request.profile.feature_level == 10 %}
+    var userType = "common"
+  {% else %}
+    var userType = "all"
+  {% endif %}
+
+  if (userType == "basic") {
+    $( "#normal_form_fields" ).remove();
+    $('#content').append('<p>Sorry, you dont have a permission.<a href="/"> Go back.<a></p>');
+  }
+  else if (userType == 'reduced') {
+    $( "#normal_form_fields > div:nth-child(1) > div > table > tbody > tr:nth-child(2)" ).hide();
+    $( "#normal_form_fields > div:nth-child(1) > div > table > tbody > tr:nth-child(3)" ).hide();
+    $( "#normal_form_fields > div:nth-child(1) > div > table > tbody > tr:nth-child(7)" ).hide();
+    $( "#normal_form_fields > div:nth-child(1) > div > table > tbody > tr:nth-child(8)" ).hide();
+    $( "#normal_form_fields > div:nth-child(1) > div > table > tbody > tr:nth-child(9)" ).hide();
+    $( "#normal_form_fields > div:nth-child(1) > div > table > tbody > tr:nth-child(10)" ).hide();
+    $( "#normal_form_fields > div:nth-child(1) > div > table > tbody > tr:nth-child(11)" ).hide();
+  }
+  else if (userType == 'common') {
+    //do something
+  }
+  else {
+    return;
+  }
+});
+</script>
+
+<p style="margin-left:4%; padding-bottom:1%;
+border-bottom: solid 2px #f9f0df;">
+  Create New Competition
+</p>
+
 <form action="" method="post">
 {% csrf_token %}
 {{ form.non_field_errors }}
-
-
-
 <div id="normal_form_fields" class="form_table toLeft">
-<div class="col-md-6">
-<table>
-{{form}}
-</table>
-</div>
-<div class="col-md-6">
-<div id='questionsets'>
-{% trans "Question sets" %}
-{% for inline in inlines %}
+  <div class="row">
+    <div class="col-md-12 left_set">
     <table>
-{{inline}}
+    {{form}}
     </table>
-{% endfor %}
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12 left_set" id="questionsets">
+      <p style=" margin-top:4%; padding-bottom:1%;
+    border-bottom: solid 2px #f9f0df;">
+        {% trans "Question sets" %}
+      </p>
+      {% for inline in inlines %}
+          <div class="row">
+            <div class="col-md-3">
+              <label>{{inline.form.name.label}}</label>
+            </div>
+            <div class="col-md-6">
+              <label>{{inline.form.questionset.label}}</label>
+            </div>
+            <div class="col-md-3">
+              <label>{{inline.form.create_guest_code.label}}</label>
+            </div>
+          </div>
+          <div class="row questionset-row">
+            <div class="col-md-3">
+              {{inline.form.name.errors}}{{inline.form.name}}
+            </div>
+            <div class="col-md-6">
+              {{inline.form.questionset.errors}}{{inline.form.questionset}}
+        </a>
+            </div>
+            <div class="col-md-3">
+              {{inline.form.create_guest_code.errors}}{{inline.form.create_guest_code}}
+            </div>
+          </div>
+          <div class="row questionset-row">
+            <div class="col-md-3">
+              {{inline.form.name.errors}}{{inline.form.name}}
+            </div>
+            <div class="col-md-6">
+              {{inline.form.questionset.errors}}{{inline.form.questionset}}
+        </a>
+            </div>
+            <div class="col-md-3">
+              {{inline.form.create_guest_code.errors}}{{inline.form.create_guest_code}}
+            </div>
+          </div>
+          <div class="row questionset-row">
+            <div class="col-md-3">
+              {{inline.form.name.errors}}{{inline.form.name}}
+            </div>
+            <div class="col-md-6">
+              {{inline.form.questionset.errors}}{{inline.form.questionset}}
+        </a>
+            </div>
+            <div class="col-md-3">
+              {{inline.form.create_guest_code.errors}}{{inline.form.create_guest_code}}
+            </div>
+          </div>
+      {% endfor %}
+      <div class="row" style="margin-top:2%;">
+        <a href="" style="background: url(/static/admin/img/icon-addlink.svg) 0 1px no-repeat;
+    padding-left: 16px; font-size:15px!important; margin-left:1%;">Başka bir Competition Questionset Ekle</a>
+      </div>
+    </div>
+    <input class="submit_set btn btn-success" type="submit" value='{% trans "Submit" %}' />
+  </div>
 </div>
-</div>
-
-
-<a id="toggle_extended_form_fields1">{% trans "Show more" %}</a>
-
-<div id="extended_form_fields1">
-<table>
-{% if form.competitor_code_generator %}
-<tr><td><label for="{{ form.competitor_code_generator.id_for_label }}">{{form.competitor_code_generator.label}}:</label></td><td>{{ form.competitor_code_generator.errors }}{{ form.competitor_code_generator }}</td></tr>{% endif %}
-{% if form.administrator_code_generator %}
-<tr><td><label for="{{ form.administrator_code_generator.id_for_label }}">{{form.administrator_code_generator.label}}:</label></td><td>{{ form.administrator_code_generator.errors }}{{ form.administrator_code_generator }}</td></tr>{% endif %}
-<tr><td><label for="{{ form.competitor_code_format.id_for_label }}">{{form.competitor_code_format.label}}:</label></td><td>{{ form.competitor_code_format.errors }}{{ form.competitor_code_format }}</td></tr>
-<tr><td><label for="{{ form.admin_code_format.id_for_label }}">{{form.admin_code_format.label}}:</label></td><td>
-{{ form.admin_code_format.errors }}{{ form.admin_code_format }}</td></tr>
-<tr><td><label for="{{ form.competitor_salt.id_for_label }}">{{form.competitor_salt.label}}:</label></td><td>
-{{ form.competitor_salt.errors }}{{ form.competitor_salt }}</td></tr>
-<tr><td><label for="{{ form.admin_salt.id_for_label }}">{{form.admin_salt.label}}:</label></td><td>
-{{ form.admin_salt.errors }}{{ form.admin_salt }}</td></tr></div>
-</table></div>
-	<input type="submit" value='{% trans "Submit" %}' />
 </form>
-<script type="text/javascript">
-$('#extended_form_fields1').css('visibility','hidden');
-$('#toggle_extended_form_fields1').click(function(){
-  if ( $('#extended_form_fields1').css('visibility') == 'hidden' ){
-    $('#extended_form_fields1').css('visibility','visible');
-    $('#toggle_extended_form_fields1').text('{% trans "Show less" %}');
-  } else {
-    $('#extended_form_fields1').css('visibility','hidden');
-    $('#toggle_extended_form_fields1').text('{% trans "Show more" %}');
-  }
-});
-
-</script>
 {% endblock %}

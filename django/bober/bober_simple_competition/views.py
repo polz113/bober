@@ -32,21 +32,16 @@ import string
 import email.utils
 
 def send_email(request):
-    mail_users = request.POST.getlist('select')
+    mail_users = request.GET.getlist('select')
     emails = request.profile.managed_profiles.filter(
         pk__in = mail_users
     ).values_list('user__email', flat=True)
-    #email_list = []
-    #for i in range(len(mail_users)):
-    #    u = Profile.objects.get(pk=mail_users[i])
-    #    email_list.append(u.user.email)
-
     form = MailForm(initial={'mail_to': ", ".join(emails)})
     return render(request, 'bober_simple_competition/send_email.html', {'form': form})
 
 def send_to_mail(request):
-    if request.method == 'POST':
-        mail_form = MailForm(data = request.POST)
+    if request.method == 'GET':
+        mail_form = MailForm(data = request.GET)
         if mail_form.is_valid():
             mail_from = request.profile.user.email
             mail_to = mail_form.cleaned_data['mail_to']
@@ -55,7 +50,7 @@ def send_to_mail(request):
             ]
             subject = mail_form.cleaned_data['mail_subject']
             mail_content = mail_form.cleaned_data['mail_content']
-            msg = EmailMultiAlternatives(subject, mail_content, mail_from, 
+            msg = EmailMultiAlternatives(subject, mail_content, mail_from,
                                          mail_to_list)
             msg.send()
     return redirect("/simple/users")

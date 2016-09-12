@@ -2,6 +2,8 @@ from django import forms
 from collections import OrderedDict
 from django.forms.models import inlineformset_factory, model_to_dict, fields_for_model
 # from django.forms.models import model_to_dict, fields_for_model
+from django.contrib.admin import widgets
+from django.contrib.admin.widgets import FilteredSelectMultiple, RelatedFieldWidgetWrapper
 from bober_simple_competition.models import *
 from django.utils.translation import ugettext_lazy as _
 from extra_views import InlineFormSet
@@ -311,8 +313,8 @@ class CompetitionCreateForm(forms.ModelForm):
             'competitor_code_generator',
             'questionsets')
         widgets = {
-            'start': forms.DateInput(attrs={'class': 'datepicker'}),
-            'end': forms.DateInput(attrs={'class': 'datepicker'}),
+            'start': widgets.AdminDateWidget(),
+            'end': widgets.AdminDateWidget(),
         }
     competitor_code_format = forms.ModelChoiceField(
         queryset = code_based_auth.models.CodeFormat.objects.filter(
@@ -421,8 +423,8 @@ CompetitionUpdateFormSet = inlineformset_factory(Competition,
 class MailForm(forms.Form):
 
     #mailFrom = forms.CharField(widget=forms.Textarea(attrs={'cols':70,'rows':1,'style':'resize:none;'}),label=_("From"), required=True)
-    mail_to = forms.CharField(widget=forms.Textarea(attrs={'cols':70,'rows':1,'style':'resize:none;'}),label=_("To"), required=True)
-    mail_subject = forms.CharField(widget=forms.Textarea(attrs={'cols':70,'rows':1,'style':'resize:none;'}),label=_("Subject"), required=True)
+    mail_to = forms.CharField(widget=forms.TextInput(attrs={'size': 71,'style':'margin-bottom:10px;'}),label=_("To"), required=True)
+    mail_subject = forms.CharField(widget=forms.TextInput(attrs={'size': 71, 'style':'margin-bottom:10px;'}),label=_("Subject"), required=True)
     mail_content=forms.CharField(widget=TinyMCE(attrs={'cols':70, 'rows': 15}),label=_("Content"), required=True)
     class Media:
         js = ('mce_filebrowser/js/filebrowser_init.js',)

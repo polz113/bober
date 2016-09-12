@@ -433,7 +433,7 @@ footer {
 
 /* regular form */
 .form_table{
-	margin-left: 2%;
+	margin-left: 4%;
 }
 .form_row {
 	height: 35px;
@@ -511,7 +511,36 @@ footer {
 }
 
 #questionsets table tbody tr td{
-  padding-bottom: 2%;
+    padding-bottom: 2%;
     padding-top: 2%;
     border-bottom: none!important;
+}
+
+.left_set input, textarea,select{
+  width: 100%;
+  max-width: none!important;
+}
+
+.questionset-row select{
+  width: auto!important;
+  max-width: none!important;
+}
+
+.questionset-row{
+  margin-top: 2%;
+}
+
+.questionset-row input,select{
+
+  font-family: "Roboto", "Lucida Grande", Verdana, Arial, sans-serif;
+    font-weight: normal;
+    font-size: 13px;
+}
+
+.submit_set{
+  margin-top: 2%;
+    margin-left: 1%;
+    margin-bottom: 3%;
+    padding: 8px 15px!important;
+    font-size: 15px!important;
 }

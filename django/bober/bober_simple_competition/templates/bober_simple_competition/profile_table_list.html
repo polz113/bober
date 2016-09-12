@@ -15,7 +15,7 @@
 {{filter.form.as_p}}
 <input type="submit" value={% trans "Submit" %}>
 </form><br><br>
-<form action="" method="POST">
+<form action="" method="GET">
   {% csrf_token %}
   {% render_table table %}
   <br><br>
