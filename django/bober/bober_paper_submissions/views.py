@@ -11,7 +11,7 @@ from bober_paper_submissions.forms import JuniorYearForm, JuniorMentorshipForm, 
 from bober_si.models import School, SchoolTeacherCode, SchoolCompetition
 from bober_paper_submissions.models import JuniorYear, JuniorMentorship, Competition, JuniorAttempt
 import bober_paper_submissions.models
-from bober_simple_competition.views import safe_media_redirect, user_files, _user_file_path
+from bober_simple_competition.views import safe_media_redirect
 from bober_si.views import AWARD_TEMPLATE_DIR
 from bober_si.award_gen import generate_award_pdf
 import os

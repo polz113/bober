@@ -13,16 +13,16 @@ urlpatterns = [
     # autocompletion links
     url(r'autocomplete/competition/$', 
         autocomplete.Select2QuerySetView.as_view(model=Competition),
-        name='autocomplete_competition'),
+        name='competition_autocomplete'),
     url(r'autocomplete/questionset/$', 
         autocomplete.Select2QuerySetView.as_view(model=QuestionSet),
-        name='autocomplete_questionset'),
+        name='questionset_autocomplete'),
     url(r'autocomplete/question/$', 
         autocomplete.Select2QuerySetView.as_view(model=Question),
-        name='autocomplete_question'),
-    url(r'autocomplete/profile/$', 
-        autocomplete.Select2QuerySetView.as_view(model=Profile),
-        name='autocomplete_profile'),
+        name='question_autocomplete'),
+    url(r'autocomplete/profile/$',
+        views.ProfileAutocomplete.as_view(),
+        name='profile_autocomplete'),
     # 1. login / enter access code
     url(r'^access_code/*(?P<next>.*)$', views.access_code, name="access_code"),
     # 2. pick competition
@@ -115,9 +115,9 @@ urlpatterns = [
     # 5. edit user data
     # url(r'^users/$', views.ProfileListView.as_view(), name="profile_list"),
     url(r'^competitor/(?P<pk>\d+)/update', views.CompetitorUpdateJson.as_view(), name='competitor_update'),
-    url(r'^users/$', views.ProfileTableView.as_view(), name="profile_list"),
-    url(r'^users/(?P<pk>\d+)/$', views.ProfileDetail.as_view(), name="profile_detail"),
-    url(r'^users/send-email$', views.send_email, name="send_email"),
+    url(r'^profile/$', views.ProfileTableView.as_view(), name="profile_list"),
+    url(r'^profile/(?P<pk>\d+)/$', views.ProfileDetail.as_view(), name="profile_detail"),
+    url(r'^profile/send-email$', views.send_email, name="send_email"),
     url(r'^send_to_mail$', views.send_to_mail, name="send_to_mail"),
     #   5.1 merge users
     #    any users registered with codes created or distributed
@@ -125,9 +125,9 @@ urlpatterns = [
     #   5.2 edit users
     #    the data for users registered with codes created or distributed
     #    by the current user can be edited
-    url(r'^users/(?P<pk>\d+)/update$', views.ProfileUpdate.as_view(), name="profile_update"),
+    url(r'^profile/(?P<pk>\d+)/update$', views.ProfileUpdate.as_view(), name="profile_update"),
     #   5.3 get certificates, other files
-    url(r'^users/(?P<user_id>\d+)/files$', views.user_files, name="user_files"),
+    url(r'^profile/(?P<pk>\d+)/files/(?P<resource_path>)$', views.profile_files, name="profile_files"),
     # 6. import question(s)
     url(r'^question/$', views.QuestionList.as_view(), name="question_list"),
     # TODO: figure out a way to have safe checkers
