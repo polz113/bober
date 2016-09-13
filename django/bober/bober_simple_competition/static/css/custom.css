@@ -516,8 +516,8 @@ footer {
     border-bottom: none!important;
 }
 
-.left_set input, textarea,select{
-  width: 100%;
+.left_set input[type=text], input[type=number], select[name=competitor_code_format], select[name=admin_code_format]{
+  width: 250px;
   max-width: none!important;
 }
 
@@ -543,4 +543,16 @@ footer {
     margin-bottom: 3%;
     padding: 8px 15px!important;
     font-size: 15px!important;
+}
+
+.user-filter input{
+  margin-bottom: 4%;
+}
+
+.user-filter-button{
+  margin-top: 2%;
+}
+
+.user-filter span{
+  margin-left: 4%;
 }

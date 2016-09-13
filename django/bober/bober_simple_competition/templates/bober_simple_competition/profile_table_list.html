@@ -12,8 +12,10 @@
 <a href="{% url "index" %}" class="btn">{% trans "Back to Menu" %}</a>
 </div>
 <form action="" method="get">
-{{filter.form.as_p}}
-<input type="submit" value={% trans "Submit" %}>
+<table class="user-filter">
+  {{filter.form}}
+</table>
+<input class="btn btn-success user-filter-button" type="submit" value={% trans "Submit" %}>
 </form><br><br>
 <form action="" method="GET">
   {% csrf_token %}
@@ -22,5 +24,14 @@
   <input type="button" class="btn btn-info" name="mergeUsers" value={% trans "Merge" %}>
   <button type="submit" class="btn btn-info" formaction="send-email">{% trans "Send Mail" %}</button>
 </form>
+
+<script>
+$( document ).ready(function() {
+    $('#content > form:nth-child(2) > table > tbody > tr:nth-child(1) > td > br').remove();
+    $('#content > form:nth-child(2) > table > tbody > tr:nth-child(2) > td > br').remove();
+    $('#content > form:nth-child(2) > table > tbody > tr:nth-child(3) > td > br').remove();
+    $('#content > form:nth-child(2) > table > tbody > tr:nth-child(4) > td > br').remove();
+});
+</script>
 
 {% endblock %}
