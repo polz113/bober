@@ -136,6 +136,7 @@ urlpatterns = [
     #url(r'^question/create$', views.QuestionCreate.as_view(), name="question_create"),
     #url(r'^question/(?P<pk>\d+)/update$', views.QuestionUpdate.as_view(), name="question_update"),
     url(r'^question/(?P<pk>\d+)/$', views.QuestionDetail.as_view(), name="question_detail"),
+    url(r'^question/(?P<pk>\d+)/$', views.QuestionDetail.as_view(), name="question_index"),
     # url(r'^question/(?P<pk>\d+)/resources/$', views.QuestionDetail.as_view(), name="question_text"),
     url(r'^question/(?P<pk>\d+)/resources/(?P<resource_path>.*)$', views.question_resources, name="question_resource"),
     url(r'^question/(?P<pk>\d+)/solution/$', views.QuestionSolution.as_view(), name="question_solution"),

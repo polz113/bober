@@ -659,7 +659,7 @@ def question_resources(request, pk, resource_path):
         q = request.profile.questions.get(pk=pk)
     except:
         raise PermissionDenied
-    resource_dir = 'resources/' + str(pk) + '/resources'
+    resource_dir = 'resources/' + str(pk)
     return safe_media_redirect(os.path.join(resource_dir, resource_path))
 
 # 2.2.3 get question data (existing answers, attempt_id, randomised_question map)
@@ -912,12 +912,12 @@ class ProfileDetail(LoginRequiredMixin, DetailView):
 
     def get_queryset(self):
         return self.request.profile.managed_profiles.all()
-#    def get(self, request):
-#        try:
-#            f = self.request.user.profile.managed_profiles.get(id=self.object.id)
-#        except:
-#            return PermissionDenied
-#        return super(ProfileDetail, self).get(request)
+
+    def get_object(self, *args, **kwargs):
+        obj = super(ProfileDetail, self).get_object(*args, **kwargs)
+        while obj.merged_with is not None:
+            obj = obj.merged_with
+        return obj
 
 # 5.1 merge users
 #  any users registered with codes created or distributed
@@ -1216,6 +1216,10 @@ class QuestionSetUpdate(LoginRequiredMixin, UpdateView):
 
     def get_queryset(self):
         return self.request.profile.created_question_sets.all()
+    
+    def get_success_url(self):
+        return reverse('questionset_detail', 
+                       kwargs = self.kwargs)
 
 class QuestionSetDelete(LoginRequiredMixin, DeleteView):
     model = QuestionSet

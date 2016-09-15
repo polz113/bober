@@ -665,6 +665,7 @@ class Question(models.Model):
 
     def index_str(self, embed_resources = True):
         raw_index = self.index().as_bytes()
+        return raw_index
 
     def manifest(self, safe=True):
         manifest = dict()

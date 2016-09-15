@@ -69,10 +69,8 @@ class BasicProfileForm(forms.ModelForm):
             try:
                 self.fields[k] = unordered_fields.pop(k)
             except:
-                print "missing", k
                 pass
         # add the fields not listed above at the end
-        print "fields:", self.fields
         self.fields.update(unordered_fields)
 
     def save(self, *args, **kwargs):
@@ -438,8 +436,8 @@ class CompetitionQuestionSetCreateInline(InlineFormSet):
 
     def __init__(self, *args, **kwargs):
         super(CompetitionQuestionSetCreateInline, self).__init__(*args, **kwargs)
-        rel = ManyToOneRel(self.instance.location.model, 'id')
-        self.fields['questionset'].widget = RelatedFieldWidgetWrapper(self.fields['questionset'].widget, rel, self.admin_site)
+        rel = ForeignKey(self.model, 'id')
+        # self.fields['questionset'].widget = RelatedFieldWidgetWrapper(self.fields['questionset'].widget, rel, self.admin_site)
 
 
 
