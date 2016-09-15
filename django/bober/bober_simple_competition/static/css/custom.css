@@ -530,7 +530,7 @@ footer {
   margin-top: 2%;
 }
 
-.questionset-row input,select{
+.questionset-row input[type=text],select[name=questionset]{
 
   font-family: "Roboto", "Lucida Grande", Verdana, Arial, sans-serif;
     font-weight: normal;

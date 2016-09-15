@@ -1131,7 +1131,7 @@ class CompetitionRegistration(QuestionSetRegistration):
         self.competitionquestionset = form.cleaned_data[
             'competition_questionset']
         return super(CompetitionRegistration, self).form_valid(form)
-    
+
 
 #   5.3 get certificates, other files
 def _profile_file_path(profile, path):
