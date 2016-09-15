@@ -22,6 +22,5 @@
 {% if request.profile.questions.exists %}
 <a href="{% url "question_list" %}" class="btn">{% trans "Questions" %}</a>
 {% endif %}
-<a href="{% url "code_format_index" %}" class="btn">{% trans "Code formats" %}</a>
 {% endif %}
 {% endblock %}
