@@ -1,9 +1,7 @@
 from django import forms
 from collections import OrderedDict
 from django.forms.models import inlineformset_factory, model_to_dict, fields_for_model
-# from django.forms.models import model_to_dict, fields_for_model
 from django.contrib.admin import widgets
-from django.contrib.admin.widgets import FilteredSelectMultiple, RelatedFieldWidgetWrapper
 from bober_simple_competition.models import *
 from django.utils.translation import ugettext_lazy as _
 from extra_views import InlineFormSet
@@ -14,6 +12,7 @@ from django.core.validators import validate_email
 from django.contrib.flatpages.models import FlatPage
 from tinymce.widgets import TinyMCE
 from dal import autocomplete
+from django.template.loader import render_to_string
 
 class ProfileForm(forms.ModelForm):
     class Meta:
@@ -413,6 +412,15 @@ class CompetitionQuestionSetCreateInline(InlineFormSet):
     model = CompetitionQuestionSet
     form_class = CompetitionQuestionSetCreateForm
     can_delete = False
+
+    questionset = forms.ModelChoiceField(queryset=CompetitionQuestionSet.objects.all())
+
+    def __init__(self, *args, **kwargs):
+        super(CompetitionQuestionSetCreateInline, self).__init__(*args, **kwargs)
+        rel = ManyToOneRel(self.instance.location.model, 'id')
+        self.fields['questionset'].widget = RelatedFieldWidgetWrapper(self.fields['questionset'].widget, rel, self.admin_site)
+
+
 
 class CompetitionQuestionSetUpdateInline(InlineFormSet):
     model = CompetitionQuestionSet
