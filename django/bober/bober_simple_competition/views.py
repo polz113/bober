@@ -930,7 +930,6 @@ class ProfileDetail(LoginRequiredMixin, DetailView):
 class ProfileUpdate(LoginRequiredMixin, UpdateView):
     model = Profile
     form_class = ProfileEditForm
-    success_url = reverse_lazy('teacher_overview')
 
     def get_queryset(self):
         return self.request.profile.managed_profiles.all()
@@ -948,6 +947,11 @@ class ProfileUpdate(LoginRequiredMixin, UpdateView):
             # print "merged_with user not managed"
             raise PermissionDenied
         return super(ProfileUpdate, self).form_valid(form)
+
+    def get_success_url(self):
+        print self.__dict__
+        return reverse('profile_detail',
+            kwargs = {'pk': self.object.id})
 
 
 class ProfileMerge(LoginRequiredMixin, UpdateView):

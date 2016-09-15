@@ -10,7 +10,7 @@
 {% endblock %}
 
 {% block content %}
-<div style="margin:1%";>
+<div>
 <a href="{% url "index" %}" class="btn">{% trans "Back to Menu" %}</a>
 </div>
 <div>
@@ -32,6 +32,7 @@
 </tr>
 </table>	
 </div>
+<a href="{% url "profile_update" object.pk %}">{% trans "update profile" %}</a>
 <br>
 <div>
 	<table class="paleblue">

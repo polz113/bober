@@ -41,12 +41,12 @@ class BasicProfileForm(forms.ModelForm):
         """exclude = ('user', 'created_codes', 'received_codes',
             'vcard', 'question_sets', 'managed_profiles', 'used_codes',
             'update_used_codes_timestamp', 'update_managers_timestamp')"""
-        fields = ('merged_with',);
-        # fields = ()
+        # fields = ('merged_with',);
+        fields = ()
         widgets = {
             # the autocomplete: off is supposed to prevent firefox from filling in the form
             # with the current username
-            'merged_with': autocomplete.ModelSelect2(url='profile_autocomplete'),
+        #    'merged_with': autocomplete.ModelSelect2(url='profile_autocomplete'),
         #    'merged_with': autocomplete_light.ChoiceWidget('ManagedUsersAutocomplete',
         #        attrs={'class':'modern-style', 'autocomplete': 'off'}),
         #    'merged_with': django_widgets.Select()
