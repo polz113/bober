@@ -105,7 +105,27 @@ class BasicProfileForm(forms.ModelForm):
 class ProfileEditForm(BasicProfileForm):
     pass
 
-
+class ProfileMergeForm(forms.ModelForm):
+    class Meta:
+        model = Profile
+        """exclude = ('user', 'created_codes', 'received_codes',
+            'vcard', 'question_sets', 'managed_profiles', 'used_codes',
+            'update_used_codes_timestamp', 'update_managers_timestamp')"""
+        fields = ('merged_with',);
+        # fields = ()
+        widgets = {
+            # the autocomplete: off is supposed to prevent firefox from filling in the form
+            # with the current username
+            'merged_with': autocomplete.ModelSelect2(url='profile_autocomplete'),
+        #    'merged_with': autocomplete_light.ChoiceWidget('ManagedUsersAutocomplete',
+        #        attrs={'class':'modern-style', 'autocomplete': 'off'}),
+        #    'merged_with': django_widgets.Select()
+        }
+        def clean(self):
+            # assert both profiles are managed
+            managed_profiles = self.request.profile.managed_profiles
+            assert managed_profiles.filter(id = self.instance.id).exists()
+            assert managed_profiles.filter(id = self.instance.mereged_with).exists()
 
 class QuestionSetRegistrationForm(forms.ModelForm):
     class Meta:
@@ -136,6 +156,7 @@ class QuestionSetRegistrationForm(forms.ModelForm):
         if not self.cleaned_data.get('password', None):
             self.cleaned_data['password'] = self.cleaned_data.get('access_code', '')
         return cleaned_data
+    
     def clean_access_code(self):
         full_code = self.questionset_slug + self.codegen.format.separator + self.cleaned_data['access_code']
         if not self.codegen.code_matches(full_code,

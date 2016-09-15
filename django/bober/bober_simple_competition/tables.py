@@ -10,7 +10,7 @@ class ProfileTable(dt2.Table):
         attrs = {'class': 'taskTable table table-hover'}
     first_name = dt2.Column(accessor='user.first_name', verbose_name=_("First Name"))
     last_name = dt2.Column(accessor='user.last_name', verbose_name = _("Last Name"))
-    username = dt2.LinkColumn("profile_update", 
+    username = dt2.LinkColumn("profile_detail", 
                               args=[A('pk')],
                               verbose_name = _("username"), )
     email = dt2.Column(accessor='user.email', verbose_name=_("E-Mail"))

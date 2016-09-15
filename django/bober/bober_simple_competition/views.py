@@ -331,9 +331,11 @@ class CodeFormatDetail(FormView, LoginRequiredMixin):
 
 class AdminCodeFormatCreate(FormView, LoginRequiredMixin):
     form_class = AdminCodeFormatForm
+    template_name = "bober_simple_competition/codeformat_create.html"
+    
     def get_success_url(self):
         return reverse("admin_code_format_list")
-    template_name = "bober_simple_competition/codeformat_create.html"
+    
     def form_valid(self, form):
         code_components = [
             {
@@ -371,8 +373,10 @@ class AdminCodeFormatCreate(FormView, LoginRequiredMixin):
 class CompetitorCodeFormatCreate(FormView, LoginRequiredMixin):
     form_class = CompetitorCodeFormatForm
     template_name = "bober_simple_competition/codeformat_create.html"
+
     def get_success_url(self):
         return reverse("competitor_code_format_list")
+
     def form_valid(self, form):
         code_components = [
             {
@@ -926,7 +930,7 @@ class ProfileDetail(LoginRequiredMixin, DetailView):
 class ProfileUpdate(LoginRequiredMixin, UpdateView):
     model = Profile
     form_class = ProfileEditForm
-    success_url = reverse_lazy('teacher_overview', args=["drzavno2015"])
+    success_url = reverse_lazy('teacher_overview')
 
     def get_queryset(self):
         return self.request.profile.managed_profiles.all()
@@ -944,6 +948,20 @@ class ProfileUpdate(LoginRequiredMixin, UpdateView):
             # print "merged_with user not managed"
             raise PermissionDenied
         return super(ProfileUpdate, self).form_valid(form)
+
+
+class ProfileMerge(LoginRequiredMixin, UpdateView):
+    model = Profile
+    form_class = ProfileMergeForm
+    
+    def form_valid(self, form):
+        if form.instance.merged_with is not None:
+            self.merged_pk = form.instance.merged_with_id
+        return super(ProfileMerge, self).form_valid(form)
+    
+    def get_success_url(self):
+        return reverse('profile_detail',
+            kwargs = {'pk': self.merged_pk})
 
 
 class ProfileAutocomplete(autocomplete.Select2QuerySetView):
