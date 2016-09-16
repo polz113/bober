@@ -10,7 +10,6 @@ urlpatterns = [
     # url(r'^blog/', include('blog.urls')),
     url(r'^$', views.index, name="simple_index"),
     url(r'^$', views.index, name="index"),
-    url(r'^add/(?P<QuestionSet>\w+)/?$', 'tekextensions.views.add_new_model'),
     # autocompletion links
     url(r'autocomplete/competition/$',
         autocomplete.Select2QuerySetView.as_view(model=Competition),
