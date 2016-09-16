@@ -565,9 +565,61 @@ msgstr "Gönder"
 msgid "Cancel"
 msgstr "İptal"
 
+#: templates/bober_simple_competition/competition_form.html: 87
+msgid "Create New Competition"
+msgstr "Yeni Yarışma Oluştur"
+
+#: templates/bober_simple_competition/competition_form.html: 41
+msgid "Sorry, you dont have a permission."
+msgstr "Üzgünüz, bu sayfayı görüntülemek için gerekli izinlere sahip değilsiniz."
+msgid "Go back."
+msgstr "Geri dön"
 
 
 
+#: bober_simple_competition/forms.py: 328
+msgid "Competitor code format"
+msgstr "Yarışmacı kod formatı"
+
+#: bober_simple_competition/forms.py: 331
+msgid "Admin code format"
+msgstr "Admin kod formatı"
+
+#: bober_simple_competition/forms.py: 332
+msgid "Admin salt"
+msgstr "Yönetici salt"
+
+#: bober_simple_competition/forms.py: 333
+msgid "Competitor salt"
+msgstr "Yarışmacı salt"
+
+#: bober_simple_competition/models.py: 105
+msgid "promoted"
+msgstr "Ayrıcalık"
+
+#: bober_simple_competition/models.py: 106
+msgid "slug"
+msgstr "Kısaltma"
+
+#: bober_simple_competition/models.py: 113
+msgid "start"
+msgstr "Başlama Tarihi"
+
+#: bober_simple_competition/models.py: 115
+msgid "duration"
+msgstr "Süre (ms)"
+
+#: bober_simple_competition/models.py: 116
+msgid "end"
+msgstr "Bitiş Tarihi"
+
+#: bober_simple_competition/models.py: 117
+msgid "message of the day"
+msgstr "Günün Mesajı"
+
+#: bober_simple_competition/forms.py: 381
+msgid "Create guest code"
+msgstr "Misafir Kodu Oluştur"
 
 
 

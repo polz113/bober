@@ -104,12 +104,12 @@ class Competition(models.Model):
     title = CharField(max_length=256, null=True, blank=True, verbose_name=_("title"))
     promoted = models.BooleanField(default=False, verbose_name=_("promoted"))
     slug = SlugField(unique=True,verbose_name=_("slug"))
-    administrator_code_generator = ForeignKey(CodeGenerator, related_name='administrator_code_competition_set', 
-                                              verbose_name=_("administrator code generator"))
-    competitor_code_generator = ForeignKey(CodeGenerator, related_name='competitor_code_competition_set',
-                                           verbose_name=_("competitor code generator"))
-    questionsets = ManyToManyField('QuestionSet', through='CompetitionQuestionSet',
-                                   verbose_name=_("Question sets"))
+
+    administrator_code_generator = ForeignKey(CodeGenerator, related_name='administrator_code_competition_set',                                          verbose_name=_("administrator code generator")
+    )
+
+    competitor_code_generator = ForeignKey(CodeGenerator, related_name='competitor_code_competition_set',                                           verbose_name=_("competitor code generator"))
+    questionsets = ManyToManyField('QuestionSet', through='CompetitionQuestionSet',        verbose_name=_("Question sets"))
     start = DateTimeField(verbose_name=_("start"))
     # duration in seconds
     duration = IntegerField(default=60*60,verbose_name=_("duration")) # 60s * 60 = 1h.
@@ -257,8 +257,8 @@ class CompetitionQuestionSet(models.Model):
     def __unicode__(self):
         return u"{}: {}".format(self.competition.slug, self.name)
 
-    name = models.CharField(max_length=256, null=True, blank=True)
-    questionset = models.ForeignKey('QuestionSet')
+    name = models.CharField(max_length=256, null=True, blank=True,verbose_name=_("Name"))
+    questionset = models.ForeignKey('QuestionSet',verbose_name=_("Questionset"))
     competition = models.ForeignKey('Competition')
     guest_code = ForeignKey(Code, null=True, blank=True)
 
@@ -354,13 +354,14 @@ class CodeEffect(models.Model):
 
 
 class QuestionSet(models.Model):
+
     def __unicode__(self):
         return u"{}: {}".format(self.name, ",".join([unicode(i) for i in self.questions.all()]))
     def get_absolute_url(self):
         return reverse('questionset_detail', kwargs={'pk': str(self.id)})
-    slug = SlugField(unique=True)
-    name = CharField(max_length = 255)
-    questions = ManyToManyField('Question', blank=True)
+    slug = SlugField(unique=True,verbose_name=_("Slug"))
+    name = CharField(max_length = 255,verbose_name=_("Name"))
+    questions = ManyToManyField('Question', blank=True,verbose_name=_("Questions"))
     resource_caches = ManyToManyField('ResourceCache', blank=True)
 
     def question_mapping(self, random_seed):
@@ -899,10 +900,10 @@ class Attempt(models.Model):
 class Profile(models.Model):
     def __unicode__(self):
         return unicode(self.user)
-    
+
     def get_absolute_url(self):
         return reverse('profile_detail', kwargs={'pk': str(self.pk)})
-    
+
     user = models.OneToOneField(User)
     feature_level = IntegerField(choices=FEATURE_LEVELS, default=1)
     managed_profiles = models.ManyToManyField('Profile', related_name='managers',

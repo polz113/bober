@@ -25,26 +25,6 @@
 {% block content %}
 <br>
 <script>
-
-
-        (function($) {
-            $(document).ready(function() {
-                $('.add-another').click(function(e) {
-                    e.preventDefault();
-                    var event = $.Event('django:add-another-related');
-                    $(this).trigger(event);
-                    if (!event.isDefaultPrevented()) {
-                        showAddAnotherPopup(this);
-                    }
-                });
-
-
-                $('form#competition_form :input:visible:enabled:first').focus()
-
-            });
-        })(django.jQuery);
-
-
 $( document ).ready(function() {
   {% if request.profile.feature_level == 0 %}
     var userType = "reduced"
@@ -58,7 +38,7 @@ $( document ).ready(function() {
 
   if (userType == "basic") {
     $( "#normal_form_fields" ).remove();
-    $('#content').append('<p>Sorry, you dont have a permission.<a href="/"> Go back.<a></p>');
+    $('#content').append('<p> {% trans "Sorry, you dont have a permission." %}<a href="/"> {% trans "Go back." %} <a></p>');
   }
   else if (userType == 'reduced') {
     $( "#normal_form_fields > div:nth-child(1) > div > table > tbody > tr:nth-child(2)" ).hide();
@@ -80,7 +60,7 @@ $( document ).ready(function() {
 
 <p style="margin-left:4%; padding-bottom:1%;
 border-bottom: solid 2px #f9f0df;">
-  Create New Competition
+  {% trans "Create New Competition" %}
 </p>
 
 <form action="" method="post">
