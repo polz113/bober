@@ -117,8 +117,6 @@ urlpatterns = [
     url(r'^competitor/(?P<pk>\d+)/update', views.CompetitorUpdateJson.as_view(), name='competitor_update'),
     url(r'^profile/$', views.ProfileTableView.as_view(), name="profile_list"),
     url(r'^profile/(?P<pk>\d+)/$', views.ProfileDetail.as_view(), name="profile_detail"),
-    url(r'^profile/send-email$', views.send_email, name="send_email"),
-    url(r'^send_to_mail$', views.send_to_mail, name="send_to_mail"),
     #   5.1 merge users
     #    any users registered with codes created or distributed
     #    by the current user can be merged
@@ -126,8 +124,11 @@ urlpatterns = [
     #    the data for users registered with codes created or distributed
     #    by the current user can be edited
     url(r'^profile/(?P<pk>\d+)/update$', views.ProfileUpdate.as_view(), name="profile_update"),
+    url(r'^profile/(?P<pk>\d+)/merge$', views.ProfileMerge.as_view(), name="profile_merge"),
     #   5.3 get certificates, other files
     url(r'^profile/(?P<pk>\d+)/files/(?P<resource_path>)$', views.profile_files, name="profile_files"),
+    url(r'^profile/send-email$', views.send_email, name="send_email"),
+    url(r'^send_to_mail$', views.send_to_mail, name="send_to_mail"),
     # 6. import question(s)
     url(r'^question/$', views.QuestionList.as_view(), name="question_list"),
     # TODO: figure out a way to have safe checkers
@@ -135,6 +136,7 @@ urlpatterns = [
     #url(r'^question/create$', views.QuestionCreate.as_view(), name="question_create"),
     #url(r'^question/(?P<pk>\d+)/update$', views.QuestionUpdate.as_view(), name="question_update"),
     url(r'^question/(?P<pk>\d+)/$', views.QuestionDetail.as_view(), name="question_detail"),
+    url(r'^question/(?P<pk>\d+)/$', views.QuestionDetail.as_view(), name="question_index"),
     # url(r'^question/(?P<pk>\d+)/resources/$', views.QuestionDetail.as_view(), name="question_text"),
     url(r'^question/(?P<pk>\d+)/resources/(?P<resource_path>.*)$', views.question_resources, name="question_resource"),
     url(r'^question/(?P<pk>\d+)/solution/$', views.QuestionSolution.as_view(), name="question_solution"),

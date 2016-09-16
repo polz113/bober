@@ -1,9 +1,7 @@
 from django import forms
 from collections import OrderedDict
 from django.forms.models import inlineformset_factory, model_to_dict, fields_for_model
-# from django.forms.models import model_to_dict, fields_for_model
 from django.contrib.admin import widgets
-from django.contrib.admin.widgets import FilteredSelectMultiple, RelatedFieldWidgetWrapper
 from bober_simple_competition.models import *
 from django.utils.translation import ugettext_lazy as _
 from extra_views import InlineFormSet
@@ -14,6 +12,7 @@ from django.core.validators import validate_email
 from django.contrib.flatpages.models import FlatPage
 from tinymce.widgets import TinyMCE
 from dal import autocomplete
+from django.template.loader import render_to_string
 
 class ProfileForm(forms.ModelForm):
     class Meta:
@@ -41,12 +40,12 @@ class BasicProfileForm(forms.ModelForm):
         """exclude = ('user', 'created_codes', 'received_codes',
             'vcard', 'question_sets', 'managed_profiles', 'used_codes',
             'update_used_codes_timestamp', 'update_managers_timestamp')"""
-        fields = ('merged_with',);
-        # fields = ()
+        # fields = ('merged_with',);
+        fields = ()
         widgets = {
             # the autocomplete: off is supposed to prevent firefox from filling in the form
             # with the current username
-            'merged_with': autocomplete.ModelSelect2(url='profile_autocomplete'),
+        #    'merged_with': autocomplete.ModelSelect2(url='profile_autocomplete'),
         #    'merged_with': autocomplete_light.ChoiceWidget('ManagedUsersAutocomplete',
         #        attrs={'class':'modern-style', 'autocomplete': 'off'}),
         #    'merged_with': django_widgets.Select()
@@ -70,10 +69,8 @@ class BasicProfileForm(forms.ModelForm):
             try:
                 self.fields[k] = unordered_fields.pop(k)
             except:
-                print "missing", k
                 pass
         # add the fields not listed above at the end
-        print "fields:", self.fields
         self.fields.update(unordered_fields)
 
     def save(self, *args, **kwargs):
@@ -106,7 +103,27 @@ class BasicProfileForm(forms.ModelForm):
 class ProfileEditForm(BasicProfileForm):
     pass
 
-
+class ProfileMergeForm(forms.ModelForm):
+    class Meta:
+        model = Profile
+        """exclude = ('user', 'created_codes', 'received_codes',
+            'vcard', 'question_sets', 'managed_profiles', 'used_codes',
+            'update_used_codes_timestamp', 'update_managers_timestamp')"""
+        fields = ('merged_with',);
+        # fields = ()
+        widgets = {
+            # the autocomplete: off is supposed to prevent firefox from filling in the form
+            # with the current username
+            'merged_with': autocomplete.ModelSelect2(url='profile_autocomplete'),
+        #    'merged_with': autocomplete_light.ChoiceWidget('ManagedUsersAutocomplete',
+        #        attrs={'class':'modern-style', 'autocomplete': 'off'}),
+        #    'merged_with': django_widgets.Select()
+        }
+        def clean(self):
+            # assert both profiles are managed
+            managed_profiles = self.request.profile.managed_profiles
+            assert managed_profiles.filter(id = self.instance.id).exists()
+            assert managed_profiles.filter(id = self.instance.mereged_with).exists()
 
 class QuestionSetRegistrationForm(forms.ModelForm):
     class Meta:
@@ -137,6 +154,7 @@ class QuestionSetRegistrationForm(forms.ModelForm):
         if not self.cleaned_data.get('password', None):
             self.cleaned_data['password'] = self.cleaned_data.get('access_code', '')
         return cleaned_data
+    
     def clean_access_code(self):
         full_code = self.questionset_slug + self.codegen.format.separator + self.cleaned_data['access_code']
         if not self.codegen.code_matches(full_code,
@@ -416,6 +434,15 @@ class CompetitionQuestionSetCreateInline(InlineFormSet):
     model = CompetitionQuestionSet
     form_class = CompetitionQuestionSetCreateForm
     can_delete = False
+
+    questionset = forms.ModelChoiceField(queryset=CompetitionQuestionSet.objects.all())
+
+    def __init__(self, *args, **kwargs):
+        super(CompetitionQuestionSetCreateInline, self).__init__(*args, **kwargs)
+        rel = ForeignKey(self.model, 'id')
+        # self.fields['questionset'].widget = RelatedFieldWidgetWrapper(self.fields['questionset'].widget, rel, self.admin_site)
+
+
 
 class CompetitionQuestionSetUpdateInline(InlineFormSet):
     model = CompetitionQuestionSet
