@@ -10,7 +10,7 @@
 {% endblock %}
 
 {% block content %}
-<div style="margin:1%";>
+<div>
 <a href="{% url "index" %}" class="btn">{% trans "Back to Menu" %}</a>
 </div>
 <div>
@@ -30,8 +30,17 @@
 <td><b>{% trans "Email" %}:</b> </td>
 <td>{{object.user.email}}</td>
 </tr>
+{% if object.merged_with %}
+<tr>
+<td><b>{% trans "Merged with" %}:</b> </td>
+<td>{{object.merged_with}}</td>
+</tr>
+{% endif %}
 </table>	
 </div>
+<a href="{% url "profile_update" object.pk %}">{% trans "Update profile" %}</a>
+<br>
+<a href="{% url "profile_merge" object.pk %}">{% trans "Merge this profile into another" %}</a>
 <br>
 <div>
 	<table class="paleblue">

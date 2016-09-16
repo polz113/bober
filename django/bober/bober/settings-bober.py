@@ -42,7 +42,6 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'bober_competition',
     'bober_paper_submissions',
     'code_based_auth',
     'bober_simple_competition',

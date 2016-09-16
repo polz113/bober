@@ -666,6 +666,7 @@ class Question(models.Model):
 
     def index_str(self, embed_resources = True):
         raw_index = self.index().as_bytes()
+        return raw_index
 
     def manifest(self, safe=True):
         manifest = dict()
@@ -953,6 +954,12 @@ class Profile(models.Model):
                     known.add(o)
         return known
 
+    def manages_self(self):
+        return self.managed_profiles.filter(id = self.id).exists()
+    
+    def managed_others(self):
+        return self.managed_profiles.exclude(id = self.id)
+
     def update_used_codes(self):
         if self.update_used_codes_timestamp is None:
             attempts = self.attempt_set.all()
@@ -974,7 +981,6 @@ class Profile(models.Model):
                 print e
                 pass
 
-
     def apply_code_effects(self, codes = None):
         if codes is None:
             update_managers_timestamp = timezone.now()
@@ -982,7 +988,6 @@ class Profile(models.Model):
         for c in codes:
             for effect in c.code_effect_set:
                 effect.apply(users=[self])
-
 
     def update_managers(self, codes = None):
         for c in codes:
@@ -1001,7 +1006,6 @@ class Profile(models.Model):
                             for superior in superiors(u,
                                     competition.administrator_code_generator):
                                 superior.managed_profiles.add(self)
-
 
     def update_managed_profiles(self, codes = None):
         if codes is None:
