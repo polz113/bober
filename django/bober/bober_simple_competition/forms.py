@@ -316,18 +316,21 @@ class CompetitionCreateForm(forms.ModelForm):
         exclude = ('administrator_code_generator',
             'competitor_code_generator',
             'questionsets')
+
+
         widgets = {
             'start': widgets.AdminDateWidget(),
             'end': widgets.AdminDateWidget(),
         }
     competitor_code_format = forms.ModelChoiceField(
         queryset = code_based_auth.models.CodeFormat.objects.filter(
-            components__name = 'competition_questionset').distinct())
+            components__name = 'competition_questionset').distinct(),
+            label=_('Competitor code format'))
     admin_code_format = forms.ModelChoiceField(
         queryset = code_based_auth.models.CodeFormat.objects.filter(
-            components__name = 'admin_privileges').distinct())
-    admin_salt = forms.CharField()
-    competitor_salt = forms.CharField()
+            components__name = 'admin_privileges').distinct(),label=_('Admin code format'))
+    admin_salt = forms.CharField(label=_('Admin salt'))
+    competitor_salt = forms.CharField(label=_('Competitor salt'))
 
 class CompetitionUpdateForm(forms.ModelForm):
     class Meta:
@@ -375,13 +378,13 @@ class CompetitionQuestionSetCreateForm(forms.ModelForm):
     class Meta:
         model = CompetitionQuestionSet
         exclude = ('guest_code',)
-    create_guest_code = forms.BooleanField(required=False)
+    create_guest_code = forms.BooleanField(required=False,label=_("Create guest code"))
 
 class CompetitionQuestionSetUpdateForm(forms.ModelForm):
     class Meta:
         model = CompetitionQuestionSet
         exclude = []
-    create_guest_code = forms.BooleanField(required=False)
+    create_guest_code = forms.BooleanField(required=False, label=_("Create guest code"))
     def save(self, *args, **kwargs):
         retval = super(CompetitionQuestionSetUpdateForm,self).save(*args, **kwargs)
         if self.cleaned_data['create_guest_code'] and \

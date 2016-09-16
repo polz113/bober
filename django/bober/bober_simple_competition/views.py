@@ -7,6 +7,7 @@ from bober_simple_competition.forms import *
 from bober_simple_competition import tables
 from bober_simple_competition import filters
 from bober_simple_competition.models import Profile
+from bober_simple_competition.models import QuestionSet
 import django.contrib.auth
 from django.contrib.auth import authenticate
 from django.core.serializers.json import DjangoJSONEncoder
@@ -1109,7 +1110,7 @@ class CompetitionRegistration(QuestionSetRegistration):
         self.competitionquestionset = form.cleaned_data[
             'competition_questionset']
         return super(CompetitionRegistration, self).form_valid(form)
-    
+
 
 #   5.3 get certificates, other files
 def _profile_file_path(profile, path):
@@ -1163,6 +1164,7 @@ class QuestionDetail(LoginRequiredMixin, DetailView):
 
 class QuestionSetList(LoginRequiredMixin, ListView):
     model = QuestionSet
+    template_name="questionset_list.html"
 
     def get_queryset(self):
         return self.request.profile.question_sets.all()
@@ -1172,6 +1174,7 @@ class QuestionSetDetail(LoginRequiredMixin, DetailView):
     model = QuestionSet
 
     def get_queryset(self):
+        self.object = self.get_object()
         return self.request.profile.question_sets.all()
 
 
@@ -1181,7 +1184,7 @@ class QuestionSetCreate(LoginRequiredMixin, CreateView):
 
     def form_valid(self, form):
         retval = super(QuestionSetCreate, self).form_valid(form)
-        self.request.created_question_sets.add(form.instance)
+        self.request.profile.created_question_sets.add(form.instance)
         return retval
 
     def get_success_url(self):

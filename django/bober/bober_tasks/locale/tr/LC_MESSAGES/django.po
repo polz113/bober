@@ -663,10 +663,45 @@ msgstr "Yeni Belge"
 msgid "Last Edit"
 msgstr "Güncellenme"
 
+#: mce_filebrowser/templates/filebrowser.html: 90
+msgid "Previosly uploaded images"
+msgstr "Önceden yüklenen resimler"
 
+#: mce_filebrowser/templates/filebrowser.html: 63
+msgid "Images list"
+msgstr "Resim Listesi"
 
+#: mce_filebrowser/templates/filebrowser.html: 72
+msgid "Documents list"
+msgstr "Belge Listesi"
 
+#: mce_filebrowser/templates/filebrowser.html: 79
+msgid "Upload new"
+msgstr "Yeni Resim Yükle"
 
+#: mce_filebrowser/templates/filebrowser.html: 105
+msgid "No images uploaded"
+msgstr "Yüklenmiş resim yok"
+
+#: mce_filebrowser/templates/filebrowser.html: 113
+msgid "Previosly uploaded documents"
+msgstr "Önceden yüklenmiş belgeler"
+
+#: mce_filebrowser/templates/filebrowser.html: 126
+msgid "No documents uploaded"
+msgstr "Yüklenmiş belge yok"
+
+#: mce_filebrowser/templates/filebrowser.html: 134
+msgid "Upload file"
+msgstr "Dosya yükle"
+
+#: mce_filebrowser/templates/filebrowser.html: 141
+msgid "Insert"
+msgstr "Ekle"
+
+#: mce_filebrowser/models.py: 13
+msgid "File / Image:"
+msgstr "Dosya / Resim"
 
 
 
