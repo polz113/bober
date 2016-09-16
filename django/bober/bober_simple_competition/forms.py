@@ -40,12 +40,12 @@ class BasicProfileForm(forms.ModelForm):
         """exclude = ('user', 'created_codes', 'received_codes',
             'vcard', 'question_sets', 'managed_profiles', 'used_codes',
             'update_used_codes_timestamp', 'update_managers_timestamp')"""
-        fields = ('merged_with',);
-        # fields = ()
+        # fields = ('merged_with',);
+        fields = ()
         widgets = {
             # the autocomplete: off is supposed to prevent firefox from filling in the form
             # with the current username
-            'merged_with': autocomplete.ModelSelect2(url='profile_autocomplete'),
+        #    'merged_with': autocomplete.ModelSelect2(url='profile_autocomplete'),
         #    'merged_with': autocomplete_light.ChoiceWidget('ManagedUsersAutocomplete',
         #        attrs={'class':'modern-style', 'autocomplete': 'off'}),
         #    'merged_with': django_widgets.Select()
@@ -69,10 +69,8 @@ class BasicProfileForm(forms.ModelForm):
             try:
                 self.fields[k] = unordered_fields.pop(k)
             except:
-                print "missing", k
                 pass
         # add the fields not listed above at the end
-        print "fields:", self.fields
         self.fields.update(unordered_fields)
 
     def save(self, *args, **kwargs):
@@ -156,7 +154,7 @@ class QuestionSetRegistrationForm(forms.ModelForm):
         if not self.cleaned_data.get('password', None):
             self.cleaned_data['password'] = self.cleaned_data.get('access_code', '')
         return cleaned_data
-    
+
     def clean_access_code(self):
         full_code = self.questionset_slug + self.codegen.format.separator + self.cleaned_data['access_code']
         if not self.codegen.code_matches(full_code,
@@ -336,18 +334,21 @@ class CompetitionCreateForm(forms.ModelForm):
         exclude = ('administrator_code_generator',
             'competitor_code_generator',
             'questionsets')
+
+
         widgets = {
             'start': widgets.AdminDateWidget(),
             'end': widgets.AdminDateWidget(),
         }
     competitor_code_format = forms.ModelChoiceField(
         queryset = code_based_auth.models.CodeFormat.objects.filter(
-            components__name = 'competition_questionset').distinct())
+            components__name = 'competition_questionset').distinct(),
+            label=_('Competitor code format'))
     admin_code_format = forms.ModelChoiceField(
         queryset = code_based_auth.models.CodeFormat.objects.filter(
-            components__name = 'admin_privileges').distinct())
-    admin_salt = forms.CharField()
-    competitor_salt = forms.CharField()
+            components__name = 'admin_privileges').distinct(),label=_('Admin code format'))
+    admin_salt = forms.CharField(label=_('Admin salt'))
+    competitor_salt = forms.CharField(label=_('Competitor salt'))
 
 class CompetitionUpdateForm(forms.ModelForm):
     class Meta:
@@ -395,13 +396,13 @@ class CompetitionQuestionSetCreateForm(forms.ModelForm):
     class Meta:
         model = CompetitionQuestionSet
         exclude = ('guest_code',)
-    create_guest_code = forms.BooleanField(required=False)
+    create_guest_code = forms.BooleanField(required=False,label=_("Create guest code"))
 
 class CompetitionQuestionSetUpdateForm(forms.ModelForm):
     class Meta:
         model = CompetitionQuestionSet
         exclude = []
-    create_guest_code = forms.BooleanField(required=False)
+    create_guest_code = forms.BooleanField(required=False, label=_("Create guest code"))
     def save(self, *args, **kwargs):
         retval = super(CompetitionQuestionSetUpdateForm,self).save(*args, **kwargs)
         if self.cleaned_data['create_guest_code'] and \
@@ -429,17 +430,18 @@ class QuestionSetForm(forms.ModelForm):
         self.instance.rebuild_caches()
         return retval
 
+
 class CompetitionQuestionSetCreateInline(InlineFormSet):
     model = CompetitionQuestionSet
     form_class = CompetitionQuestionSetCreateForm
     can_delete = False
 
-    questionset = forms.ModelChoiceField(queryset=CompetitionQuestionSet.objects.all())
+    questionset = forms.ModelChoiceField(QuestionSet.objects, widget=SelectWithPopUp)
 
     def __init__(self, *args, **kwargs):
         super(CompetitionQuestionSetCreateInline, self).__init__(*args, **kwargs)
-        rel = ManyToOneRel(self.instance.location.model, 'id')
-        self.fields['questionset'].widget = RelatedFieldWidgetWrapper(self.fields['questionset'].widget, rel, self.admin_site)
+        rel = ForeignKey(self.model, 'id')
+        # self.fields['questionset'].widget = RelatedFieldWidgetWrapper(self.fields['questionset'].widget, rel, self.admin_site)
 
 
 

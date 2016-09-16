@@ -17,32 +17,46 @@ import bober_simple_competition
 TASK_TEMPLATE_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'task_templates')
 TASK_TEMPLATES = tuple([(i[:-len('.html')], i) for i in os.listdir(TASK_TEMPLATE_DIR) if i.endswith('.html')])
 class MyModel(models.Model):
-	content = HTMLField()
+    content = HTMLField()
+
 
 class AgeGroup(models.Model):
     value = models.CharField(max_length=45)
     tasks = models.ManyToManyField('Task', through='AgeGroupTask')
+
 
 class AgeGroupTask(models.Model):
     task = models.ForeignKey('Task')
     age_group = models.ForeignKey('AgeGroup')
     difficulty_level = models.ForeignKey('DifficultyLevel')
 
+
 class Answer(models.Model):
+    def __unicode__(self):
+        return u"{}: {}({}, {}) - {}".format(self.task_translation.task, 
+                                             self.task_translation.title, 
+                                             self.task_translation.version,
+                                             self.task_translation.language_locale, 
+                                             self.label)
+        return self.international_id    
+    
     task_translation = models.ForeignKey('TaskTranslation')
     value = models.TextField(null=True)
     label = models.CharField(max_length=8, blank=True, default='')
     correct = models.BooleanField(default=False)
     ordering = ['label']
 
+
 class Category(models.Model):
     acronym = models.CharField(max_length=5)
     title = models.CharField(max_length=45)
     description = models.TextField()
 
+
 class DifficultyLevel(models.Model):
     value = models.CharField(max_length=45)
     tasks = models.ManyToManyField("Task", through="AgeGroupTask")
+
 
 class Remark(models.Model):
     comment = models.TextField()
@@ -50,11 +64,13 @@ class Remark(models.Model):
     task_translation = models.ForeignKey('TaskTranslation')
     user = models.ForeignKey(User)
 
+
 class Resources(models.Model):
     filename = models.CharField(max_length=90)
     type = models.CharField(max_length=40)
     task = models.ForeignKey('Task')
     language = models.CharField(max_length = 8, choices=settings.LANGUAGES)
+
 
 class Task(models.Model):
     def __unicode__(self):
@@ -83,9 +99,11 @@ class Task(models.Model):
     def available_languages(self):
         return self.tasktranslation_set.values_list('language_locale', flat=True).distinct()
 
+
 class TaskTranslation(models.Model):
     def __unicode__(self):
         return u"{}: {}({}, {})".format(self.task, self.title, self.version, self.language_locale)
+    
     title = models.CharField(max_length=90)
     template = models.CharField(max_length=255, choices = TASK_TEMPLATES)
     body = HTMLField()

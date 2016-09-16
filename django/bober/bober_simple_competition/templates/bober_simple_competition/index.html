@@ -16,11 +16,7 @@
 {% if request.profile.managed_others.exists %}
 <a href="{% url "profile_list" %}" class="btn">{% trans "Managed users" %}</a>
 {% endif %}
-{% if request.profile.question_sets.exists %}
 <a href="{% url "questionset_list" %}" class="btn">{% trans "Question sets" %}</a>
-{% endif %}
-{% if request.profile.questions.exists %}
 <a href="{% url "question_list" %}" class="btn">{% trans "Questions" %}</a>
-{% endif %}
 {% endif %}
 {% endblock %}

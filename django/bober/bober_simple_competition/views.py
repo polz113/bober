@@ -7,6 +7,7 @@ from bober_simple_competition.forms import *
 from bober_simple_competition import tables
 from bober_simple_competition import filters
 from bober_simple_competition.models import Profile
+from bober_simple_competition.models import QuestionSet
 import django.contrib.auth
 from django.contrib.auth import authenticate
 from django.core.serializers.json import DjangoJSONEncoder
@@ -332,10 +333,10 @@ class CodeFormatDetail(FormView, LoginRequiredMixin):
 class AdminCodeFormatCreate(FormView, LoginRequiredMixin):
     form_class = AdminCodeFormatForm
     template_name = "bober_simple_competition/codeformat_create.html"
-    
+
     def get_success_url(self):
         return reverse("admin_code_format_list")
-    
+
     def form_valid(self, form):
         code_components = [
             {
@@ -659,7 +660,7 @@ def question_resources(request, pk, resource_path):
         q = request.profile.questions.get(pk=pk)
     except:
         raise PermissionDenied
-    resource_dir = 'resources/' + str(pk) + '/resources'
+    resource_dir = 'resources/' + str(pk)
     return safe_media_redirect(os.path.join(resource_dir, resource_path))
 
 # 2.2.3 get question data (existing answers, attempt_id, randomised_question map)
@@ -912,12 +913,12 @@ class ProfileDetail(LoginRequiredMixin, DetailView):
 
     def get_queryset(self):
         return self.request.profile.managed_profiles.all()
-#    def get(self, request):
-#        try:
-#            f = self.request.user.profile.managed_profiles.get(id=self.object.id)
-#        except:
-#            return PermissionDenied
-#        return super(ProfileDetail, self).get(request)
+
+    def get_object(self, *args, **kwargs):
+        obj = super(ProfileDetail, self).get_object(*args, **kwargs)
+        while obj.merged_with is not None:
+            obj = obj.merged_with
+        return obj
 
 # 5.1 merge users
 #  any users registered with codes created or distributed
@@ -930,7 +931,6 @@ class ProfileDetail(LoginRequiredMixin, DetailView):
 class ProfileUpdate(LoginRequiredMixin, UpdateView):
     model = Profile
     form_class = ProfileEditForm
-    success_url = reverse_lazy('teacher_overview')
 
     def get_queryset(self):
         return self.request.profile.managed_profiles.all()
@@ -949,16 +949,21 @@ class ProfileUpdate(LoginRequiredMixin, UpdateView):
             raise PermissionDenied
         return super(ProfileUpdate, self).form_valid(form)
 
+    def get_success_url(self):
+        print self.__dict__
+        return reverse('profile_detail',
+            kwargs = {'pk': self.object.id})
+
 
 class ProfileMerge(LoginRequiredMixin, UpdateView):
     model = Profile
     form_class = ProfileMergeForm
-    
+
     def form_valid(self, form):
         if form.instance.merged_with is not None:
             self.merged_pk = form.instance.merged_with_id
         return super(ProfileMerge, self).form_valid(form)
-    
+
     def get_success_url(self):
         return reverse('profile_detail',
             kwargs = {'pk': self.merged_pk})
@@ -1181,6 +1186,7 @@ class QuestionDetail(LoginRequiredMixin, DetailView):
 
 class QuestionSetList(LoginRequiredMixin, ListView):
     model = QuestionSet
+    template_name="questionset_list.html"
 
     def get_queryset(self):
         return self.request.profile.question_sets.all()
@@ -1190,6 +1196,7 @@ class QuestionSetDetail(LoginRequiredMixin, DetailView):
     model = QuestionSet
 
     def get_queryset(self):
+        self.object = self.get_object()
         return self.request.profile.question_sets.all()
 
 
@@ -1199,7 +1206,7 @@ class QuestionSetCreate(LoginRequiredMixin, CreateView):
 
     def form_valid(self, form):
         retval = super(QuestionSetCreate, self).form_valid(form)
-        self.request.created_question_sets.add(form.instance)
+        self.request.profile.created_question_sets.add(form.instance)
         return retval
 
     def get_success_url(self):
@@ -1212,6 +1219,10 @@ class QuestionSetUpdate(LoginRequiredMixin, UpdateView):
 
     def get_queryset(self):
         return self.request.profile.created_question_sets.all()
+    
+    def get_success_url(self):
+        return reverse('questionset_detail', 
+                       kwargs = self.kwargs)
 
 class QuestionSetDelete(LoginRequiredMixin, DeleteView):
     model = QuestionSet
