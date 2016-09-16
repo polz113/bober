@@ -436,11 +436,11 @@ class CompetitionQuestionSetCreateInline(InlineFormSet):
     form_class = CompetitionQuestionSetCreateForm
     can_delete = False
 
-    questionset = forms.ModelChoiceField(QuestionSet.objects, widget=SelectWithPopUp)
+    #questionset = forms.ModelChoiceField(QuestionSet.objects, widget=SelectWithPopUp)
 
-    def __init__(self, *args, **kwargs):
-        super(CompetitionQuestionSetCreateInline, self).__init__(*args, **kwargs)
-        rel = ForeignKey(self.model, 'id')
+    #def __init__(self, *args, **kwargs):
+        #super(CompetitionQuestionSetCreateInline, self).__init__(*args, **kwargs)
+        #rel = ForeignKey(self.model, 'id')
         # self.fields['questionset'].widget = RelatedFieldWidgetWrapper(self.fields['questionset'].widget, rel, self.admin_site)
 
 
