@@ -12,6 +12,8 @@ from django.core.validators import validate_email
 from django.contrib.flatpages.models import FlatPage
 from tinymce.widgets import TinyMCE
 from dal import autocomplete
+from django.contrib import admin
+from django.contrib.admin.widgets import RelatedFieldWidgetWrapper
 from django.template.loader import render_to_string
 
 class ProfileForm(forms.ModelForm):
@@ -391,13 +393,21 @@ class AdminCodeFormatForm(CodeFormatForm):
         initial = code_based_auth.models.DEFAULT_HASH_ALGORITHM,
         choices = code_based_auth.models.HASH_ALGORITHMS)
 
+def add_related_field_wrapper(form, col_name):
+    rel_model = form.Meta.model
+    rel = rel_model._meta.get_field(col_name).rel
+    form.fields[col_name].widget =  RelatedFieldWidgetWrapper(
+        form.fields[col_name].widget, rel, 
+        admin.site, can_add_related=True, can_change_related=True)
 
 class CompetitionQuestionSetCreateForm(forms.ModelForm):
     class Meta:
         model = CompetitionQuestionSet
         exclude = ('guest_code',)
-    create_guest_code = forms.BooleanField(required=False,label=_("Create guest code"))
-
+    def __init__(self, *args, **kwargs):
+        super(CompetitionQuestionSetCreateForm, self).__init__(*args, **kwargs)
+        add_related_field_wrapper(self, 'questionset')
+    
 class CompetitionQuestionSetUpdateForm(forms.ModelForm):
     class Meta:
         model = CompetitionQuestionSet
