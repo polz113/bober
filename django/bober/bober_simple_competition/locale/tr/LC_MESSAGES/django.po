@@ -613,13 +613,26 @@ msgstr "Süre (ms)"
 msgid "end"
 msgstr "Bitiş Tarihi"
 
+#: bober_simple_competition/forms.py: 381
+msgid "Create guest code"
+msgstr "Misafir Kodu Oluştur"
+
+
 #: bober_simple_competition/models.py: 117
 msgid "message of the day"
 msgstr "Günün Mesajı"
 
-#: bober_simple_competition/forms.py: 381
-msgid "Create guest code"
-msgstr "Misafir Kodu Oluştur"
+#: bober_simple_competition/templates/bober_simple_competition/questionset_list.html :9
+msgid "Create New Question Set"
+msgstr "Yeni Soru Seti Oluştur"
+
+#: bober_simple_competition/templates/bober_simple_competition/competition_form.html: 131
+msgid "Add an other competition questionset"
+msgstr "Başka Bir Yarışma Soru Seti Ekle"
+
+#: bober_simple_competition/models.py: 261
+msgid  "Questionset"
+msgstr "Soru Seti"
 
 
 
