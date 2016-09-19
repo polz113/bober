@@ -956,7 +956,7 @@ class Profile(models.Model):
 
     def manages_self(self):
         return self.managed_profiles.filter(id = self.id).exists()
-    
+
     def managed_others(self):
         return self.managed_profiles.exclude(id = self.id)
 
