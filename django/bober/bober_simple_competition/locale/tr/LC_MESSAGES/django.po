@@ -159,6 +159,7 @@ msgstr "Menüye Dön"
 #: templates/bober_simple_competition/profile_form.html:25
 #: templates/bober_simple_competition/questionset_form.html:15
 #: templates/bober_simple_competition/user_registration.html:21
+#: bober_simple_competition/templates/bober_simple_competition/competition_form.html: 157
 msgid "Submit"
 msgstr "Gönder"
 
@@ -626,15 +627,21 @@ msgstr "Günün Mesajı"
 msgid "Create New Question Set"
 msgstr "Yeni Soru Seti Oluştur"
 
-#: bober_simple_competition/templates/bober_simple_competition/competition_form.html: 131
-msgid "Add an other competition questionset"
+#: bober_simple_competition/templates/bober_simple_competition/competition_form.html: 155
+msgid "Add Another Competition Questionset"
 msgstr "Başka Bir Yarışma Soru Seti Ekle"
 
 #: bober_simple_competition/models.py: 261
 msgid  "Questionset"
 msgstr "Soru Seti"
 
+#: bober_simple_competition/forms.py: 126
+msgid "Merged with"
+msgstr "Birleştir"
 
+#: bober_simple_competition/forms.py: 55
+msgid "Password"
+msgstr "Parola"
 
 
 
