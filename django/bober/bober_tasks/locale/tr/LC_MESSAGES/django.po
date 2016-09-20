@@ -384,7 +384,7 @@ msgstr "Çözüm"
 #: bober_tasks/templates/task/translate.html: 335
 #: bober_tasks/templates/task/edit.html: 28
 msgid "Informatics"
-msgstr "İnformatik"
+msgstr "Enformatik"
 
 #: bober_tasks/templates/bober_tasks/tasktranslation_form.html: 32
 #: bober_tasks/templates/task/edit.html: 29
@@ -422,7 +422,7 @@ msgstr "Çözüm"
 #: bober_tasks/templates/bober_tasks/tasktranslation_form.html: 78
 #: bober_tasks/forms.py: 57
 msgid "it_is_informatics"
-msgstr "İnformatik"
+msgstr "Enformatik"
 
 #: bober_tasks/templates/bober_tasks/tasktranslation_form.html: 84
 #: bober_tasks/forms.py: 57
@@ -497,7 +497,7 @@ msgstr "Cevaplar:"
 
 #: bober_tasks/templates/bober_tasks/tasktranslation_detail.html: 30
 msgid "It's informatics"
-msgstr "İnformatik"
+msgstr "Enformatik"
 
 #: bober_tasks/templates/bober_tasks/tasktranslation_detail.html: 35
 msgid "Version history"
@@ -592,7 +592,7 @@ msgstr "Çözüm ..."
 #: bober_tasks/templates/task/translate.html: 123
 #: bober_tasks/templates/task/translate.html: 336
 msgid "Informatics ..."
-msgstr "İnformatik ..."
+msgstr "Enformatik ..."
 
 #: bober_tasks/templates/task/translate.html: 129
 #: bober_tasks/templates/task/translate.html: 342
