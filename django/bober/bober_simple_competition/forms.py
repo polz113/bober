@@ -397,17 +397,20 @@ def add_related_field_wrapper(form, col_name):
     rel_model = form.Meta.model
     rel = rel_model._meta.get_field(col_name).rel
     form.fields[col_name].widget =  RelatedFieldWidgetWrapper(
-        form.fields[col_name].widget, rel, 
+        form.fields[col_name].widget, rel,
         admin.site, can_add_related=True, can_change_related=True)
 
 class CompetitionQuestionSetCreateForm(forms.ModelForm):
     class Meta:
         model = CompetitionQuestionSet
         exclude = ('guest_code',)
+
+    create_guest_code = forms.BooleanField(required=False,label=_("Create guest code"))
+
     def __init__(self, *args, **kwargs):
         super(CompetitionQuestionSetCreateForm, self).__init__(*args, **kwargs)
         add_related_field_wrapper(self, 'questionset')
-    
+
 class CompetitionQuestionSetUpdateForm(forms.ModelForm):
     class Meta:
         model = CompetitionQuestionSet
@@ -445,15 +448,6 @@ class CompetitionQuestionSetCreateInline(InlineFormSet):
     model = CompetitionQuestionSet
     form_class = CompetitionQuestionSetCreateForm
     can_delete = False
-
-    #questionset = forms.ModelChoiceField(QuestionSet.objects, widget=SelectWithPopUp)
-
-    #def __init__(self, *args, **kwargs):
-        #super(CompetitionQuestionSetCreateInline, self).__init__(*args, **kwargs)
-        #rel = ForeignKey(self.model, 'id')
-        # self.fields['questionset'].widget = RelatedFieldWidgetWrapper(self.fields['questionset'].widget, rel, self.admin_site)
-
-
 
 class CompetitionQuestionSetUpdateInline(InlineFormSet):
     model = CompetitionQuestionSet
