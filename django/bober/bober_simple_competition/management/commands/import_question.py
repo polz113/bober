@@ -12,7 +12,11 @@ class Command(BaseCommand):
     # @transaction.atomic
     def make_manifest(dirname):
         pass
+    
+    def add_arguments(self, parser):
+        parser.add_argument('dirname', nargs=1, type=str)
+    
     def handle(self, *args, **options):
-        dirname = args[0]
+        dirname = options['dirname'][0]
         q = Question.from_dir(dirname) 
         print q, q.resource_set.all()

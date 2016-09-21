@@ -437,6 +437,12 @@ class QuestionSet(models.Model):
                 print "must create cache for ", r.id, r.question.identifier, r.file.name
         question_cache_id = 'questionset_question_ids_' + str(self.id)
 
+def _qs_rebuild_caches(sender, instance=None, **kwargs):
+    print "poopie!"
+    if instance is not None:
+        instance.rebuild_caches()
+
+signals.m2m_changed.connect(_qs_rebuild_caches, sender=QuestionSet)
 
 class ResourceCache(models.Model):
     def __unicode__(self):
