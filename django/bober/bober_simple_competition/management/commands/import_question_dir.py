@@ -12,11 +12,16 @@ from optparse import make_option
 class Command(BaseCommand):
     args = "<dirname>"
     help = "Add a whole questionset at a time"
+    
     def add_arguments(self, parser):
         parser.add_argument('dirname', nargs='+', type=str)
+    
     @transaction.atomic
     def handle(self, *args, **options):
-        dirname = unicode(options.get('dirname', [args[0]])[0])
+        if len(args) > 0:
+            dirname = unicode(options.get('dirname', [args[0]])[0])
+        else:
+            dirname = options['dirname'][0]
         questions = []
         split_path = os.path.split(dirname)
         name = split_path[1]
