@@ -1,12 +1,16 @@
 from django.conf.urls import include, url
 from django.views.generic import ListView
-from bober_simple_competition.models import *
+from bober_si.models import School
 from bober_simple_competition.views import CompetitionDetail
+from dal import autocomplete
 import views
 
 urlpatterns = [
     # Examples:
     # url(r'^blog/', include('blog.urls')),
+    url(r'autocomplete/school/$',
+        autocomplete.Select2QuerySetView.as_view(model=School),
+        name='school_autocomplete'),
     # 2. pick competition
     url(r'^competitions/(?P<slug>[\w\-_]+)/overview$', 
         views.TeacherOverview.as_view(), name="teacher_overview"),
