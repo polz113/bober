@@ -10,7 +10,7 @@
 * Install the MySQL Server:
 
     sudo apt-get update
-    sudo apt-get install mysql-server
+    sudo apt-get install mariadb-server
     sudo mysql_secure_installation
     sudo mysql_install_db
 
@@ -38,9 +38,11 @@
             'USER': 'bober',
             'PASSWORD': 'YOUR PASSWORD',
 
-* Install the Virtualenv and create the virtual folder in the another directory:
+* Install the Virtualenv and create the python virtual environment in 
+  another directory:
 
-      pip install virtualenv
+      On Debian / Ubuntu:
+      sudo apt-get install virtualenv python-dev libmariadbclient-dev-compat 
       virtualenv bober_env
       source bober_env/bin/activate
 
