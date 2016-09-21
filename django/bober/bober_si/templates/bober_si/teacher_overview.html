@@ -92,10 +92,9 @@ function edit_name(obj) {
 {% endblock %}
 {% block content %}
 <table id="sections">
-    <!--<tr>
+    <tr>
         <th>
             {% trans "Codes for each school" %}<br/>
-            <!--<span style="font-weight: normal; font-size: 13px">(Kode, ki jih bodo tekmovalci<br/>uporabili za vstop v sistem.)</span>
         </th>
         <td>
             {% for school, codes in schools.iteritems %}
@@ -115,7 +114,7 @@ function edit_name(obj) {
             <a href="{% url 'school_codes_create' slug=competition.slug %}?next_url={{request.path}}">{% trans "Add school" %}</a>
         </td>
     </tr>-->
-<!--    {% if show_paper_results %}<tr>
+   {% if show_paper_results %}<tr>
         <th>
             {%  trans "Competition on paper" %}
         </th>
@@ -125,7 +124,7 @@ function edit_name(obj) {
             </p>
         </td>
     </tr>{% endif %}
-   --> <tr>
+    <tr>
         <th>{% trans "Certificates" %}</th>
         <td>
             {% for school, cqsa in attempts.iteritems %}
@@ -143,13 +142,9 @@ function edit_name(obj) {
     <tr>
         <th>Potrdilo za mentorja</th>
         <td>
-           {% if profile.first_name and profile.last_name %}
-               <a href="{% url "mentor_certificate_pdf" username=request.user.username %}">
+            <a href="{% url "mentor_certificate_pdf" username=request.user.username %}">
                    {{ profile.first_name }} {{ profile.last_name }}
-               </a>
-           {% else %}
-               Da prejmete potrdilo, morate najprej <a href="{% url 'profile_update' pk=request.user.profile.pk %}">vnesti svoje ime in priimek</a>
-           {% endif %}
+            </a>
        </td>
 </table>
 <div>
