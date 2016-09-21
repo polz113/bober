@@ -627,18 +627,23 @@ class TaskTranslationUpdate(UpdateWithInlinesView, LoginRequiredMixin):
     form_class = forms.TaskTranslationForm
     template_name = 'bober_tasks/tasktranslation_form.html'
     inlines = [ forms.AnswerInline ]
+    
     def get_success_url(self):
-        return reverse('tasktranslation_preview', kwargs = {'pk': self.object.pk})
+        return reverse('tasktranslation_detail', kwargs = {'pk': self.object.pk})
+    
     def get(self, request, *args, **kwargs):
         self.remark_form = forms.InlineRemarkForm()
         return super(TaskTranslationUpdate, self).get(request, *args, **kwargs)
+    
     def get_form_kwargs(self):
         kwargs = super(TaskTranslationUpdate, self).get_form_kwargs()
         return kwargs
+    
     def get_context_data(self, *args, **kwargs):
         context = super(TaskTranslationUpdate, self).get_context_data(*args, **kwargs)
         context['remark_form'] = self.remark_form
         return context
+    
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
         self.remark_form = forms.InlineRemarkForm(self.request.POST)
@@ -648,18 +653,22 @@ class TaskTranslationUpdate(UpdateWithInlinesView, LoginRequiredMixin):
         form_class = self.get_form_class()
         form = self.get_form(form_class)
         return self.forms_invalid(form, inlines)
+    
     def save(self, *args, **kwargs):
         print "saving", args, kwargs
         self.remark_form.save()
         return super(TaskTranslationUpdate, self).save(*args, **kwargs)
 
+
 class TaskTranslationPreview(DetailView, LoginRequiredMixin):
     model = TaskTranslation
     template_name = 'bober_tasks/tasktranslation_preview.html'
 
+
 class TaskTranslationDetail(DetailView, LoginRequiredMixin):
     model = TaskTranslation
     template_name = 'bober_tasks/tasktranslation_detail.html'
+
 
 @login_required()
 def edit_task(request, id):
@@ -681,15 +690,18 @@ def edit_task(request, id):
 class TaskCreate(LoginRequiredMixin, CreateView):
     template_name = 'bober_tasks/task_form.html'
     form_class = forms.TaskForm
+    
     def get_success_url(self):
         first_translation = TaskTranslation(task = self.object,
             language_locale = self.cleaned_data['language_locale'])
         first_translation.save()
         first_translation.create_default_answers()
         return reverse('tasktranslation_update', kwargs={'pk': first_translation.pk})
+    
     def form_valid(self, form):
         self.cleaned_data = form.cleaned_data
         return super(TaskCreate, self).form_valid(form)
+
 
 @login_required()
 def save_task(request):

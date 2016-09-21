@@ -1197,11 +1197,6 @@ class QuestionSetList(LoginRequiredMixin, ListView):
 class QuestionSetDetail(LoginRequiredMixin, DetailView):
     model = QuestionSet
 
-    def get_queryset(self):
-        self.object = self.get_object()
-        return self.request.profile.question_sets.all()
-
-
 class QuestionSetCreate(LoginRequiredMixin, CreateView):
     model = QuestionSet
     form_class = QuestionSetForm
