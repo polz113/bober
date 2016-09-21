@@ -7,11 +7,21 @@
 
 {% block headline %}{% trans "Question set" %}{% endblock %}
 {% block content %}
-<form action="" method="post">
-{%csrf_token%}
-<table>
-  {{form}}
-</table>
-<input type="submit" value='{% trans "Submit" %}' />
-</form> 
+
+<div class="container">
+  <div class="row" style="margin-left:2%;">
+    <br>
+    <p>
+      Add Questionset
+    </p>
+    <br>
+    <form action="" method="post">
+    {%csrf_token%}
+    <table class="questionset_create_table">
+      {{form}}
+    </table>
+    <input class="btn btn-success ques_sub" type="submit" value='{% trans "Submit" %}' />
+    </form>
+  </div>
+</div>
 {% endblock %}
