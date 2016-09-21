@@ -5,7 +5,6 @@
 from django.core.management.base import BaseCommand
 from django.db import transaction
 from bober_simple_competition.models import *
-from django.contrib.auth import User
 import json
 import os
 
@@ -26,3 +25,4 @@ class Command(BaseCommand):
             p = Profile.objects.get(user__username = options['username'])
             p.created_codes.add(code)
             p.received_codes.add(code)
+        print(code.value)
