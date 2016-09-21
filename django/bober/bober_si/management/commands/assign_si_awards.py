@@ -59,7 +59,7 @@ class Command(BaseCommand):
         )
         if created:
             l = Attempt.objects.filter(
-                    competition_questionset = cqs
+                    competitionquestionset = cqs
                 ).sort_by('-score').values_list(score, flat=True)
             print l
             bronze_award.threshold = l[(len(l) - 1) / 5]
@@ -92,7 +92,7 @@ class Command(BaseCommand):
         for cqs in competition.competitionquestionset_set.all():
             self.__create_awards(cqs)
         for school in School.objects.filter(
-                    schoolteachercode__competition_questionset__competition = competition
+                    schoolteachercode__competitionquestionset__competition = competition
                 ).distinct():
             awards = Award.objects.filter(questionset__competition = competition)
             new_awards, revoke_awards = school.assign_si_awards(awards, 
