@@ -100,7 +100,6 @@ class JuniorYear(models.Model):
                 j_a.line = line_no
                 # j_a.score = points
                 j_a.attempt.score = points
-                j_a.attempt.questionset = self.questionset
                 j_a.attempt.competitor.first_name = first_name
                 j_a.attempt.competitor.last_name = last_name
                 j_a.attempt.competitor.save()
