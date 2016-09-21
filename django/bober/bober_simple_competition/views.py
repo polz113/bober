@@ -660,8 +660,10 @@ def question_resources(request, pk, resource_path):
         q = request.profile.questions.get(pk=pk)
     except:
         raise PermissionDenied
-    resource_dir = 'resources/' + str(pk)
-    return safe_media_redirect(os.path.join(resource_dir, resource_path))
+    r = get_object_or_404(Resource, relative_url=resource_path, question_id = pk)
+    return HttpResponse(r.data)
+    # resource_dir = 'resources/' + str(pk)
+    # return safe_media_redirect(os.path.join(resource_dir, resource_path))
 
 # 2.2.3 get question data (existing answers, attempt_id, randomised_question map)
 # @login_required
