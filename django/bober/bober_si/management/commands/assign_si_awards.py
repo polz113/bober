@@ -92,7 +92,7 @@ class Command(BaseCommand):
         for cqs in competition.competitionquestionset_set.all():
             self.__create_awards(cqs)
         for school in School.objects.filter(
-                    schoolteachercode__competitionquestionset__competition = competition
+                    schoolteachercode__competition_questionset__competition = competition
                 ).distinct():
             awards = Award.objects.filter(questionset__competition = competition)
             new_awards, revoke_awards = school.assign_si_awards(awards, 
