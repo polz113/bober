@@ -223,6 +223,7 @@ class CompetitionUpdate(SmartCompetitionAdminCodeRequiredMixin,
     model = Competition
     form_class = CompetitionUpdateForm
     inlines = [CompetitionQuestionSetUpdateInline,]
+    
     def get_object(self, queryset=None):
         c = super(CompetitionUpdate, self).get_object(queryset)
         access_code = self.request.session['access_code']
@@ -230,6 +231,7 @@ class CompetitionUpdate(SmartCompetitionAdminCodeRequiredMixin,
                 {'admin_privileges': ['modify_competition']}):
             raise PermissionDenied
         return c
+    
     def forms_valid(self, form, inlines):
         retval = super(CompetitionUpdate, self).forms_valid(form, inlines)
         if not retval:

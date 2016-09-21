@@ -2,6 +2,7 @@ from django import forms
 from django.utils.translation import ugettext as _
 from extra_views import InlineFormSet
 from models import School
+from dal import autocomplete
 #import autocomplete_light
 #import autocomplete_light.widgets
 
@@ -10,6 +11,7 @@ class OverviewForm(forms.Form):
 
 class SchoolCodesCreateForm(forms.Form):
     school = forms.ModelChoiceField(label=_('School'), queryset=School.objects.all())
+        #widget = autocomplete.ModelSelect2(url='school_autocomplete'))
         #widget=autocomplete_light.widgets.ChoiceWidget('SchoolAutocomplete',
         #    attrs={'class':'modern-style'}))
 
