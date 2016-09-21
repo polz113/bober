@@ -60,7 +60,7 @@ class Command(BaseCommand):
         if created:
             l = Attempt.objects.filter(
                     competitionquestionset = cqs
-                ).order_by('-score').values_list(score, flat=True)
+                ).order_by('-score').values_list(max_score, flat=True)
             print l
             bronze_award.threshold = l[(len(l) - 1) / 5]
             bronze_award.save()
