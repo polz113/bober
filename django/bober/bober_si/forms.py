@@ -11,7 +11,7 @@ class OverviewForm(forms.Form):
 
 class SchoolCodesCreateForm(forms.Form):
     school = forms.ModelChoiceField(label=_('School'), queryset=School.objects.all(),
-        widget = autocomplete.ModelSelect2(url='profile_autocomplete'))
+        widget = autocomplete.ModelSelect2(url='school_autocomplete'))
         #widget=autocomplete_light.widgets.ChoiceWidget('SchoolAutocomplete',
         #    attrs={'class':'modern-style'}))
 
