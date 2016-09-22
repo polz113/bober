@@ -49,33 +49,38 @@ $( document ).ready(function() {
     return;
   }
 
-  $(".add_row").click(function(){
-    $(".questionset-row:last").clone(true).appendTo("#questionsets");
-    $(".questionset-row:last").addClass('copy');
-
-    if ($(".questionset-row").hasClass('copy')) {
-      $('.copy .inline-deletelink').show();
-    }
-  });
-
-  $("#questionsets").on('click', '.inline-deletelink', function () {
-            $(".questionset-row:last").remove();
+  $('#add_more').click(function() {
+        cloneMore('.questionsets table:last', 'competitionquestionset');
     });
+
+    function cloneMore(selector, type) {
+      var newElement = $(selector).clone(true);
+      var total = $('#id_' + type + '-TOTAL_FORMS').val();
+      newElement.find(':input').each(function() {
+          var name = $(this).attr('name').replace('-' + (total-1) + '-','-' + total + '-');
+          var id = 'id_' + name;
+          $(this).attr({'name': name, 'id': id}).val('').removeAttr('checked');
+      });
+      newElement.find('label').each(function() {
+          var newFor = $(this).attr('for').replace('-' + (total-1) + '-','-' + total + '-');
+          $(this).attr('for', newFor);
+      });
+      total++;
+      $('#id_' + type + '-TOTAL_FORMS').val(total);
+      $(selector).after(newElement);
+  }
 
 });
 
 </script>
-
-<p style="margin-left:4%; padding-bottom:1%;
-border-bottom: solid 2px #f9f0df;">
-  {% trans "Create New Competition" %}
-</p>
-
 <form action="" method="post">
 {% csrf_token %}
 {{ form.non_field_errors }}
 <div id="normal_form_fields" class="form_table toLeft">
   <div class="row">
+    <p class="questionsets_head">
+      {% trans "Create New Competition" %}
+    </p>
     <div class="col-md-12 left_set">
     <table>
             {{ form }}
@@ -83,66 +88,20 @@ border-bottom: solid 2px #f9f0df;">
     </div>
   </div>
   <div class="row">
-    <div class="col-md-12 left_set" id="questionsets">
-      <p style=" margin-top:4%; padding-bottom:1%;
-    border-bottom: solid 2px #f9f0df;">
+    <div class="col-md-12 left_set questionsets" id="questionsets">
+      <p class="questionsets_head">
         {% trans "Question sets" %}
       </p>
       {% for inline in inlines %}
           {{inline.management_form}}
-          <div class="row">
-            <div class="col-md-3">
-              <label>{{inline.form.name.label}}</label>
-            </div>
-            <div class="col-md-6">
-              <label>{{inline.form.questionset.label}}</label>
-            </div>
-            <div class="col-md-3">
-              <label>{{inline.form.create_guest_code.label}}</label>
-            </div>
-          </div>
-          <div class="row questionset-row">
-            <div class="col-md-3">
-              {{inline.form.name.errors}}{{inline.form.name}}
-            </div>
-            <div class="col-md-6">
-              {{inline.form.questionset.errors}}{{inline.form.questionset}}
-            </div>
-            <div class="col-md-3">
-              {{inline.form.create_guest_code.errors}}{{inline.form.create_guest_code}}
-            </div>
-          </div>
-          <div class="row questionset-row">
-            <div class="col-md-3">
-              {{inline.form.name.errors}}{{inline.form.name}}
-            </div>
-            <div class="col-md-6">
-              {{inline.form.questionset.errors}}{{inline.form.questionset}}
-            </div>
-            <div class="col-md-3">
-              {{inline.form.create_guest_code.errors}}{{inline.form.create_guest_code}}
-            </div>
-          </div>
-          <div class="row questionset-row">
-            <div class="col-md-3">
-              {{inline.form.name.errors}}{{inline.form.name}}
-            </div>
-            <div class="col-md-6">
-              {{inline.form.questionset.errors}}{{inline.form.questionset}}
-            </div>
-            <div class="col-md-2">
-              {{inline.form.create_guest_code.errors}}{{inline.form.create_guest_code}}
-            </div>
-            <div class="col-md-1">
-              <a class="inline-deletelink" style="float:left!important; display:none;">Kaldır</a>
-            </div>
-          </div>
+          <table>
+            {{inline.form}}
+          </table>
       {% endfor %}
     </div>
   </div>
   <div class="row" style="margin-top:2%;">
-    <a class="add_row" style="background: url(/static/admin/img/icon-addlink.svg) 0 1px no-repeat;
-padding-left: 16px; font-size:15px!important; margin-left:1%; cursor:pointer;">Add Another Competition Questionset</a>
+    <a class="add_row" id="add_more">Add Another Competition Questionset</a>
   </div>
   <input class="submit_set btn btn-success" type="submit" value='{% trans "Submit" %}' />
 </div>
