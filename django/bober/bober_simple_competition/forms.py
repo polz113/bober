@@ -414,7 +414,7 @@ def add_related_field_wrapper(form, col_name):
 class CompetitionQuestionSetCreateForm(forms.ModelForm):
     class Meta:
         model = CompetitionQuestionSet
-        exclude = ('guest_code','competition',)
+        exclude = ('guest_code',)
 
     create_guest_code = forms.BooleanField(required=False,label=_("Create guest code"))
 
