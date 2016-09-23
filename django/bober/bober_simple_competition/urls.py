@@ -26,18 +26,29 @@ urlpatterns = [
     # 1. login / enter access code
     url(r'^access_code/*(?P<next>.*)$', views.access_code, name="access_code"),
     # 2. pick competition
-    url(r'^competitions/$', views.CompetitionList.as_view(), name="competition_list"),
-    url(r'^competitions/(?P<slug>[\w\-_]+)/detail$',
+    url(r'^competition/id=$', views.CompetitionList.as_view(), name="competition_list"),
+    url(r'^competition/$', views.CompetitionList.as_view(), name="competition_list"),
+    url(r'^competition/id=(?P<pk>[\w\-_]+)/detail$',
         views.CompetitionDetail.as_view(), name="competition_detail"),
-    url(r'^competitions/(?P<slug>[\w\-_]+)/overview$',
+    url(r'^competition/(?P<slug>[\w\-_]+)/detail$',
+        views.CompetitionDetail.as_view(), name="competition_detail"),
+    url(r'^competition/(?P<slug>[\w\-_]+)/overview$',
         views.CompetitionDetail.as_view(), name="competition_overview"),
-    url(r'^competitions/(?P<slug>[\w\-_]+)/update$',
+    url(r'^competition/id=(?P<pk>\d+)/update$',
         views.CompetitionUpdate.as_view(), name="competition_update"),
+    url(r'^competition/(?P<slug>[\w\-_]+)/update$',
+        views.CompetitionUpdate.as_view(), name="competition_update"),
+    url(r'^competition/id=create$', views.CompetitionCreate.as_view(),
+        name="competition_create"),
     #   2.1 teacher, admin (for this competition)
     #     2.1.1 create, list codes for competition
-    url(r'^competitions/(?P<slug>[\w\-_]+)/codes$',
+    url(r'^competition/id=(?P<id>\d+)/codes$',
         views.competition_code_list, name="competition_code_list"),
-    url(r'^competitions/(?P<slug>[\w\-_]+)/codes/(?P<user_type>[\w]+)/create/$',
+    url(r'^competition/(?P<slug>[\w\-_]+)/codes$',
+        views.competition_code_list, name="competition_code_list"),
+    url(r'^competition/id=(?P<id>\d+)/codes/(?P<user_type>[\w]+)/create/$',
+        views.competition_code_create, name="competition_code_create"),
+    url(r'^competition/(?P<slug>[\w\-_]+)/codes/(?P<user_type>[\w]+)/create/$',
         views.competition_code_create, name="competition_code_create"),
     #           codes can have the following permissions:
     #           1. can create admin codes for this competition
@@ -48,26 +59,34 @@ urlpatterns = [
     #           6. can view results before official end
     #           7. can use questionset to create new competitions
     #     2.1.2 distribute codes to registered and other users
-    url(r'^competitions/(?P<slug>[\w\-_]+)/send_codes$',
+    url(r'^competition/id=(?P<pk>\d+)/send_codes$',
+        views.send_codes, name="send_codes"),
+    url(r'^competition/(?P<slug>[\w\-_]+)/send_codes$',
         views.send_codes, name="send_codes"),
     #     2.1.3 view results
-    url(r'^competitions/(?P<slug>[\w\-_]+)/attempts/$',
+    url(r'^competition/id=(?P<pk>\d+)/attempts/$',
         views.competition_attempt_list, name="competition_attempt_list"),
-    url(r'^competitions/(?P<slug>[\w\-_]+)/attempts/regrade$',
+    url(r'^competition/(?P<slug>[\w\-_]+)/attempts/$',
+        views.competition_attempt_list, name="competition_attempt_list"),
+    url(r'^competition/id=(?P<pk>\d+)/attempts/regrade$',
+        views.competition_attempt_list, {'regrade':True}, name="competition_attempt_list"),
+    url(r'^competition/(?P<slug>[\w\-_]+)/attempts/regrade$',
         views.competition_attempt_list, {'regrade':True}, name="competition_attempt_list"),
     #     2.1.4 mark attempts as invalid
     #           all attempts with codes created or distributed by
     #           the current user can be accessed
-    url(r'^competitions/(?P<slug>[\w\-_]+)/attempts/(?P<competition_questonset_id>\d+)/(?P<attempt_id>\d+)/invalidate$',
+    url(r'^competition/(?P<slug>[\w\-_]+)/attempts/(?P<competition_questonset_id>\d+)/(?P<attempt_id>\d+)/invalidate$',
         views.competition_attempt_list, {'regrade':True}, name="attempt_invalidate"),
     #     2.1.5
-    url(r'^competitions/(?P<slug>[\w\-_]+)/questionsets/use$',
+    #url(r'^competition/(?P<slug>[\w\-_]+)/questionsets/use$',
+    #    views.use_questionsets, name="use_questionsets"),
+    url(r'^competition/(?P<slug>[\w\-_]+)/questionsets/use$',
         views.use_questionsets, name="use_questionsets"),
-    url(r'^competitions/(?P<slug>[\w\-_]+)/questionsets/(?P<competition_questionset_id>[\d]+)$',
+    url(r'^competition/(?P<slug>[\w\-_]+)/questionsets/(?P<competition_questionset_id>[\d]+)$',
         views.use_questionsets, name="use_questionset"),
     #   2.2 competitor
     #     2.2.0 register as competitor using a code
-    url(r'^competitions/(?P<slug>[\w\-_]+)/$',
+    url(r'^competition/(?P<slug>[\w\-_]+)/$',
         views.CompetitionCompete.as_view(), name="competition_compete"),
     #url(r'^competitions/(?P<slug>[\w\-_]+)/registration$',
     #    views.CompetitionRegistration.as_view(), name="competition_registration"),
@@ -142,20 +161,29 @@ urlpatterns = [
     url(r'^question/(?P<pk>\d+)/solution/$', views.QuestionSolution.as_view(), name="question_solution"),
     url(r'^question/(?P<pk>\d+)/solution/(?P<resource_path>.*)$', views.question_resources, name="question_solution_resource"),
     # 7. create questionset from questions
+    url(r'^questionset/id=$', views.QuestionSetList.as_view(), name="questionset_list"),
     url(r'^questionset/$', views.QuestionSetList.as_view(), name="questionset_list"),
-    url(r'^questionset_create/$', views.QuestionSetCreate.as_view(),
+    url(r'^questionset/id=create', views.QuestionSetCreate.as_view(),
+        name="questionset_add"),
+    url(r'^questionset/id=create', views.QuestionSetCreate.as_view(),
         name="questionset_create"),
+    url(r'^questionset/$', views.QuestionSetList.as_view(), name="questionset_id_list"),
     url(r'^questionset/(?P<slug>[\w\-_]+)/update$', views.QuestionSetUpdate.as_view(),
         name="questionset_update"),
+    url(r'^questionset/id=(?P<pk>.*)/update$', views.QuestionSetUpdate.as_view(),
+        name="questionset_change"),
+    url(r'^questionset/id=(?P<pk>.*)/update$', views.QuestionSetUpdate.as_view(),
+        name="questionset_change"),
+    url(r'^questionset/id=(?P<pk>\d+)/delete$', views.QuestionSetDelete.as_view()),
     url(r'^questionset/(?P<slug>[\w\-_]+)/delete$', views.QuestionSetDelete.as_view()),
+    url(r'^questionset/id=(?P<pk>\d+)/$', views.QuestionSetDetail.as_view(),
+        name="questionset_detail"),
     url(r'^questionset/(?P<slug>[\w\-_]+)/$', views.QuestionSetDetail.as_view(),
         name="questionset_detail"),
     #   all questions for competitions you have admin access to can be used
     # 8. create competition (from multiple questionsets)
     #   all questionsets for competitions you have admin access to can be used.
     #   Also, newly created questionsets can be used.
-    url(r'^competition_create/$', views.CompetitionCreate.as_view(),
-        name="competition_create"),
     # handling code formats
     url(r'^code_format/$', views.TemplateView.as_view(
             template_name = "bober_simple_competition/codeformat_index.html"),
