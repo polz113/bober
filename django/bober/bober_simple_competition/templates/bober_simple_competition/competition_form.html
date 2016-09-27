@@ -50,7 +50,7 @@ $( document ).ready(function() {
   }
 
   $('#add_more').click(function() {
-        cloneMore('.questionsets table:last', 'competitionquestionset');
+        cloneMore('.questionsets table tbody:last', 'competitionquestionset_set');
     });
 
     function cloneMore(selector, type) {
@@ -99,9 +99,11 @@ $( document ).ready(function() {
       </p>
       {% for inline in inlines %}
           {{inline.management_form}}
-          <table>
-            {{inline.form}}
-          </table>
+          {% for form in inline %}
+            <table>
+              {{ form }}
+            </table>
+          {% endfor %}
       {% endfor %}
     </div>
   </div>

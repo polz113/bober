@@ -1208,7 +1208,7 @@ class QuestionSetCreate(LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         retval = super(QuestionSetCreate, self).form_valid(form)
         self.request.profile.created_question_sets.add(form.instance)
-        self.request.profile.questionsets.add(form.instance)
+        self.request.profile.question_sets.add(form.instance)
         return retval
 
     def get_success_url(self):
