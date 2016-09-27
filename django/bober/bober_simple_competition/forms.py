@@ -396,12 +396,23 @@ class AdminCodeFormatForm(CodeFormatForm):
         initial = code_based_auth.models.DEFAULT_HASH_ALGORITHM,
         choices = code_based_auth.models.HASH_ALGORITHMS,label=_("Allowed effects hash"))
 
+class BoberRelatedFieldWidgetWrapper(RelatedFieldWidgetWrapper):
+    def get_related_url(self, info, action, *args):
+        print "haha"
+        print info, action, args
+        if '__pk__' in args and 'pk' not in args:
+            args['pk'] = args['__pk__']
+        return reverse("%s_%s" % (info[1], action),
+                       current_app="bober_simple_competition", args=args)
+
 def add_related_field_wrapper(form, col_name):
     rel_model = form.Meta.model
     rel = rel_model._meta.get_field(col_name).rel
-    form.fields[col_name].widget =  RelatedFieldWidgetWrapper(
+    form.fields[col_name].widget =  BoberRelatedFieldWidgetWrapper(
         form.fields[col_name].widget, rel,
         admin.site, can_add_related=True, can_change_related=True)
+
+
 
 class CompetitionQuestionSetCreateForm(forms.ModelForm):
     class Meta:
