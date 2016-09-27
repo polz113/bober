@@ -75,6 +75,7 @@ $( document ).ready(function() {
 </script>
 <form action="" method="post">
 {% csrf_token %}
+{{ CompetitionCreateFormSet.management_form }}
 {{ form.non_field_errors }}
 <div id="normal_form_fields" class="form_table toLeft">
   <div class="row">
@@ -83,7 +84,11 @@ $( document ).ready(function() {
     </p>
     <div class="col-md-12 left_set">
     <table>
+<<<<<<< Updated upstream
             {{ form }}
+=======
+      {{form}}
+>>>>>>> Stashed changes
     </table>
     </div>
   </div>
@@ -103,7 +108,12 @@ $( document ).ready(function() {
     </div>
   </div>
   <div class="row" style="margin-top:2%;">
+<<<<<<< Updated upstream
     <a class="add_row" id="add_more">Add Another Competition Questionset</a>
+=======
+    <a class="add_row" style="background: url(/static/admin/img/icon-addlink.svg) 0 1px no-repeat;
+padding-left: 16px; font-size:15px!important; margin-left:1%; cursor:pointer;">  {% trans "Add Another Competition Questionset" %}</a>
+>>>>>>> Stashed changes
   </div>
   <input class="submit_set btn btn-success" type="submit" value='{% trans "Submit" %}' />
 </div>

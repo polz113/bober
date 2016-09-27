@@ -314,7 +314,7 @@ msgstr "Kodlar"
 
 #: templates/bober_simple_competition/competition_detail.html:16
 msgid "edit"
-msgstr "Eüzenle"
+msgstr "Düzenle"
 
 #: templates/bober_simple_competition/competition_detail.html:18
 #: templates/bober_simple_competition/competition_form.html:36
@@ -608,7 +608,7 @@ msgstr "Başlama Tarihi"
 
 #: bober_simple_competition/models.py: 115
 msgid "duration"
-msgstr "Süre (ms)"
+msgstr "Süre (s)"
 
 #: bober_simple_competition/models.py: 116
 msgid "end"
@@ -642,6 +642,92 @@ msgstr "Birleştir"
 #: bober_simple_competition/forms.py: 55
 msgid "Password"
 msgstr "Parola"
+
+#: bober_simple_competition/templates/bober_simple_competition/questionset_form.html: 15
+msgid "Add Questionset"
+msgstr "Soru Seti Ekle"
+
+#: bober_simple_competition/views.py: 469
+msgid "Competitior privileges"
+msgstr "Yarışmacı izinleri"
+
+#: bober_simple_competition/views.py: 471
+msgid "Admin privileges"
+msgstr "Yönetici izinleri"
+
+#: bober_simple_competition/views.py: 473
+msgid "Allowed effects"
+msgstr "İzin verilen etkiler"
+
+#: bober_simple_competition/views.py: 475
+msgid "Code effects"
+msgstr "Kod etkileri"
+
+#: bober_simple_competition/views.py: 485
+msgid "Competitor privileges"
+msgstr "Yarışmacı izinleri"
+
+#: bober_simple_competition/views.py: 489
+msgid "Competition questionset"
+msgstr "Yarışma Soru Seti"
+
+#: bober_simple_competition/templates/bober_simple_competition/profile_detail.html: 43
+msgid "Merge this profile into another"
+msgstr "Bu profili başka bir profil ile birleştir"
+
+#: bober_simple_competition/forms.py: 368
+msgid "Code id length"
+msgstr "Kod Uzunluğu"
+
+#: bober_simple_competition/forms.py: 370
+msgid "Code id format"
+msgstr "Kod Formatı"
+
+#: bober_simple_competition/forms.py: 471
+msgid "Competitor privilege length"
+msgstr "Yarışmacı Ayrıcalık Uzunluğu"
+
+#: bober_simple_competition/forms.py: 473
+msgid "Competitor privilege format"
+msgstr  "Yarışmacı Ayrıcalık Formatı"
+
+#: bober_simple_competition/forms.py: 476
+msgid "Competitor privilege hash"
+msgstr "Yarışmacı Ayrıcalık Doğrulaması"
+
+#: bober_simple_competition/forms.py: 380
+msgid "Questionset format"
+msgstr "Soru Seti Formati"
+
+#: bober_simple_competition/forms.py: 383
+msgid "Questionset hash"
+msgstr "Soru Seti Doğrulaması"
+
+#: bober_simple_competition/forms.py: 386
+msgid "Admin privilege length"
+msgstr "Yönetici Ayrıcalık Uzunluğu"
+
+#: bober_simple_competition/forms.py: 388
+msgid "Admin privilege format"
+msgstr "Yönetici Ayrıcalık Formatı"
+
+#: bober_simple_competition/forms.py: 391
+msgid "Admin privilege hash"
+msgstr "Yönetici Ayrıcalık Doğrulaması"
+
+#: bober_simple_competition/forms.py: 392
+msgid "Allowed effects length"
+msgstr "İzin Verilen Etki Uzunluğu"
+
+#: bober_simple_competition/forms.py: 394
+msgid "Allowed effects format"
+msgstr "İzin Verilen Etki Formatı"
+
+#: bober_simple_competition/forms.py: 397
+msgid "Allowed effects hash"
+msgstr "İzin Verilen Etki Doğrulaması"
+
+
 
 
 
