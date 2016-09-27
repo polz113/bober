@@ -4,6 +4,8 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, QueryDict, HttpResponseRedirect, Http404
 from django.core.mail import EmailMultiAlternatives
 from bober_simple_competition.forms import *
+from django.utils.translation import ugettext_lazy as _
+
 from bober_simple_competition import tables
 from bober_simple_competition import filters
 from bober_simple_competition.models import Profile
@@ -223,7 +225,7 @@ class CompetitionUpdate(SmartCompetitionAdminCodeRequiredMixin,
     model = Competition
     form_class = CompetitionUpdateForm
     inlines = [CompetitionQuestionSetUpdateInline,]
-    
+
     def get_object(self, queryset=None):
         c = super(CompetitionUpdate, self).get_object(queryset)
         access_code = self.request.session['access_code']
@@ -231,7 +233,7 @@ class CompetitionUpdate(SmartCompetitionAdminCodeRequiredMixin,
                 {'admin_privileges': ['modify_competition']}):
             raise PermissionDenied
         return c
-    
+
     def forms_valid(self, form, inlines):
         retval = super(CompetitionUpdate, self).forms_valid(form, inlines)
         if not retval:
@@ -466,13 +468,13 @@ def competition_code_create(request, slug, user_type='admin'):
         generator = admin_codegen
         class FormClass(forms.Form):
             competitor_privileges = forms.MultipleChoiceField(
-                choices = competitor_privilege_choices, required = False)
+                choices = competitor_privilege_choices, required = False, label=_("Competitior privileges"))
             admin_privileges = forms.MultipleChoiceField(
-                choices = admin_privilege_choices, required = False)
+                choices = admin_privilege_choices, required = False,label=_("Admin privileges"))
             allowed_effects = forms.MultipleChoiceField(
-                choices = allowed_effect_choices, required = False)
+                choices = allowed_effect_choices, required = False,label=_("Allowed effects"))
             code_effects = forms.MultipleChoiceField(
-                choices = allowed_effect_choices, required = False)
+                choices = allowed_effect_choices, required = False,label=_("Code effects"))
     else:
         generator = competition.competitor_code_generator
         if not admin_codegen.code_matches(access_code,
@@ -480,13 +482,13 @@ def competition_code_create(request, slug, user_type='admin'):
             raise PermissionDenied;
         class FormClass(forms.Form):
             competitor_privileges = forms.MultipleChoiceField(
-                choices = competitor_privilege_choices, required = False)
+                choices = competitor_privilege_choices, required = False,label=_("Competitor privileges"))
             competition_questionset = \
                 forms.ModelChoiceField(
                     queryset=CompetitionQuestionSet.objects.filter(
-                        competition_id=competition.id))
+                        competition_id=competition.id),label=_("Competition questionset"))
             code_effects = forms.MultipleChoiceField(
-                choices = allowed_effect_choices, required = False)
+                choices = allowed_effect_choices, required = False,label=_("Code effects"))
     if request.method == 'POST':
         form = FormClass(request.POST)
         if form.is_valid():
@@ -1219,9 +1221,9 @@ class QuestionSetUpdate(LoginRequiredMixin, UpdateView):
 
     def get_queryset(self):
         return self.request.profile.created_question_sets.all()
-    
+
     def get_success_url(self):
-        return reverse('questionset_detail', 
+        return reverse('questionset_detail',
                        kwargs = self.kwargs)
 
 class QuestionSetDelete(LoginRequiredMixin, DeleteView):
