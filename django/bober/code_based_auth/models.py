@@ -1,24 +1,27 @@
 from django.db import models
 from django.core.cache import cache
 import hashlib
+from django.utils.translation import ugettext_lazy as _
+
 from collections import defaultdict
 import random
 
 
 CODE_COMPONENT_FORMATS = (
-    ('h', 'hex'),
-    ('i', 'decimal'),
-    ('l', 'letters and digits'),
-    ('L', 'case-insensitive letters and digits'),
-    ('w', 'words'),
-    ('W', 'case-insensitive words'),
-    ('r', 'raw no hash'),
+    ('h', _('hex')),
+    ('i', _('decimal')),
+    ('l', _('letters and digits')),
+    ('L', _('case-insensitive letters and digits')),
+    ('w', _('words')),
+    ('W', _('case-insensitive words')),
+    ('r', _('raw no hash')),
 )
+
 
 CASE_INSENSITIVE_FORMATS = ['h', 'i', 'L', 'W']
 
 HASH_ALGORITHMS = tuple(
-    [(i, i) for i in list(hashlib.algorithms)] + [('noop', 'No hash')]
+    [(i, i) for i in list(hashlib.algorithms)] + [('noop', _('No hash'))]
 )
 
 DEFAULT_COMPONENT_FORMAT = 'h'
@@ -57,7 +60,7 @@ def str_last_bits(s, bits):
 def split_by_bits(s, bits):
     b = ceil(1.0 * bits / 8)
     return [s[i:i+b] for i in xrange(0, len(s), b)]
-    
+
 def str_to_long(s):
     if type(s) == unicode:
         s = s.encode('iso8859-1')
@@ -117,13 +120,13 @@ def words_codecs(words=DEFAULT_WORDS, separator=" "):
             else:
                 word_end = 1
                 while s[:word_end] not in val_words_dict:
-                    word_end += 1    
+                    word_end += 1
             word = s[:word_end]
             l = l * n_words
             l += val_words_dict.get(word, 0)
         return long_to_str(l)
     return (__str_to_words, __words_to_str)
- 
+
 FORMAT_FUNCTIONS = {
     'h': (str_to_hex, hex_to_str),
     'i': (str_to_dec, dec_to_str),
@@ -132,7 +135,7 @@ FORMAT_FUNCTIONS = {
     'l': words_codecs(LETTERS_AND_DIGITS, ''),
     'L': words_codecs(LOWERCASE_LETTERS_AND_DIGITS, ''),
     'r': (lambda x: x, lambda x: x),
-} 
+}
 
 class CodeField(models.CharField):
     def __init__(self, *args, **kwargs):
@@ -155,7 +158,7 @@ class CodeComponent(models.Model):
     code_format = models.ForeignKey('CodeFormat', related_name='components')
     ordering = models.PositiveIntegerField()
     name = models.CharField(max_length = 64)
-    hash_format = models.CharField(max_length=2, 
+    hash_format = models.CharField(max_length=2,
         choices = CODE_COMPONENT_FORMATS)
     # hash_bits = models.PositiveIntegerField()
     hash_len = models.PositiveIntegerField()
@@ -195,7 +198,7 @@ class CodeFormat(models.Model):
                 if component.hash_format in CASE_INSENSITIVE_FORMATS:
                     h = h.lower()
                 if component.max_parts == 1 and component.hash_algorithm == 'noop':
-                    challenge += h 
+                    challenge += h
                 if not component.part_separator:
                     h_len = component.hash_len
                     split_hash = [h[i:i+h_len] for i in xrange(0, len(h), h_len)]
@@ -205,7 +208,7 @@ class CodeFormat(models.Model):
                     return False
                 for h in split_hash:
                     hashes[component.name].add(h)
-                hash_params[component.name] = (FORMAT_FUNCTIONS[component.hash_format][0], 
+                hash_params[component.name] = (FORMAT_FUNCTIONS[component.hash_format][0],
                     component.hash_algorithm, component.hash_len, hashes)
             # calculate the hashes for components
             # print "hashes:", hashes
@@ -229,14 +232,14 @@ class CodeFormat(models.Model):
             print e
             return False
         return True
-                
+
     def unhashed_formatted_part(self, part, value):
         component = self.components.get(
-            name=part, 
+            name=part,
             hash_algorithm='noop', max_parts=1)
         fn =  FORMAT_FUNCTIONS[component.hash_format][0]
         return fn(value)[-component.hash_len:]
-        
+
     def code_from_parts(self, salt, parts):
         salt = salt.encode('utf-8')
         format_components = self.components.order_by('ordering')
@@ -310,14 +313,14 @@ class Code(models.Model):
 class CodeGenerator(models.Model):
     def __unicode__(self):
         return self.salt + " " + unicode(self.format)
-    unique_code_component = models.CharField(null = True, blank = True, 
+    unique_code_component = models.CharField(null = True, blank = True,
         max_length = 256)
     format = models.ForeignKey('CodeFormat')
     salt = models.CharField(max_length=256)
     codes = models.ManyToManyField('Code', blank=True)
     def create_code(self, parts, random_unique=False):
         if not random_unique:
-            created_code = Code.create(salt=self.salt, format=self.format, 
+            created_code = Code.create(salt=self.salt, format=self.format,
                 parts={})
             code_id = created_code.id
         if self.unique_code_component:
@@ -329,7 +332,7 @@ class CodeGenerator(models.Model):
         if random_unique:
             created_code = Code.create(salt=self.salt, format=self.format,
                    parts = parts)
-        else:    
+        else:
             created_code.parts = parts
         created_code.save()
         self.codes.add(created_code)
@@ -339,5 +342,5 @@ class CodeGenerator(models.Model):
         return self.format.components.order_by('ordering').exclude(
             name = self.unique_code_component)
     def code_matches(self, code, parts):
-        return self.format.code_matches(salt = self.salt, 
+        return self.format.code_matches(salt = self.salt,
             code = code, parts = parts)

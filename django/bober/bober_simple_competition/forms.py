@@ -52,8 +52,7 @@ class BasicProfileForm(forms.ModelForm):
         #        attrs={'class':'modern-style', 'autocomplete': 'off'}),
         #    'merged_with': django_widgets.Select()
         }
-    password = forms.CharField(required=False,
-        widget = forms.PasswordInput(attrs={'autocomplete': 'off'}))
+    password = forms.CharField(required=False, widget = forms.PasswordInput(attrs={'autocomplete': 'off'}),label=_("Password"),)
 
     def __init__(self, *args, **kwargs):
         _fields = ('first_name', 'last_name', 'email')
@@ -117,9 +116,13 @@ class ProfileMergeForm(forms.ModelForm):
             # the autocomplete: off is supposed to prevent firefox from filling in the form
             # with the current username
             'merged_with': autocomplete.ModelSelect2(url='profile_autocomplete'),
+
         #    'merged_with': autocomplete_light.ChoiceWidget('ManagedUsersAutocomplete',
         #        attrs={'class':'modern-style', 'autocomplete': 'off'}),
         #    'merged_with': django_widgets.Select()
+        }
+        labels = {
+            'merged_with': _('Merged with'),
         }
         def clean(self):
             # assert both profiles are managed
@@ -362,36 +365,36 @@ class CompetitionUpdateForm(forms.ModelForm):
         }
 
 class CodeFormatForm(forms.Form):
-    code_id_length = forms.IntegerField(initial=8)
+    code_id_length = forms.IntegerField(initial=8, label=_("Code id length"))
     code_id_format = forms.ChoiceField(
-        choices = code_based_auth.models.CODE_COMPONENT_FORMATS)
-    competitor_privilege_length = forms.IntegerField(min_value=1)
+        choices = code_based_auth.models.CODE_COMPONENT_FORMATS,label=_("Code id format"))
+    competitor_privilege_length = forms.IntegerField(min_value=1,label=_("Competitor privilege length"))
     competitor_privilege_format = forms.ChoiceField(
-        choices = code_based_auth.models.CODE_COMPONENT_FORMATS)
+        choices = code_based_auth.models.CODE_COMPONENT_FORMATS,label=_("Competitor privilege format"))
     competitor_privilege_hash = forms.ChoiceField(
         initial = code_based_auth.models.DEFAULT_HASH_ALGORITHM,
-        choices = code_based_auth.models.HASH_ALGORITHMS)
+        choices = code_based_auth.models.HASH_ALGORITHMS,label=_("Competitor privilege hash"))
 
 class CompetitorCodeFormatForm(CodeFormatForm):
     questionset_format = forms.ChoiceField(
-        choices = code_based_auth.models.CODE_COMPONENT_FORMATS)
+        choices = code_based_auth.models.CODE_COMPONENT_FORMATS,label=_("Questionset format"))
     questionset_hash = forms.ChoiceField(
         initial = 'noop',
-        choices = code_based_auth.models.HASH_ALGORITHMS)
+        choices = code_based_auth.models.HASH_ALGORITHMS,label=_("Questionset hash"))
 
 class AdminCodeFormatForm(CodeFormatForm):
-    admin_privilege_length = forms.IntegerField(min_value=1)
+    admin_privilege_length = forms.IntegerField(min_value=1, label=_("Admin privilege length"))
     admin_privilege_format = forms.ChoiceField(
-        choices = code_based_auth.models.CODE_COMPONENT_FORMATS)
+        choices = code_based_auth.models.CODE_COMPONENT_FORMATS,label=_("Admin privilege format"))
     admin_privilege_hash = forms.ChoiceField(
         initial = code_based_auth.models.DEFAULT_HASH_ALGORITHM,
-        choices = code_based_auth.models.HASH_ALGORITHMS)
-    allowed_effects_length = forms.IntegerField(min_value=1)
+        choices = code_based_auth.models.HASH_ALGORITHMS,label=_("Admin privilege hash"))
+    allowed_effects_length = forms.IntegerField(min_value=1,label=_("Allowed effects length"))
     allowed_effects_format = forms.ChoiceField(
-        choices = code_based_auth.models.CODE_COMPONENT_FORMATS)
+        choices = code_based_auth.models.CODE_COMPONENT_FORMATS,label=_("Allowed effects format"))
     allowed_effects_hash = forms.ChoiceField(
         initial = code_based_auth.models.DEFAULT_HASH_ALGORITHM,
-        choices = code_based_auth.models.HASH_ALGORITHMS)
+        choices = code_based_auth.models.HASH_ALGORITHMS,label=_("Allowed effects hash"))
 
 def add_related_field_wrapper(form, col_name):
     rel_model = form.Meta.model
@@ -458,6 +461,7 @@ CompetitionCreateFormSet = inlineformset_factory(Competition,
 
 CompetitionUpdateFormSet = inlineformset_factory(Competition,
     CompetitionQuestionSet, form = CompetitionQuestionSetUpdateForm, fields='__all__')
+
 
 class MailForm(forms.Form):
 
