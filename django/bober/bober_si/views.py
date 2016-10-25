@@ -63,8 +63,16 @@ class TeacherOverview(SmartCompetitionAdminCodeRequiredMixin,
                 ).prefetch_related(
                     'school', 'code',
                 ):
+            junior_mentorships = self.competition.juniormentorship_set.filter(
+                school = c.school,
+                teacher = profile
+            )
+            if len(junior_mentorships):
+                junior_mentorship = junior_mentorships[0]
+            else:
+                junior_mentorship = None
             if c.school != school:
-                schools[c.school] = []
+                schools[c.school] = ([], junior_mentorship)
                 attempts[c.school] = []
             school = c.school
             school_categories.add(school.category)
@@ -73,7 +81,7 @@ class TeacherOverview(SmartCompetitionAdminCodeRequiredMixin,
             split_code = code.split(sep)
             cqs_slug = split_code[0]
             cqs = CompetitionQuestionSet.get_by_slug(cqs_slug)
-            schools[school].append((cqs, sep.join(split_code[1:])))
+            schools[school][0].append((cqs, sep.join(split_code[1:])))
             a_list = []
             all_attempts = Attempt.objects.filter(
                 access_code = code).select_related(
@@ -94,13 +102,11 @@ class TeacherOverview(SmartCompetitionAdminCodeRequiredMixin,
             for a in unconfirmed_attempts.all():
                 a_list.append((a, 'unconfirmed'))
             attempts[school].append((cqs, a_list))
-        show_paper_results = JuniorDefaultYear.objects.filter(
-            competition = self.competition,
-            school_category__in = school_categories,
-            ).exists()
-        context['show_paper_results'] = show_paper_results
         context['show_codes'] = self.competition.end >= timezone.now()
+        context['show_awards'] = self.competition.end >= timezone.now() \
+                                                  and len(confirmed_attempts) > 0
         context['schools'] = schools
+        print schools
         context['attempts'] = attempts
         context['junior_mentorships'] = profile.juniormentorship_set.filter(
             competition = self.competition).prefetch_related('junioryear_set',
@@ -133,7 +139,7 @@ class SchoolCodesCreate(SmartCompetitionAdminCodeRequiredMixin, FormView):
         school = form.cleaned_data['school']
         self.competition.school_codes_create(
             school, self.request.profile, 
-            self.request.session['access_code']) 
+            self.request.session['access_code'])
         return super(SchoolCodesCreate, self).form_valid(form)
 
     def get_success_url(self):

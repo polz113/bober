@@ -5,11 +5,11 @@ from django.http import HttpResponse, QueryDict, HttpResponseRedirect, Http404
 from django.core.mail import EmailMultiAlternatives
 from bober_simple_competition.forms import *
 from django.utils.translation import ugettext_lazy as _
-
 from bober_simple_competition import tables
 from bober_simple_competition import filters
 from bober_simple_competition.models import Profile
 from bober_simple_competition.models import QuestionSet
+from popup_modelviews.views import PopupUpdateView, PopupCreateView, PopupFormViewMixin
 import django.contrib.auth
 from django.contrib.auth import authenticate
 from django.core.serializers.json import DjangoJSONEncoder
@@ -1201,7 +1201,7 @@ class QuestionSetList(LoginRequiredMixin, ListView):
 class QuestionSetDetail(LoginRequiredMixin, DetailView):
     model = QuestionSet
 
-class QuestionSetCreate(LoginRequiredMixin, CreateView):
+class QuestionSetCreate(LoginRequiredMixin, PopupCreateView):
     model = QuestionSet
     form_class = QuestionSetForm
 
@@ -1215,7 +1215,7 @@ class QuestionSetCreate(LoginRequiredMixin, CreateView):
         return reverse('questionset_list')
 
 
-class QuestionSetUpdate(LoginRequiredMixin, UpdateView):
+class QuestionSetUpdate(LoginRequiredMixin, PopupUpdateView):
     model = QuestionSet
     form_class = QuestionSetForm
 
@@ -1226,7 +1226,7 @@ class QuestionSetUpdate(LoginRequiredMixin, UpdateView):
         return reverse('questionset_detail',
                        kwargs = self.kwargs)
 
-class QuestionSetDelete(LoginRequiredMixin, DeleteView):
+class QuestionSetDelete(LoginRequiredMixin, DeleteView, PopupFormViewMixin):
     model = QuestionSet
 
     def get_queryset(self):

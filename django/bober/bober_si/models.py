@@ -81,7 +81,7 @@ class School(models.Model):
             # print "    ", c.attempt.competitor, c.attempt.access_code, c.by
             bronze_threshold = min(l[(len(l) - 1) // 3], bronze_award.threshold)
             bronze_threshold = max(bronze_threshold, max_score / 2)
-            print bronze_threshold
+            # print bronze_threshold
             for attempt in attempts:
                 to_assign = set()
                 if attempt.score >= bronze_threshold:
@@ -257,6 +257,13 @@ class SchoolCompetition(Competition):
                 code_data['competition_questionset'] = cqs.slug_str()
             self.school_code_create(school, teacher, access_code, 
                 competition_questionset = cqs, code_data = code_data)
+            default_years = cqs.juniordefaultyear_set.filter(
+                    school_category = school.category,
+                )
+            print "defyears:", default_years
+            for dy in default_years:
+                print "  ", dy
+                dy.create_mentorship(teacher = teacher, school = school)
 
     def school_code_create(self, school, teacher, access_code, 
             competition_questionset = None,
@@ -268,6 +275,7 @@ class SchoolCompetition(Competition):
         sc = SchoolTeacherCode(teacher=teacher, school=school, 
             code=code, competition_questionset = competition_questionset)
         sc.save()
+        return sc
 
 
 
