@@ -354,14 +354,16 @@ class CodeEffect(models.Model):
 
 
 class QuestionSet(models.Model):
-
     def __unicode__(self):
-        return u"{}: {}".format(self.name, ",".join([unicode(i) for i in self.questions.all()]))
+        return u"{}".format(unicode(self.name))
+        # return u"{}: {}".format(self.name, ",".join([unicode(i) for i in self.questions.all()]))
+    
     def get_absolute_url(self):
         return reverse('questionset_detail', kwargs={'pk': str(self.id)})
-    slug = SlugField(unique=True,verbose_name=_("Slug"))
-    name = CharField(max_length = 255,verbose_name=_("Name"))
-    questions = ManyToManyField('Question', blank=True,verbose_name=_("Questions"))
+    
+    slug = SlugField(unique=True, verbose_name=_("Slug"))
+    name = CharField(max_length = 255, verbose_name=_("Name"))
+    questions = ManyToManyField('Question', blank=True, verbose_name=_("Questions"))
     resource_caches = ManyToManyField('ResourceCache', blank=True)
 
     def question_mapping(self, random_seed):

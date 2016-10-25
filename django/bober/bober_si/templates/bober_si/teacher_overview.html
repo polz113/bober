@@ -97,33 +97,28 @@ function edit_name(obj) {
             {% trans "Codes for each school" %}<br/>
         </th>
         <td>
-            {% for school, codes in schools.iteritems %}
+            {% for school, codes_mentorship in schools.iteritems %}
                 <div class="school">
                     <p>{{school}}</p>
-                    {% if show_codes %}
+                    {{codes_mentorship.1}}
+                    {% if codes_mentorship.1 %}
+                    <a href="{% url "junior_results" slug=competition.slug pk=codes_mentorship.1.pk %}">{% trans "Result entry for tasks on paper" %}</a>
+                    {% endif %}
                     <ul>
-                        {% for code in codes %}
+                        {% for code, code_value in codes_mentorship.0 %}
                             <li>
-                                {{code.0.name}}: {{code.1}}
+                                {% if show_codes %}
+                                {{code.name}}: {{code_value}}
+                                {% endif %}
                             </li>
                         {% endfor %}
                     </ul>
-                    {% endif %}
                 </div>
             {% endfor %}
             <a href="{% url 'school_codes_create' slug=competition.slug %}?next_url={{request.path}}">{% trans "Add school" %}</a>
         </td>
     </tr>
-   {% if show_paper_results %}<tr>
-        <th>
-            {%  trans "Competition on paper" %}
-        </th>
-        <td>
-            <p>
-                <a href="{% url "mentorship_list" slug=competition.slug %}">{% trans "Result entry for tasks on paper" %}</a>
-            </p>
-        </td>
-    </tr>{% endif %}
+    {% if show_awards %}
     <tr>
         <th>{% trans "Certificates" %}</th>
         <td>
@@ -146,6 +141,8 @@ function edit_name(obj) {
                    {{ profile.first_name }} {{ profile.last_name }}
             </a>
        </td>
+    </tr>
+    {% endif %}
 </table>
 <div>
 
@@ -220,27 +217,6 @@ popravite, saj bodo na priznanjih izpisana natančno tako, kot so zapisana tu.
     </div>{% endif %}{% endfor %}
 {%  endfor %}
 </div>
-{% if False and junior_mentorships %}
-<div>
-<div class="prelim">{% trans "Results on paper" %}</div>
-{% for mentorship in junior_mentorships %}
-    {% for junior_year in mentorship.junioryear_set.all %}
-    {% if junior_year.juniorattempt_set.count %}<div>
-        <div class="results-school">{{mentorship.school}} - {{junior_year.name}}</div>
-        <p>Seznam spreminjate v <a href="{% url "mentorship_list" slug=competition.slug %}">obrazcu za vnos rezultatov</a>
-        </p>
-        <table class="results junior ">
-            {% for attempt in junior_year.attempts.all %}<tr>
-                <th>{{attempt.competitor.first_name}}
-                    {{attempt.competitor.last_name}}</th>
-                <td>{{attempt.score|floatformat:"0"}}</td>
-            </tr>{% endfor %}
-        </table>
-    </div>{% endif %}
-    {% endfor%}
-{% endfor %}
-</div>
-{% endif %}
 <div class="footnote">
 <a href="{% url 'competition_detail' slug=competition.slug %}">{% trans "Advanced details" %}</a>
 </div>

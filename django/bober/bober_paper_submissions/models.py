@@ -167,6 +167,14 @@ class JuniorDefaultYear(models.Model):
     questionset = models.ForeignKey(CompetitionQuestionSet)
     name = models.CharField(max_length = 16)
     value = models.TextField(blank=True, null=True)
+    
+    def create_mentorship(self, teacher, school):
+        mentorship, created = JuniorMentorship.objects.get_or_create(
+            competition = self.competition,
+            teacher = teacher,
+            school_id = school.id)
+        if created:
+            mentorship.save()
 
 
 class JuniorAttempt(models.Model):

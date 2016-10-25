@@ -33,7 +33,8 @@ def mentorship_list(request, slug):
             competition = competition,
             teacher = profile,
             school_id = school_id)
-        mentorship.save()
+        if created:
+            mentorship.save()
         mentorship_list.append(mentorship)
     if len(mentorship_list) == 1:
         return redirect('junior_results', slug=slug, pk = mentorship_list[0].id)
