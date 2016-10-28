@@ -119,6 +119,8 @@ $(document).ready(function(){
         </div><div>
             <label for="profile_email">{% trans "Email" %}</label><input id="profile_email" name="email" type="text" value="{{request.profile.user.email}}"/>
         </div><div>
+            <a href="{% url "password_change" %}">{% trans "Change password" %}</a>
+        </div><div>
             <input id="profile_save_btn" type="button" onclick="edit_profile(this);" value="{% trans "Save" %}"/>
         </div>
         </table>
