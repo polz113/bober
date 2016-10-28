@@ -9,7 +9,7 @@ from bober_simple_competition import tables
 from bober_simple_competition import filters
 from bober_simple_competition.models import Profile
 from bober_simple_competition.models import QuestionSet
-from popup_modelviews.views import PopupUpdateView, PopupCreateView, PopupFormViewMixin
+from popup_modelviews.views import PopupUpdateView, PopupCreateView, PopupFormView, PopupFormViewMixin
 import django.contrib.auth
 from django.contrib.auth import authenticate
 from django.core.serializers.json import DjangoJSONEncoder
@@ -934,7 +934,7 @@ class ProfileDetail(LoginRequiredMixin, DetailView):
 #  by the current user can be edited
 
 
-class ProfileUpdate(LoginRequiredMixin, UpdateView):
+class ProfileUpdate(LoginRequiredMixin, PopupUpdateView):
     model = Profile
     form_class = ProfileEditForm
 
@@ -942,9 +942,9 @@ class ProfileUpdate(LoginRequiredMixin, UpdateView):
         return self.request.profile.managed_profiles.all()
 
     def get_form(self, form_class=ProfileEditForm):
-        form = super(UpdateView, self).get_form(form_class)
-        #if 'merged_with' in form.fields:
-        #    form.fields['merged_with'].queryset = self.get_queryset()
+        form = super(PopupUpdateView, self).get_form(form_class)
+        if 'merged_with' in form.fields:
+            form.fields['merged_with'].queryset = self.get_queryset()
         return form
 
     def form_valid(self, form):
@@ -955,10 +955,10 @@ class ProfileUpdate(LoginRequiredMixin, UpdateView):
             raise PermissionDenied
         return super(ProfileUpdate, self).form_valid(form)
 
-    def get_success_url(self):
-        print self.__dict__
-        return reverse('profile_detail',
-            kwargs = {'pk': self.object.id})
+    #def get_success_url(self):
+    #   # print self.__dict__
+    #   return reverse('profile_detail',
+    #        kwargs = {'pk': self.object.id})
 
 
 class ProfileMerge(LoginRequiredMixin, UpdateView):
@@ -981,9 +981,7 @@ class ProfileAutocomplete(autocomplete.Select2QuerySetView):
         # Don't forget to filter out results depending on the visitor !
         if not self.request.user.is_authenticated():
             return Profile.objects.none()
-
         qs = self.request.profile.managed_profiles.all()
-
         if self.q:
             qs = qs.filter(user__username__icontains=self.q)
 

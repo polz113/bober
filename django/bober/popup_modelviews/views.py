@@ -53,6 +53,7 @@ class PopupFormViewMixin():
                 form.fields[IS_POPUP_VAR] = is_popup_field
         return form
 
+
 class PopupFormView(PopupFormViewMixin, FormView):
     def form_valid(self, form):
         retval_redir = self._form_valid_redirect(form)
@@ -61,6 +62,7 @@ class PopupFormView(PopupFormViewMixin, FormView):
             return retval_redir
         return retval
     
+
 class PopupCreateView(PopupFormViewMixin, CreateView):
     def form_valid(self, form):
         retval_redir = self._form_valid_redirect(form)
@@ -68,6 +70,7 @@ class PopupCreateView(PopupFormViewMixin, CreateView):
         if retval_redir is not None:
             return retval_redir
         return retval
+
 
 class PopupUpdateView(PopupFormViewMixin, UpdateView):
     def form_valid(self, form):
