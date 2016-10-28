@@ -76,28 +76,27 @@ class BasicProfileForm(forms.ModelForm):
         self.fields.update(unordered_fields)
 
     def save(self, *args, **kwargs):
-        if self.instance.id is not None:
-            u = self.instance.user
-        else:
-            u = User()
         cleaned_data = self.cleaned_data
-        u.first_name = cleaned_data['first_name']
-        u.last_name = cleaned_data['last_name']
-        u.email = cleaned_data['email']
-        u.username = cleaned_data['email']
-        password = cleaned_data.get('password', '')
-        if self.instance.id is None and len(password) < 1:
-            password = cleaned_data[access_code]
-            self.cleaned_data["password"] = password
-        if len(password) > 0:
-            u.set_password(cleaned_data['password'])
-        u.save()
-        if self.instance.id is None:
+        user_data = dict()
+        for k in ['first_name', 'last_name', 'email', 'username', 'password']:
+            if len(cleaned_data.get(k, '')):
+                user_data[k] = cleaned_data[k]
+        if self.instance.id is not None:
+            u = User.objects.filter(profile__id = self.instance.id)
+            u.update(**user_data)
+            u = u[0]
+        else:
+            u = User.objects.create(**user_data)
             self.instance = u.profile
+        password = user_data.get('password', '')
+        if len(password) > 0:
+            u.set_password(password)
+            u.save()
         if self.instance.merged_with is not None:
             for p in self.instance.former_profile_set.all():
                 p.merged_with = self.instance.merged_with
         profile = super(BasicProfileForm, self).save(*args,**kwargs)
+        # by default, each user should be able to manage their own profile.
         profile.managed_profiles.add(profile)
         return profile
 

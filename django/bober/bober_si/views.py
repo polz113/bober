@@ -106,7 +106,6 @@ class TeacherOverview(SmartCompetitionAdminCodeRequiredMixin,
         context['show_awards'] = self.competition.end >= timezone.now() \
                                                   and len(confirmed_attempts) > 0
         context['schools'] = schools
-        print schools
         context['attempts'] = attempts
         context['junior_mentorships'] = profile.juniormentorship_set.filter(
             competition = self.competition).prefetch_related('junioryear_set',
@@ -607,9 +606,6 @@ def all_awards_pdf(request, username, slug, cqs_name):
     #return None
     return safe_media_redirect(cert_path)
 
-@login_required
-def bla(request):
-    pass
 
 def __update_juniorattempt(attempt):
     try:
@@ -621,10 +617,10 @@ def __update_juniorattempt(attempt):
             attempt.competitor.first_name,
             attempt.competitor.last_name,
             attempt.score)
-        print (lines[j_a.line],),(replacement_line,)
+        # print (lines[j_a.line],),(replacement_line,)
         lines[j_a.line] = replacement_line
         raw = u"\n".join(lines)
-        print raw
+        # print raw
         year_class.raw_data = raw
         year_class.save()
     except Exception, e:
