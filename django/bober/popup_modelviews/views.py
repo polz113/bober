@@ -26,7 +26,7 @@ class PopupFormViewMixin():
             value = obj.serializable_value(attr)
             popup_response_data = json.dumps({
                 'value': six.text_type(value),
-                # 'obj': six.text_type(obj),
+                'obj': six.text_type(obj),
             })
             return SimpleTemplateResponse('popup_modelviews/popup_response.html', {
                 'popup_response_data': popup_response_data,
