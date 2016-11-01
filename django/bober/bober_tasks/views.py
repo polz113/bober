@@ -437,7 +437,7 @@ def tasks_list_language(request, language_locale):
     RequestConfig(request, paginate={'per_page': 10}).configure(table)
     return render(request, "bober_tasks/list.html", {'table': table})
 
-@login_required
+@login_required()
 def tasks_upload(request, id=0):
     task_translation = TaskTranslation.objects.get(id = id)
 
@@ -847,13 +847,16 @@ def task_detail(request, id):
 
     return render_to_response("task/details.html", locals(), context_instance=RequestContext(request))
 
-
-def tasks_resource(request, id, file):
+@login_required()
+def tasks_resource(request, pk, filename):
     """Image path redirect for task display. Because images have relative paths for export."""
-    task_translation = TaskTranslation.objects.get(id=id)
-    file_path = os.path.join(settings.MEDIA_ROOT, 'task', str(task_translation.task_id) , task_translation.language_locale, 'resources', file )
+    #TODO check permissions
+    task_translation = TaskTranslation.objects.get(pk=pk)
+    file_path = os.path.join(settings.MEDIA_ROOT, 'task', str(task_translation.task_id) , task_translation.language_locale, 'resources', filename )
     image_data = open(file_path, "rb").read()
-    return HttpResponse(image_data, content_type="image/png")
+    #TODO fix the content_type below
+    content_type = 'image/png'
+    return HttpResponse(image_data)
 
 
 def get_age_groups(obj):

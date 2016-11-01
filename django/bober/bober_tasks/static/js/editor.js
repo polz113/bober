@@ -36,7 +36,7 @@ tinymce.PluginManager.add('nalaganje_slik', function(editor, url) {
       var b = $(".mce-filePreview");
       $(b).height(200)
       $(b).find('input').remove();
-      $(b).append('<img id="preview"  style="max-width: 360px; max-height: 400px;"/>');
+      $(b).append('<img id="preview"  style="max-width: 360px; max-height: 40%;"/>');
       
       
     new AjaxUpload('images', {
