@@ -1,11 +1,12 @@
 from django.contrib import admin
 from bober_tasks.models import *
-from mce_filebrowser.admin import MCEFilebrowserAdmin
+# from mce_filebrowser.admin import MCEFilebrowserAdmin
 
 class AnswerInline(admin.TabularInline):
     model = Answer
 
-class TaskTranslationAdmin(MCEFilebrowserAdmin):
+# class TaskTranslationAdmin(MCEFilebrowserAdmin):
+class TaskTranslationAdmin(admin.ModelAdmin):
     inlines = [ AnswerInline ]
 
 admin.site.register(AgeGroup)

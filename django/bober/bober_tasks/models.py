@@ -10,15 +10,12 @@ import os
 from bs4 import BeautifulSoup
 from django.utils.text import slugify
 import mimetypes
-from tinymce.models import HTMLField
+# from tinymce.models import HTMLField
 
 import bober_simple_competition
 
 TASK_TEMPLATE_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'task_templates')
 TASK_TEMPLATES = tuple([(i[:-len('.html')], i) for i in os.listdir(TASK_TEMPLATE_DIR) if i.endswith('.html')])
-class MyModel(models.Model):
-    content = HTMLField()
-
 
 class AgeGroup(models.Model):
     value = models.CharField(max_length=45)
@@ -106,15 +103,15 @@ class TaskTranslation(models.Model):
     
     title = models.CharField(max_length=90)
     template = models.CharField(max_length=255, choices = TASK_TEMPLATES)
-    body = HTMLField()
-    solution = HTMLField()
-    it_is_informatics = HTMLField(blank=True)
+    body = models.TextField()
+    solution = models.TextField()
+    it_is_informatics = models.TextField(blank=True)
     language_locale = models.CharField(max_length=8, null=True, blank=True,
                                         choices=settings.LANGUAGES)
     task = models.ForeignKey('Task')
     author = models.ForeignKey(User, null = True)
     # correct_answer = models.ForeignKey('Answer', null=True)
-    comment = HTMLField(null=True)
+    comment = models.TextField(null=True)
     version = models.IntegerField(default=1)
     timestamp = models.DateTimeField(auto_now_add=True, null=True)
 
@@ -197,7 +194,7 @@ class TaskTranslation(models.Model):
         index_resource.save()
         resource_list = bober_simple_competition.models._resource_list(index_soup)
         for d in resource_list:
-            print d['url']
+            # print d['url']
             try:
                 resource = self.task.resources_set.get(
                     filename = os.path.basename(d['url']))
@@ -218,13 +215,14 @@ class TaskTranslation(models.Model):
                         file = None,
                     )
                     r.save()
-                    print r.id, type(data)
+                    # print r.id, type(data)
                     r.data = data
-                    print "  saving"
+                    # print "  saving"
                     r.save()
-                    print "  done!"
+                    # print "  done!"
             except Exception, e:
-                print e
+                pass
+                # print e
 
  
 def create_default_answers(sender, instance=None, **kwargs):
