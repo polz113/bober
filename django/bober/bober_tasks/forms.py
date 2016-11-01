@@ -5,11 +5,10 @@ from django.contrib.auth.models import User
 from extra_views import InlineFormSet
 #from django import forms
 from django.contrib.flatpages.models import FlatPage
-from tinymce.widgets import TinyMCE
-#from mce_filebrowser.models import FileBrowserFile
+# from tinymce.widgets import TinyMCE
 
 class FlatPageForm(forms.ModelForm):
-    content = forms.CharField(widget=TinyMCE(attrs={'cols': 80, 'rows': 30}))
+    content = forms.CharField(widget=forms.TextInput(attrs={'cols': 80, 'rows': 30}))
     class Meta:
         model = FlatPage
         fields='__all__'
@@ -82,13 +81,11 @@ class TaskTranslationForm(forms.ModelForm):
             }
 
         widgets = {
-            'comment': TinyMCE(attrs={'cols': 45, 'rows': 25}),
-            'body': TinyMCE(attrs={'cols': 45, 'rows': 25}),
-            'it_is_informatics': TinyMCE(attrs={'cols': 45, 'rows': 25}),
-            'solution': TinyMCE(attrs={'cols': 45, 'rows': 25}),
+            'comment': forms.TextInput(attrs={'class': 'tinymce', 'cols': 45, 'rows': 25}),
+            'body': forms.TextInput(attrs={'class': 'tinymce', 'cols': 45, 'rows': 25}),
+            'it_is_informatics': forms.TextInput(attrs={'class': 'tinymce', 'cols': 45, 'rows': 25}),
+            'solution': forms.TextInput(attrs={'class': 'tinymce', 'cols': 45, 'rows': 25}),
         }
-    class Media:
-        js = ('mce_filebrowser/js/filebrowser_init.js',)
 
 class InlineAnswerForm(forms.ModelForm):
     class Meta:
@@ -99,7 +96,7 @@ class InlineAnswerForm(forms.ModelForm):
         'correct': _('correct'),
         'value': _('value'),
         }
-        widgets = {'value': TinyMCE(attrs={'cols': 100, 'rows': 25})}
+        widgets = {'value': forms.TextInput(attrs={'cols': 100, 'rows': 25})}
 
     correct = forms.BooleanField(label=_('correct'), initial=True, required=False)
 

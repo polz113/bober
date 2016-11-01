@@ -10,7 +10,6 @@ import django.forms.extras.widgets as django_widgets
 from django.forms import ModelForm, TextInput
 from django.core.validators import validate_email
 from django.contrib.flatpages.models import FlatPage
-from tinymce.widgets import TinyMCE
 from dal import autocomplete
 from django.contrib import admin
 from django.contrib.admin.widgets import RelatedFieldWidgetWrapper
@@ -464,6 +463,7 @@ class MailForm(forms.Form):
     #mailFrom = forms.CharField(widget=forms.Textarea(attrs={'cols':70,'rows':1,'style':'resize:none;'}),label=_("From"), required=True)
     mail_to = forms.CharField(widget=forms.TextInput(attrs={'size': 71,'style':'margin-bottom:10px;'}),label=_("To"), required=True)
     mail_subject = forms.CharField(widget=forms.TextInput(attrs={'size': 71, 'style':'margin-bottom:10px;'}),label=_("Subject"), required=True)
-    mail_content=forms.CharField(widget=TinyMCE(attrs={'cols':70, 'rows': 15}),label=_("Content"), required=True)
-    class Media:
-        js = ('mce_filebrowser/js/filebrowser_init.js',)
+    # mail_content=forms.CharField(widget=TinyMCE(attrs={'cols':70, 'rows': 15}),label=_("Content"), required=True)
+    mail_content=forms.CharField(label=_("Content"), required=True)
+    # class Media:
+    #    js = ('mce_filebrowser/js/filebrowser_init.js',)

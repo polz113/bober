@@ -71,7 +71,7 @@ tinymce.PluginManager.add('nalaganje_slik', function(editor, url) {
 
 
 tinyMCE.init({
-  selector: "textarea",
+  selector: ".tinymce",
   plugins: [
     "advlist autolink lists link charmap print preview anchor",
     "searchreplace visualblocks code fullscreen",
