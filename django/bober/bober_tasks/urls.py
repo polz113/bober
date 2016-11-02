@@ -20,6 +20,7 @@ urlpatterns = [
     url(r'^tasktranslation/(?P<pk>\d+)/$', TaskTranslationDetail.as_view(), name="tasktranslation_detail"),
     url(r'^tasktranslation/(?P<pk>\d+)/preview$', TaskTranslationPreview.as_view(), name="tasktranslation_preview"),
     url(r'^tasktranslation/(?P<pk>\d+)/export$', export_to_simple_competition, name="export_to_simple_competition"),
+    url(r'^tasktranslation/(?P<pk>\d+)/task.zip$', export_task_translation, name="export_zip"),
     url(r'^translation/save.?$', tasks_save_translation, name="tasks.translation_save"),
     url(r'^list/([a-z]*)$', tasks_list_language, name="tasks.list"),
     url(r'^list/$', tasks_list_language, name="tasks.list"),
@@ -65,8 +66,8 @@ urlpatterns = [
     # url(r'^mce_filebrowser/', include('mce_filebrowser.urls')),
 
     # API
-    url(r'^export/task/(\d+)/([A-Za-z]+)$', export_task_language, name="api.export_task"), #vrne zadnji prevod za doloceno nalogo
-    url(r'^export/task/(\d+)/([A-Za-z]+)/(\d+)$', export_task_language_version, name="api.export_task_version"), #vrne doloceno verzijo prevode za doloceno nalogo
+    # url(r'^export/task/(\d+)/([A-Za-z]+)$', export_task_language, name="api.export_task"), #vrne zadnji prevod za doloceno nalogo
+    # url(r'^export/task/(\d+)/([A-Za-z]+)/(\d+)$', export_task_language_version, name="api.export_task_version"), #vrne doloceno verzijo prevode za doloceno nalogo
     # Examples:
     # url(r'^$', 'application.views.home', name='home'),
     # url(r'^application/', include('application.foo.urls')),

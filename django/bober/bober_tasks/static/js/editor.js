@@ -3,9 +3,9 @@ tinymce.PluginManager.add('nalaganje_slik', function(editor, url) {
     window.picUrl = false;
     window.picName = false;
       editor.windowManager.open({
-          title: 'Nalaganje slik',
+          title: image_upload_title,
           width:400,
-          height:500,
+          height:300,
           body: [
                 {
                     classes: "fileUploader",

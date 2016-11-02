@@ -7,6 +7,9 @@ from django.db.models.signals import post_save
 import django.template
 from django.forms.models import model_to_dict
 import os
+import zipfile
+import StringIO
+import json
 from bs4 import BeautifulSoup
 from django.utils.text import slugify
 import mimetypes
@@ -155,6 +158,67 @@ class TaskTranslation(models.Model):
         d['answers'] = self.answer_set.all()
         d['title'] = self.title
         return template.render(django.template.Context(d))
+    
+    def render_solution_to_string(self):
+        with open(os.path.join(TASK_TEMPLATE_DIR, 'api', 'solution.html'), 'r') as f:
+            template = django.template.Template(f.read())
+        d = dict()
+        d['solution'] = self.solution
+        d['it_is_informatics'] = self.it_is_informatics
+        d['answers'] = self.answer_set.all()
+        d['title'] = self.title
+        return template.render(django.template.Context(d))
+
+    def as_zip(self):
+        answers = self.answer_set.all()
+        authors = []
+        translators = []
+        if self.task.author is not None:
+            authors = [self.task.author]
+        if self.author is not None:
+            translators = [self.author.first_name + u" " + self.author.last_name]
+        manifest_dict = {
+            "id": self.task.international_id,
+            "interaction_type": 'non-interactive',
+            "country": self.task.country,
+            "authors": authors,
+            "version": self.version,
+            "title": self.title,
+            "translators": translators,
+            "license": "Creative commons CCBy",
+            "browserSupport": [{"name": "ie", "version": 6, "os": "windows", "supported": False}],
+            "acceptedAndsers":list(self.answer_set.filter(correct=True).values_list('value', flat=True)),
+            "task": [{'type': 'html', 'url': 'index.html'}],
+            "solution": [{"type": "html", "content": "solution.html"},],
+            "task_modules": [{"type": "javascript", "url": "js/jquery.js"}],
+            "grader_modules": [],
+            "solution_modules": [{"type": "javascript", "url": "js/jquery.js"}],
+            }
+        resources = Resources.objects.filter(task = self.task, language = self.language_locale)
+        # Check for specific task resources and add them to 'task' section in Manifest.json (default resources are index.html and Functions.js)
+        zip_stringio = StringIO.StringIO()
+        zf = zipfile.ZipFile(zip_stringio, "w")
+        for r in resources.all():
+            f_path = os.path.join(
+                settings.MEDIA_ROOT, 
+                'task',
+                str(self.task_id), 
+                str(self.language_locale),
+                'resources',
+                r.filename)
+            zf.write(f_path, 'resources/' + r.filename)
+            manifest_dict['task'].append({
+                'type': r.type,
+                'url': 'resources/' + r.filename})
+        # Generate Manifest.json, index.html, solution.html
+        manifest = json.dumps(manifest_dict)
+        solution_site = self.render_solution_to_string().encode('utf-8')
+        index_site = self.render_to_string().encode('utf-8')
+        zf.writestr('Manifest.json', manifest)
+        zf.writestr('index.html', index_site)
+        zf.writestr('solution.html', solution_site)
+        zf.close()
+        return zip_stringio.getvalue()
     
     def export_to_simple_competition(self):
         # if request.method == 'GET':

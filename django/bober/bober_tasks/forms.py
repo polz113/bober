@@ -96,7 +96,7 @@ class InlineAnswerForm(forms.ModelForm):
         'correct': _('correct'),
         'value': _('value'),
         }
-        widgets = {'value': forms.TextInput(attrs={'cols': 100, 'rows': 25})}
+        widgets = {'value': forms.TextInput(attrs={'class': 'tinymce', 'cols': 100, 'rows': 25})}
 
     correct = forms.BooleanField(label=_('correct'), initial=True, required=False)
 

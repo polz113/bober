@@ -10,6 +10,7 @@
     task_id = "{{object.task_id}}";
     language = "{{object.language_locale}}";
     version = "{{object.version}}";
+    image_upload_title = "{%trans "Image upload" %}"
     tinyMCEbaseURL = "{% url "tasktranslation_detail" object.id %}";
 </script>
 <style>
@@ -90,20 +91,13 @@ ul.nav li {
 
       <a name = "answers"></a>
       <h2>{% trans "Answers" %}</h2>
-
-      {%for inline in inlines %}
-
+    {%for inline in inlines %}
         {{inline.management_form}}
-          {% for inlineform in inline %}
-
+        {% for inlineform in inline %}
             {{inlineform.as_p}}
-
-          {% endfor %}
-
-           {%endfor%}
-      {{remark_form.as_p}}
-
-
+        {% endfor %}
+    {%endfor%}
+    {{remark_form.as_p}}
       <div class="form-actions form-inline">
             <div class="control-group">
             <fieldset id="summary">
@@ -114,16 +108,16 @@ ul.nav li {
         </div>
         <img id="ScrollTop" src="/static/img/arrow_up.png" title="ScrollTop"/>
         <style type="text/css">
-                #ScrollTop{
-                  position: fixed;
-          left: 15px;
-          bottom: 15px;
-          top: 250px;
-          height: 40px;
-          width: 40px;
-          cursor: pointer;
-          display: none;
-        }
+            #ScrollTop{
+            position: fixed;
+            left: 15px;
+            bottom: 15px;
+            top: 250px;
+            height: 40px;
+            width: 40px;
+            cursor: pointer;
+            display: none;
+            }
         </style>
         <script type="text/javascript">
           $("#ScrollTop").click(function() {
