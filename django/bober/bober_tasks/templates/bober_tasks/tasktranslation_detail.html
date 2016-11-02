@@ -46,7 +46,7 @@
                     <h3>{% trans "Task" %}</h3>
                     <ul class="nav nav-list">
                         <li><a href="{% url "tasktranslation_clone" object.id %} ">{% trans "Edit" %}</a></li>
-                        <li><a href="/export/task/{{ task.id }}/{{ object.language_locale.id }}/{{ object.version }}">{% trans "Export as ZIP" %}</a></li> <!-- make dynamic url -->
+                        <li><a href="{% url "export_zip" pk=object.id %}">{% trans "Export as ZIP" %}</a></li>
                         <li><a href="{% url "export_to_simple_competition" pk=object.id %}">{% trans "Export to competition system" %}</a></li> <!-- make dynamic url -->
                         <li><a href="{% url "tasks.translate" object.id %} ">{% trans "Translate" %}</a></li>
                         <li style="display: none"><a href="{% url "tasks.new_form" object.id %} ">New from this version</a></li>

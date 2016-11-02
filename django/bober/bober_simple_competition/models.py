@@ -424,7 +424,7 @@ class QuestionSet(models.Model):
                                 i[url_property] = "data:" + data_res.mimetype + ";base64,"  + data_res.as_base64()
                                 embeded_resource_ids.append(data_res.id)
                             except Exception, e:
-                                print url_str, e
+                                print (url_str, e)
                 embeded_resource_ids.append(r.id)
                 index_str = bytes(index_soup.prettify().encode('utf-8'))
             else:
@@ -440,7 +440,7 @@ class QuestionSet(models.Model):
         question_cache_id = 'questionset_question_ids_' + str(self.id)
 
 def _qs_rebuild_caches(sender, instance=None, **kwargs):
-    print "poopie!"
+    print("poopie!")
     if instance is not None:
         instance.rebuild_caches()
 

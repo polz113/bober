@@ -45,10 +45,13 @@ def export_task_language( request, task_id, language_code ):
     task_translation = task.get_latest_translation(language_code)
     return export_task_translation(request, task_translation)
 
-def export_task_translation( request, task_translation ):
+def export_task_translation( request, pk ):
+    task_translation = TaskTranslation.objects.get(pk = pk)
     # Grab ZIP file from in-memory, make response with correct MIME-type
     resp = HttpResponse(task_translation.as_zip(), content_type = "application/zip")
     # ..and correct content-disposition
+    zip_filename = '{}-{}_{}_v{}.zip'.format(slugify(task_translation.title),
+            task_translation.task_id, task_translation.language_locale, task_translation.version)
     resp['Content-Disposition'] = 'attachment; filename={}'.format(zip_filename)
     #if True: return render_to_response("api/task_interactive.html",  locals())
     return resp
@@ -678,7 +681,7 @@ def tasks_save_translation(request):
 @login_required()
 def delete_task(request, id):
     task = Task.objects.get(id=id)
-    print task
+    # print task
     answers = Answer.objects.filter(task_id=id)
     answers_id = map(lambda answer: answer.id, answers)
     answer_multiple_choice = AnswerTranslation.objects.filter(answer_multiple_choice_id__in=answers_id)
@@ -701,7 +704,6 @@ def delete_task(request, id):
             answer_multiple_choice = AnswerTranslation.objects.filter(answer_multiple_choice_id__in=answers_id)
             answers.delete()
             answer_multiple_choice.delete()
-
     return redirect('/')
 
 
