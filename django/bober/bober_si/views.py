@@ -56,6 +56,8 @@ class TeacherOverview(SmartCompetitionAdminCodeRequiredMixin,
         attempts = dict()
         code_pairs = []
         school_categories = set()
+        confirmed_attempts = []
+        unconfirmed_attempts = []
         for c in profile.schoolteachercode_set.filter(
                     code__codegenerator = self.competition.competitor_code_generator
                 ).order_by(
@@ -104,7 +106,8 @@ class TeacherOverview(SmartCompetitionAdminCodeRequiredMixin,
             attempts[school].append((cqs, a_list))
         context['show_codes'] = self.competition.end >= timezone.now()
         context['show_awards'] = self.competition.end >= timezone.now() \
-                                                  and len(confirmed_attempts) > 0
+                                      and (( len(confirmed_attempts) > 0) \
+                                          or ( len(unconfirmed_attempts) > 0))
         context['schools'] = schools
         context['attempts'] = attempts
         context['junior_mentorships'] = profile.juniormentorship_set.filter(
