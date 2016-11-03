@@ -185,12 +185,12 @@ class CodeFormat(models.Model):
     def code_matches(self, code, salt, parts):
         if len(parts) < 1:
             return False
-        salt = salt.encode('utf-8')
         format_components = self.components.order_by('ordering')
-        split_parts = code.split(self.separator)
         hash_params = dict()
         challenge = bytes()
         try:
+            salt = salt.encode('utf-8')
+            split_parts = code.split(self.separator)
             # collect the hashes, calculate challenge
             hashes = defaultdict(set)
             for i, component in enumerate(format_components):

@@ -1,5 +1,6 @@
 from django.conf.urls import include, url
 from django.views.generic import ListView
+from django.views.generic.base import RedirectView
 from bober_simple_competition.models import *
 from dal import autocomplete
 import views
@@ -86,6 +87,10 @@ urlpatterns = [
         views.use_questionsets, name="use_questionset"),
     #   2.2 competitor
     #     2.2.0 register as competitor using a code
+    # compatibility redirect
+    url(r'^competitions/(?P<slug>[\w\-_]+)/$',
+        RedirectView.as_view(pattern_name='competition_compete'), 
+        name="competition_compete_compat"),
     url(r'^competition/(?P<slug>[\w\-_]+)/$',
         views.CompetitionCompete.as_view(), name="competition_compete"),
     #url(r'^competitions/(?P<slug>[\w\-_]+)/registration$',
