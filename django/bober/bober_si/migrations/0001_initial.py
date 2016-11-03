@@ -40,18 +40,18 @@ class Migration(migrations.Migration):
             },
             bases=(models.Model,),
         ),
-        migrations.CreateModel(
-            name='SchoolTeacherShortenedCode',
-            fields=[
-                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('school', models.ForeignKey(to='bober_si.School')),
-                ('shortened_code', models.ForeignKey(to='bober_simple_competition.ShortenedCode')),
-                ('teacher', models.ForeignKey(to='bober_simple_competition.Profile')),
-            ],
-            options={
-            },
-            bases=(models.Model,),
-        ),
+#        migrations.CreateModel(
+#            name='SchoolTeacherShortenedCode',
+#            fields=[
+#                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+#                ('school', models.ForeignKey(to='bober_si.School')),
+#                ('shortened_code', models.ForeignKey(to='bober_simple_competition.ShortenedCode')),
+#                ('teacher', models.ForeignKey(to='bober_simple_competition.Profile')),
+#            ],
+#            options={
+#            },
+#            bases=(models.Model,),
+#        ),
         migrations.AlterUniqueTogether(
             name='schoolcategoryquestionsets',
             unique_together=set([('competition', 'school_category')]),
