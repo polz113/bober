@@ -1,8 +1,11 @@
 from django import forms
+from django.contrib.auth.models import User
+from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext as _
 from extra_views import InlineFormSet
 from models import School
 from dal import autocomplete
+import django.core.validators as validators
 #import autocomplete_light
 #import autocomplete_light.widgets
 
@@ -15,7 +18,26 @@ class SchoolCodesCreateForm(forms.Form):
         #widget=autocomplete_light.widgets.ChoiceWidget('SchoolAutocomplete',
         #    attrs={'class':'modern-style'}))
 
+def validate_username_unique(value):
+    try:
+        assert not User.objects.filter(username = value).exists()
+    except:
+        raise ValidationError(_('A user with this username exists'))
+
+
+def validate_email_unique(value):
+    try:
+        assert not User.objects.filter(email = value).exists()
+    except:
+        raise ValidationError(_('A user with this email exists'))
+
+
 class TeacherCodeRegistrationPasswordResetForm(forms.Form):
-    email = forms.EmailField(label=_('email'), max_length=30)
+    username = forms.SlugField(label=_('username'), max_length=30,
+                               validators = [validators.validate_slug,
+                                             validate_username_unique])
+    email = forms.EmailField(label=_('email'),
+                             validators = [validators.validate_email,
+                                           validate_email_unique])
     password = forms.CharField(label=_('password'),  widget=forms.PasswordInput)
     hidden_code = forms.CharField(label=_('hidden_code'), widget=forms.HiddenInput)

@@ -138,7 +138,6 @@ $(document).ready(function(){
             {% for school, codes_mentorship in schools.iteritems %}
                 <div class="school">
                     <p>{{school}}</p>
-                    {{codes_mentorship.1}}
                     {% if codes_mentorship.1 %}
                     <a href="{% url "junior_results" slug=competition.slug pk=codes_mentorship.1.pk %}">{% trans "Result entry for tasks on paper" %}</a>
                     {% endif %}
@@ -255,7 +254,7 @@ popravite, saj bodo na priznanjih izpisana natančno tako, kot so zapisana tu.
     </div>{% endif %}{% endfor %}
 {%  endfor %}
 </div>
-{% if profile.feature_level < 10 %}
+{% if profile.feature_level > 10 %}
 <div class="footnote">
 <a href="{% url 'competition_detail' slug=competition.slug %}">{% trans "Advanced details" %}</a>
 </div>

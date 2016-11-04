@@ -89,25 +89,35 @@ def smart_competition_admin_code_required(function = None):
             competition = Competition.get_cached_by_slug(slug=kwargs['slug'])
             codegen=competition.administrator_code_generator
             codes = [ ]
+            #print codegen.id
+            #print request.profile.id
             if access_code is not None:
                 codes = codegen.codes.filter(
                     value = access_code).values_list('value', flat=True)
             if len(codes) < 1 and access_code is not None and codegen.code_matches(
                     access_code, { 'competitor_privileges': ['attempt'],}):
                 codes = [access_code]
+            # print "pre:", codes
             if len(codes) < 1:
                 codes = codegen.codes.filter(
                     recipient_set__id = request.profile.id).values_list('value', flat=True)
+            # print "rec:", codes
+            #print "rec:", codegen.codes.filter(recipient_set__id = request.profile.id).values_list('value', flat=True)
             if len(codes) < 1:
                 codes = codegen.codes.filter(
                     user_set__id = request.profile.id).values_list('value', flat=True)
+            # print "used:", codes
+            #print "user:", codegen.codes.filter(
+            #        user_set__id = request.profile.id).values_list('value', flat=True)
             if len(codes) < 1:
                 codes = codegen.codes.filter(
                     creator_set__id = request.profile.id).values_list('value', flat=True)
+            # print "created:", codes
+            #print "creat:", codegen.codes.filter(creator_set__id = request.profile.id).values_list('value', flat=True)
             access_code = codes[0]
         except Exception, e:
             pass
-            # print e
+            print(e)
         if access_code is not None:
             _use_access_code(request, access_code)
         else:
@@ -151,7 +161,7 @@ def _use_access_code(request, access_code,
             code = Code.objects.get(value = access_code)
             profile.used_codes.add(code)
     except Exception, e:
-        print e
+        print "_use_access_code:", e
         pass
     try:
         if not defer_code_effects:
@@ -159,8 +169,24 @@ def _use_access_code(request, access_code,
             for effect in code.codeeffect_set.all():
                 effect.apply(users=[profile])
     except Exception, e:
-        print e
+        print "_use_access_code2:", e
         pass
+
+
+class CodeAutocomplete(autocomplete.Select2QuerySetView):
+    model=Code
+    def get_queryset(self):
+        # Don't forget to filter out results depending on the visitor !
+        if not self.request.user.is_authenticated():
+            return Code.objects.none()
+        if self.request.user.is_superuser:
+            return Code.objects.all()
+        #TODO: add filtering by creator / recipient / user
+        qs = Code.objects.filter(Q(recipient_set = self.request.profile) | \
+                                 Q(user_set = self.request.profile) | \
+                                 Q(creator_set = self.request.profile))
+        return qs
+
 
 def access_code(request, next):
     qd = QueryDict(dict(), mutable=True)
@@ -174,6 +200,7 @@ def access_code(request, next):
         defer_update = form.cleaned_data.get('defer_update_used_codes', False)
         defer_effects = form.cleaned_data.get('defer_effects', False)
         access_code = form.cleaned_data['access_code']
+        # print "access_code", access_code
         _use_access_code(request, access_code, defer_update, defer_effects)
         return HttpResponseRedirect('/' + next)
     return render(request, 'bober_simple_competition/access_code.html', locals())
@@ -981,6 +1008,8 @@ class ProfileAutocomplete(autocomplete.Select2QuerySetView):
         # Don't forget to filter out results depending on the visitor !
         if not self.request.user.is_authenticated():
             return Profile.objects.none()
+        if self.request.user.is_superuser:
+            return Profile.objects.all()
         qs = self.request.profile.managed_profiles.all()
         if self.q:
             qs = qs.filter(user__username__icontains=self.q)

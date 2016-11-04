@@ -173,6 +173,7 @@ class TeacherCodeRegistrationPasswordReset(FormView):
     def form_valid(self, form):
         retval = super( TeacherCodeRegistrationPasswordReset, self).form_valid(form)
         email = form.cleaned_data['email']
+        username = form.cleaned_data['username']
         password = form.cleaned_data['password']
         try:
             code = self.competition.administrator_code_generator.codes.get(value=form.cleaned_data['hidden_code'])
@@ -181,9 +182,13 @@ class TeacherCodeRegistrationPasswordReset(FormView):
             response.status_code = 403
             return response
         try:
-            user = User.objects.get(email = email)
+            assert not User.objects.filter(email = email).exists()
+            assert not User.objects.filter(username = username).exists()
+            user = User(username=username, email=email)
         except:
-            user = User(username=email, email=email)
+            response = render(self.request, 'bober_si/no_hidden_code.html')
+            response.status_code = 403
+            return response
         user.set_password(password)
         user.save()
         user.profile.managed_profiles.add(user.profile)
