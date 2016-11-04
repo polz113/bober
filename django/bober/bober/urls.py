@@ -37,7 +37,7 @@ urlpatterns = [
     url(r'^simple/', include(bober_paper_submissions.urls)),
     url(r'^simple/', include(bober_simple_competition.urls)),
     url(r'^tasks/', include(bober_tasks.urls)),
-    url(r'^jsi18n/(?P<packages>\S+?)/$', javascript_catalog,        kwargs = {'domain': 'django'}),
+    url(r'^jsi18n/(?P<packages>\S+?)/$', javascript_catalog, kwargs = {'domain': 'django'}, name='javascript-catalog'),
     # url(r'^jsi18n/$', 'django.views.i18n.javascript_catalog', js_info_dict),
     url('^accounts/', include('django.contrib.auth.urls')),
     url('', include('social.apps.django_app.urls', namespace='social')),

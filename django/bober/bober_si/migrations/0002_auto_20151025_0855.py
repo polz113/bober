@@ -25,19 +25,19 @@ class Migration(migrations.Migration):
             },
             bases=(models.Model,),
         ),
-        migrations.RemoveField(
-            model_name='schoolteachershortenedcode',
-            name='school',
-        ),
-        migrations.RemoveField(
-            model_name='schoolteachershortenedcode',
-            name='shortened_code',
-        ),
-        migrations.RemoveField(
-            model_name='schoolteachershortenedcode',
-            name='teacher',
-        ),
-        migrations.DeleteModel(
-            name='SchoolTeacherShortenedCode',
-        ),
+        #migrations.RemoveField(
+        #    model_name='schoolteachershortenedcode',
+        #    name='school',
+        #),
+        #migrations.RemoveField(
+        #    model_name='schoolteachershortenedcode',
+        #    name='shortened_code',
+        #),
+        #migrations.RemoveField(
+        #    model_name='schoolteachershortenedcode',
+        #    name='teacher',
+        #),
+        #migrations.DeleteModel(
+        #    name='SchoolTeacherShortenedCode',
+        #),
     ]

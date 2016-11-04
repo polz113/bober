@@ -3,7 +3,10 @@ from views import IS_POPUP_VAR, TO_FIELD_VAR
 from django.db.models.deletion import CASCADE
 from django.utils.safestring import mark_safe
 from django.template.loader import render_to_string
-from django.urls import reverse
+try:
+    from django.urls import reverse
+except:
+    from django.core.urlresolvers import reverse
 
 class RelatedFieldWidgetWrapper(forms.Widget):
     """
