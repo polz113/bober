@@ -24,6 +24,9 @@ urlpatterns = [
     url(r'autocomplete/profile/$',
         views.ProfileAutocomplete.as_view(),
         name='profile_autocomplete'),
+    url(r'autocomplete/code/$',
+        views.CodeAutocomplete.as_view(),
+        name='code_autocomplete'),
     # 1. login / enter access code
     url(r'^access_code/*(?P<next>.*)$', views.access_code, name="access_code"),
     # 2. pick competition
@@ -93,8 +96,8 @@ urlpatterns = [
         name="competition_compete_compat"),
     url(r'^competition/(?P<slug>[\w\-_]+)/$',
         views.CompetitionCompete.as_view(), name="competition_compete"),
-    #url(r'^competitions/(?P<slug>[\w\-_]+)/registration$',
-    #    views.CompetitionRegistration.as_view(), name="competition_registration"),
+    url(r'^competitions/(?P<slug>[\w\-_]+)/registration$',
+        views.CompetitionRegistration.as_view(), name="competition_registration"),
     url(r'^compete/(?P<competition_questionset_id>[\d]+)/access_code/(?P<next>.*)$',
         views.competitionquestionset_access_code,
         name="competitionquestionset_access_code"),

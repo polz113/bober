@@ -13,7 +13,7 @@
        <a class="btn" href="{% url 'social:begin' 'facebook' %}?next={{ request.path }}">{% trans "Login with" %} Facebook</a>
      </li> -->
      <li>
-       <a class="btn" href="{% url 'social:begin' 'google-oauth2' %}?next={{ request.path }}">{% trans "Login with" %} Google</a>
+       <a class="btn" href="{% url 'social:begin' 'google-oauth2' %}?next={{ next }}">{% trans "Login with" %} Google</a>
      </li>
    </ul>
    {% endif %}

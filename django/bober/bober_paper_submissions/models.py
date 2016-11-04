@@ -162,6 +162,8 @@ class JuniorYear(models.Model):
 
 
 class JuniorDefaultYear(models.Model):
+    def __unicode__(self):
+        return u"{}: {}".format(self.competition.slug, self.questionset.name)
     competition = models.ForeignKey(Competition)
     school_category = models.CharField(choices=SCHOOL_CATEGORIES, max_length=24)
     questionset = models.ForeignKey(CompetitionQuestionSet)

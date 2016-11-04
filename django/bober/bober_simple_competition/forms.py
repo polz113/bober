@@ -22,6 +22,19 @@ class ProfileForm(forms.ModelForm):
         model = Profile
 
 
+class ProfileAdminForm(forms.ModelForm):
+    class Meta:
+        model = Profile
+        exclude = tuple()
+        widgets = {
+            'managed_profiles': autocomplete.ModelSelect2Multiple(url='profile_autocomplete'),
+            'merged_with': autocomplete.ModelSelect2(url='profile_autocomplete'),
+            'created_codes': autocomplete.ModelSelect2Multiple(url='code_autocomplete'),
+            'received_codes': autocomplete.ModelSelect2Multiple(url='code_autocomplete'),
+            'used_codes': autocomplete.ModelSelect2Multiple(url='code_autocomplete'),
+        }
+
+
 class AccessCodeForm(forms.Form):
     access_code = forms.CharField(label=_('Access code'), max_length=256)
     defer_update_used_codes = forms.BooleanField(
