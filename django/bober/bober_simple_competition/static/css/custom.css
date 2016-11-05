@@ -5,6 +5,10 @@
   border: none!important;
 }
 
+.access_code{
+  font-family: Monospace;
+}
+
 .cardinality{
   display: none!important;
 }
