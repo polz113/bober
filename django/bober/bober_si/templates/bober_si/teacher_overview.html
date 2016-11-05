@@ -145,7 +145,7 @@ $(document).ready(function(){
                         {% for code, code_value in codes_mentorship.0 %}
                             <li>
                                 {% if show_codes %}
-                                {{code.name}}: {{code_value}}
+                                {{code.name}}: <span class="access_code">{{code_value}}</span>
                                 {% endif %}
                             </li>
                         {% endfor %}
