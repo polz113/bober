@@ -25,17 +25,15 @@ def mentorship_list(request, slug):
     #mentorship_list = JuniorMentorship.objects.filter(
     #    competition=competition, teacher = profile)
     mentorship_list = list()
-    for school_id in SchoolTeacherCode.objects.filter(
+    for sc in SchoolTeacherCode.objects.filter(
             teacher = profile,
             code__codegenerator = competition.competitor_code_generator,
-        ).values_list('school_id', flat=True).distinct():
-        mentorship, created = JuniorMentorship.objects.get_or_create(
-            competition = competition,
-            teacher = profile,
-            school_id = school_id)
-        if created:
-            mentorship.save()
-        mentorship_list.append(mentorship)
+        ):
+        for dy in sc.competition_questionset.juniordefaultyear_set.all():
+            dy.create_year(sc)
+    mentorship_list = JuniorMentorship.objects.filter(
+        competition = competition, teacher = profile)
+        
     if len(mentorship_list) == 1:
         return redirect('junior_results', slug=slug, pk = mentorship_list[0].id)
     #seznam = bober_competition.models.SchoolMentor.objects.all()
