@@ -3,9 +3,8 @@ class ProfileMiddleware(object):
         if not hasattr(request, 'profile') and \
                 request.user.is_authenticated():
             profile = request.user.profile
-            while profile.merged_with is not None:
-                profile = profile.merged_with
-            # print "profile set to:", profile
+            if profile.merged_with is not None:
+                profile = profile.merge_to_top(limit = 5)
             request.profile = profile
         # Code to be executed for each request/response after
         # the view is called.

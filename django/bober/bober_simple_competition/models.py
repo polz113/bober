@@ -230,7 +230,7 @@ def _create_graded(answer, regrade, grader_runtime_manager):
     try:
         a = answer
         if regrade:
-            print a
+            # print a
             g_a = GradedAnswer(
                 attempt_id = a.attempt_id, question_id=a.question_id,
                 answer = a
@@ -1034,6 +1034,35 @@ class Profile(models.Model):
                             for superior in u.__superiors(
                                     competition.administrator_code_generator):
                                 u.managers.add(superior)
+
+    def merge_to_top(self, limit = None):
+        if self.merged_with is not None:
+            # detect cycles, merge profiles
+            profile = self
+            old_profiles = set()
+            old_profiles.add(None)
+            while profile not in old_profiles and \
+                        limit is not None and len(old_profiles) < limit:
+                old_profiles.add(profile)
+                prev_profile = profile
+                profile = profile.merged_with
+            if profile is None:
+                profile = prev_profile
+            elif profile in old_profiles:
+                # this is a cycle. Break it.
+                old_profiles.remove(profile)
+                profile.merged_with = None
+                profile.save()
+            else:
+                # limit exceeded. 
+                pass
+            for old_profile in old_profiles:
+                old_profile.merged_with = profile
+                old_profile.save()
+            return profile
+        # profile not merged
+        return self
+
 
 
 def create_profile(sender, instance=None, **kwargs):

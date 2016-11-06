@@ -1005,7 +1005,6 @@ class ProfileMerge(LoginRequiredMixin, UpdateView):
 class ProfileAutocomplete(autocomplete.Select2QuerySetView):
     model=Profile
     def get_queryset(self):
-        # Don't forget to filter out results depending on the visitor !
         if not self.request.user.is_authenticated():
             return Profile.objects.none()
         if self.request.user.is_superuser:
@@ -1015,7 +1014,6 @@ class ProfileAutocomplete(autocomplete.Select2QuerySetView):
             qs = qs.filter(user__username__icontains=self.q)
 
         return qs
-
 
 # 4. register competitor
 class QuestionSetCompete(CreateView):
