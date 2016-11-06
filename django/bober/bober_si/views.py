@@ -16,7 +16,7 @@ from forms import OverviewForm, SchoolCodesCreateForm
 from bober_simple_competition.views import AccessCodeRequiredMixin, SmartCompetitionAdminCodeRequiredMixin
 from bober_simple_competition.views import safe_media_redirect, _profile_file_path, JsonResponse
 from bober_simple_competition.models import Attempt, Profile, GradedAnswer, AttemptConfirmation
-from bober_paper_submissions.models import JuniorDefaultYear
+# from bober_paper_submissions.models import JuniorDefaultYear
 from django.contrib.auth.models import User
 from django.utils import timezone
 from django.db import connection
@@ -104,6 +104,7 @@ class TeacherOverview(SmartCompetitionAdminCodeRequiredMixin,
             for a in unconfirmed_attempts.all():
                 a_list.append((a, 'unconfirmed'))
             attempts[school].append((cqs, a_list))
+        # print self.competition.end, timezone.now(), self.competition.end >= timezone.now()
         context['show_codes'] = self.competition.end >= timezone.now()
         context['show_awards'] = self.competition.end >= timezone.now() \
                                       and (( len(confirmed_attempts) > 0) \

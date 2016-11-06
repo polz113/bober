@@ -140,15 +140,16 @@ $(document).ready(function(){
                     {% if codes_mentorship.1 %}
                     <a href="{% url "junior_results" slug=competition.slug pk=codes_mentorship.1.pk %}">{% trans "Result entry for tasks on paper" %}</a>
                     {% endif %}
+                    
+                    {% if show_codes %}
                     <ul>
                         {% for code, code_value in codes_mentorship.0 %}
                             <li>
-                                {% if show_codes %}
                                 {{code.name}}: <span class="access_code">{{code_value}}</span>
-                                {% endif %}
                             </li>
                         {% endfor %}
                     </ul>
+                    {% endif %}
                 </div>
             {% endfor %}
             <a href="{% url 'school_codes_create' slug=competition.slug %}?next_url={{request.path}}">{% trans "Add school" %}</a>

@@ -149,7 +149,8 @@ class JuniorYear(models.Model):
             created_one = created_one or created
         if created_one:
             # we should probably recreate the awards.
-            awards = Award.objects.filter(questionset = self.questionset)
+            pass
+            """ awards = Award.objects.filter(questionset = self.questionset)
             if profile is None:
                 codegen = self.questionset.competition.administrator_code_generator
                 profile = codegen.codes.filter(
@@ -158,7 +159,7 @@ class JuniorYear(models.Model):
                 )[0].creator_set.all()[0]
             self.mentorship.school.assign_si_awards(awards,
                 CompetitionQuestionSet.objects.filter(id=self.questionset_id),
-                revoked_by = profile, commit = True)
+                revoked_by = profile, commit = True)"""
 
 
 class JuniorDefaultYear(models.Model):
@@ -170,13 +171,22 @@ class JuniorDefaultYear(models.Model):
     name = models.CharField(max_length = 16)
     value = models.TextField(blank=True, null=True)
     
-    def create_mentorship(self, teacher, school):
+    def create_year(self, schoolteachercode):
         mentorship, created = JuniorMentorship.objects.get_or_create(
             competition = self.competition,
-            teacher = teacher,
-            school_id = school.id)
+            teacher_id = schoolteachercode.teacher.id,
+            school_id = schoolteachercode.school.id)
+        #if created:
+        #    mentorship.save()
+        year, created = JuniorYear.objects.get_or_create(
+                mentorship = mentorship,
+                name = self.name,
+                questionset = self.questionset,
+                access_code = schoolteachercode.code.value)
         if created:
-            mentorship.save()
+            year.raw_data = self.value
+            year.save()
+        return year
 
 
 class JuniorAttempt(models.Model):
@@ -197,16 +207,16 @@ class JuniorAttempt(models.Model):
 #    serial = models.CharField(max_length=256, blank=True, default='')
 
 
-def fill_mentorship_years(sender, instance=None, **kwargs):
-    if instance:
-        for default_year in JuniorDefaultYear.objects.filter(
-                competition = instance.competition,
-                school_category = instance.school.category):
-            year, created = JuniorYear.objects.get_or_create(
-                mentorship = instance,
-                name = default_year.name)
-            if created:
-                year.raw_data = default_year.value
-                year.save()
+#def fill_mentorship_years(sender, instance=None, **kwargs):
+#    if instance:
+#        for default_year in JuniorDefaultYear.objects.filter(
+#                competition = instance.competition,
+#                school_category = instance.school.category):
+#            year, created = JuniorYear.objects.get_or_create(
+#                mentorship = instance,
+#                name = default_year.name)
+#            if created:
+#                year.raw_data = default_year.value
+#                year.save()
 
-models.signals.post_save.connect(fill_mentorship_years, sender=JuniorMentorship)
+#models.signals.post_save.connect(fill_mentorship_years, sender=JuniorMentorship)

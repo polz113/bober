@@ -255,15 +255,16 @@ class SchoolCompetition(Competition):
                 school_category = school.category):
             if code_data is not None:
                 code_data['competition_questionset'] = cqs.slug_str()
-            self.school_code_create(school, teacher, access_code, 
+            sc = self.school_code_create(school, teacher, access_code, 
                 competition_questionset = cqs, code_data = code_data)
             default_years = cqs.juniordefaultyear_set.filter(
                     school_category = school.category,
                 )
-            print "defyears:", default_years
+            # print "defyears:", default_years
             for dy in default_years:
-                print "  ", dy
-                dy.create_mentorship(teacher = teacher, school = school)
+                # print "  ", dy
+                dy.create_year(sc)
+                
 
     def school_code_create(self, school, teacher, access_code, 
             competition_questionset = None,
