@@ -104,10 +104,14 @@ class BasicProfileForm(forms.ModelForm):
         if len(password) > 0:
             u.set_password(password)
             u.save()
+        if self.instance.merged_with == self.instance:
+            self.instance.merged_with = None
         if self.instance.merged_with is not None:
             for p in self.instance.former_profile_set.all():
                 p.merged_with = self.instance.merged_with
+                p.save()
         profile = super(BasicProfileForm, self).save(*args,**kwargs)
+        profile = profile.merge_to_top(limit=10)
         # by default, each user should be able to manage their own profile.
         profile.managed_profiles.add(profile)
         return profile
