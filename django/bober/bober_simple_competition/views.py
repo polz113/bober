@@ -3,6 +3,7 @@ from django.shortcuts import render, redirect, resolve_url, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, QueryDict, HttpResponseRedirect, Http404
 from django.core.mail import EmailMultiAlternatives
+from django.shortcuts import get_object_or_404
 from bober_simple_competition.forms import *
 from django.utils.translation import ugettext_lazy as _
 from bober_simple_competition import tables
@@ -618,8 +619,8 @@ def competition_index(request, competition_questionset_id):
 
 #	2.2.1.1 get question page as guest
 def competition_guest(request, competition_questionset_id):
-    competition_questionset = CompetitionQuestionSet.objects.get(
-        id=competition_questionset_id)
+    competition_questionset = get_object_or_404(CompetitionQuestionSet, 
+                                                id=competition_questionset_id)
     guest_code = competition_questionset.guest_code
     if guest_code is not None:
         code = guest_code.value
@@ -1067,7 +1068,7 @@ class CompetitionCompete(QuestionSetCompete):
     template_name = "bober_simple_competition/competition_registration.html"
 
     def dispatch(self, *args, **kwargs):
-        self.competition = Competition.objects.get(slug=kwargs['slug'])
+        self.competition = get_object_or_404(Competition, slug=kwargs['slug'])
         self.competitionquestionset = None
         return super(QuestionSetCompete, self).dispatch(*args, **kwargs)
 
