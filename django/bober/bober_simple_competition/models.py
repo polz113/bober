@@ -1056,6 +1056,7 @@ class Profile(models.Model):
             else:
                 # limit exceeded. 
                 pass
+            old_profiles.remove(None)
             for old_profile in old_profiles:
                 old_profile.merged_with = profile
                 old_profile.save()
