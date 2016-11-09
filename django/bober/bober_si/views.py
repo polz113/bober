@@ -106,7 +106,7 @@ class TeacherOverview(SmartCompetitionAdminCodeRequiredMixin,
             attempts[school].append((cqs, a_list))
         # print self.competition.end, timezone.now(), self.competition.end >= timezone.now()
         context['show_codes'] = self.competition.end >= timezone.now()
-        context['show_awards'] = self.competition.end >= timezone.now() \
+        context['show_awards'] = self.competition.end <= timezone.now() \
                                       and (( len(confirmed_attempts) > 0) \
                                           or ( len(unconfirmed_attempts) > 0))
         context['schools'] = schools
@@ -686,7 +686,7 @@ def revalidate_awards(request, attempt_id, *args, **kwargs):
         # print "created award", award.serial, award, award.revoked_by
         award.save()
         serials.add(new_serial)
-    if True or len(awards_changed):
+    if len(awards_changed):
         cert_dir = os.path.join(_profile_file_path(teacher, 
             os.path.join(cqs.competition.slug, str(school.id))))
         cert_fname = cqs.name + '.pdf'
@@ -698,6 +698,7 @@ def revalidate_awards(request, attempt_id, *args, **kwargs):
             i += 1
             new_cert_full_fname = u'{}-{}'.format(cert_full_fname, i)
         # print "new file name:", new_cert_full_fname
-        os.rename(cert_full_fname, new_cert_full_fname)
+        if os.path.isfile(cert_full_fname):
+            os.rename(cert_full_fname, new_cert_full_fname)
 
     return JsonResponse({'status': 'success'})
