@@ -158,6 +158,14 @@ class TeacherCodeRegistrationPasswordReset(FormView):
         self.competition = Competition.objects.get(slug=kwargs['slug'])
         return super(TeacherCodeRegistrationPasswordReset, self).dispatch(*args, **kwargs)
 
+    def get_context_data(self, *args, **kwargs):
+        context = super(TeacherCodeRegistrationPasswordReset, self).get_context_data(*args, **kwargs)
+        context['hidden_code'] = self.request.GET.get('hidden_code', '')
+        print self.args, self.kwargs
+        context['teacher_login_url'] = reverse("teacher_overview", 
+                                       kwargs=self.kwargs)
+        return context
+
     def get(self, *args, **kwargs):
         try:
             code = self.competition.administrator_code_generator.codes.get(value=self.request.GET['hidden_code'])
@@ -171,7 +179,6 @@ class TeacherCodeRegistrationPasswordReset(FormView):
     def get_initial(self):
         initial = super( TeacherCodeRegistrationPasswordReset, self).get_initial()
         initial['hidden_code'] = self.request.GET.get('hidden_code', '')
-        self.hidden_code = initial['hidden_code']
         return initial
 
     def form_valid(self, form):
