@@ -157,9 +157,11 @@ class TeacherCodeRegistrationPasswordReset(FormView):
     def dispatch(self, *args, **kwargs):
         self.competition = Competition.objects.get(slug=kwargs['slug'])
         return super(TeacherCodeRegistrationPasswordReset, self).dispatch(*args, **kwargs)
+
     def get(self, *args, **kwargs):
         try:
             code = self.competition.administrator_code_generator.codes.get(value=self.request.GET['hidden_code'])
+            self.hidden_code = code
         except:
             response = render(self.request, 'bober_si/no_hidden_code.html')
             response.status_code = 403
@@ -169,6 +171,7 @@ class TeacherCodeRegistrationPasswordReset(FormView):
     def get_initial(self):
         initial = super( TeacherCodeRegistrationPasswordReset, self).get_initial()
         initial['hidden_code'] = self.request.GET.get('hidden_code', '')
+        self.hidden_code = initial['hidden_code']
         return initial
 
     def form_valid(self, form):
