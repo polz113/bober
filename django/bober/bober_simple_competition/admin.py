@@ -26,13 +26,13 @@ class ProfileInline(admin.StackedInline):
 
 
 # Define a new User admin
-class UserAdmin(UserAdmin):
+class ProfileUserAdmin(UserAdmin):
     inlines = (ProfileInline, )
 
 
 # Re-register UserAdmin
 admin.site.unregister(User)
-admin.site.register(User, UserAdmin)
+admin.site.register(User, ProfileUserAdmin)
 
 admin.site.register(Competitor)
 admin.site.register(Competition, CompetitionAdmin)
