@@ -12,12 +12,14 @@ class JuniorYearForm(ModelForm):
     class Meta:
         model = JuniorYear
         widgets = {
+            'questionset': HiddenInput(),
+            'access_code': HiddenInput(),
             'raw_data': Textarea(attrs={'rows': 20, 'cols': 20})
         }
         labels = {
             'raw_data': ''
         }
-        fields = ['raw_data']
+        fields = ['raw_data', 'questionset', 'access_code']
 
     def clean(self):
         retval = super(JuniorYearForm, self).clean()
@@ -29,6 +31,7 @@ class JuniorYearForm(ModelForm):
         instance = super(JuniorYearForm, self).save(*args, **kwargs)
         return instance
 
+
 class JuniorMentorshipForm(ModelForm):
     class Meta:
         model = JuniorMentorship
@@ -39,4 +42,4 @@ class JuniorYearInline(InlineFormSet):
     form_class = JuniorYearForm
     can_delete = False
     extra = 0
-    fields = ['raw_data']
+    fields = ['raw_data', 'questionset', 'access_code']
