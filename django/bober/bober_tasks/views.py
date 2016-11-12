@@ -351,7 +351,7 @@ def export_multiple_tasks(request):
     for i in range(len(export_values)):
         #TaskTranslation.export_to_simple_competition(export_values[i])
         t = TaskTranslation.objects.get(pk=export_values[i])
-        t.export_to_simple_competition()
+        t.export_to_simple_competition(rebuild_caches = True)
     return redirect("/tasks")
 
 
