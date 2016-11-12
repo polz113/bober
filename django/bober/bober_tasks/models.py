@@ -66,6 +66,11 @@ class Remark(models.Model):
 
 
 class Resources(models.Model):
+    def __unicode__(self):
+        return u"{}: {}({}, {})".format(self.task, 
+                                        self.filename, self.type, 
+                                        self.language)
+
     filename = models.CharField(max_length=90)
     type = models.CharField(max_length=40)
     task = models.ForeignKey('Task')
@@ -220,7 +225,7 @@ class TaskTranslation(models.Model):
         zf.close()
         return zip_stringio.getvalue()
     
-    def export_to_simple_competition(self):
+    def export_to_simple_competition(self, rebuild_caches=False):
         # if request.method == 'GET':
         #    return redirect("/")
         accepted_answers = self.answer_set.filter(correct=True)
@@ -258,9 +263,10 @@ class TaskTranslation(models.Model):
         index_resource.save()
         resource_list = bober_simple_competition.models._resource_list(index_soup)
         for d in resource_list:
-            # print d['url']
+            print d['url']
             try:
                 resource = self.task.resources_set.get(
+                    language = self.language_locale,
                     filename = os.path.basename(d['url']))
                 f_path = os.path.join(
                     settings.MEDIA_ROOT, 
@@ -286,7 +292,11 @@ class TaskTranslation(models.Model):
                     # print "  done!"
             except Exception, e:
                 pass
-                # print e
+                print e
+        if rebuild_caches:
+            for qs in q.questionset_set.all():
+                print qs
+                qs.rebuild_caches()
 
  
 def create_default_answers(sender, instance=None, **kwargs):
