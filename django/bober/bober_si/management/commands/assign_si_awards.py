@@ -46,6 +46,8 @@ class Command(BaseCommand):
             '8. razred': '08',
             '9. razred': '09',
         }.get(group_name, slugify(group_name))
+        if max_score is None:
+            max_score = 10
         bronze_award, created = Award.objects.get_or_create(
             questionset = cqs,
             competition = cqs.competition,
@@ -60,8 +62,10 @@ class Command(BaseCommand):
         if created:
             l = Attempt.objects.filter(
                     competitionquestionset = cqs
+                ).exclude(
+                    confirmed_by = None
                 ).order_by('-score').values_list('score', flat=True)
-            print l
+            print bronze_award, ":", l
             bronze_award.threshold = l[(len(l) - 1) / 5]
             bronze_award.save()
             print "Created bronze", bronze_award

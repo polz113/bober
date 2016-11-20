@@ -435,7 +435,7 @@ def mentor_certificate_pdf(request, username):
 
         res = u"{} je bil(a) mentor(ica)\n" \
               u"{} {} na šolskem nivoju\n" \
-              u"mednarodnega tekmovanja Bober, 9. - 13. novembra 2015.\n \n".\
+              u"mednarodnega tekmovanja Bober, 7. - 11. novembra 2016.\n \n".\
                   format(name, n_dativ[nschool], p_tekmovalcu[nschool])
         awards.pop(u"priznanje", 0)
         n = awards.pop(u"napreduje", 0)
