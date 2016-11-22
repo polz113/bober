@@ -56,6 +56,7 @@ class TeacherOverview(SmartCompetitionAdminCodeRequiredMixin,
         attempts = dict()
         code_pairs = []
         school_categories = set()
+        has_attempts = False
         confirmed_attempts = []
         unconfirmed_attempts = []
         for c in profile.schoolteachercode_set.filter(
@@ -100,15 +101,17 @@ class TeacherOverview(SmartCompetitionAdminCodeRequiredMixin,
                 confirmed_by__id=profile.id,
             )
             for a in confirmed_attempts.all():
+                has_attempts |= True
                 a_list.append((a, 'confirmed'))
             for a in unconfirmed_attempts.all():
+                has_attempts |= True
                 a_list.append((a, 'unconfirmed'))
             attempts[school].append((cqs, a_list))
         # print self.competition.end, timezone.now(), self.competition.end >= timezone.now()
         context['show_codes'] = self.competition.end >= timezone.now()
         context['show_awards'] = self.competition.end <= timezone.now() \
-                                      and (( len(confirmed_attempts) > 0) \
-                                          or ( len(unconfirmed_attempts) > 0))
+                                      and has_attempts
+        print context['show_awards'], self.competition.end <= timezone.now()
         context['schools'] = schools
         context['attempts'] = attempts
         context['junior_mentorships'] = profile.juniormentorship_set.filter(
@@ -403,7 +406,6 @@ class CompetitionXlsResults(SmartCompetitionAdminCodeRequiredMixin, TemplateView
 
 @login_required
 def mentor_certificate_pdf(request, username):
-    
     def _compose_text(name, nschool, awards):
         class Plural:
             def __init__(self, *forms):
@@ -473,7 +475,7 @@ def mentor_certificate_pdf(request, username):
                     nstate += 1
                 else:
                     continue
-                for award in set(award.award.name for award in attempt.attemptaward_set.all()):
+                for award in set(award.award.name for award in attempt.attemptaward_set.filter(revoked_by=None)):
                     awards[award] += 1
         name = (user.first_name.strip() + u" " + user.last_name.strip()).title()
         text = _compose_text(name, nschool, awards)
@@ -556,6 +558,7 @@ def school_awards_pdf(request, username, slug, school_id, cqs_name):
                 data.append(
                     {
                         'name': award.competitor_name,
+                        'date': '7. - 11. novembra 2016',
                         'school': award.school_name,
                         'group': award.group_name,
                         'serial': award.serial,
@@ -616,6 +619,7 @@ def all_awards_pdf(request, username, slug, cqs_name):
                     'name': award.competitor_name,
                     'school': award.school_name,
                     'group': award.group_name,
+                    'date': '7. - 11. novembra 2016',
                     'serial': award.serial,
                     'template': award.award.template,
                 }

@@ -52,14 +52,14 @@ class Command(BaseCommand):
             questionset = cqs,
             competition = cqs.competition,
             group_name = group_name,
-            template = 'bronasto',
             name = 'bronasto',
             defaults = {
+                'template': 'bronasto2016',
                 'threshold': max_score,
                 'serial_prefix': year_str + group_prefix + 'B',
             }
         )
-        if created:
+        if created or True:
             l = Attempt.objects.filter(
                     competitionquestionset = cqs
                 ).exclude(
@@ -75,7 +75,7 @@ class Command(BaseCommand):
             group_name = group_name,
             name = 'priznanje',
             threshold = 0,
-            defaults = {'template': 'priznanje',
+            defaults = {'template': 'priznanje2016',
                 'serial_prefix': year_str + group_prefix + 'P'
             },
         )
