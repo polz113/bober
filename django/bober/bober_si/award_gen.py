@@ -31,67 +31,41 @@ page = u"""
     <text transform="matrix(1 0 0 1 848.051 1238.26)" fill="#F9FF7F" font-family="'MyriadPro-Regular'" font-size="9.7082px">
         {serial}
     </text>
+    <text transform="matrix(1 0 0 1 370.0 1069.71)" fill="#3CABE0" font-family="'MyriadPro-Regular'; Arial" font-size="32px">
+        {date}
+    </text>
 </svg>"""
 
 
 def generate_award_pdf(output, data, template_file):
     with open(template_file) as f:
-        template = unicode(f.read())
-    shorten_schools(data)
+        template = unicode(f.read(), 'utf-8')
+    split_schools(data)
     pages = u"".join(page.format(**participant) for participant in data)
     cairosvg.svg2pdf(template.format(pages), write_to=output)
 
-def shorten_schools(data):
-    replacements = [(u"Osnovna šola", u"OŠ"), (u"Biotehniški izobraževalni center", u"BIC"),
-                    (u"Šolski center", u"ŠC"), (u"Srednja šola", u"SŠ")]
-    splits = {s.replace("*", " "): s.split("*") for s in
-              (u"OŠ Sečovlje*Podružnična šola in vrtec Sveti Peter",
-               u"ŠC Kranj,*SŠ za elektrotehniko in računalništvo",
-               u"ŠC Novo mesto,*Srednja gradbena, lesarska in vzgojiteljska šola",
-               u"ŠC Novo mesto,*Srednja elektro šola in tehniška gimnazija",
-               u"OŠ Belokranjskega odreda Semič*Podružnična šola Štrekljevec",
-               u"Elektrotehniško-računalniška strokovna*šola in gimnazija Ljubljana",
-               u"ŠC Celje,*Srednja šola za kemijo, elektrotehniko in računalništvo",
-               u"Zavod Antona Martina Slomška,*Škofijska gimnazija Antona Martina Slomška",
-               u"ŠC Krško - Sevnica,*Srednja poklicna in strokovna šola Krško",
-               u"Srednja vzgojiteljska šola*in gimnazija Ljubljana",
-               u"Gimnazija in srednja šola*Rudolfa Maistra Kamnik",
-               u"ŠC za pošto, ekonomijo in telekomunikacije*" \
-                   u"Ljubljana, Srednja tehniška in strokovna šola",
-               u"OŠ Antona Ingoliča Spodnja Polskava*Podružnica Zgornja Polskava",
-               u"ŠC Slovenske Konjice - Zreče,*Gimnazija Slovenske Konjice",
-               u"Gimnazija in ekonomska srednja šola*Trbovlje",
-               u"Srednja gradbena, geodetska*in okoljevarstvena šola Ljubljana",
-               u"OŠ Log - Dragomer,*Podružnična šola Bevke",
-               u"OŠ Prežihovega Voranca*Ravne na Koroškem"
-               u"Šolski center Nova Gorica,*Gimnazija in zdravstvena šola",
-               u"Osnovna šola Franca Rozmana - Staneta*Ljubljana",
-               u"OŠ Franca Lešnika - Vuka*Slivnica pri Mariboru",)
-             }
-
-    def short_school(school):
-        if len(school) > 30:
-            school = reduce(lambda x, r: x.replace(*r), replacements, school)
-        if u"Podružnica" in school:
-            school = school[:school.index(u"Podružnica") - 1]
+def split_schools(data):
+    def split_school(school):
         participant["school_x"] = 245.5879 if len(school) < 22 else 136.5879
         participant["school_size"] = 40 if len(school) < 50 else 32
-        if school in splits:
-            participant["school1"], participant["school2"] = splits[school]
+        split_school = school.split("\n")
+        if len(split_school) > 1:
+            participant["school1"] = split_school[0]
+            participant["school2"] = " ".join(split_school[1:])
             school = ""
         else:
             participant["school1"] = participant["school2"] = ""
         return school
     for participant in data:
-        participant["school"] = short_school(participant["school"])
+        participant["school"] = split_school(participant["school"])
 
 
 if __name__ == "__main__":
     N, S, G, E, T = "name", "school", "group", "serial", "template"
 
-    data = [{N: "Gašper Fele Žorž", S: "OŠ Polževo", G: "3. razred", E: "1501999999", T: "bronasto"},
-            {N: "Janez Demšar", S: "Vrtec Šentjanž", G: "predšolski", E: "43", T: "priznanje"}]
-    certificates(os.path.expanduser("~/Desktop/priznanja.pdf"), data)
+    data = [{N: u"Gašper Fele Žorž", S: u"OŠ Polževo", G: u"3. razred", E: u"1501999999", T: u"bronasto2016", 'date': u'16. november 2016'},
+            {N: u"Janez Demšar", S: u"Vrtec Šentjanž", G: u"predšolski", E: u"43", T: u"priznanje2016", 'date': u'16. november 2016'}]
+    generate_award_pdf(os.path.expanduser("~/Desktop/priznanja.pdf"), data, 'award_templates/all_si.svg')
 
     #data = [{N: "Janez Novak", S: s.strip(),
     #         G: "3. razred", E: "42"} for s in open("sole.txt") if len(s) > 45]
