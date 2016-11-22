@@ -56,91 +56,95 @@ class School(models.Model):
         # print "school:", self
         l = []
         for cqs in competition_questionsets.all():
-            bronze_award = cqs.award_set.get(name='bronasto')
-            general_award = cqs.award_set.get(name='priznanje')
-            max_score = cqs.questionset.questions.all().aggregate(
-                Sum('max_score'))['max_score__sum']
-            attempts = Attempt.objects.filter(
-                competitionquestionset = cqs,
-                attemptconfirmation__by__schoolteachercode__school = self,
-                attemptconfirmation__by__schoolteachercode__code__value=F('access_code'),
-                attemptconfirmation__by__schoolteachercode__competition_questionset = cqs,
-            ).order_by(
-                '-score'
-            ).select_related(
-                'competitor',
-            ).prefetch_related(
-                'attemptaward_set',
-                'attemptaward_set__award'
-            ).distinct()
-            if attempts.count() < 1:
-                continue
-            l = [a.score for a in attempts.all()]
-            #print len(attempts), attempts
-            #print len(l), l
-            # print "    ", c.attempt.competitor, c.attempt.access_code, c.by
-            bronze_threshold = min(l[(len(l) - 1) // 3], bronze_award.threshold)
-            bronze_threshold = max(bronze_threshold, max_score / 2)
-            # print bronze_threshold
-            for attempt in attempts:
-                to_assign = set()
-                if attempt.score >= bronze_threshold:
-                    to_assign.add(bronze_award)
-                else:
-                    to_assign.add(general_award)
-                competitor_name = u"{} {}".format(
-                    attempt.competitor.first_name, 
-                    attempt.competitor.last_name)
-                aawards = attempt.attemptaward_set.all()
-                serials = set(aawards.values_list('serial', flat=True))
-                # aawards = aawards.filter(revoked_by = None)
-                # print "  ", aawards
-                # print "   ", serials
-                for aaward in aawards:
-                    if aaward.award in to_assign:
-                        if aaward.competitor_name == competitor_name and \
-                                aaward.school_name == self.name and \
-                                aaward.group_name == aaward.award.group_name and \
-                                aaward.revoked_by == None:
-                            # print "    match", aaward, aaward.school_name.encode('utf-8')
-                            to_assign.remove(aaward.award)
+            try:
+                bronze_award = cqs.award_set.get(name='bronasto')
+                general_award = cqs.award_set.get(name='priznanje')
+                max_score = cqs.questionset.questions.all().aggregate(
+                    Sum('max_score'))['max_score__sum']
+                attempts = Attempt.objects.filter(
+                    competitionquestionset = cqs,
+                    attemptconfirmation__by__schoolteachercode__school = self,
+                    attemptconfirmation__by__schoolteachercode__code__value=F('access_code'),
+                    attemptconfirmation__by__schoolteachercode__competition_questionset = cqs,
+                ).order_by(
+                    '-score'
+                ).select_related(
+                    'competitor',
+                ).prefetch_related(
+                    'attemptaward_set',
+                    'attemptaward_set__award'
+                ).distinct()
+                if attempts.count() < 1:
+                    continue
+                l = [a.score for a in attempts.all()]
+                #print len(attempts), attempts
+                #print len(l), l
+                # print "    ", c.attempt.competitor, c.attempt.access_code, c.by
+                bronze_threshold = min(l[(len(l) - 1) // 3], bronze_award.threshold)
+                bronze_threshold = max(bronze_threshold, max_score / 2)
+                # print bronze_threshold
+                for attempt in attempts:
+                    to_assign = set()
+                    if attempt.score >= bronze_threshold:
+                        to_assign.add(bronze_award)
+                    else:
+                        to_assign.add(general_award)
+                    competitor_name = u"{} {}".format(
+                        attempt.competitor.first_name, 
+                        attempt.competitor.last_name)
+                    aawards = attempt.attemptaward_set.all()
+                    serials = set(aawards.values_list('serial', flat=True))
+                    # aawards = aawards.filter(revoked_by = None)
+                    # print "  ", aawards
+                    # print "   ", serials
+                    for aaward in aawards:
+                        if aaward.award in to_assign:
+                            if aaward.competitor_name == competitor_name and \
+                                    aaward.school_name == self.name and \
+                                    aaward.group_name == aaward.award.group_name and \
+                                    aaward.revoked_by == None:
+                                # print "    match", aaward, aaward.school_name.encode('utf-8')
+                                to_assign.remove(aaward.award)
+                            else:
+                                # print "    revoke (data)",
+                                # print u"        {}".format(aaward.competitor_name).encode('utf-8')
+                                # print u"        {}".format(aaward.school_name).encode('utf-8')
+                                
+                                if aaward.revoked_by is None:
+                                    aaward.revoked_by = revoked_by
+                                    revoke_awards.append(aaward)
+                                    revoke_award_ids.add(aaward.id)
                         else:
-                            # print "    revoke (data)",
-                            # print u"        {}".format(aaward.competitor_name).encode('utf-8')
-                            # print u"        {}".format(aaward.school_name).encode('utf-8')
-                            
+                            # print "    revoke", aaward, aaward.school_name.encode('utf-8')
                             if aaward.revoked_by is None:
                                 aaward.revoked_by = revoked_by
                                 revoke_awards.append(aaward)
                                 revoke_award_ids.add(aaward.id)
-                    else:
-                        # print "    revoke", aaward, aaward.school_name.encode('utf-8')
-                        if aaward.revoked_by is None:
-                            aaward.revoked_by = revoked_by
-                            revoke_awards.append(aaward)
-                            revoke_award_ids.add(aaward.id)
-                # print to_assign
-                for award in to_assign:
-                    serial = "{}{:06}".format(award.serial_prefix, attempt.id)
-                    new_serial = serial
-                    i = 1
-                    while new_serial in serials:
-                        new_serial = "{}-{}".format(serial, i)
-                        i += 1
-                    # print "     assign", award
-                    # print "       ", competitor_name.encode('utf-8')
-                    # print "       ", self.name.encode('utf-8')
-                    # print "       ", award.group_name.encode('utf-8')
-                    # print "       ", new_serial, serials
-                    new_awards.append(
-                        AttemptAward(
-                            award = award,
-                            attempt = attempt,
-                            competitor_name = competitor_name,
-                            school_name = self.name,
-                            group_name = award.group_name,
-                            serial = new_serial,
-                        ))
+                    # print to_assign
+                    for award in to_assign:
+                        serial = "{}{:06}".format(award.serial_prefix, attempt.id)
+                        new_serial = serial
+                        i = 1
+                        while new_serial in serials:
+                            new_serial = "{}-{}".format(serial, i)
+                            i += 1
+                        # print "     assign", award
+                        # print "       ", competitor_name.encode('utf-8')
+                        # print "       ", self.name.encode('utf-8')
+                        # print "       ", award.group_name.encode('utf-8')
+                        # print "       ", new_serial, serials
+                        new_awards.append(
+                            AttemptAward(
+                                award = award,
+                                attempt = attempt,
+                                competitor_name = competitor_name,
+                                school_name = self.name,
+                                group_name = award.group_name,
+                                serial = new_serial,
+                            ))
+            except Exception, e:
+                print(e)
+                pass
         if commit:
             assert revoked_by is not None
             AttemptAward.objects.filter(id__in = revoke_award_ids).update(
