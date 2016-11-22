@@ -46,22 +46,26 @@ class Command(BaseCommand):
             '8. razred': '08',
             '9. razred': '09',
         }.get(group_name, slugify(group_name))
+        if max_score is None:
+            max_score = 10
         bronze_award, created = Award.objects.get_or_create(
             questionset = cqs,
             competition = cqs.competition,
             group_name = group_name,
-            template = 'bronasto',
             name = 'bronasto',
             defaults = {
+                'template': 'bronasto2016',
                 'threshold': max_score,
                 'serial_prefix': year_str + group_prefix + 'B',
             }
         )
-        if created:
+        if created or True:
             l = Attempt.objects.filter(
                     competitionquestionset = cqs
+                ).exclude(
+                    confirmed_by = None
                 ).order_by('-score').values_list('score', flat=True)
-            print l
+            print bronze_award, ":", l
             bronze_award.threshold = l[(len(l) - 1) / 5]
             bronze_award.save()
             print "Created bronze", bronze_award
@@ -71,7 +75,7 @@ class Command(BaseCommand):
             group_name = group_name,
             name = 'priznanje',
             threshold = 0,
-            defaults = {'template': 'priznanje',
+            defaults = {'template': 'priznanje2016',
                 'serial_prefix': year_str + group_prefix + 'P'
             },
         )

@@ -20,6 +20,7 @@ class School(models.Model):
         return u"{}, {}".format(self.name, self.post, self.category)
 
     name = models.CharField(unique=True, max_length=255)
+    display_name = models.TextField(max_length=255)
     category = models.CharField(choices=SCHOOL_CATEGORIES, max_length=24)
     address = models.CharField(max_length=1024, blank=True, null=True)
     country_code = models.CharField(max_length = 2)
@@ -77,11 +78,12 @@ class School(models.Model):
                 if attempts.count() < 1:
                     continue
                 l = [a.score for a in attempts.all()]
-                #print len(attempts), attempts
                 #print len(l), l
-                # print "    ", c.attempt.competitor, c.attempt.access_code, c.by
+                #print "    ", c.attempt.competitor, c.attempt.access_code, c.by
                 bronze_threshold = min(l[(len(l) - 1) // 3], bronze_award.threshold)
                 bronze_threshold = max(bronze_threshold, max_score / 2)
+                # print self, cqs.name, max_score, bronze_threshold, "t:", bronze_award.threshold, "1/3:", l[(len(l) - 1) // 3]
+                # print cqs.name, max_score, bronze_threshold
                 # print bronze_threshold
                 for attempt in attempts:
                     to_assign = set()
@@ -100,7 +102,7 @@ class School(models.Model):
                     for aaward in aawards:
                         if aaward.award in to_assign:
                             if aaward.competitor_name == competitor_name and \
-                                    aaward.school_name == self.name and \
+                                    aaward.school_name == self.display_name and \
                                     aaward.group_name == aaward.award.group_name and \
                                     aaward.revoked_by == None:
                                 # print "    match", aaward, aaward.school_name.encode('utf-8')
@@ -138,7 +140,7 @@ class School(models.Model):
                                 award = award,
                                 attempt = attempt,
                                 competitor_name = competitor_name,
-                                school_name = self.name,
+                                school_name = self.display_name,
                                 group_name = award.group_name,
                                 serial = new_serial,
                             ))
@@ -206,7 +208,7 @@ class SchoolCategoryQuestionSets(models.Model):
 
 class Award(models.Model):
     def __unicode__(self):
-        return u"{} {} ({})".format(self.name, self.questionset.name, self.threshold)
+        return u"{} {} {} ({})".format(self.name, self.questionset.name, self.questionset.competition.slug, self.threshold)
 
     competition = models.ForeignKey(Competition, null=True)
     name = models.CharField(max_length=256)
