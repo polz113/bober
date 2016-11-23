@@ -81,7 +81,7 @@ class School(models.Model):
                 #print len(l), l
                 #print "    ", c.attempt.competitor, c.attempt.access_code, c.by
                 bronze_threshold = min(l[(len(l) - 1) // 3], bronze_award.threshold)
-                bronze_threshold = max(bronze_threshold, max_score / 2)
+                bronze_threshold = max(bronze_threshold, bronze_award.min_threshold)
                 # print self, cqs.name, max_score, bronze_threshold, "t:", bronze_award.threshold, "1/3:", l[(len(l) - 1) // 3]
                 # print cqs.name, max_score, bronze_threshold
                 # print bronze_threshold
@@ -216,6 +216,7 @@ class Award(models.Model):
     questionset = models.ForeignKey(CompetitionQuestionSet)
     template = models.CharField(max_length=256)
     threshold = models.FloatField()
+    min_threshold = models.FloatField()
     serial_prefix = models.CharField(max_length=256)
 
 
