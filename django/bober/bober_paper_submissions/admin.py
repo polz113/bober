@@ -13,6 +13,7 @@ class JuniorYearInline(admin.TabularInline):
 
 class JuniorMentorshipAdmin(admin.ModelAdmin):
     inlines = [ JuniorYearInline ]
+    search_fields = ['teacher__user__username', 'school__name']
 
 # Register your models here.
 admin.site.register(JuniorMentorship, JuniorMentorshipAdmin)

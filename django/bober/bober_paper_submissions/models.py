@@ -55,7 +55,8 @@ def parse_competitor_data(data):
             competitor_data.append((first_name, last_name, points))
             assert (first_name.upper(), last_name.upper()) not in seen_students
             seen_students.add((first_name.upper(), last_name.upper()))
-        except:
+        except Exception, e:
+            print e
             raise ValidationError(
                 _('Error in line %(line_no)d: %(line)s.'),
                 code='error_parsing',
