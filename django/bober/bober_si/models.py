@@ -194,6 +194,7 @@ class SchoolTeacherCode(models.Model):
             aawards = aawards.filter(revoked_by=None)
         return aawards
 
+
 class SchoolCategoryQuestionSets(models.Model):
     def __unicode__(self):
         return u"{} {}".format(self.competition, self.school_category)
@@ -236,6 +237,13 @@ class AttemptAward(models.Model):
     serial = models.CharField(max_length=64, blank=True, default='',
         unique=True)
     files = models.ManyToManyField('AwardFile')
+
+
+class TeacherCompetitionRecognition(models.Model):
+    teacher = models.ForeignKey(Profile)
+    competition = models.ForeignKey(Competition)
+    text = models.TextField()
+    serial = models.CharField(max_length=64, unique=True)
 
 
 class AwardFile(models.Model):
