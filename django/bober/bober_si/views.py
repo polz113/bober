@@ -403,7 +403,6 @@ class CompetitionXlsResults(SmartCompetitionAdminCodeRequiredMixin, TemplateView
         return super(CompetitionXlsResults, self).dispatch(*args, **kwargs)
 
 
-
 @login_required
 def mentor_certificate_pdf(request, username):
     def _compose_text(name, nschool, awards):

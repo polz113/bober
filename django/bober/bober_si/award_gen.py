@@ -42,6 +42,8 @@ def generate_award_pdf(output, data, template_file):
         template = unicode(f.read(), 'utf-8')
     split_schools(data)
     pages = u"".join(page.format(**participant) for participant in data)
+    with open(output + '.svg', 'wb') as f:
+        f.write(pages.encode('utf-8'))
     cairosvg.svg2pdf(template.format(pages), write_to=output)
 
 def split_schools(data):
@@ -65,6 +67,9 @@ if __name__ == "__main__":
 
     data = [{N: u"Gašper Fele Žorž", S: u"OŠ Polževo", G: u"3. razred", E: u"1501999999", T: u"bronasto2016", 'date': u'16. november 2016'},
             {N: u"Janez Demšar", S: u"Vrtec Šentjanž", G: u"predšolski", E: u"43", T: u"priznanje2016", 'date': u'16. november 2016'}]
+    for template in ["priznanje2016", "bronasto2016", "priznanje", "bronasto", "srebrno", "zlato",
+                     "tretja", "druga", "prva" ]:
+        data.append({N: u"NAME", S: u"SCHOOL", G: u"GROUP", E: u"ID", T: template, 'date': u'16. november 2016'})    
     generate_award_pdf(os.path.expanduser("~/Desktop/priznanja.pdf"), data, 'award_templates/all_si.svg')
 
     #data = [{N: "Janez Novak", S: s.strip(),
