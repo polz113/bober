@@ -557,7 +557,8 @@ def school_awards_pdf(request, username, slug, school_id, cqs_name):
                 data.append(
                     {
                         'name': award.competitor_name,
-                        'date': '7. - 11. novembra 2016',
+                        'competition': award.attempt.competitionquestionset.competition,
+                        'group': award.attempt.competitionquestionset.name,
                         'school': award.school_name,
                         'group': award.group_name,
                         'serial': award.serial,

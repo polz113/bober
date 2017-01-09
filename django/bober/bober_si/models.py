@@ -192,7 +192,7 @@ class SchoolTeacherCode(models.Model):
         )
         if not revoked:
             aawards = aawards.filter(revoked_by=None)
-        return aawards
+        return aawards.distinct()
 
 
 class SchoolCategoryQuestionSets(models.Model):
