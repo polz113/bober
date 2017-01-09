@@ -1862,7 +1862,7 @@
            id="tspan5476"
            x="719.91827"
            y="1376.4021">ACM Slovenija</tspan></text>
-</g></g><text
+</g></g><g><text
      transform="matrix(1 0 0 1 245.5879 630.623)"
      fill="#1D1D1B"
      font-family="'MyriadPro-Regular'; Arial"
@@ -1918,4 +1918,4 @@
      id="award_date">
         
     </text>
-</svg>
+</g></svg>
