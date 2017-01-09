@@ -1603,10 +1603,10 @@
        id="header-ozadje"><polyline
          points="171.13,0 166.69,32.99 1052.36,155.44 1052.36,0   "
          id="polyline686"
-         fill="#95C238" /><polygon
+         fill="#ff6600" /><polygon
          points="152.88,135.37 121.04,371.4 1005.67,490.72 1037.21,256.81   "
          id="polygon688"
-         fill="#95C238" /></g><use
+         fill="#ff6600" /></g><use
        x="0"
        y="0"
        xlink:href="#Bober-na-skali"
@@ -1760,7 +1760,7 @@
              id="path901"
              fill="#FFFFFF" /></g></g></g><text
        xml:space="preserve"
-       style="font-style:normal;font-weight:normal;font-size:80px;line-height:125%;font-family:sans-serif;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#188ebe;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       style="font-style:normal;font-weight:normal;font-size:80px;line-height:125%;font-family:sans-serif;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#ff6600;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        x="113.40516"
        y="86.880714"
        id="text4247"
@@ -1769,7 +1769,7 @@
          sodipodi:role="line"
          id="tspan4249"
          x="113.40516"
-         y="86.880714">PRIZNANJE</tspan></text>
+         y="86.880714">BRONASTO</tspan></text>
 <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:80px;line-height:125%;font-family:sans-serif;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;"
@@ -1812,7 +1812,7 @@
          sodipodi:role="line"
          id="tspan3842"
          x="183.91814"
-         y="170.4068">za sodelovanje na računalniškem tekmovanju</tspan></text>
+         y="170.4068">priznanje na računalniškem tekmovanju</tspan></text>
 </g><g
      id="spela-podpis"><g
        id="Spela"
@@ -1867,55 +1867,55 @@
      fill="#1D1D1B"
      font-family="'MyriadPro-Regular'; Arial"
      font-size="48px"
-     id="text903">
-        {name}
+     id="award_name">
+        
     </text>
 <text
      transform="matrix(1 0 0 1 245.5879 780.623)"
      fill="#1D1D1B"
      font-family="'MyriadPro-Regular'; Arial"
      font-size="40px"
-     id="text905">
-        {school}
+     id="award_school">
+        
     </text>
 <text
      font-size="40px"
-     id="text907"
+     id="award_school1"
      font-family="'MyriadPro-Regular'; Arial"
      fill="#1D1D1B"
      transform="matrix(1 0 0 1 245.5879 730.623)">
-        {school1}
+        
     </text>
 <text
      transform="matrix(1 0 0 1 245.5879 780.623)"
      fill="#1D1D1B"
      font-family="'MyriadPro-Regular'; Arial"
      font-size="40px"
-     id="text909">
-        {school2}
+     id="award_school2">
+        
     </text>
 <text
      font-size="40px"
-     id="text911"
+     id="award_group"
      font-family="'MyriadPro-Regular'; Arial"
      fill="#3CABE1"
      transform="matrix(1 0 0 1 245.5879 943.623)">
-        {group}
+        
     </text>
 <text
      transform="matrix(1 0 0 1 848.051 1238.26)"
      fill="#F9FF7F"
      font-family="'MyriadPro-Regular'"
      font-size="9.7082px"
-     id="text913">
-        {serial}
+     id="award_serial">
+        
     </text>
 <text
      transform="matrix(1 0 0 1 370.0 1069.71)"
      fill="#3CABE0"
      font-family="'MyriadPro-Regular'; Arial"
      font-size="32px"
-     id="text915">
-        {date}
+     id="award_date">
+        
     </text>
 </svg>

@@ -1867,55 +1867,55 @@
      fill="#1D1D1B"
      font-family="'MyriadPro-Regular'; Arial"
      font-size="48px"
-     id="text903">
-        {name}
+     id="award_name">
+        
     </text>
 <text
      transform="matrix(1 0 0 1 245.5879 780.623)"
      fill="#1D1D1B"
      font-family="'MyriadPro-Regular'; Arial"
      font-size="40px"
-     id="text905">
-        {school}
+     id="award_school">
+        
     </text>
 <text
      font-size="40px"
-     id="text907"
+     id="award_school1"
      font-family="'MyriadPro-Regular'; Arial"
      fill="#1D1D1B"
      transform="matrix(1 0 0 1 245.5879 730.623)">
-        {school1}
+        
     </text>
 <text
      transform="matrix(1 0 0 1 245.5879 780.623)"
      fill="#1D1D1B"
      font-family="'MyriadPro-Regular'; Arial"
      font-size="40px"
-     id="text909">
-        {school2}
+     id="award_school2">
+        
     </text>
 <text
      font-size="40px"
-     id="text911"
+     id="award_group"
      font-family="'MyriadPro-Regular'; Arial"
      fill="#3CABE1"
      transform="matrix(1 0 0 1 245.5879 943.623)">
-        {group}
+        
     </text>
 <text
      transform="matrix(1 0 0 1 848.051 1238.26)"
      fill="#F9FF7F"
      font-family="'MyriadPro-Regular'"
      font-size="9.7082px"
-     id="text913">
-        {serial}
+     id="award_serial">
+        
     </text>
 <text
      transform="matrix(1 0 0 1 370.0 1069.71)"
      fill="#3CABE0"
      font-family="'MyriadPro-Regular'; Arial"
      font-size="32px"
-     id="text915">
-        {date}
+     id="award_date">
+        
     </text>
 </svg>
