@@ -1862,60 +1862,37 @@
            id="tspan5476"
            x="719.91827"
            y="1376.4021">ACM Slovenija</tspan></text>
-</g></g><text
-     transform="matrix(1 0 0 1 245.5879 630.623)"
-     fill="#1D1D1B"
-     font-family="'MyriadPro-Regular'; Arial"
-     font-size="48px"
-     id="award_name">
-        
-    </text>
+</g></g>
+<g>
 <text
-     transform="matrix(1 0 0 1 245.5879 780.623)"
-     fill="#1D1D1B"
-     font-family="'MyriadPro-Regular'; Arial"
-     font-size="40px"
-     id="award_school">
-        
-    </text>
+   transform="matrix(1 0 0 1 245.5879 630.623)"
+   fill="#1D1D1B"
+   font-family="'MyriadPro-Regular'; Arial"
+   font-size="48px"
+   id="name"></text>
 <text
-     font-size="40px"
-     id="award_school1"
-     font-family="'MyriadPro-Regular'; Arial"
-     fill="#1D1D1B"
-     transform="matrix(1 0 0 1 245.5879 730.623)">
-        
-    </text>
+   transform="translate(245.5879,780.623)"
+   font-size="40px"
+   id="school"
+   x="82.919922"
+   y="0"
+   style="font-size:40px;text-align:center;text-anchor:middle;fill:#1d1d1b"></text>
 <text
-     transform="matrix(1 0 0 1 245.5879 780.623)"
-     fill="#1D1D1B"
-     font-family="'MyriadPro-Regular'; Arial"
-     font-size="40px"
-     id="award_school2">
-        
-    </text>
+   font-size="40px"
+   id="group"
+   font-family="'MyriadPro-Regular'; Arial"
+   fill="#3CABE1"
+   transform="matrix(1 0 0 1 245.5879 943.623)"></text>
 <text
-     font-size="40px"
-     id="award_group"
-     font-family="'MyriadPro-Regular'; Arial"
-     fill="#3CABE1"
-     transform="matrix(1 0 0 1 245.5879 943.623)">
-        
-    </text>
+   transform="matrix(1 0 0 1 848.051 1238.26)"
+   fill="#F9FF7F"
+   font-family="'MyriadPro-Regular'"
+   font-size="9.7082px"
+   id="serial"></text>
 <text
-     transform="matrix(1 0 0 1 848.051 1238.26)"
-     fill="#F9FF7F"
-     font-family="'MyriadPro-Regular'"
-     font-size="9.7082px"
-     id="award_serial">
-        
-    </text>
-<text
-     transform="matrix(1 0 0 1 370.0 1069.71)"
-     fill="#3CABE0"
-     font-family="'MyriadPro-Regular'; Arial"
-     font-size="32px"
-     id="award_date">
-        
-    </text>
-</svg>
+   transform="matrix(1 0 0 1 370.0 1069.71)"
+   fill="#3CABE0"
+   font-family="'MyriadPro-Regular'; Arial"
+   font-size="32px"
+   id="date"></text>
+</g></svg>
