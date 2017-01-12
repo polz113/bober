@@ -192,7 +192,8 @@ class SchoolTeacherCode(models.Model):
         )
         if not revoked:
             aawards = aawards.filter(revoked_by=None)
-        return aawards
+        return aawards.distinct()
+
 
 class SchoolCategoryQuestionSets(models.Model):
     def __unicode__(self):
@@ -210,11 +211,11 @@ class Award(models.Model):
     def __unicode__(self):
         return u"{} {} {} ({})".format(self.name, self.questionset.name, self.questionset.competition.slug, self.threshold)
 
-    competition = models.ForeignKey(Competition, null=True)
+    # competition = models.ForeignKey(Competition, null=True)
     name = models.CharField(max_length=256)
     group_name = models.CharField(max_length=256)
     questionset = models.ForeignKey(CompetitionQuestionSet)
-    template = models.CharField(max_length=256)
+    template = models.CharField(max_length=256, blank=True)
     threshold = models.FloatField()
     min_threshold = models.FloatField()
     serial_prefix = models.CharField(max_length=256)
@@ -236,6 +237,20 @@ class AttemptAward(models.Model):
     serial = models.CharField(max_length=64, blank=True, default='',
         unique=True)
     files = models.ManyToManyField('AwardFile')
+
+
+class CompetitionRecognition(models.Model):
+    def __unicode__(self):
+        return self.template
+    competition = models.ForeignKey(Competition, null=True)
+    template = models.CharField(max_length=256)
+
+
+class TeacherRecognition(models.Model):
+    template = models.ForeignKey(CompetitionRecognition)
+    teacher = models.ForeignKey(Profile)
+    text = models.TextField()
+    serial = models.CharField(max_length=64, unique=True)
 
 
 class AwardFile(models.Model):
@@ -272,7 +287,6 @@ class SchoolCompetition(Competition):
                 # print "  ", dy
                 dy.create_year(sc)
                 
-
     def school_code_create(self, school, teacher, access_code, 
             competition_questionset = None,
             code_data=None):
