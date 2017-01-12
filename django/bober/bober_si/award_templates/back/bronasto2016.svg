@@ -1871,27 +1871,15 @@
         
     </text>
 <text
-     transform="matrix(1 0 0 1 245.5879 780.623)"
+     transform="matrix(1 0 0 1 566 780.623)"
      fill="#1D1D1B"
      font-family="'MyriadPro-Regular'; Arial"
      font-size="40px"
+     style="font-size:35px;line-height:125%;text-align:center;writing-mode:lr-tb;text-anchor:middle;fill:#1d1d1b"
+     sodipodi:linespacing="125%"
      id="school">
-        
-    </text>
-<text
-     font-size="40px"
-     id="school1"
-     font-family="'MyriadPro-Regular'; Arial"
-     fill="#1D1D1B"
-     transform="matrix(1 0 0 1 245.5879 730.623)">
-    </text>
-<text
-     transform="matrix(1 0 0 1 245.5879 780.623)"
-     fill="#1D1D1B"
-     font-family="'MyriadPro-Regular'; Arial"
-     font-size="40px"
-     id="school2">
-        
+<tspan sodipodi:role="line" text-anchor="middle">LONGSCHOOL</tspan>
+<tspan sodipodi:role="line" text-anchor="middle" x="0" dy="1.5em">EXTREMELY LONG SCHOOL</tspan>
     </text>
 <text
      font-size="40px"
@@ -1914,7 +1902,6 @@
      fill="#3CABE0"
      font-family="'MyriadPro-Regular'; Arial"
      font-size="32px"
-     id="date">
-        
+     id="date">7. - 11. novembra 2016
     </text>
 </g></svg>
