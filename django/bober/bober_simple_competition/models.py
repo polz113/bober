@@ -1,7 +1,7 @@
 from django.db import models
 from django.db.models import SlugField, CharField, TextField, IntegerField, FloatField
 from django.db.models import FileField, BooleanField
-from django.db.models import DateTimeField
+from django.db.models import DateField, DateTimeField
 from django.db.models import ForeignKey, ManyToManyField, OneToOneField
 from django.db.models import FileField, BinaryField, CommaSeparatedIntegerField
 from django.db.models import signals
@@ -915,6 +915,7 @@ class Profile(models.Model):
 
     user = models.OneToOneField(User)
     feature_level = IntegerField(choices=FEATURE_LEVELS, default=1)
+    date_of_birth = DateField(null=True)
     managed_profiles = models.ManyToManyField('Profile', related_name='managers',
         blank=True)
     # managed_users = models.ManyToManyField(User, related_name='managers', null=True, blank=True)
