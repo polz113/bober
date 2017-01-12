@@ -14,7 +14,7 @@
    height="1488.19px"
    id="svg2"
    inkscape:version="0.91 r13725"
-   sodipodi:docname="base.svg"
+   sodipodi:docname="priznanje2016.svg"
    version="1.1"
    viewBox="0 0 1052.36 1488.19"
    width="1052.36px"
@@ -30,9 +30,9 @@
      gridtolerance="10"
      guidetolerance="10"
      id="namedview4"
-     inkscape:current-layer="priznanje2016"
-     inkscape:cx="525.44772"
-     inkscape:cy="1254.5471"
+     inkscape:current-layer="svg2"
+     inkscape:cx="516.96219"
+     inkscape:cy="1348.195"
      inkscape:pageopacity="0"
      inkscape:pageshadow="2"
      inkscape:window-height="728"
@@ -1862,60 +1862,49 @@
            id="tspan5476"
            x="719.91827"
            y="1376.4021">ACM Slovenija</tspan></text>
-</g></g><text
+</g></g>
+<g>
+<text
      transform="matrix(1 0 0 1 245.5879 630.623)"
      fill="#1D1D1B"
      font-family="'MyriadPro-Regular'; Arial"
      font-size="48px"
-     id="text903">
-        {name}
-    </text>
+     id="name"></text>
 <text
      transform="matrix(1 0 0 1 245.5879 780.623)"
      fill="#1D1D1B"
      font-family="'MyriadPro-Regular'; Arial"
      font-size="40px"
-     id="text905">
-        {school}
-    </text>
+     id="school"></text>
 <text
      font-size="40px"
-     id="text907"
+     id="school1"
      font-family="'MyriadPro-Regular'; Arial"
      fill="#1D1D1B"
-     transform="matrix(1 0 0 1 245.5879 730.623)">
-        {school1}
-    </text>
+     transform="matrix(1 0 0 1 245.5879 730.623)"></text>
 <text
      transform="matrix(1 0 0 1 245.5879 780.623)"
      fill="#1D1D1B"
      font-family="'MyriadPro-Regular'; Arial"
      font-size="40px"
-     id="text909">
-        {school2}
-    </text>
+     id="school2"></text>
 <text
      font-size="40px"
-     id="text911"
+     id="group"
      font-family="'MyriadPro-Regular'; Arial"
      fill="#3CABE1"
-     transform="matrix(1 0 0 1 245.5879 943.623)">
-        {group}
-    </text>
+     transform="matrix(1 0 0 1 245.5879 943.623)"></text>
 <text
      transform="matrix(1 0 0 1 848.051 1238.26)"
      fill="#F9FF7F"
      font-family="'MyriadPro-Regular'"
      font-size="9.7082px"
-     id="text913">
-        {serial}
-    </text>
+     id="serial"></text>
 <text
      transform="matrix(1 0 0 1 370.0 1069.71)"
      fill="#3CABE0"
      font-family="'MyriadPro-Regular'; Arial"
      font-size="32px"
-     id="text915">
-        {date}
-    </text>
+     id="date"></text>
+</g>
 </svg>

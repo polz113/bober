@@ -239,9 +239,16 @@ class AttemptAward(models.Model):
     files = models.ManyToManyField('AwardFile')
 
 
-class TeacherCompetitionRecognition(models.Model):
+class CompetitionRecognition(models.Model):
+    def __unicode__(self):
+        return self.template
+    competition = models.ForeignKey(Competition, null=True)
+    template = models.CharField(max_length=256)
+
+
+class TeacherRecognition(models.Model):
+    template = models.ForeignKey(CompetitionRecognition)
     teacher = models.ForeignKey(Profile)
-    competition = models.ForeignKey(Competition)
     text = models.TextField()
     serial = models.CharField(max_length=64, unique=True)
 
@@ -280,7 +287,6 @@ class SchoolCompetition(Competition):
                 # print "  ", dy
                 dy.create_year(sc)
                 
-
     def school_code_create(self, school, teacher, access_code, 
             competition_questionset = None,
             code_data=None):

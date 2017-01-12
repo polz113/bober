@@ -30,9 +30,9 @@
      gridtolerance="10"
      guidetolerance="10"
      id="namedview4"
-     inkscape:current-layer="svg2"
-     inkscape:cx="516.96219"
-     inkscape:cy="1348.195"
+     inkscape:current-layer="g470"
+     inkscape:cx="372.62619"
+     inkscape:cy="897.49077"
      inkscape:pageopacity="0"
      inkscape:pageshadow="2"
      inkscape:window-height="728"
@@ -1862,49 +1862,37 @@
            id="tspan5476"
            x="719.91827"
            y="1376.4021">ACM Slovenija</tspan></text>
-</g></g>
-<g>
+</g></g><g
+     id="g470"><text
+       transform="matrix(1 0 0 1 245.5879 630.623)"
+       fill="#1D1D1B"
+       font-family="'MyriadPro-Regular'; Arial"
+       font-size="48px"
+       id="name">NAME</text>
 <text
-     transform="matrix(1 0 0 1 245.5879 630.623)"
-     fill="#1D1D1B"
-     font-family="'MyriadPro-Regular'; Arial"
-     font-size="48px"
-     id="name"></text>
+       transform="matrix(1 0 0 1 566 780.623)"
+       font-size="40px"
+       id="school"
+       style="font-size:35px;line-height:125%;text-align:center;writing-mode:lr-tb;text-anchor:middle;fill:#1d1d1b"
+       sodipodi:linespacing="125%">
+<tspan sodipodi:role="line" text-anchor="middle">LONGSCHOOL</tspan>
+<tspan sodipodi:role="line" text-anchor="middle" x="0" dy="1.5em">EXTREMELY LONG SCHOOL</tspan></text>
 <text
-     transform="matrix(1 0 0 1 245.5879 780.623)"
-     fill="#1D1D1B"
-     font-family="'MyriadPro-Regular'; Arial"
-     font-size="40px"
-     id="school"></text>
+       font-size="40px"
+       id="group"
+       font-family="'MyriadPro-Regular'; Arial"
+       fill="#3CABE1"
+       transform="matrix(1 0 0 1 245.5879 943.623)">GROUP</text>
 <text
-     font-size="40px"
-     id="school1"
-     font-family="'MyriadPro-Regular'; Arial"
-     fill="#1D1D1B"
-     transform="matrix(1 0 0 1 245.5879 730.623)"></text>
+       transform="matrix(1 0 0 1 848.051 1238.26)"
+       fill="#F9FF7F"
+       font-family="'MyriadPro-Regular'"
+       font-size="9.7082px"
+       id="serial">serial</text>
 <text
-     transform="matrix(1 0 0 1 245.5879 780.623)"
-     fill="#1D1D1B"
-     font-family="'MyriadPro-Regular'; Arial"
-     font-size="40px"
-     id="school2"></text>
-<text
-     font-size="40px"
-     id="group"
-     font-family="'MyriadPro-Regular'; Arial"
-     fill="#3CABE1"
-     transform="matrix(1 0 0 1 245.5879 943.623)"></text>
-<text
-     transform="matrix(1 0 0 1 848.051 1238.26)"
-     fill="#F9FF7F"
-     font-family="'MyriadPro-Regular'"
-     font-size="9.7082px"
-     id="serial"></text>
-<text
-     transform="matrix(1 0 0 1 370.0 1069.71)"
-     fill="#3CABE0"
-     font-family="'MyriadPro-Regular'; Arial"
-     font-size="32px"
-     id="date"></text>
-</g>
-</svg>
+       transform="matrix(1 0 0 1 370.0 1069.71)"
+       fill="#3CABE0"
+       font-family="'MyriadPro-Regular'; Arial"
+       font-size="32px"
+       id="date">7. - 11. novembra 2016</text>
+</g></svg>
