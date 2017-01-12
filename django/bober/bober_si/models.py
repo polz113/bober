@@ -211,11 +211,11 @@ class Award(models.Model):
     def __unicode__(self):
         return u"{} {} {} ({})".format(self.name, self.questionset.name, self.questionset.competition.slug, self.threshold)
 
-    competition = models.ForeignKey(Competition, null=True)
+    # competition = models.ForeignKey(Competition, null=True)
     name = models.CharField(max_length=256)
     group_name = models.CharField(max_length=256)
     questionset = models.ForeignKey(CompetitionQuestionSet)
-    template = models.CharField(max_length=256)
+    template = models.CharField(max_length=256, blank=True)
     threshold = models.FloatField()
     min_threshold = models.FloatField()
     serial_prefix = models.CharField(max_length=256)
