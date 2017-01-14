@@ -594,7 +594,7 @@ def all_awards_pdf(request, username, slug, cqs_name):
             pass
         #    print e
         # regenerate award. Ignore the template
-        template_file = os.path.join(AWARD_TEMPLATE_DIR, 'all_si.svg')
+        # template_file = os.path.join(AWARD_TEMPLATE_DIR, 'all_si.svg')
         #print "generating..."
         data = []
         competition = SchoolCompetition.get_cached_by_slug(slug=slug)
@@ -625,7 +625,7 @@ def all_awards_pdf(request, username, slug, cqs_name):
                 }
             )
         generate_award_pdf(cert_full_fname,
-            data, template_file)
+            data, AWARD_TEMPLATE_DIR)
     #return None
     return safe_media_redirect(cert_path)
 

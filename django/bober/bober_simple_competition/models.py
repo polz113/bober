@@ -903,7 +903,7 @@ class Attempt(models.Model):
         #return answered_questions
 
     def latest_answers_sum(self):
-        return int(sum([a.score for a in self.gradedanswer_set.all() if a.score is not None]))
+        return float(sum([a.score for a in self.gradedanswer_set.all() if a.score is not None]))
 
 
 class Profile(models.Model):
