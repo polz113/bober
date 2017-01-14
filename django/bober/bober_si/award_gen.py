@@ -121,6 +121,8 @@ def generate_award_pdf_svg(output, data, template_prefix):
     svgs = """<svg >"""
     for d in data:
         t = d['template']
+        if len(t) < 1:
+            continue
         text_template_filename = os.path.join(template_prefix, 'back', t + '.svg')
         with open(text_template_filename) as f:
             svgs += _data_into_svg(etree.parse(f), d)
