@@ -123,7 +123,7 @@ def generate_award_pdf_svg(output, data, template_prefix):
         t = d['template']
         if len(t) < 1:
             continue
-        text_template_filename = os.path.join(template_prefix, 'back', t + '.svg')
+        text_template_filename = os.path.join(template_prefix, t + '.svg')
         with open(text_template_filename) as f:
             svgs += _data_into_svg(etree.parse(f), d)
     svgs += "</svg>"
@@ -185,7 +185,7 @@ try:
         # load the templates
         print "loading templates"
         for t in used_templates:
-            back_template_file = os.path.join(template_prefix, 'back',  t + '.pdf')
+            back_template_file = os.path.join(template_prefix, t + '.pdf')
             text_template_file = os.path.join(template_prefix, 'front', t + '.svg')
             back_templates[t] = PyPDF2.PdfFileReader(back_template_file).getPage(0)
             with open(text_template_file, 'rb') as f:
