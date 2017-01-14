@@ -29,15 +29,15 @@ msgstr "Šola"
 
 #: forms.py:16
 msgid "email"
-msgstr ""
+msgstr "e-pošta"
 
 #: forms.py:17
 msgid "password"
-msgstr ""
+msgstr "geslo"
 
 #: forms.py:18
 msgid "hidden_code"
-msgstr ""
+msgstr "skrita koda"
 
 #: models.py:9
 msgid "Elementary school"
@@ -59,7 +59,7 @@ msgstr ""
 #: templates/bober_si/profiles_by_schooltype.html:4
 #: templates/bober_si/profiles_by_schooltype.html:6
 msgid "Teachers by school category"
-msgstr ""
+msgstr "Učitelji po vrsti šole"
 
 #: templates/bober_si/school_codes_create.html:4
 #: templates/bober_si/school_codes_create.html:6
@@ -75,7 +75,7 @@ msgstr "Dodaj šolo"
 #: templates/bober_si/teacher_overview.html:82
 #: templates/bober_si/teacher_overviewx.html:82
 msgid "Edit my profile"
-msgstr ""
+msgstr "Uredi moje podatke"
 
 #: templates/bober_si/teacher_overview.html:89
 #: templates/bober_si/teacher_overviewx.html:89

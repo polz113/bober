@@ -23,12 +23,12 @@ class Command(BaseCommand):
         print "haha"
 
     def add_arguments(self, parser):
-        parser.add_argument('competition_slug', nargs='1')
-        parser.add_argument('questionset_name', nargs='1')
+        parser.add_argument('competition_slug', nargs=1)
+        parser.add_argument('questionset_name', nargs=1)
 
     def handle(self, *args, **options):
         if len(args) < 2:
-            args += [None] * (2 - len(args))
+            args += (None,) * (2 - len(args))
         cslug = unicode(options.get('competition_slug', [args[0]])[0])
         cqs_name = unicode(options.get('questionset_name', [args[1]])[0])
         competition = Competition.objects.get(slug=cslug)
