@@ -102,6 +102,7 @@ class Command(BaseCommand):
                 'serial_prefix': year_str + group_prefix + 'G',
             }
         )
+        print cqs, l
         silver_defaults = {
                 'threshold': l[(len(l)-1)//2],
                 'min_threshold': 0.0,
