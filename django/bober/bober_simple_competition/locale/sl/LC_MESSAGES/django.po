@@ -37,7 +37,7 @@ msgstr "Vnesi kodo za dostop"
 
 #: forms.py:148 forms.py:223
 msgid "Group"
-msgstr ""
+msgstr "Skupina"
 
 #: forms.py:165 forms.py:244
 msgid "This field is required"
