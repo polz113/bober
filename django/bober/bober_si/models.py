@@ -15,6 +15,76 @@ SCHOOL_CATEGORIES = (
 
 AWARD_TEMPLATE_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'award_templates')
 
+
+def assign_attempt_awards(attempt, awards, data, commit=False):
+    to_revoke = []
+    to_create = []
+    revoked_by = data.get('revoked_by', None)
+    school_name = data.get('school_name', None)
+    competitor_name = u"{} {}".format(
+        attempt.competitor.first_name, 
+        attempt.competitor.last_name)
+    to_assign = awards
+    aawards = attempt.attemptaward_set.all()
+    serials = set(aawards.values_list('serial', flat=True))
+    # aawards = aawards.filter(revoked_by = None)
+    # print "  ", aawards
+    # print "   ", serials
+    not_needed = set()
+    for award in to_assign:
+        not_needed = not_needed.union(award.replaces.all())
+    # print "    N:", not_needed
+    for aaward in aawards:
+        if aaward.award in to_assign and aaward.award not in not_needed:
+            if aaward.competitor_name == competitor_name and \
+                    aaward.school_name == school_name and \
+                    aaward.group_name == aaward.award.group_name and \
+                    aaward.revoked_by == None:
+                    # print "    match", aaward, aaward.school_name.encode('utf-8')
+                to_assign.remove(aaward.award)
+            else:
+                # print "    revoke (data)",
+                # print u"        {}".format(aaward.competitor_name).encode('utf-8')
+                # print u"        {}".format(aaward.school_name).encode('utf-8')
+                if aaward.revoked_by is None:
+                    aaward.revoked_by = revoked_by
+                    to_revoke.append(aaward)
+        else:
+            # print "    revoke", aaward, aaward.school_name.encode('utf-8')
+            if aaward.revoked_by is None:
+                aaward.revoked_by = revoked_by
+                to_revoke.append(aaward)
+            # print to_assign
+    for award in to_assign:
+        if award in not_needed:
+            continue
+        serial = "{}{:06}".format(award.serial_prefix, attempt.id)
+        new_serial = serial
+        i = 1
+        while new_serial in serials:
+            new_serial = "{}-{}".format(serial, i)
+            i += 1
+        to_create.append(AttemptAward(
+                award = award,
+                attempt = attempt,
+                competitor_name = competitor_name,
+                school_name = school_name,
+                group_name = award.group_name,
+                serial = new_serial,
+        ))
+    if commit:
+        if school_name is not None:
+            # print "    creating", to_create
+            AttemptAward.objects.bulk_create(to_create)
+            to_create = []
+        if revoked_by is not None:
+            # print "    revoking", to_revoke
+            AttemptAward.objects.filter(id__in=[a.id for a in to_revoke]).update(
+                revoked_by=revoked_by)
+            to_revoke = []
+    return to_create, to_revoke
+
+
 class School(models.Model):
     def __unicode__(self):
         return u"{}, {}".format(self.name, self.post, self.category)
@@ -91,64 +161,23 @@ class School(models.Model):
                         to_assign.add(bronze_award)
                     else:
                         to_assign.add(general_award)
-                    competitor_name = u"{} {}".format(
-                        attempt.competitor.first_name, 
-                        attempt.competitor.last_name)
-                    aawards = attempt.attemptaward_set.all()
-                    serials = set(aawards.values_list('serial', flat=True))
-                    # aawards = aawards.filter(revoked_by = None)
-                    # print "  ", aawards
-                    # print "   ", serials
-                    for aaward in aawards:
-                        if aaward.award in to_assign:
-                            if aaward.competitor_name == competitor_name and \
-                                    aaward.school_name == self.display_name and \
-                                    aaward.group_name == aaward.award.group_name and \
-                                    aaward.revoked_by == None:
-                                # print "    match", aaward, aaward.school_name.encode('utf-8')
-                                to_assign.remove(aaward.award)
-                            else:
-                                # print "    revoke (data)",
-                                # print u"        {}".format(aaward.competitor_name).encode('utf-8')
-                                # print u"        {}".format(aaward.school_name).encode('utf-8')
-                                
-                                if aaward.revoked_by is None:
-                                    aaward.revoked_by = revoked_by
-                                    revoke_awards.append(aaward)
-                                    revoke_award_ids.add(aaward.id)
-                        else:
-                            # print "    revoke", aaward, aaward.school_name.encode('utf-8')
-                            if aaward.revoked_by is None:
-                                aaward.revoked_by = revoked_by
-                                revoke_awards.append(aaward)
-                                revoke_award_ids.add(aaward.id)
-                    # print to_assign
-                    for award in to_assign:
-                        serial = "{}{:06}".format(award.serial_prefix, attempt.id)
-                        new_serial = serial
-                        i = 1
-                        while new_serial in serials:
-                            new_serial = "{}-{}".format(serial, i)
-                            i += 1
                         # print "     assign", award
                         # print "       ", competitor_name.encode('utf-8')
                         # print "       ", self.name.encode('utf-8')
                         # print "       ", award.group_name.encode('utf-8')
                         # print "       ", new_serial, serials
-                        new_awards.append(
-                            AttemptAward(
-                                award = award,
-                                attempt = attempt,
-                                competitor_name = competitor_name,
-                                school_name = self.display_name,
-                                group_name = award.group_name,
-                                serial = new_serial,
-                            ))
+                        to_create, to_revoke = assign_attempt_awards(
+                                attempt, to_assign, 
+                                {'revoked_by': revoked_by, 'school_name':self.display_name},
+                                commit = False)
+                        new_awards += to_create
+                        revoke_awards += to_revoke
             except Exception, e:
                 print(e)
                 pass
         if commit:
             assert revoked_by is not None
+            revoked_award_ids = [a.id for a in revoke_awards]
             AttemptAward.objects.filter(id__in = revoke_award_ids).update(
                 revoked_by = revoked_by)
             #for award in revoke_awards:
@@ -216,9 +245,12 @@ class Award(models.Model):
     group_name = models.CharField(max_length=256)
     questionset = models.ForeignKey(CompetitionQuestionSet)
     template = models.CharField(max_length=256, blank=True)
-    threshold = models.FloatField()
+    threshold = models.FloatField(null=True, blank=True)
     min_threshold = models.FloatField()
+    from_place = models.IntegerField(null = True, blank=True)
+    to_place = models.IntegerField(null = True, blank=True)
     serial_prefix = models.CharField(max_length=256)
+    replaces = models.ManyToManyField('Award', related_name='replaced_by', symmetrical=False)
 
 
 class AttemptAward(models.Model):
