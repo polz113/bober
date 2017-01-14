@@ -484,7 +484,12 @@ def mentor_certificate_pdf(request, username):
             os.mkdir(cert_dir)
         except:
             pass
-        template_file = os.path.join(AWARD_TEMPLATE_DIR, 'certificate.svg')
+        try:
+            template_dir = os.path.join(AWARD_TEMPLATE_DIR, competition.slug)
+            assert os.path.isdir(template_dir)
+        except:
+            template_dir = os.path.join(AWARD_TEMPLATE_DIR, 'default') 
+        template_file = os.path.join(template_dir, 'certificate.svg')
         with open(template_file) as f:
             template = f.read()
         template = template.replace("ime_in_priimek", name.encode("utf-8")).replace("kategorija", text.encode("utf-8"))
@@ -565,8 +570,13 @@ def school_awards_pdf(request, username, slug, school_id, cqs_name):
                         'template': award.award.template,
                     }
                 )
+        try:
+            template_dir = os.path.join(AWARD_TEMPLATE_DIR, competition.slug)
+            assert os.path.isdir(template_dir)
+        except:
+            template_dir = os.path.join(AWARD_TEMPLATE_DIR, 'default')
         generate_award_pdf(cert_full_fname,
-            data, AWARD_TEMPLATE_DIR)
+            data, template_dir)
     #return None
     return safe_media_redirect(cert_path)
 
@@ -624,8 +634,13 @@ def all_awards_pdf(request, username, slug, cqs_name):
                     'template': award.award.template,
                 }
             )
+        try:
+            template_dir = os.path.join(AWARD_TEMPLATE_DIR, competition.slug)
+            assert os.path.isdir(template_dir)
+        except:
+            template_dir = os.path.join(AWARD_TEMPLATE_DIR, 'default')
         generate_award_pdf(cert_full_fname,
-            data, AWARD_TEMPLATE_DIR)
+            data, template_dir)
     #return None
     return safe_media_redirect(cert_path)
 
