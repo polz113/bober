@@ -6,6 +6,7 @@ from django.core.management.base import BaseCommand
 from django.db import transaction
 from django.utils import timezone
 from django.utils.text import slugify
+from django.db.models import F, ExpressionWrapper, fields
 from bober_si.models import *
 from bober_simple_competition.models import AttemptConfirmation
 from bober_paper_submissions.models import JuniorYear
@@ -40,14 +41,16 @@ class Command(BaseCommand):
                 code_parts__name='admin_privileges', 
                 code_parts__value='view_all_admin_codes'
             )[0].creator_set.all()[0]
+        duration_expression = ExpressionWrapper(F('finish') - F('start'), output_field=fields.DurationField())
         for cqs in cqss:
             attempts = Attempt.objects.filter(
                 competitionquestionset=cqs).exclude(
                     attemptconfirmation = None,
-                ).extra(select={'duration': 'finish - start'}, order_by = ("-score", "duration"))
+                ).annotate(duration=duration_expression).order_by("-score", "duration")
+            # print attempts.query
             aawards = []
             for place, attempt in enumerate(attempts, start=1):
-                print place, attempt.competitor, attempt.score
+                print place, attempt.competitor, attempt.score, attempt.duration
                 sct = SchoolTeacherCode.objects.filter(
                     competition_questionset=cqs,
                     code__value=attempt.access_code)[0]
