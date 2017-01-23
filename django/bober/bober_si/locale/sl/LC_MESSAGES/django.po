@@ -185,3 +185,14 @@ msgstr "Rezultati"
 
 msgid "attempts"
 msgstr "seznam poizkusov"
+
+msgid "was mentor to %(n)s competitor"
+msgid_plural "was mentor to %(n)s competitors"
+msgstr[0] "je bil(a) mentor(ica) %(n)s tekmovalcu"
+msgstr[1] "je bil(a) mentor(ica) %(n)s tekmovalcema"
+msgstr[2] "je bil(a) mentor(ica) %(n)s tekmovalcem"
+msgstr[3] "je bil(a) mentor(ica) %(n)s tekmovalcem"
+
+
+
+
