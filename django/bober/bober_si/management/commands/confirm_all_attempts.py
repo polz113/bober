@@ -44,8 +44,13 @@ class Command(BaseCommand):
         for cqs in cqss.all():   
             for attempt in Attempt.objects.filter(
                     competitionquestionset = cqs):
+                mentor = organizer
+                possible_mentors = SchoolTeacherCode.objects.filter(
+                    code__value = attempt.access_code)
+                if len(possible_mentors) == 1:
+                    mentor = possible_mentors[0].teacher
                 c, created = AttemptConfirmation.objects.get_or_create(
                     attempt = attempt,
-                    defaults = {'by': organizer})
+                    defaults = {'by': mentor})
                 if created:
                     c.save()
