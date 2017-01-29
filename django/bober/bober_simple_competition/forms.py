@@ -56,7 +56,7 @@ class BasicProfileForm(forms.ModelForm):
             'vcard', 'question_sets', 'managed_profiles', 'used_codes',
             'update_used_codes_timestamp', 'update_managers_timestamp')"""
         # fields = ('merged_with',);
-        fields = ()
+        fields = ('date_of_birth',)
         widgets = {
             # the autocomplete: off is supposed to prevent firefox from filling in the form
             # with the current username
@@ -65,7 +65,7 @@ class BasicProfileForm(forms.ModelForm):
         #        attrs={'class':'modern-style', 'autocomplete': 'off'}),
         #    'merged_with': django_widgets.Select()
         }
-    password = forms.CharField(required=False, widget = forms.PasswordInput(attrs={'autocomplete': 'off'}),label=_("Password"),)
+    # password = forms.CharField(required=False, widget = forms.PasswordInput(attrs={'autocomplete': 'off'}),label=_("Password"),)
 
     def __init__(self, *args, **kwargs):
         _fields = ('first_name', 'last_name', 'email')
@@ -79,13 +79,14 @@ class BasicProfileForm(forms.ModelForm):
         unordered_fields = self.fields
         unordered_fields.update(fields_for_model(User, _fields))
         self.fields = OrderedDict()
-        for k in ['first_name', 'last_name', 'email', 'password', 'merged_with']:
+        for k in ['first_name', 'last_name', 'email', 'merged_with',]:
             try:
                 self.fields[k] = unordered_fields.pop(k)
             except:
                 pass
         # add the fields not listed above at the end
         self.fields.update(unordered_fields)
+
 
     def save(self, *args, **kwargs):
         cleaned_data = self.cleaned_data
@@ -259,7 +260,7 @@ class QuestionSetCompetitorForm(forms.ModelForm):
                 self.errors['short_access_code']=[_('Wrong access code')]
         if not self.codegen.code_matches(full_code,
                 {'competitor_privileges':['attempt']}):
-            print "No attempty for", full_code
+            # print "No attempty for", full_code
             raise ValidationError(_('Wrong access code'), code='short_access_code')
         if self.codegen.code_matches(full_code,
             {'competitor_privileges':['resume_attempt']}):
@@ -330,7 +331,6 @@ class CompetitionCompetitorForm(QuestionSetCompetitorForm):
                 if not self.profile:
                     self.profile = None
             self.cleaned_data['full_code'] = full_code
-            print self.cleaned_data
         else:
             self.errors['competition_questionset']=[_('This field is required')]
         return super(CompetitionCompetitorForm, self).clean()

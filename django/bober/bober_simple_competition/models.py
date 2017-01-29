@@ -915,7 +915,7 @@ class Profile(models.Model):
 
     user = models.OneToOneField(User)
     feature_level = IntegerField(choices=FEATURE_LEVELS, default=1)
-    date_of_birth = DateField(null=True)
+    date_of_birth = DateField(null=True, blank=True)
     managed_profiles = models.ManyToManyField('Profile', related_name='managers',
         blank=True)
     # managed_users = models.ManyToManyField(User, related_name='managers', null=True, blank=True)

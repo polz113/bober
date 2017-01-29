@@ -112,15 +112,11 @@ $(document).ready(function(){
     <a id="profile_edit_hider" class="navbar-brand" >{% trans "Edit my profile" %}</a>
     <div id="profile_edit">
         <form action="{% url "profile_update" pk=request.user.profile.id %}" method="post" />
+        {{profile_form.as_p}}
         <div>
-            <label for="profile_name">{% trans "First name" %}</label><input id="profile_name" name="first_name" type="text" value="{{request.profile.user.first_name}}"/>
-        </div><div>
-            <label for="profile_last_name">{% trans "Last name" %}</label><input id="profile_last_name" name="last_name" type="text" value="{{request.profile.user.last_name}}"/>
-        </div><div>
-            <label for="profile_email">{% trans "Email" %}</label><input id="profile_email" name="email" type="text" value="{{request.profile.user.email}}"/>
-        </div><div>
             <a href="{% url "password_change" %}">{% trans "Change password" %}</a>
-        </div><div>
+        </div>
+        <div>
             <input id="profile_save_btn" type="button" onclick="edit_profile(this);" value="{% trans "Save" %}"/>
         </div>
         </form>
@@ -170,35 +166,21 @@ $(document).ready(function(){
                  </p>
             {% endfor %}           
         </td>
-    </tr><!--
+    </tr>
     <tr>
-        <th>Potrdilo za mentorja</th>
+        <th>{% trans "Mentor recognition" %}</th>
         <td>
-            <a href="{% url "mentor_certificate_pdf" username=request.user.username %}">
+            <a href="{% url "mentor_recognition_pdf" slug=competition.slug username=request.user.username %}/potrdilo.pdf">
                    {{ profile.first_name }} {{ profile.last_name }}
             </a>
        </td>
-    </tr>-->
+    </tr>
     {% endif %}
 </table>
 <div>
-
-<div>
+    <div>
 {{competition.motd | safe}}
-<!--
-<div style="color: blue; font-weight: bold; margin-top: 20px; padding: 5px; border: thin solid blue">
-
-<p>S klikom na kljukico dodajte vse tekmovalce,
-ki so vaši. Tedaj boste videli tudi, koliko točk je tekmovalec dosegel.
-Če je moral kateri izmed tekmovalcev iz tehničnih razlogov ponoviti
-tekmovanje, izločite napačen poskus tako, da ga ne potrdite. Če
-tekmovalce potrdite po pomoti (ali zato, da ugotovite, kateri poskus
-je bil pravi), ga lahko ponovno izločite s klikom na križec.</p>
-<p>Prosimo, da preverite tudi, ali so imena pravilno črkovana. Po potrebi jih
-popravite, saj bodo na priznanjih izpisana natančno tako, kot so zapisana tu.
-</p>
---></div>
-
+    </div>
 {% for school, cqsa in attempts.iteritems %}
     <div class="results-school">{{ school }}</div>
     {% for cqs, attempts in cqsa %}{% if attempts %}<div>
@@ -215,9 +197,11 @@ popravite, saj bodo na priznanjih izpisana natančno tako, kot so zapisana tu.
             {% for attempt, status in attempts %}
                 <tr class="{{status}}">
                     <th>
-                         {% if attempt.bronze %}
-                             <img src="/static/img/bronze-medal.png" />
-                         {% endif %}
+                        {% for aaward in attempt.attemptaward_set.all %}
+                            {% if not aaward.revoked_by and aaward.award.icon %}
+                                <img src="{% static "img/award_icons/" %}{{aaward.award.icon}}" />
+                            {% endif %}
+                        {% endfor %}
                          <span class="name first_name" onclick="edit_name(this);">{{attempt.competitor.first_name}}</span> <span class="name last_name" onclick="edit_name(this);">{{attempt.competitor.last_name}}</span>
                          <span class="edit-name" style="display: none">
                          <form action="{% url "competitor_update" pk=attempt.competitor.id %}" method="post" />

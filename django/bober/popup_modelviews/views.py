@@ -11,6 +11,14 @@ TO_FIELD_VAR = '_to_field'
 
 # Create your views here.
 
+class InvalidFormRespond422():
+    def form_invalid(self, form):
+        """
+        If the form is invalid, re-render the context data with the
+        data-filled form and errors. Also, return 422
+        """
+        return self.render_to_response(self.get_context_data(form=form), status=422)
+
 class PopupFormViewMixin():
     def _form_valid_redirect(self, form):
         """
@@ -54,16 +62,15 @@ class PopupFormViewMixin():
         return form
 
 
-class PopupFormView(PopupFormViewMixin, FormView):
+class PopupFormView(PopupFormViewMixin, InvalidFormRespond422, FormView):
     def form_valid(self, form):
         retval_redir = self._form_valid_redirect(form)
         retval = FormView.form_valid(self, form)
         if retval_redir is not None:
             return retval_redir
         return retval
-    
 
-class PopupCreateView(PopupFormViewMixin, CreateView):
+class PopupCreateView(PopupFormViewMixin, InvalidFormRespond422, CreateView):
     def form_valid(self, form):
         retval_redir = self._form_valid_redirect(form)
         retval = CreateView.form_valid(self, form)
@@ -71,12 +78,10 @@ class PopupCreateView(PopupFormViewMixin, CreateView):
             return retval_redir
         return retval
 
-
-class PopupUpdateView(PopupFormViewMixin, UpdateView):
+class PopupUpdateView(PopupFormViewMixin, InvalidFormRespond422, UpdateView):
     def form_valid(self, form):
         retval_redir = self._form_valid_redirect(form)
         retval = UpdateView.form_valid(self, form)
         if retval_redir is not None:
             return retval_redir
         return retval
-

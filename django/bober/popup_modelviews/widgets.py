@@ -29,7 +29,6 @@ class RelatedFieldWidgetWrapper(forms.Widget):
         self.current_site = current_site
         # Backwards compatible check for whether a user can add related
         # objects.
-        print "related:", add_related_view, change_related_view
         self.add_related_view = add_related_view
         self.change_related_view = change_related_view
         self.delete_related_view = delete_related_view
