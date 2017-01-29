@@ -257,7 +257,7 @@ class AttemptAward(models.Model):
     def __unicode__(self):
         return u"{} {} {} {} {} ({})".format(self.attempt.competitor, self.award,
             self.attempt.score, self.serial, self.note, self.id)
-
+    
     award = models.ForeignKey(Award)
     attempt = models.ForeignKey(Attempt)
     note = models.CharField(max_length=1024, 
@@ -276,6 +276,7 @@ class CompetitionRecognition(models.Model):
         return self.template
     competition = models.ForeignKey(Competition, null=True)
     template = models.CharField(max_length=256)
+    serial_prefix = models.CharField(max_length=16)
 
 
 class TeacherRecognition(models.Model):
@@ -283,6 +284,11 @@ class TeacherRecognition(models.Model):
     teacher = models.ForeignKey(Profile)
     text = models.TextField()
     serial = models.CharField(max_length=64, unique=True)
+    note = models.CharField(max_length=1024, 
+        blank=True, default='')
+    revoked_by = models.ForeignKey(Profile, null=True,
+                            related_name='revoked_teacherrecognition_set')
+
 
 
 class AwardFile(models.Model):
