@@ -10,7 +10,7 @@ from bober_simple_competition import tables
 from bober_simple_competition import filters
 from bober_simple_competition.models import Profile
 from bober_simple_competition.models import QuestionSet
-from popup_modelviews.views import PopupUpdateView, PopupCreateView, PopupFormView, PopupFormViewMixin
+from popup_modelviews.views import PopupUpdateView, PopupCreateView, PopupFormView, PopupFormViewMixin, InvalidFormRespond422
 import django.contrib.auth
 from django.contrib.auth import authenticate
 from django.core.serializers.json import DjangoJSONEncoder
@@ -899,7 +899,8 @@ def attempt_unconfirm(request, competition_questionset_id, attempt_id):
     ).delete()
     return JsonResponse({'status': 'success'})
 
-class CompetitorUpdateJson(LoginRequiredMixin, UpdateView):
+class CompetitorUpdateJson(LoginRequiredMixin, 
+                           InvalidFormRespond422, UpdateView):
     model = Competitor
     form_class = CompetitorUpdateForm
     def form_valid(self, form):
@@ -919,6 +920,7 @@ class CompetitorUpdateJson(LoginRequiredMixin, UpdateView):
         return JsonResponse({'status': 'success',
             'first_name': self.object.first_name,
             'last_name': self.object.last_name})
+    
 
 class ProfileListView(LoginRequiredMixin, ListView):
     model = Profile
@@ -982,7 +984,6 @@ class ProfileUpdate(LoginRequiredMixin, PopupUpdateView):
             # print "merged_with user not managed"
             raise PermissionDenied
         return super(ProfileUpdate, self).form_valid(form)
-
     #def get_success_url(self):
     #   # print self.__dict__
     #   return reverse('profile_detail',
@@ -1167,9 +1168,8 @@ class CompetitionRegistration(QuestionSetRegistration):
 
 
 #   5.3 get certificates, other files
-def _profile_file_path(profile, path):
-    resource_dir = os.path.join('user_files', profile.user.username)
-    return os.path.join(resource_dir, path)
+def _profile_file_path(profile, *path):
+    return os.path.join('user_files', profile.user.username, *path)
 
 
 @login_required

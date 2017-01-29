@@ -6,92 +6,6 @@ import cairosvg
 import lxml
 from io import BytesIO
 import uuid
-
-def _compose_text(name, nschool, awards):
-    class Plural:
-        def __init__(self, *forms):
-            self.forms = forms
-
-        def __getitem__(self, n):
-            n %= 100
-            if n == 4: n = 3
-            elif n >= 5: n = 4
-            n -= 1
-            if n >= len(self.forms): n = 2
-            return self.forms[n]
-
-    class Numbers:
-        def __init__(self, *forms):
-            self.forms = forms
-
-        def __getitem__(self, n):
-            return self.forms[n - 1] if n - 1 < len(self.forms) else str(n)
-
-    p_tekmovalcu = Plural(u"tekmovalcu", u"tekmovalcema", u"tekmovalcem")
-    p_tekmovalec = Plural(u"tekmovalec", u"tekmovalca", u"tekmovalci", u"tekmovalcev")
-    p_je = Plural(u"je", u"sta", u"so", u"je")
-    p_se_je = Plural(u"se je", u"sta se", u"so se", u"se je")
-    p_osvojil = Plural(u"osvojil", u"osvojila", u"osvojili", u"osvojilo")
-    p_uvrstil = Plural(u"uvrstil", u"uvrstila", u"uvrstili", u"uvrstilo")
-    n_nom = Numbers(u"En", u"Dva", u"Trije", u"Štirje", u"Pet", u"Šest", u"Sedem", u"Osem", u"Devet")
-    n_dativ = Numbers(u"enemu", u"dvema", u"trem", u"štirim", u"petim", u"šestim", u"sedmim", u"osmim", u"devetim")
-
-    res = u"{} je bil(a) mentor(ica)\n" \
-          u"{} {} na šolskem nivoju\n" \
-          u"mednarodnega tekmovanja Bober, 7. - 11. novembra 2016.\n \n".\
-              format(name, n_dativ[nschool], p_tekmovalcu[nschool])
-    awards.pop(u"priznanje", 0)
-    n = awards.pop(u"napreduje", 0)
-    if n:
-        res += u"{} {} {} {} na\ndržavno tekmovanje 16. januarja 2016.\n\n". \
-               format(n_nom[n], p_tekmovalec[n], p_se_je[n], p_uvrstil[n])
-    for a in (u"bronasto", u"srebrno", u"zlato"):
-        n = awards.pop(a, 0)
-        if n:
-            res += u"{} {} {} na {} nivoju {} {} priznanje.\n".format(
-                   n_nom[n], p_tekmovalec[n], p_je[n],
-                   [u"šolskem", u"državnem"][a != u"bronasto"], p_osvojil[n], a)
-    if awards:
-        res += u"\nUvrstitve na državnem tekmovanju:\n" + \
-               u",\n".join(u"- {} {} {} {} na {} mesto".format(
-                   n_nom[n], p_tekmovalec[n], p_se_je[n], p_uvrstil[n], nm)
-                  for n, nm in (
-                       (awards[a], nm)
-                       for a, nm in ((u"prva", u"prvo"), (u"druga", u"drugo"), (u"tretja", u"tretje"))
-                       if awards.get(a, 0))) + \
-               u".\n"
-    return res
-
-def _create_si_mentor_certificate(user, sc_slug, st_slug):
-    icodes = user.created_codes.all()
-    nschool = nstate = 0
-    awards = defaultdict(int)
-    for icode in icodes:
-        for attempt in Attempt.objects.filter(access_code=icode).distinct():
-            if attempt.competition.slug == sc_slug:
-                if list(attempt.confirmed_by.all()) != [user]:
-                    continue
-                nschool += 1
-            elif attempt.competition.slug == st_slug:
-                nstate += 1
-            else:
-                continue
-            for award in set(award.award.name for award in attempt.attemptaward_set.filter(revoked_by=None)):
-                awards[award] += 1
-    name = (user.first_name.strip() + u" " + user.last_name.strip()).title()
-    text = _compose_text(name, nschool, awards)
-    text = "\n".join(map(u'<tspan x="0" dy="1.2em">{}</tspan>'.format, text.splitlines()))
-    cert_dir = os.path.join(settings.MEDIA_ROOT, _profile_file_path(user, ""))
-    try:
-        os.mkdir(cert_dir)
-    except:
-        pass
-    template_file = os.path.join(AWARD_TEMPLATE_DIR, 'certificate.svg')
-    with open(template_file) as f:
-        template = f.read()
-    template = template.replace("ime_in_priimek", name.encode("utf-8")).replace("kategorija", text.encode("utf-8"))
-    return cairosvg.svg2pdf(template)
-
 from lxml import etree
 
 def _data_into_svg(svg, data):
@@ -118,7 +32,7 @@ def _data_into_svg(svg, data):
     return etree.tostring(svg)
 
 def generate_award_pdf_svg(output, data, template_prefix):
-    svgs = """<svg >"""
+    svgs = """<svg>"""
     for d in data:
         t = d['template']
         if len(t) < 1:
@@ -131,7 +45,7 @@ def generate_award_pdf_svg(output, data, template_prefix):
         f.write(svgs)
     cairosvg.svg2pdf(svgs, write_to = output)
 
-
+# what follows is dead code
 try:
     import PyPDF2
     from PyPDF2.pdf import ContentStream
@@ -252,7 +166,7 @@ try:
             out.write(out_file)
 except:
     pass
-
+# end of dead code.
 
 def generate_award_pdf(output, data, template_prefix):
     return generate_award_pdf_svg(output, data, template_prefix)
