@@ -406,14 +406,14 @@ class CompetitionXlsResults(SmartCompetitionAdminCodeRequiredMixin, TemplateView
 
 
 @login_required
-def mentor_certificate_pdf(request, competition_slug, username):
+def mentor_recognition_pdf(request, slug, username):
     profile = Profile.objects.get(user__username=username)
     if profile.user != request.user and \
             request.profile.managed_profiles.filter(
                 id=profile.id).count() <= 0:
         raise PermissionDenied
-    cert_fname = "bober-potrdilo-{}.pdf".format(competition_slug)
-    cert_dir = _profile_file_path(profile, competition_slug)
+    cert_fname = "bober-potrdilo-{}.pdf".format(slug)
+    cert_dir = _profile_file_path(profile, slug)
     cert_path = os.path.join(cert_dir, cert_fname)
     cert_full_dir = os.path.join(settings.MEDIA_ROOT, cert_dir)
     cert_full_fname = os.path.join(cert_full_dir, cert_fname)
@@ -421,7 +421,7 @@ def mentor_certificate_pdf(request, competition_slug, username):
         # print "f:", os.path.join(settings.MEDIA_ROOT, cert_path)
         assert os.path.isfile(cert_full_fname)
     except:
-        competition = SchoolCompetition.get_cached_by_slug(slug=competition_slug)
+        competition = SchoolCompetition.get_cached_by_slug(slug=slug)
         try:
             os.makedirs(cert_full_dir)
         except Exception, e:
@@ -431,24 +431,22 @@ def mentor_certificate_pdf(request, competition_slug, username):
             assert os.path.isdir(template_dir)
         except:
             template_dir = os.path.join(AWARD_TEMPLATE_DIR, 'default')
-        common_data = {}
-        if profile.date_of_birth is not None:
-            common_data['birth_date_str'] = ", roj. {},".format(
-                unicode(profile.date_of_birth))
-        common_data['name_str'] = "{} {}".format(
-            profile.user.first_name, profile.user.last_name)
         data = []
-        for recognition in profile.teacherrecognitionset.filter():
+        for recognition in profile.teacherrecognition_set.filter(
+            template__competition=competition,
+            revoked_by = None):
             d = {'text': recognition.text,
-                 'serial': recognition.serial}
-            d.update(common_data)
+                 'serial': recognition.serial,
+                 'name': recognition.recipient,
+                 'template': recognition.template.template
+                 }
             data.append(d)
         generate_award_pdf(cert_full_fname,
-            [data], template_dir)
+            data, template_dir)
     return safe_media_redirect(cert_path)
 
 @login_required
-def school_awards_pdf(request, username, competition_slug, school_id, cqs_name):
+def school_awards_pdf(request, username, slug, school_id, cqs_name):
     profile = Profile.objects.get(user__username=username)
     
     if profile.user != request.user and \
@@ -456,7 +454,7 @@ def school_awards_pdf(request, username, competition_slug, school_id, cqs_name):
                 id=profile.id).count() <= 0:
         raise PermissionDenied
     cert_dir = os.path.join(_profile_file_path(profile, 
-        os.path.join(competition_slug, school_id)))
+        os.path.join(slug, school_id)))
     cert_fname = cqs_name + '.pdf'
     cert_path = os.path.join(cert_dir, cert_fname)
     cert_full_fname = os.path.join(settings.MEDIA_ROOT, cert_path)
@@ -474,7 +472,7 @@ def school_awards_pdf(request, username, competition_slug, school_id, cqs_name):
         # template_file = os.path.join(AWARD_TEMPLATE_DIR, 'all_si.svg')
         #print "generating..."
         data = []
-        competition = SchoolCompetition.get_cached_by_slug(slug=competition_slug)
+        competition = SchoolCompetition.get_cached_by_slug(slug=slug)
         #print cqs_name
         #for i in profile.schoolteachercode_set.all():
         #    print "  ", i.competition_questionset.name

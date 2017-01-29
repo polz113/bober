@@ -166,23 +166,21 @@ $(document).ready(function(){
                  </p>
             {% endfor %}           
         </td>
-    </tr><!--
+    </tr>
     <tr>
-        <th>Potrdilo za mentorja</th>
+        <th>{% trans "Mentor recognition" %}</th>
         <td>
-            <a href="{% url "mentor_certificate_pdf" username=request.user.username %}">
+            <a href="{% url "mentor_recognition_pdf" slug=competition.slug username=request.user.username %}/potrdilo.pdf">
                    {{ profile.first_name }} {{ profile.last_name }}
             </a>
        </td>
-    </tr>-->
+    </tr>
     {% endif %}
 </table>
 <div>
-
-<div>
+    <div>
 {{competition.motd | safe}}
-</div>
-
+    </div>
 {% for school, cqsa in attempts.iteritems %}
     <div class="results-school">{{ school }}</div>
     {% for cqs, attempts in cqsa %}{% if attempts %}<div>
