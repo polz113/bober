@@ -281,8 +281,11 @@ class CompetitionRecognition(models.Model):
 
 
 class TeacherRecognition(models.Model):
+    def __unicode__(self):
+        return u"{} {}:{}".format(self.teacher, self.template, self.text)
     template = models.ForeignKey(CompetitionRecognition)
     teacher = models.ForeignKey(Profile)
+    recipient = models.TextField()
     text = models.TextField()
     serial = models.CharField(max_length=64, unique=True)
     note = models.CharField(max_length=1024, 

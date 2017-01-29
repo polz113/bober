@@ -1169,8 +1169,7 @@ class CompetitionRegistration(QuestionSetRegistration):
 
 #   5.3 get certificates, other files
 def _profile_file_path(profile, *path):
-    resource_dir = os.path.join('user_files', profile.user.username, *path)
-    return os.path.join(resource_dir, path)
+    return os.path.join('user_files', profile.user.username, *path)
 
 
 @login_required

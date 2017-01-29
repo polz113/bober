@@ -19,14 +19,14 @@ DEFAULT_TEXT_TEMPLATE = u"""{name} je bil(a) mentor(ica)
 """
 
 TEXT_TEMPLATES = {
-    "solsko-2016": u"""{name} 
-je bil(a) na šolskem nivoju mednarodnega tekmovanja 
-Bober, ki je potekalo med 7. novembrom in 11. novembrom 2016, mentor(ica)
+    "solsko-2016": u"""je bil(a) na šolskem nivoju mednarodnega tekmovanja 
+Bober, ki je potekalo med 7. in 11. novembrom 2016, mentor(ica)
 {n_confirmed}.
 {next_round_listing}
 {award_listing}
 """,
-    "drzavno-2016":u"""{name} je bil(a) mentor(ica) na državnem nivoju 
+    "drzavno-2016":u"""je bil(a) na državnem nivoju mednarodnega tekmovanja
+Bober, ki je potekalo 14. 1. 2017, mentor(ica) 
 {n_confirmed}.
 {award_listing}
 {top_places_listing}
@@ -99,6 +99,8 @@ def _compose_text(teacher, attempts, template):
             )
     top_places_listing = u"\n".join(top_places_listing)
     name = u"{} {}".format(teacher.user.first_name, teacher.user.last_name)
+    if teacher.date_of_birth:
+        name += ', roj. {},'.format(unicode(teacher.date_of_birth))
     return template.format(**locals())
 
 class Command(BaseCommand):
@@ -106,7 +108,8 @@ class Command(BaseCommand):
     help = "Create the teacher certificates for a slovenian competition"
 
     def make_manifest(dirname):
-        print "haha"
+        pass
+        # print "haha"
 
     def add_arguments(self, parser):
         parser.add_argument('competition_slug', nargs=1)
@@ -121,6 +124,12 @@ class Command(BaseCommand):
         cslug = unicode(options.get('competition_slug', [args[0]])[0])
         competition = SchoolCompetition.objects.get(slug=cslug)
         template = TEXT_TEMPLATES.get(cslug, DEFAULT_TEXT_TEMPLATE)
+        default_recognition, created = \
+            CompetitionRecognition.objects.get_or_create(
+                competition = competition,
+                template = 'potrdilo',
+                serial_prefix = 't-' + cslug
+            )
         for teacher in Profile.objects.filter(schoolteachercode__competition_questionset__competition = competition).distinct():
             print("----------------------------")
             print(teacher, teacher.user.email)
@@ -134,7 +143,19 @@ class Command(BaseCommand):
                 attempts = attempts.annotate(
                     n_confirmations = Count('confirmed_by')
                 ).filter(n_confirmations = 1)
-            s = _compose_text(teacher, attempts, template)
-            print(s.encode('utf-8'))
+            if attempts.count():
+                s = _compose_text(teacher, attempts, template)
+                name_str = u"{} {}".format(
+                    teacher.user.first_name, teacher.user.last_name)
+                if teacher.date_of_birth is not None:
+                    name_str = ", roj. {},".format(
+                        unicode(teacher.date_of_birth.strftime('%d. %m. %Y')))
+                teacher_recognition = TeacherRecognition(
+                    template = default_recognition,
+                    teacher = teacher,
+                    recipient = name_str,
+                    text = s,
+                    serial = default_recognition.serial_prefix + u'-' + unicode(teacher.id))
+                teacher_recognition.save()
 
 
