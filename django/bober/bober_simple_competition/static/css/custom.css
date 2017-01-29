@@ -95,35 +95,56 @@ li.promoted {
 }
 
 div.page-header {
-	height: 60px;
-	margin-top: 10px;
-	position: relative;
-	border: none;
+    height: 60px;
+    margin-top: 10px;
+    position: relative;
+    border: none;
 }
 
 div#logo {
-	position: relative;
+    position: relative;
 }
 
-#context_menu > div{
-	display: inline;
+#profile_edit {
+    padding: 3em;
+    background: #FAFAFA;
+    display: block;
+    border:solid 2px green;
+    border-radius: 4px;
+}
+
+#profile_edit label {
+    display:block;
+    margin-top: 0.25em;
+    margin-bottom: 0em;
+}
+
+#profile_save_btn {
+    margin-top: 0.5em;
+}
+
+.context_menu > div {
+    display: inline;
 }
 
 div#context_menu {
-	position: absolute;
-	right: 20px;
-	top: 80px;
+    position: absolute;
+    float: right;
+    right: 20px;
+    top: 80px;
+    padding: 1em;
 }
 
+
 #profile .navbar-brand{
-  padding: 15px 0px!important;
+    padding: 15px 0px!important;
 }
 
 #lang .select-lang{
-  float: right;
-  -webkit-appearance:none;
+    float: right;
+    -webkit-appearance:none;
 
-  color: #333;
+    color: #333;
     background-color: #fff;
     border-color: #000;
 
@@ -166,40 +187,40 @@ div#context_menu {
 }
 
 div#content {
-	border: solid 2px #93E493;
-	border-radius: 6px;
-	padding: 50px 10px 10px 10px;
-	background: #F8F8F8;
+    border: solid 2px #93E493;
+    border-radius: 6px;
+    padding: 50px 10px 10px 10px;
+    background: #F8F8F8;
 }
 
 body {
-	font-size: 18px;
-	background: #f9f0df;
+    font-size: 18px;
+    background: #f9f0df;
 }
 
 div#content div.section {
-	padding-top: 30px;
-	clear: both;
+    padding-top: 30px;
+    clear: both;
 }
 
 table#sections th {
-	padding-right: 20px;
-	font-weight: bold;
+    padding-right: 20px;
+    font-weight: bold;
 }
 
 div.school div.school p {
-	margin-bottom: 5px;
+    margin-bottom: 5px;
 }
 
 table#sections td, table#sections th {
-	vertical-align: top;
-	padding-bottom: 20px;
+    vertical-align: top;
+    padding-bottom: 20px;
 }
 
 div.page-footer {
-	width: 100%;
-	text-align: right;
-	margin-top: 20px;
+    width: 100%;
+    text-align: right;
+    margin-top: 20px;
 }
 
 
@@ -316,13 +337,13 @@ td.score span {
 /*********/
 
 .bold_text {
-	font-weight: bold;
+    font-weight: bold;
 }
 select {
-	max-width: 180px;
+    max-width: 180px;
 }
 .toLeft {
-	text-align: left;
+    text-align: left;
 }
 
 /**********/
@@ -353,14 +374,14 @@ select {
 /***********/
 
 .correct_answer {
-	font-weight: bold;
-	color: #024302;
-	margin-left: 1%;
+    font-weight: bold;
+    color: #024302;
+    margin-left: 1%;
 }
 .wrong_answer {
-	font-weight: bold;
-	color: #940000;
-	margin-left: 1%;
+    font-weight: bold;
+    color: #940000;
+    margin-left: 1%;
 }
 
 /************/
@@ -368,19 +389,19 @@ select {
 /************/
 
 .attempts_list {
-	overflow: auto;
-	text-align: left;
+    overflow: auto;
+    text-align: left;
 }
 .attempt {
-	margin-left: 2%;
-	margin-bottom: 1%;
-	padding-left: 2%;
+    margin-left: 2%;
+    margin-bottom: 1%;
+    padding-left: 2%;
 }
 .attempt_info {
-	font-style: italic;
+    font-style: italic;
 }
 .attempt_answers_info {
-	margin-left: 2%;
+    margin-left: 2%;
 }
 
 
@@ -390,21 +411,21 @@ select {
 /****************/
 
 .competitions_list {
-	min-height: 100px;
-	max-height: 300px;
-	overflow: auto;
-	text-align: left;
-	margin-left: 2%;
+    min-height: 100px;
+    max-height: 300px;
+    overflow: auto;
+    text-align: left;
+    margin-left: 2%;
 }
 .competition_name {
-	margin-bottom: 1%;
+    margin-bottom: 1%;
 }
 .competition_questionset {
-	margin-left: 2%;
+    margin-left: 2%;
 }
 .competition_create {
-	text-align: left;
-	margin-left: 2%;
+    text-align: left;
+    margin-left: 2%;
 }
 
 
@@ -414,19 +435,19 @@ select {
 /***************/
 
 footer {
-	text-align: center;
+    text-align: center;
 }
 
 .footer_logos {
-	margin-left: auto;
-	margin-right: auto;
-	margin-top: 1%;
-	margin-bottom: 1%;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 1%;
+    margin-bottom: 1%;
 }
 .footer_logo_in_cooperation {
-	font-weight: bold;
-	margin-left:  3%;
-	margin-right: 1%;
+    font-weight: bold;
+    margin-left:  3%;
+    margin-right: 1%;
 }
 
 
@@ -437,10 +458,10 @@ footer {
 
 /* regular form */
 .form_table{
-	margin-left: 4%;
+    margin-left: 4%;
 }
 .form_row {
-	height: 35px;
+    height: 35px;
 }
 .form_row:before,
 .form_row:after {
@@ -452,19 +473,19 @@ footer {
 }
 
 .form_column {
-	float:left;
-	text-align:left;
-	width:200px;
+    float:left;
+    text-align:left;
+    width:200px;
 }
 
 
 
 /* register form */
 .form_register_table{
-	margin-left: 2%;
+    margin-left: 2%;
 }
 .form_register_row {
-	height: 35px;
+    height: 35px;
 }
 .form_register_row:before,
 .form_register_row:after {
@@ -476,17 +497,17 @@ footer {
 }
 
 .form_register_column {
-	float:left;
-	text-align:left;
-	width:140px;
+    float:left;
+    text-align:left;
+    width:140px;
 }
 
 /* compete form */
 .form_compete_table{
-	margin-left: 2%;
+    margin-left: 2%;
 }
 .form_compete_row {
-	height: 35px;
+    height: 35px;
 }
 .form_compete_row:before,
 .form_compete_row:after {
@@ -498,9 +519,9 @@ footer {
 }
 
 .form_compete_column {
-	float:left;
-	text-align:left;
-	width:100px;
+    float:left;
+    text-align:left;
+    width:100px;
 }
 
 #normal_form_fields th{
@@ -592,19 +613,5 @@ footer {
   margin-top:4%;
   padding-bottom:1%;
   border-bottom: solid 2px #f9f0df;
-}
-
-#profile_edit {
-    margin: 3em;
-}
-
-#profile_edit label {
-    display:block;
-    margin-top: 0.25em;
-    margin-bottom: 0em;
-}
-
-#profile_save_btn {
-    margin-top: 0.5em;
 }
 
