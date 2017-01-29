@@ -86,7 +86,6 @@ class BasicProfileForm(forms.ModelForm):
                 pass
         # add the fields not listed above at the end
         self.fields.update(unordered_fields)
-        print self.fields
 
 
     def save(self, *args, **kwargs):
@@ -261,7 +260,7 @@ class QuestionSetCompetitorForm(forms.ModelForm):
                 self.errors['short_access_code']=[_('Wrong access code')]
         if not self.codegen.code_matches(full_code,
                 {'competitor_privileges':['attempt']}):
-            print "No attempty for", full_code
+            # print "No attempty for", full_code
             raise ValidationError(_('Wrong access code'), code='short_access_code')
         if self.codegen.code_matches(full_code,
             {'competitor_privileges':['resume_attempt']}):
@@ -332,7 +331,6 @@ class CompetitionCompetitorForm(QuestionSetCompetitorForm):
                 if not self.profile:
                     self.profile = None
             self.cleaned_data['full_code'] = full_code
-            print self.cleaned_data
         else:
             self.errors['competition_questionset']=[_('This field is required')]
         return super(CompetitionCompetitorForm, self).clean()

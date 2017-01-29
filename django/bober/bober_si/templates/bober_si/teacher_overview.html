@@ -200,8 +200,8 @@ $(document).ready(function(){
                 <tr class="{{status}}">
                     <th>
                         {% for aaward in attempt.attemptaward_set.all %}
-                            {% if aaward.award.icon %}
-                                <img src="{% static "img/award_icons/" + aaward.award.icon %}" />
+                            {% if not aaward.revoked_by and aaward.award.icon %}
+                                <img src="{% static "img/award_icons/" %}{{aaward.award.icon}}" />
                             {% endif %}
                         {% endfor %}
                          <span class="name first_name" onclick="edit_name(this);">{{attempt.competitor.first_name}}</span> <span class="name last_name" onclick="edit_name(this);">{{attempt.competitor.last_name}}</span>
