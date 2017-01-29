@@ -245,6 +245,7 @@ class Award(models.Model):
     group_name = models.CharField(max_length=256)
     questionset = models.ForeignKey(CompetitionQuestionSet)
     template = models.CharField(max_length=256, blank=True)
+    icon = models.CharField(max_length=256, blank=True)
     threshold = models.FloatField(null=True, blank=True)
     min_threshold = models.FloatField()
     from_place = models.IntegerField(null = True, blank=True)
