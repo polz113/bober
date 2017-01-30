@@ -193,6 +193,7 @@ msgstr[1] "je bil(a) mentor(ica) %(n)s tekmovalcema"
 msgstr[2] "je bil(a) mentor(ica) %(n)s tekmovalcem"
 msgstr[3] "je bil(a) mentor(ica) %(n)s tekmovalcem"
 
-
+msgid "Mentor recognition"
+msgstr "Potrdilo za mentorja"
 
 
