@@ -130,6 +130,10 @@ class Command(BaseCommand):
                 template = 'potrdilo',
                 serial_prefix = 't-' + cslug
             )
+        organizer = competition.administrator_code_generator.codes.filter(
+                code_parts__name='admin_privileges', 
+                code_parts__value='view_all_admin_codes'
+            )[0].creator_set.all()[0]
         for teacher in Profile.objects.filter(schoolteachercode__competition_questionset__competition = competition).distinct():
             print("----------------------------")
             print(teacher, teacher.user.email)
@@ -148,14 +152,46 @@ class Command(BaseCommand):
                 name_str = u"{} {}".format(
                     teacher.user.first_name, teacher.user.last_name)
                 if teacher.date_of_birth is not None:
-                    name_str = ", roj. {},".format(
+                    name_str += ", roj. {},".format(
                         unicode(teacher.date_of_birth.strftime('%d. %m. %Y')))
-                teacher_recognition = TeacherRecognition(
+                teacher_recognition, created = TeacherRecognition.objects.get_or_create(
                     template = default_recognition,
                     teacher = teacher,
-                    recipient = name_str,
-                    text = s,
-                    serial = default_recognition.serial_prefix + u'-' + unicode(teacher.id))
+                    revoked_by = None,
+                    defaults = {
+                        "recipient": name_str,
+                        "text": s,
+                        "serial": u"{}{}-0".format(
+                            default_recognition.serial_prefix,
+                            teacher.id)
+                    })
+                if not created:
+                    if teacher_recognition.recipient != name_str or \
+                                teacher_recognition.text != s:
+                        print("Updating")
+                        teacher_recognition.revoked_by = organizer
+                        teacher_recognition.save()
+                        try:
+                            i = int(s.split('-')[-1]) +1
+                        except ValueError:
+                            i = 0
+                        serial = u"{}{}-{}".format(
+                                    default_recognition.serial_prefix,
+                                    teacher.id, i)
+                        while TeacherRecognition.objects.filter(
+                                serial = serial).count():
+                            i += 1
+                            serial = u"{}{}-{}".format(
+                                    default_recognition.serial_prefix,
+                                    teacher.id, i)
+                        new_teacher_recognition = \
+                            TeacherRecognition.objects.get_or_create(
+                                template = default_recognition,
+                                teacher = teacher,
+                                revoked_by = None,
+                                recipient = name_str,
+                                text = s,
+                                serial = serial)
                 teacher_recognition.save()
 
 
