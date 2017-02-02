@@ -56,7 +56,7 @@ def _compose_text(teacher, attempts, template):
             return self.forms[n - 1] if n - 1 < len(self.forms) else str(n)
     p_tekmovalcu = Plural(u"tekmovalcu", u"tekmovalcema", u"tekmovalcem")
     p_tekmovalec = Plural(u"tekmovalec", u"tekmovalca", u"tekmovalci", u"tekmovalcev")
-    p_je = Plural(u"je", u"sta", u"so", u"je")
+    p_je = Plural(u"je", u"sta", u"so", u"jih je")
     p_se_je = Plural(u"se je", u"sta se", u"so se", u"se je")
     p_osvojil = Plural(u"osvojil", u"osvojila", u"osvojili", u"osvojilo")
     p_uvrstil = Plural(u"uvrstil", u"uvrstila", u"uvrstili", u"uvrstilo")
