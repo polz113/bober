@@ -28,12 +28,12 @@ def assign_attempt_awards(attempt, awards, data, commit=False):
     aawards = attempt.attemptaward_set.all()
     serials = set(aawards.values_list('serial', flat=True))
     # aawards = aawards.filter(revoked_by = None)
-    # print "  ", aawards
-    # print "   ", serials
+    #print "  ", aawards
+    #print "   ", serials
     not_needed = set()
     for award in to_assign:
         not_needed = not_needed.union(award.replaces.all())
-    # print "    N:", not_needed
+    #print "    N:", not_needed
     for aaward in aawards:
         if aaward.award in to_assign and aaward.award not in not_needed:
             if aaward.competitor_name == competitor_name and \
@@ -56,7 +56,9 @@ def assign_attempt_awards(attempt, awards, data, commit=False):
                 to_revoke.append(aaward)
             # print to_assign
     for award in to_assign:
+        #print "    A:", award
         if award in not_needed:
+            #print "      NOT NEEDED"
             continue
         serial = "{}{:06}".format(award.serial_prefix, attempt.id)
         new_serial = serial
@@ -149,29 +151,25 @@ class School(models.Model):
                     continue
                 l = [a.score for a in attempts.all()]
                 #print len(l), l
-                #print "    ", c.attempt.competitor, c.attempt.access_code, c.by
                 bronze_threshold = min(l[(len(l) - 1) // 3], bronze_award.threshold)
                 bronze_threshold = max(bronze_threshold, bronze_award.min_threshold)
-                # print self, cqs.name, max_score, bronze_threshold, "t:", bronze_award.threshold, "1/3:", l[(len(l) - 1) // 3]
-                # print cqs.name, max_score, bronze_threshold
-                # print bronze_threshold
+                #print self, cqs.name, max_score, bronze_threshold, "t:", bronze_award.threshold, "1/3:", l[(len(l) - 1) // 3]
+                #print cqs.name, max_score, bronze_threshold
+                #print bronze_threshold
                 for attempt in attempts:
                     to_assign = set()
+                    to_assign.add(general_award)
+                    for aaward in attempt.attemptaward_set.filter(revoked_by = None):
+                        if aaward.award != bronze_award:
+                            to_assign.add(aaward.award)
                     if attempt.score >= bronze_threshold:
                         to_assign.add(bronze_award)
-                    else:
-                        to_assign.add(general_award)
-                        # print "     assign", award
-                        # print "       ", competitor_name.encode('utf-8')
-                        # print "       ", self.name.encode('utf-8')
-                        # print "       ", award.group_name.encode('utf-8')
-                        # print "       ", new_serial, serials
-                        to_create, to_revoke = assign_attempt_awards(
-                                attempt, to_assign, 
-                                {'revoked_by': revoked_by, 'school_name':self.display_name},
-                                commit = False)
-                        new_awards += to_create
-                        revoke_awards += to_revoke
+                    to_create, to_revoke = assign_attempt_awards(
+                        attempt, to_assign, 
+                        {'revoked_by': revoked_by, 'school_name':self.display_name},
+                        commit = False)
+                    new_awards += to_create
+                    revoke_awards += to_revoke
             except Exception, e:
                 print(e)
                 pass
@@ -180,9 +178,6 @@ class School(models.Model):
             revoked_award_ids = [a.id for a in revoke_awards]
             AttemptAward.objects.filter(id__in = revoke_award_ids).update(
                 revoked_by = revoked_by)
-            #for award in revoke_awards:
-            #    award.revoked_by = revoked_by
-            #    award.save()
             AttemptAward.objects.bulk_create(new_awards)        
         return new_awards, revoke_awards
 
