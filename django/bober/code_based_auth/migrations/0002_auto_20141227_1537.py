@@ -14,6 +14,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='codegenerator',
             name='codes',
-            field=models.ManyToManyField(to=b'code_based_auth.Code', null=True, blank=True),
+            field=models.ManyToManyField(to='code_based_auth.Code', null=True, blank=True),
         ),
     ]
