@@ -116,7 +116,7 @@ def smart_competition_admin_code_required(function = None):
             # print "created:", codes
             #print "creat:", codegen.codes.filter(creator_set__id = request.profile.id).values_list('value', flat=True)
             access_code = codes[0]
-        except Exception, e:
+        except Exception as e:
             pass
             print(e)
         if access_code is not None:
@@ -161,16 +161,16 @@ def _use_access_code(request, access_code,
             profile = request.profile
             code = Code.objects.get(value = access_code)
             profile.used_codes.add(code)
-    except Exception, e:
-        print "_use_access_code:", e
+    except Exception as e:
+        print("_use_access_code:", e)
         pass
     try:
         if not defer_code_effects:
             profile = request.profile
             for effect in code.codeeffect_set.all():
                 effect.apply(users=[profile])
-    except Exception, e:
-        print "_use_access_code2:", e
+    except Exception as e:
+        print("_use_access_code2:", e)
         pass
 
 
@@ -221,7 +221,7 @@ def competitionquestionset_access_code(request, competition_questionset_id, next
             id=competition_questionset_id)
         cqs_slug = cqs.slug_str()
         separator = cqs.competition.competitor_code_generator.format.separator
-    except Exception, e:
+    except Exception as e:
         cqs_slug = None
     if cqs_slug is not None and form.is_valid():
         defer_update = form.cleaned_data.get('defer_update_used_codes', False)
@@ -671,8 +671,8 @@ def _can_attempt(request, competition_questionset):
         access_allowed &= codegen.code_matches(
             access_code, {'competition_questionset':[
                 competition_questionset.slug_str()]})
-    except Exception, e:
-        print e
+    except Exception as e:
+        print(e)
         pass
     return access_allowed
 
@@ -734,7 +734,7 @@ def competition_data(request, competition_questionset_id):
             if val is None:
                 val = ''
             answers.append({ 'q': a.randomized_question_id, 'a': str(val)})
-    except Exception, e:
+    except Exception as e:
         competition = competition_questionset.competition
         finish = timezone.now() + datetime.timedelta(
             seconds = competition.duration)
@@ -775,7 +775,7 @@ def time_remaining(request, competition_questionset_id, attempt_id):
                 'errorCode': 9}
         else:
             all_data = {'success': True, "seconds_to_end": seconds_left}
-    except Exception, e:
+    except Exception as e:
         all_data = {'success': False, "seconds_to_end": seconds_left,
             'message': str(e)}
     return HttpResponse(json.dumps(all_data), content_type="application/json")
@@ -812,13 +812,13 @@ def submit_answer(request, competition_questionset_id, attempt_id):
                 if created:
                     graded_answer.delete()
                 raise OutOfTimeError("out_of_time")
-        except OutOfTimeError, e:
+        except OutOfTimeError as e:
             raise e
         except:
             pass
         data['success'] = True
         # don't do a read before each write!
-    except Exception, e:
+    except Exception as e:
         data['error'] = True
         data['errorCode'] = str(e);
     return HttpResponse(json.dumps(data), content_type="application/json")
@@ -835,7 +835,7 @@ def finish_competition(request, competition_questionset_id, attempt_id):
                 'competition_questionset_id': competition_questionset_id,
                 'attempt_id': attempt_id})
             }
-    except Exception, e:
+    except Exception as e:
         data = {'success': False, 'error': str(e)}
     return HttpResponse(json.dumps(data), content_type="application/json")
 
@@ -1115,7 +1115,7 @@ class QuestionSetRegistration(CreateView):
                 access_code = request.session['access_code']
                 try:
                     assert _can_attempt(self.request, self.competitionquestionset)
-                except Exception, e:
+                except Exception as e:
                     # print "No attempt for you!"
                     request.session.pop('access_code')
                 return redirect(self.get_success_url())

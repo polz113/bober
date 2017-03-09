@@ -12,7 +12,7 @@ from django.core.exceptions import PermissionDenied
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
-from forms import OverviewForm, SchoolCodesCreateForm
+from bober_si.forms import OverviewForm, SchoolCodesCreateForm
 from bober_simple_competition.views import AccessCodeRequiredMixin, SmartCompetitionAdminCodeRequiredMixin
 from bober_simple_competition.views import safe_media_redirect, _profile_file_path, JsonResponse
 from bober_simple_competition.forms import ProfileEditForm
@@ -21,15 +21,15 @@ from bober_simple_competition.models import Attempt, Profile, GradedAnswer, Atte
 from django.contrib.auth.models import User
 from django.utils import timezone
 from django.db import connection
-from models import *
-from forms import *
+from bober_si.models import *
+from bober_si.forms import *
 from collections import OrderedDict, defaultdict
 from braces.views import LoginRequiredMixin
 from openpyxl import Workbook
 from openpyxl.writer.excel import save_virtual_workbook
 import datetime
 import os
-from award_gen import generate_award_pdf
+from bober_si.award_gen import generate_award_pdf
 import cairosvg
 
 # Create your views here.
@@ -166,7 +166,7 @@ class TeacherCodeRegistrationPasswordReset(FormView):
     def get_context_data(self, *args, **kwargs):
         context = super(TeacherCodeRegistrationPasswordReset, self).get_context_data(*args, **kwargs)
         context['hidden_code'] = self.request.GET.get('hidden_code', '')
-        print self.args, self.kwargs
+        print(self.args, self.kwargs)
         context['teacher_login_url'] = reverse("teacher_overview", 
                                        kwargs=self.kwargs)
         return context
@@ -424,7 +424,7 @@ def mentor_recognition_pdf(request, slug, username):
         competition = SchoolCompetition.get_cached_by_slug(slug=slug)
         try:
             os.makedirs(cert_full_dir)
-        except Exception, e:
+        except Exception as e:
             pass
         try:
             template_dir = os.path.join(AWARD_TEMPLATE_DIR, competition.slug)
@@ -465,7 +465,7 @@ def school_awards_pdf(request, username, slug, school_id, cqs_name):
         try:
             cert_full_dir = os.path.join(settings.MEDIA_ROOT, cert_dir)
             os.makedirs(cert_full_dir)
-        except Exception, e:
+        except Exception as e:
             pass
         #    print e
         # regenerate award. Ignore the template
@@ -536,7 +536,7 @@ def all_awards_pdf(request, username, slug, cqs_name):
         try:
             cert_full_dir = os.path.join(settings.MEDIA_ROOT, cert_dir)
             os.makedirs(cert_full_dir)
-        except Exception, e:
+        except Exception as e:
             pass
         #    print e
         # regenerate award. Ignore the template
@@ -597,7 +597,7 @@ def __update_juniorattempt(attempt):
         # print raw
         year_class.raw_data = raw
         year_class.save()
-    except Exception, e:
+    except Exception as e:
         # print e
         pass
    

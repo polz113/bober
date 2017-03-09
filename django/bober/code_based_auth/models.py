@@ -21,7 +21,7 @@ CODE_COMPONENT_FORMATS = (
 CASE_INSENSITIVE_FORMATS = ['h', 'i', 'L', 'W']
 
 HASH_ALGORITHMS = tuple(
-    [(i, i) for i in list(hashlib.algorithms)] + [('noop', _('No hash'))]
+    [(i, i) for i in list(hashlib.algorithms_available)] + [('noop', _('No hash'))]
 )
 
 DEFAULT_COMPONENT_FORMAT = 'h'
@@ -228,8 +228,8 @@ class CodeFormat(models.Model):
                     if h not in hashes[k]:
                     #    print "  ", h, "not in", hashes[k]
                         return False
-        except Exception, e:
-            print e
+        except Exception as e:
+            print(e)
             return False
         return True
 

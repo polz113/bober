@@ -1,5 +1,5 @@
 import django.forms as forms
-from views import IS_POPUP_VAR, TO_FIELD_VAR
+from django.contrib.admin.options import IS_POPUP_VAR, TO_FIELD_VAR
 from django.db.models.deletion import CASCADE
 from django.utils.safestring import mark_safe
 from django.template.loader import render_to_string

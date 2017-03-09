@@ -127,7 +127,7 @@ class Competition(models.Model):
             c = cls.objects.get(slug = slug)
             codegen = c.administrator_code_generator
             codegen = c.competitor_code_generator
-            print "  adding", slug, "to cache"
+            print("  adding", slug, "to cache")
             cache.set('competition_by_slug__' + slug, c)
         return c
 
@@ -248,8 +248,8 @@ def _create_graded(answer, regrade, grader_runtime_manager):
                 g_a.answer = a
                 g_a.score = None
                 g_a.save()
-    except Exception, e:
-        print e
+    except Exception as e:
+        print(e)
     return None
 
 
@@ -423,8 +423,8 @@ class QuestionSet(models.Model):
                                 data_res = r.question.resource_set.get(relative_url = url_str)
                                 i[url_property] = "data:" + data_res.mimetype + ";base64,"  + data_res.as_base64()
                                 embeded_resource_ids.append(data_res.id)
-                            except Exception, e:
-                                print (url_str, e)
+                            except Exception as e:
+                                print(url_str, e)
                 embeded_resource_ids.append(r.id)
                 index_str = bytes(index_soup.prettify().encode('utf-8'))
             else:
@@ -436,7 +436,7 @@ class QuestionSet(models.Model):
         for q in self.questions.all():
             for r in q.resource_set.exclude(part_of_solution = True).exclude(
                 id__in = embeded_resource_ids):
-                print "must create cache for ", r.id, r.question.identifier, r.file.name
+                print("must create cache for ", r.id, r.question.identifier, r.file.name)
         question_cache_id = 'questionset_question_ids_' + str(self.id)
 
 def _qs_rebuild_caches(sender, instance=None, **kwargs):
@@ -515,10 +515,10 @@ def _question_from_dirlike(cls, identifier = '-1',
     try:
         f = my_open(my_path('Manifest.json'))
         manifest = json.load(f)
-    except Exception, e:
+    except Exception as e:
         manifest = {'id': identifier,
             'language': language}
-        print " no manifest? ", e
+        print(" no manifest? ", e)
         regenerate_manifest = True
     try:
         my_close(f)
@@ -599,7 +599,7 @@ def _question_from_dirlike(cls, identifier = '-1',
         if k not in manifest:
             manifest[k] = v
     if question is None:
-        print "creating question", manifest['title'], type(manifest['title'])
+        print("creating question", manifest['title'], type(manifest['title']))
         question = cls(country = manifest['country'],
             slug = slugify(manifest['title']) + '-' + manifest['id'],
             identifier = manifest['id'], title = manifest['title'],
@@ -631,7 +631,7 @@ def _question_from_dirlike(cls, identifier = '-1',
                 resource_type = i['type'],
                 data = data)
             r.save()
-        except Exception, e:
+        except Exception as e:
             modules_list.append(i)
     return question
 
@@ -986,8 +986,8 @@ class Profile(models.Model):
                 )
                 for c in codes:
                     used_codes.add(c)
-            except Exception, e:
-                print e
+            except Exception as e:
+                print(e)
                 pass
 
     def apply_code_effects(self, codes = None):
