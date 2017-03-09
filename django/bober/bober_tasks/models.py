@@ -8,7 +8,7 @@ import django.template
 from django.forms.models import model_to_dict
 import os
 import zipfile
-import StringIO
+from io import StringIO
 import json
 from bs4 import BeautifulSoup
 from django.utils.text import slugify
@@ -263,7 +263,7 @@ class TaskTranslation(models.Model):
         index_resource.save()
         resource_list = bober_simple_competition.models._resource_list(index_soup)
         for d in resource_list:
-            print d['url']
+            print(d['url'])
             try:
                 resource = self.task.resources_set.get(
                     language = self.language_locale,
@@ -290,12 +290,12 @@ class TaskTranslation(models.Model):
                     # print "  saving"
                     r.save()
                     # print "  done!"
-            except Exception, e:
+            except Exception as e:
                 pass
-                print e
+                print(e)
         if rebuild_caches:
             for qs in q.questionset_set.all():
-                print qs
+                print(qs)
                 qs.rebuild_caches()
 
  

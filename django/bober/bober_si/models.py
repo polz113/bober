@@ -172,7 +172,7 @@ class School(models.Model):
                                 commit = False)
                         new_awards += to_create
                         revoke_awards += to_revoke
-            except Exception, e:
+            except Exception as e:
                 print(e)
                 pass
         if commit:
@@ -309,7 +309,7 @@ class SchoolCompetition(Competition):
             return SchoolCategoryQuestionSets.objects.get(
                     school_category = school_category, competition=self
                 ).questionsets.all()
-        except Exception, e:
+        except Exception as e:
             pass
         return CompetitionQuestionSet.objects.none()
             

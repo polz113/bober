@@ -37,8 +37,8 @@ def parse_competitor_data(data):
     competitor_data = list()
     #re_rez = re.compile(r"(\d+\.?\s*)?(?P<name>([A-Za-zřéöčćžüšđČĆŽŠĐ]+[\s.-]+){1,4}"
     #            r"[A-Za-zřéöüčćžšđČĆŽŠĐ.]+)[\s;:-]*(?P<points>\d+)\s*")
-    re_rez = re.compile(ur"(\d+\.?\s*)?(?P<name>([^\W\d_]+[\s.-]+){1,4}"
-                ur"([^\W\d_]|.)+)[\s;:-]+(?P<points>\d+)\s*", re.UNICODE)
+    re_rez = re.compile(r"(\d+\.?\s*)?(?P<name>([^\W\d_]+[\s.-]+){1,4}"
+                r"([^\W\d_]|.)+)[\s;:-]+(?P<points>\d+)\s*", re.UNICODE)
         # re_rez = re.compile(ur"(\d+\.?\s*)?(?P<name>[^\W\d_]*)(?P<points>.*)",re.UNICODE)
     seen_students = set()
     for line, rezultat in enumerate(data.split("\n")):
@@ -55,8 +55,8 @@ def parse_competitor_data(data):
             competitor_data.append((first_name, last_name, points))
             assert (first_name.upper(), last_name.upper()) not in seen_students
             seen_students.add((first_name.upper(), last_name.upper()))
-        except Exception, e:
-            print e
+        except Exception as e:
+            print(e)
             raise ValidationError(
                 _('Error in line %(line_no)d: %(line)s.'),
                 code='error_parsing',

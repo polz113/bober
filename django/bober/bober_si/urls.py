@@ -3,7 +3,7 @@ from django.views.generic import ListView
 from bober_si.models import School
 from bober_simple_competition.views import CompetitionDetail
 from dal import autocomplete
-import views
+from bober_si import views
 
 urlpatterns = [
     # Examples:

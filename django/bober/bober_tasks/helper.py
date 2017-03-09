@@ -1,5 +1,5 @@
 __author__ = 'Peter'
-from models import Category, AgeGroup, DifficultyLevel
+from bober_tasks.models import Category, AgeGroup, DifficultyLevel
 
 def all_cat():
     return Category.objects.distinct()

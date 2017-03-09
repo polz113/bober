@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext as _
 from extra_views import InlineFormSet
-from models import School
+from bober_si.models import School
 from dal import autocomplete
 import django.core.validators as validators
 #import autocomplete_light

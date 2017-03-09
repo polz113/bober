@@ -1,6 +1,6 @@
 * Download the latest source:
 
-    git clone http://git.fri.uni-lj.si/polz/bober.git
+    git clone https://github.com/polz113/bober.git
 
 * Set BOBER_HOME to make pasting from the rest of these instructions easier:
 
@@ -20,12 +20,12 @@
 
 * Create the database for the competition system
 
-    create database bober character set utf8 collate utf8_general_ci;
+    create database bober character set utf8 collate utf8_general_ci; create user bober@localhost;
     grant all on bober.* to bober@localhost; set password for bober@localhost=password('YOUR PASSWORD'); flush privileges;
 
 * Create and edit the django configuration:
 
-    cd $BOBER_HOME/django/bober/
+    cd $BOBER_HOME/django/bober/bober
     cp settings-bober.py settings.py
     vim settings.py
 
@@ -42,7 +42,8 @@
   another directory:
 
       On Debian / Ubuntu:
-      sudo apt-get install virtualenv python-dev libmariadbclient-dev-compat 
+      sudo apt-get install virtualenv python-dev libmariadbclient-dev-compat
+      cd $BOBER_HOME/django/bober
       virtualenv bober_env
       source bober_env/bin/activate
 
