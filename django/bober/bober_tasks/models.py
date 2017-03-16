@@ -13,6 +13,7 @@ import json
 from bs4 import BeautifulSoup
 from django.utils.text import slugify
 import mimetypes
+from django.utils.encoding import python_2_unicode_compatible
 # from tinymce.models import HTMLField
 
 import bober_simple_competition
@@ -30,9 +31,9 @@ class AgeGroupTask(models.Model):
     age_group = models.ForeignKey('AgeGroup')
     difficulty_level = models.ForeignKey('DifficultyLevel')
 
-
+@python_2_unicode_compatible
 class Answer(models.Model):
-    def __unicode__(self):
+    def __str__(self):
         return u"{}: {}({}, {}) - {}".format(self.task_translation.task, 
                                              self.task_translation.title, 
                                              self.task_translation.version,
@@ -64,9 +65,9 @@ class Remark(models.Model):
     task_translation = models.ForeignKey('TaskTranslation')
     user = models.ForeignKey(User)
 
-
+@python_2_unicode_compatible
 class Resources(models.Model):
-    def __unicode__(self):
+    def __str__(self):
         return u"{}: {}({}, {})".format(self.task, 
                                         self.filename, self.type, 
                                         self.language)
@@ -76,9 +77,9 @@ class Resources(models.Model):
     task = models.ForeignKey('Task')
     language = models.CharField(max_length = 8, choices=settings.LANGUAGES)
 
-
+@python_2_unicode_compatible
 class Task(models.Model):
-    def __unicode__(self):
+    def __str__(self):
         return self.international_id
 
     international_id = models.CharField(max_length=16, unique=True)
@@ -104,9 +105,9 @@ class Task(models.Model):
     def available_languages(self):
         return self.tasktranslation_set.values_list('language_locale', flat=True).distinct()
 
-
+@python_2_unicode_compatible
 class TaskTranslation(models.Model):
-    def __unicode__(self):
+    def __str__(self):
         return u"{}: {}({}, {})".format(self.task, self.title, self.version, self.language_locale)
     
     title = models.CharField(max_length=90)
@@ -231,9 +232,9 @@ class TaskTranslation(models.Model):
         accepted_answers = self.answer_set.filter(correct=True)
         authors = []
         if self.task.author:
-            authors.append(unicode(self.task.author))
+            authors.append(str(self.task.author))
         if self.author:
-            authors.append(unicode(self.author))
+            authors.append(str(self.author))
         q, created = bober_simple_competition.models.Question.objects.get_or_create(
             identifier = str(self.task.id))
         if created:

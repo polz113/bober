@@ -5,6 +5,7 @@ from django.db.models import Q, F, Sum
 from django.utils.translation import ugettext as _
 from collections import OrderedDict, defaultdict
 import os
+from django.utils.encoding import python_2_unicode_compatible
 # Create your models here.
 
 SCHOOL_CATEGORIES = (
@@ -84,9 +85,9 @@ def assign_attempt_awards(attempt, awards, data, commit=False):
             to_revoke = []
     return to_create, to_revoke
 
-
+@python_2_unicode_compatible
 class School(models.Model):
-    def __unicode__(self):
+    def __str__(self):
         return u"{}, {}".format(self.name, self.post, self.category)
 
     name = models.CharField(unique=True, max_length=255)
@@ -186,9 +187,9 @@ class School(models.Model):
             AttemptAward.objects.bulk_create(new_awards)        
         return new_awards, revoke_awards
 
-
+@python_2_unicode_compatible
 class SchoolTeacherCode(models.Model):
-    def __unicode__(self):
+    def __str__(self):
         return u"{} {}:{}".format(self.school, self.teacher, self.code)
 
     school = models.ForeignKey(School)
@@ -223,9 +224,9 @@ class SchoolTeacherCode(models.Model):
             aawards = aawards.filter(revoked_by=None)
         return aawards.distinct()
 
-
+@python_2_unicode_compatible
 class SchoolCategoryQuestionSets(models.Model):
-    def __unicode__(self):
+    def __str__(self):
         return u"{} {}".format(self.competition, self.school_category)
 
     class Meta:
@@ -235,9 +236,9 @@ class SchoolCategoryQuestionSets(models.Model):
     questionsets = models.ManyToManyField(CompetitionQuestionSet)
     school_category = models.CharField(choices=SCHOOL_CATEGORIES, max_length=24)
 
-
+@python_2_unicode_compatible
 class Award(models.Model):
-    def __unicode__(self):
+    def __str__(self):
         return u"{} {} {} ({})".format(self.name, self.questionset.name, self.questionset.competition.slug, self.threshold)
 
     # competition = models.ForeignKey(Competition, null=True)
@@ -253,9 +254,9 @@ class Award(models.Model):
     serial_prefix = models.CharField(max_length=256)
     replaces = models.ManyToManyField('Award', related_name='replaced_by', symmetrical=False)
 
-
+@python_2_unicode_compatible
 class AttemptAward(models.Model):
-    def __unicode__(self):
+    def __str__(self):
         return u"{} {} {} {} {} ({})".format(self.attempt.competitor, self.award,
             self.attempt.score, self.serial, self.note, self.id)
     
@@ -271,17 +272,17 @@ class AttemptAward(models.Model):
         unique=True)
     files = models.ManyToManyField('AwardFile')
 
-
+@python_2_unicode_compatible
 class CompetitionRecognition(models.Model):
-    def __unicode__(self):
+    def __str__(self):
         return self.template
     competition = models.ForeignKey(Competition, null=True)
     template = models.CharField(max_length=256)
     serial_prefix = models.CharField(max_length=16)
 
-
+@python_2_unicode_compatible
 class TeacherRecognition(models.Model):
-    def __unicode__(self):
+    def __str__(self):
         return u"{} {}:{}".format(self.teacher, self.template, self.text)
     template = models.ForeignKey(CompetitionRecognition)
     teacher = models.ForeignKey(Profile)

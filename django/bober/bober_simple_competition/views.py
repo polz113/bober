@@ -340,11 +340,11 @@ class CompetitionCreate(LoginRequiredMixin, CreateWithInlinesView):
                     components__name = 'competition_questionset'
                 ).order_by('id')[:1] or [None])[0],
             'admin_salt': ''.join([
-                random.choice(string.letters+string.digits)
-                for i in xrange(10)]),
+                random.choice(string.ascii_letters+string.digits)
+                for i in range(10)]),
             'competitor_salt': ''.join([
-                random.choice(string.letters+string.digits)
-                for i in xrange(10)]),
+                random.choice(string.ascii_letters+string.digits)
+                for i in range(10)]),
             }
 
 class AdminCodeFormatList(ListView, LoginRequiredMixin):

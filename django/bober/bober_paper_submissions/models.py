@@ -9,6 +9,7 @@ from code_based_auth.models import CodeField
 from bober_simple_competition.models import Competition, Competitor, Profile, CompetitionQuestionSet, Attempt, AttemptConfirmation
 from bober_si.models import School, SCHOOL_CATEGORIES, Award
 import re
+from django.utils.encoding import python_2_unicode_compatible
 
 #DEFAULT_YEARS = {
 #    u'1. razred': u'Jože Primer  10',
@@ -23,8 +24,10 @@ import re
 #DEFAULT_EXAMPLES = set(DEFAULT_YEARS.values())
 #DEFAULT_EXAMPLES.remove(None)
 # Create your models here.
+
+@python_2_unicode_compatible
 class JuniorMentorship(models.Model):
-    def __unicode__(self):
+    def __str__(self):
         return u"{}:{} - {}".format(self.teacher, self.school, self.competition.slug)
     competition = models.ForeignKey(Competition)
     school = models.ForeignKey(School)
@@ -64,9 +67,9 @@ def parse_competitor_data(data):
             )
     return competitor_data
 
-
+@python_2_unicode_compatible
 class JuniorYear(models.Model):
-    def __unicode__(self):
+    def __str__(self):
         return u"{}: {}".format(self.name, self.mentorship)
     class Meta:
         ordering = ['name']
@@ -162,9 +165,9 @@ class JuniorYear(models.Model):
                 CompetitionQuestionSet.objects.filter(id=self.questionset_id),
                 revoked_by = profile, commit = True)"""
 
-
+@python_2_unicode_compatible
 class JuniorDefaultYear(models.Model):
-    def __unicode__(self):
+    def __str__(self):
         return u"{}: {}".format(self.competition.slug, self.questionset.name)
     competition = models.ForeignKey(Competition)
     school_category = models.CharField(choices=SCHOOL_CATEGORIES, max_length=24)
@@ -189,9 +192,9 @@ class JuniorDefaultYear(models.Model):
             year.save()
         return year
 
-
+@python_2_unicode_compatible
 class JuniorAttempt(models.Model):
-    def __unicode__(self):
+    def __str__(self):
         return u"{}:{} {}".format(self.attempt.competitor, self.year_class, self.remarks)
     year_class = models.ForeignKey(JuniorYear)
     # competitor = models.ForeignKey(Competitor)

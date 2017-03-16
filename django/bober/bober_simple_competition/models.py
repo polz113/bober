@@ -26,6 +26,7 @@ import base64
 import zipfile
 from bs4 import BeautifulSoup
 import mimetypes
+from django.utils.encoding import python_2_unicode_compatible
 
 # Create your models here.
 GRADER_FUNCTION_TYPES = (
@@ -92,8 +93,9 @@ FEATURE_LEVELS = [
     (128, _('All features')),
 ]
 
+@python_2_unicode_compatible
 class Competition(models.Model):
-    def __unicode__(self):
+    def __str__(self):
         s = self.slug
         s += ": " + ", ".join([i.slug for i in self.questionsets.all()])
         return s
@@ -252,9 +254,9 @@ def _create_graded(answer, regrade, grader_runtime_manager):
         print(e)
     return None
 
-
+@python_2_unicode_compatible
 class CompetitionQuestionSet(models.Model):
-    def __unicode__(self):
+    def __str__(self):
         return u"{}: {}".format(self.competition.slug, self.name)
 
     name = models.CharField(max_length=256, null=True, blank=True,verbose_name=_("Name"))
@@ -263,7 +265,7 @@ class CompetitionQuestionSet(models.Model):
     guest_code = ForeignKey(Code, null=True, blank=True)
 
     def slug_str(self):
-        return unicode(self.id) + '.' + self.questionset.slug
+        return str(self.id) + '.' + self.questionset.slug
 
     @classmethod
     def get_by_slug(cls, slug):
@@ -352,11 +354,11 @@ class CodeEffect(models.Model):
         for user in users:
             effects[self.effect](user)
 
-
+@python_2_unicode_compatible
 class QuestionSet(models.Model):
-    def __unicode__(self):
-        return u"{}".format(unicode(self.name))
-        # return u"{}: {}".format(self.name, ",".join([unicode(i) for i in self.questions.all()]))
+    def __str__(self):
+        return u"{}".format(str(self.name))
+        # return u"{}: {}".format(self.name, ",".join([str(i) for i in self.questions.all()]))
     
     def get_absolute_url(self):
         return reverse('questionset_detail', kwargs={'pk': str(self.id)})
@@ -446,16 +448,17 @@ def _qs_rebuild_caches(sender, instance=None, **kwargs):
 
 signals.m2m_changed.connect(_qs_rebuild_caches, sender=QuestionSet)
 
+@python_2_unicode_compatible
 class ResourceCache(models.Model):
-    def __unicode__(self):
+    def __str__(self):
         return u"{}: {}".format(self.format, self.file)
     file = FileField(upload_to='caches')
     format = CharField(max_length = 16, choices=CACHE_FORMATS)
     resources = ManyToManyField('Resource')
 
-
+@python_2_unicode_compatible
 class Resource(models.Model):
-    def __unicode__(self):
+    def __str__(self):
         return u"{}: {}".format(self.relative_url, self.file)
     question = ForeignKey('Question')
     relative_url = CharField(max_length = 255)
@@ -555,7 +558,7 @@ def _question_from_dirlike(cls, identifier = '-1',
     index_dict = {}
     index_soup = BeautifulSoup(index_str)
     try:
-        index_dict['title'] = unicode(index_soup.title.contents[0]).strip()
+        index_dict['title'] = str(index_soup.title.contents[0]).strip()
     except:
         pass
     try:
@@ -635,9 +638,9 @@ def _question_from_dirlike(cls, identifier = '-1',
             modules_list.append(i)
     return question
 
-
+@python_2_unicode_compatible
 class Question(models.Model):
-    def __unicode__(self):
+    def __str__(self):
         return self.title
     country = CharField(max_length = 5)
     slug = SlugField()
@@ -722,15 +725,15 @@ class Question(models.Model):
         kwargs['my_close']=lambda x: x.close()
         return _question_from_dirlike(cls, *args, **kwargs)
 
-
+@python_2_unicode_compatible
 class Answer(models.Model):
-    def __unicode__(self):
+    def __str__(self):
         #print self.correct()
         return "{} ({}): {}".format(
-            unicode(self.attempt.reverse_question_mapping().get(
+            str(self.attempt.reverse_question_mapping().get(
                 self.randomized_question_id, "??")),
-            unicode(self.randomized_question_id),
-            unicode(self.value))
+            str(self.randomized_question_id),
+            str(self.value))
 
     attempt = ForeignKey('Attempt')
     randomized_question_id = IntegerField()
@@ -758,16 +761,16 @@ class AttemptInvalidation(models.Model):
     by = ForeignKey('Profile')
     reason = TextField(blank=True)
 
-
+@python_2_unicode_compatible
 class AttemptConfirmation(models.Model):
-    def __unicode__(self):
+    def __str__(self):
         return u"{}: {}".format(self.by, self.attempt)
     by = ForeignKey('Profile')
     attempt = ForeignKey('Attempt')
 
-
+@python_2_unicode_compatible
 class Competitor(models.Model):
-    def __unicode__(self):
+    def __str__(self):
         return u"{} {} ({})".format(self.first_name, self.last_name,
             self.profile or '?')
     profile = ForeignKey('Profile', null=True, blank=True)
@@ -781,9 +784,9 @@ class GradedAnswer(models.Model):
     answer = ForeignKey('Answer')
     score = FloatField(null=True)
 
-
+@python_2_unicode_compatible
 class Attempt(models.Model):
-    def __unicode__(self):
+    def __str__(self):
         return u"{}: {} - {}: {} ({} - {})".format(self.competitor,
             self.competition.slug,
             self.questionset.name,
@@ -905,10 +908,11 @@ class Attempt(models.Model):
     def latest_answers_sum(self):
         return float(sum([a.score for a in self.gradedanswer_set.all() if a.score is not None]))
 
-
+@python_2_unicode_compatible
 class Profile(models.Model):
-    def __unicode__(self):
-        return unicode(self.user)
+    
+    def __str__(self):
+        return str(self.user)
 
     def get_absolute_url(self):
         return reverse('profile_detail', kwargs={'pk': str(self.pk)})
