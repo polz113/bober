@@ -357,7 +357,7 @@ class CodeEffect(models.Model):
 @python_2_unicode_compatible
 class QuestionSet(models.Model):
     def __str__(self):
-        return u"{}".format(str(self.name))
+        return u"{}".format(self.name)
         # return u"{}: {}".format(self.name, ",".join([str(i) for i in self.questions.all()]))
     
     def get_absolute_url(self):
@@ -442,7 +442,6 @@ class QuestionSet(models.Model):
         question_cache_id = 'questionset_question_ids_' + str(self.id)
 
 def _qs_rebuild_caches(sender, instance=None, **kwargs):
-    print("poopie!")
     if instance is not None:
         instance.rebuild_caches()
 
