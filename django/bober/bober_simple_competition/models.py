@@ -372,7 +372,7 @@ class QuestionSet(models.Model):
         q = self.questions.order_by('identifier').values_list('identifier')
         d = dict()
         r = random.Random(random_seed)
-        c = r.sample(xrange(2**24), len(q))
+        c = r.sample(range(2**24), len(q))
         for n, i in enumerate(q):
             d[i[0]] = c[n]
         return d

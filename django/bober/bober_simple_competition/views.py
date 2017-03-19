@@ -638,7 +638,9 @@ def competition_guest(request, competition_questionset_id):
 def safe_media_redirect(resource_path):
     response = HttpResponse()
     response['Content-Type'] = ''
-    url = (os.path.join(settings.MEDIA_URL, resource_path)).encode('utf-8')
+    print("joining:", settings.MEDIA_URL, resource_path)
+    # url = (os.path.join(settings.MEDIA_URL, resource_path)).encode('utf-8')
+    url = os.path.join(settings.MEDIA_URL, resource_path)
     try:
         response[settings.SAFE_REDIRECT_HEADER] = url
     except:
