@@ -390,7 +390,7 @@ class QuestionSet(models.Model):
         return str(self.id) + "-" + self.slug
 
     def reverse_question_mapping(self, random_seed):
-        return {v: k for k, v in self.question_mapping(random_seed).iteritems()}
+        return {v: k for k, v in self.question_mapping(random_seed).items()}
 
     def rebuild_caches(self, embed_images = True):
         html_resources = {}
@@ -408,7 +408,7 @@ class QuestionSet(models.Model):
                 html_resource_zip.writestr(
                     q.identifier + '/' + 'Manifest.json',
                     json.dumps(q.manifest(safe = True)))
-        for url, r in html_resources.iteritems():
+        for url, r in html_resources.items():
             if embed_images:
                 index_soup = BeautifulSoup(r.as_bytes())
                 imgs = index_soup.find_all('img')
@@ -597,7 +597,7 @@ def _question_from_dirlike(cls, identifier = '-1',
         'version': '0.1',
         'authors': ''
     }
-    for k, v in default_manifest_values.iteritems():
+    for k, v in default_manifest_values.items():
         if k not in manifest:
             manifest[k] = v
     if question is None:

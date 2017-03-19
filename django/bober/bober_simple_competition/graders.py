@@ -76,7 +76,7 @@ runtimes_dict = {
 class RuntimeManager:
     def __init__(self):
         self.runtimes = dict()
-        for k, v in runtimes_dict.iteritems():
+        for k, v in runtimes_dict.items():
             self.runtimes[k] = v()
     def start_runtimes(self):
         pass

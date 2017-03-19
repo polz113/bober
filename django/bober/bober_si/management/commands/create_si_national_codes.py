@@ -62,8 +62,8 @@ class Command(BaseCommand):
                     code__value  = a.access_code
                 )[0].school
                 attempts_by_teacher[teacher][school][cqs].append(a)
-        for teacher, school_dict in attempts_by_teacher.iteritems():
-            for school, cqs_dict in school_dict.iteritems():
+        for teacher, school_dict in attempts_by_teacher.items():
+            for school, cqs_dict in school_dict.items():
                 # print school, cqs_dict
             # print teacher.user
                 for cqs in cqs_list:

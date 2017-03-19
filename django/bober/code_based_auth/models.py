@@ -84,24 +84,24 @@ def b_to_long(s):
     return l
 
 
-def long_to_b(l):
+def long_to_str(l):
     """maybe replace most of this with int.to_bytes in python3"""
-    s = b""
+    s = ""
     while l > 0:
         c = chr(l % 256)
         l = l // 256
-        s = c.encode('iso8859-1') + s
+        s = c + s
     return s
 
 
 def hexstr_to_b(s):
     if version_info >= (3,0,0) or type(s) == unicode:
         s = s.encode('iso8859-1')
-    return codecs.encode(s, 'hex')
+    return codecs.decode(s, 'hex')
 
 
 def b_to_hexstr(s):
-    return codecs.decode(s, 'hex').decode('iso8859-1')
+    return codecs.encode(s, 'hex').decode('iso8859-1')
 
 
 def decstr_to_b(s):
@@ -145,7 +145,7 @@ def words_codecs(words=DEFAULT_WORDS, separator=" "):
             word = s[:word_end]
             l = l * n_words
             l += val_words_dict.get(word, 0)
-        return long_to_str(l)
+        return long_to_b(l)
     return (__b_to_words, __words_to_b)
 
 
@@ -264,9 +264,9 @@ class CodeFormat(models.Model):
                             value, algorithm))[-hash_len:]
                     # if component.hash_format in CASE_INSENSITIVE_FORMATS:
                     #    h = h.lower()
-                    # print "h:", h
+                    # print("  k", k, "h:", h, "hashes:", hashes[k])
                     if h not in hashes[k]:
-                    #    print "  ", h, "not in", hashes[k]
+                        # print ("  ", h, "not in", hashes[k])
                         return False
         except Exception as e:
             print(e)
@@ -281,6 +281,7 @@ class CodeFormat(models.Model):
         return fn(value)[-component.hash_len:]
 
     def code_from_parts(self, salt, parts):
+        print ("parts:", parts)
         salt = salt.encode('utf-8')
         format_components = self.components.order_by('ordering')
         challenge = bytes()
@@ -288,8 +289,8 @@ class CodeFormat(models.Model):
             hash_algorithm='noop', max_parts=1)
         for i in unhashed_format_components:
             for value in parts.get(i.name, []):
-                s = FORMAT_FUNCTIONS[i.hash_format][0](value)
-                challenge += s[-i.hash_len:]
+                s = FORMAT_FUNCTIONS[i.hash_format][0](value.encode('iso8859-1'))
+                challenge += s[-i.hash_len:].encode('iso8859-1')
         hashed_components = list()
         for i, component in enumerate(format_components):
             hash_list = list()
@@ -338,8 +339,8 @@ class Code(models.Model):
         self.code_parts.all().delete()
         for k, values in parts_dict.items():
             for i, value in enumerate(values):
-                if type(value) != unicode:
-                    value = value.decode('iso8859-1')
+                #if type(value) != unicode:
+                #    value = value.decode('iso8859-1')
                 part = CodePart(code = self, ordering = i,
                     name = k, value = value)
                 part.save()
