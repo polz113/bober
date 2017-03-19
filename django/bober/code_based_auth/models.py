@@ -131,6 +131,7 @@ def words_codecs(words=DEFAULT_WORDS, separator=" "):
         return res
 
     def __words_to_b(s):
+        print("haha", s)
         l = 0
         while(s):
             if separator:
@@ -249,16 +250,17 @@ class CodeFormat(models.Model):
                 hash_params[component.name] = (FORMAT_FUNCTIONS[component.hash_format][0],
                     component.hash_algorithm, component.hash_len, hashes)
             # calculate the hashes for components
-            # print "hashes:", hashes
-            # print "parts:", parts
+            # print ("hashes:", hashes)
+            # print ("parts:", parts)
             for k, values in parts.items():
                 to_b_fn, algorithm, hash_len, hashes = hash_params[k]
                 if len(values) < 1:
                     # print "  len too small for ", k
                     return False
                 for value in values:
-                    # print value, format_fn, algorithm, format_fn(value)
-                    h = to_b_fn(value_hash(salt + challenge,
+                    # print(value, to_b_fn, algorithm)
+                    # print("static pre:", salt_b, challenge)
+                    h = to_b_fn(value_hash(salt_b + challenge,
                             value, algorithm))[-hash_len:]
                     # if component.hash_format in CASE_INSENSITIVE_FORMATS:
                     #    h = h.lower()
