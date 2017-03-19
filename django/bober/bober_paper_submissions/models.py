@@ -52,8 +52,8 @@ def parse_competitor_data(data):
         try:
             split_name = mo.group("name").split()
             parts = len(split_name)
-            first_name = " ".join(split_name[:parts/2])
-            last_name = " ".join(split_name[parts/2:])
+            first_name = " ".join(split_name[:parts//2])
+            last_name = " ".join(split_name[parts//2:])
             points = int(mo.group("points"))
             competitor_data.append((first_name, last_name, points))
             assert (first_name.upper(), last_name.upper()) not in seen_students
