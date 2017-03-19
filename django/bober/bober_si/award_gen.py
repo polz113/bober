@@ -9,7 +9,7 @@ import uuid
 from lxml import etree
 
 def _data_into_svg(svg, data):
-    for k, v in data.iteritems():
+    for k, v in data.items():
         if v is None:
             v = ''
         t = svg.xpath(u"//node()[@id='{}']".format(k))
@@ -129,7 +129,7 @@ try:
         parent = page['/Parent'].getObject()
         # first, rename everything in back_templates, remember the contents
         print("renaming backs")
-        for name, back_page in back_templates.iteritems():
+        for name, back_page in back_templates.items():
             resources, renames = _rename_pdf_resources(back_page['/Resources'].getObject(), name)
             _update_resources(back_template_resources, resources)
             # back_template_resources = resources

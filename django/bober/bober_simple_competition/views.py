@@ -452,10 +452,15 @@ def competition_code_list(request, slug):
             access_code, {'admin_privileges': ['view_all_admin_codes']}):
         admin_codes = admin_codes.filter(
             Q(creator_set=request.profile) | Q(recipient_set=request.profile) | Q(user_set=request.profile))
+    else:
+        print("Have permission to view admin codes")
     if not admin_codegen.code_matches(
             access_code, {'admin_privileges': ['view_all_competitor_codes']}):
         all_competitor_codes = all_competitor_codes.filter(
             Q(creator_set=request.profile) | Q(recipient_set=request.profile) | Q(user_set=request.profile))
+    else:
+        print("Have permission to view competitor codes")
+        print("    codes:", all_competitor_codes)
     competitor_codes = dict()
     for cqs in CompetitionQuestionSet.objects.filter(competition=competition):
         c_list = list()
@@ -638,7 +643,6 @@ def competition_guest(request, competition_questionset_id):
 def safe_media_redirect(resource_path):
     response = HttpResponse()
     response['Content-Type'] = ''
-    print("joining:", settings.MEDIA_URL, resource_path)
     # url = (os.path.join(settings.MEDIA_URL, resource_path)).encode('utf-8')
     url = os.path.join(settings.MEDIA_URL, resource_path)
     try:

@@ -104,7 +104,7 @@ class Command(BaseCommand):
                 revoked_by = organizer, commit = False)
             attempt_awards += new_awards
             revoked_awards += revoke_awards
-            #for school, attempts in attempts_by_school.iteritems():
+            #for school, attempts in attempts_by_school.items():
             #    print "  ", school
             #    new_awards, revoke_awards = assign_si_awards(attempts, awards, max_score)
             #    attempt_awards += new_awards
