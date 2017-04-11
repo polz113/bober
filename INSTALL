@@ -1,3 +1,11 @@
+Bober is a Django-based web application with few outside dependencies. It should work with
+both Python 2.7 and Python 3+.
+
+The python dependencies are listed in requirements.txt. Since the application is database-agnostic,
+the requirements.txt do NOT include a database driver - the driver may be chosen by the user.
+
+The instructions below are valid on Ubuntu 16.10 and may have to be slightly altered on other distributions.
+
 * Download latest source from github:
 
     git clone https://github.com/polz113/bober.git
@@ -6,6 +14,33 @@
 
     cd bober
     export BOBER_HOME=$PWD
+
+* Install Virtualenv and create python virtual environment in 
+  directory, outside of this project:
+
+      On Debian / Ubuntu:
+      sudo apt-get install virtualenv python-dev libmariadbclient-dev-compat
+      virtualenv bober_env
+      source bober_env/bin/activate
+
+* Install all packages from requirements.txt and MySQL driver:
+
+      pip install -r $BOBER_HOME/django/bober/requirements.txt
+      pip install mysqlclient
+
+* Create new directories for static and media files in
+  directory, outside of this project:
+
+      mkdir boberstatic
+      mkdir bobermedia
+
+* Set path for static and media directories in settings.py:
+
+      STATIC_ROOT = '/your/static/dir/path'
+      MEDIA_ROOT = '/your/media/directory/path'
+
+The instructions below are valid if you choose to use a mysql or mariadb database.
+While this is the database Bober is most often installed, you may use another one.
 
 * Install MySQL Server:
 
@@ -38,36 +73,9 @@
             'USER': 'bober',
             'PASSWORD': 'YOUR PASSWORD',
 
-* Install Virtualenv and create python virtual environment in 
-  directory, outside of this project:
+After the database is set up, create the neccessarry database tables.
 
-      On Debian / Ubuntu:
-      sudo apt-get install virtualenv python-dev libmariadbclient-dev-compat
-      virtualenv bober_env
-      source bober_env/bin/activate
-
-* Install all packages from requirements.txt and MySQL driver:
-
-      pip install -r $BOBER_HOME/django/bober/requirements.txt
-      pip install mysqlclient
-
-* Create new directories for static and media files in
-  directory, outside of this project:
-
-      mkdir boberstatic
-      mkdir bobermedia
-
-* Set path for static and media directories in settings.py:
-
-      STATIC_ROOT = '/your/static/dir/path'
-      MEDIA_ROOT = '/your/media/directory/path'
-
-* Run collectstatic management command:
-
-      cd $BOBER_HOME/django/bober
-      python manage.py collectstatic
-
-* Run migrate management command:
+* Create the tables by running the migrate management command:
 
       python manage.py migrate
 
@@ -75,10 +83,9 @@
    
       for i in bober_* code_based_auth; do cd $i; ../manage.py compilemessages; cd ..; done
 
-* Finally, start development web server:
+* Finally, start the development web server:
 
       python manage.py runserver
-
 
 If you want to deploy bober in a production environment, you will also have
 to set up nginx. To do this, you can follow the instructions below.
@@ -110,6 +117,11 @@ to set up nginx. To do this, you can follow the instructions below.
     location  /static/ {
         alias /your/static/dir/path;
     }
+
+* Copy the static files to the appropriate locations:
+
+      cd $BOBER_HOME/django/bober
+      python manage.py collectstatic
 
 * Configure the uwsgi daemon which is used by the task entry system to run the WSGI application:
 
