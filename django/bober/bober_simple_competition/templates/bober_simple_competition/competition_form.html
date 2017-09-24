@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load crispy_forms_tags %}
 {% load i18n %}
 {% load static %}
 {% load admin_static %}
@@ -20,7 +21,6 @@
 <script type="text/javascript" src="{% static "admin/js/inlines.js" %}"></script>
 <script type="text/javascript" src="{% static "admin/js/admin/RelatedObjectLookups.js" %}"></script>
 <script type="text/javascript" src="{% static "admin/js/core.js" %}"></script>
-{{form.media}}
 {% endblock %}
 {% block content %}
 <br>
@@ -46,11 +46,12 @@ $( document ).ready(function() {
     //do something
   }
   else {
-    return;
+      // really funny to put return here.
+      // It efficiently removes add more click handler, dummies!
   }
 
   $('#add_more').click(function() {
-        cloneMore('.questionsets table tbody:last', 'competitionquestionset_set');
+        cloneMore('div[name=questionset_form]:last', 'competitionquestionset_set');
     });
 
     function cloneMore(selector, type) {
@@ -73,41 +74,40 @@ $( document ).ready(function() {
 });
 
 </script>
-<form action="" method="post">
-{% csrf_token %}
-{{ CompetitionCreateFormSet.management_form }}
-{{ form.non_field_errors }}
-<div id="normal_form_fields" class="form_table toLeft">
-  <div class="row">
+
+
+<form action="" method="post" class="form-horizontal">
+    {% csrf_token %}
+    {% crispy form %}
     <p class="questionsets_head">
-      {% trans "Create New Competition" %}
-    </p>
-    <div class="col-md-12 left_set">
-    <table>
-      {{form}}
-    </table>
-    </div>
-  </div>
-  <div class="row">
-    <div class="col-md-12 left_set questionsets" id="questionsets">
-      <p class="questionsets_head">
         {% trans "Question sets" %}
-      </p>
-      {% for inline in inlines %}
-          {{inline.management_form}}
-          {% for form in inline %}
-            <table>
-              {{ form }}
-            </table>
-          {% endfor %}
-      {% endfor %}
+    </p>
+    {% for inline in inlines %}
+        {{inline.management_form | crispy}}
+        {% for form in inline %}
+            <div name="questionset_form">
+                {% crispy form %}
+            </div>
+        {% endfor %}
+    {% endfor %}
+    <div class="row">
+        <div class="col-sm-6">
+            <button id="add_more" class="btn btn-info" type="button">
+                <span class="glyphicon glyphicon-plus"></span>
+                {% trans "Add Another Competition Questionset" %}
+            </button>
+        </div>
     </div>
-  </div>
-  <div class="row" style="margin-top:2%;">
-    <a id="add_more" class="add_row" style="background: url(/static/admin/img/icon-addlink.svg) 0 1px no-repeat;
-padding-left: 16px; font-size:15px!important; margin-left:1%; cursor:pointer;">  {% trans "Add Another Competition Questionset" %}</a>
-  </div>
-  <input class="submit_set btn btn-success" type="submit" value='{% trans "Submit" %}' />
-</div>
+    <div class="row">
+        <div class="col-sm-6">&nbsp;</div>
+    </div>
+    <div class="row">
+        <div class="col-sm-6">
+            <button class="btn btn-success" type="submit">
+                {% trans "Submit" %}
+            </button>
+        </div>
+    </div>
 </form>
+
 {% endblock %}
