@@ -15,6 +15,9 @@ from django.contrib import admin
 from django.contrib.admin.widgets import RelatedFieldWidgetWrapper
 from django.template.loader import render_to_string
 from popup_modelviews.widgets import add_related_field_wrapper
+from crispy_forms.helper import FormHelper, Layout
+from crispy_forms.layout import Fieldset, Div, HTML
+
 
 class ProfileForm(forms.ModelForm):
     class Meta:
@@ -121,6 +124,7 @@ class BasicProfileForm(forms.ModelForm):
 class ProfileEditForm(BasicProfileForm):
     pass
 
+
 class ProfileMergeForm(forms.ModelForm):
     class Meta:
         model = Profile
@@ -146,6 +150,7 @@ class ProfileMergeForm(forms.ModelForm):
             managed_profiles = self.request.profile.managed_profiles
             assert managed_profiles.filter(id = self.instance.id).exists()
             assert managed_profiles.filter(id = self.instance.mereged_with).exists()
+
 
 class QuestionSetRegistrationForm(forms.ModelForm):
     class Meta:
@@ -195,6 +200,7 @@ class QuestionSetRegistrationForm(forms.ModelForm):
             instance.save()
         instance.profile.managed_profiles.add(instance.profile)
         return instance
+
 
 class CompetitionRegistrationForm(QuestionSetRegistrationForm):
     def __init__(self, *args, **kwargs):
@@ -260,7 +266,6 @@ class QuestionSetCompetitorForm(forms.ModelForm):
                 self.errors['short_access_code']=[_('Wrong access code')]
         if not self.codegen.code_matches(full_code,
                 {'competitor_privileges':['attempt']}):
-            # print "No attempty for", full_code
             raise ValidationError(_('Wrong access code'), code='short_access_code')
         if self.codegen.code_matches(full_code,
             {'competitor_privileges':['resume_attempt']}):
@@ -335,6 +340,7 @@ class CompetitionCompetitorForm(QuestionSetCompetitorForm):
             self.errors['competition_questionset']=[_('This field is required')]
         return super(CompetitionCompetitorForm, self).clean()
 
+
 class CompetitorUpdateForm(forms.ModelForm):
     class Meta:
         model = Competitor
@@ -342,34 +348,71 @@ class CompetitorUpdateForm(forms.ModelForm):
     cqs_id = forms.IntegerField(min_value=0, widget=forms.HiddenInput)
     attempt_id = forms.IntegerField(min_value=0, widget=forms.HiddenInput)
 
+
 class CompetitorCodeForm(forms.Form):
     competitor_privileges = forms.MultipleChoiceField(
         choices=COMPETITOR_PRIVILEGES)
 
+
 class AdminCodeForm(CompetitorCodeForm):
     admin_privileges = forms.MultipleChoiceField(choices=ADMIN_PRIVILEGES)
+
 
 class CompetitionCreateForm(forms.ModelForm):
     class Meta:
         model = Competition
-        exclude = ('administrator_code_generator',
+        exclude = (
+            'administrator_code_generator',
             'competitor_code_generator',
             'questionsets')
-
-
         widgets = {
             'start': widgets.AdminDateWidget(),
             'end': widgets.AdminDateWidget(),
         }
     competitor_code_format = forms.ModelChoiceField(
-        queryset = code_based_auth.models.CodeFormat.objects.filter(
-            components__name = 'competition_questionset').distinct(),
-            label=_('Competitor code format'))
+        queryset=code_based_auth.models.CodeFormat.objects.filter(
+            components__name='competition_questionset').distinct(),
+        label=_('Competitor code format'))
     admin_code_format = forms.ModelChoiceField(
-        queryset = code_based_auth.models.CodeFormat.objects.filter(
-            components__name = 'admin_privileges').distinct(),label=_('Admin code format'))
+        queryset=code_based_auth.models.CodeFormat.objects.filter(
+            components__name='admin_privileges').distinct(),
+        label=_('Admin code format'))
     admin_salt = forms.CharField(label=_('Admin salt'))
     competitor_salt = forms.CharField(label=_('Competitor salt'))
+
+    def __init__(self, *args, **kwargs):
+        super(CompetitionCreateForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_method = 'POST'
+        self.helper.form_tag = False
+        self.helper.disable_csrf = True
+        self.helper.form_class = "form-horizontal"
+        self.helper.label_class = 'col-lg-2'
+        self.helper.field_class = 'col-lg-10'
+        self.helper.layout = Layout(
+            Fieldset(
+                _('Basic competition data'),
+                'title',
+                'slug',
+                'start',
+                'end',
+                'duration',
+                'motd',
+            ),
+            Fieldset(
+                "<a data-toggle='collapse' href='#competition_advanced'>" + str(_('Advanced competition data')) + "</a>",
+                Div(
+                    'promoted',
+                    'competitor_code_format',
+                    'competitor_salt',
+                    'admin_code_format',
+                    'admin_salt',
+                    css_class="competition_advanced collapse",
+                    id = "competition_advanced",
+                )
+            ),
+        )
+
 
 class CompetitionUpdateForm(forms.ModelForm):
     class Meta:
@@ -379,6 +422,7 @@ class CompetitionUpdateForm(forms.ModelForm):
             'start': forms.DateInput(attrs={'class': 'datepicker'}),
             'end': forms.DateInput(attrs={'class': 'datepicker'}),
         }
+
 
 class CodeFormatForm(forms.Form):
     code_id_length = forms.IntegerField(initial=8, label=_("Code id length"))
@@ -391,12 +435,14 @@ class CodeFormatForm(forms.Form):
         initial = code_based_auth.models.DEFAULT_HASH_ALGORITHM,
         choices = code_based_auth.models.HASH_ALGORITHMS,label=_("Competitor privilege hash"))
 
+
 class CompetitorCodeFormatForm(CodeFormatForm):
     questionset_format = forms.ChoiceField(
         choices = code_based_auth.models.CODE_COMPONENT_FORMATS,label=_("Questionset format"))
     questionset_hash = forms.ChoiceField(
         initial = 'noop',
         choices = code_based_auth.models.HASH_ALGORITHMS,label=_("Questionset hash"))
+
 
 class AdminCodeFormatForm(CodeFormatForm):
     admin_privilege_length = forms.IntegerField(min_value=1, label=_("Admin privilege length"))
@@ -425,12 +471,29 @@ class CompetitionQuestionSetCreateForm(forms.ModelForm):
         add_related_field_wrapper(self, 'questionset', 
                                   add_related_view = 'questionset_add',
                                   change_related_view = 'questionset_change')
+        self.helper = FormHelper()
+        self.helper.form_method = 'POST'
+        self.helper.form_tag = False
+        self.helper.disable_csrf = True
+        self.helper.form_class = "form-horizontal"
+        self.helper.label_class = 'col-lg-2'
+        self.helper.field_class = 'col-lg-10'
+        self.helper.layout = Layout(
+            Fieldset(
+                '&nbsp;',
+                'name',
+                'questionset',
+                'create_guest_code'
+            )
+        )
+
 
 class CompetitionQuestionSetUpdateForm(forms.ModelForm):
     class Meta:
         model = CompetitionQuestionSet
         exclude = []
     create_guest_code = forms.BooleanField(required=False, label=_("Create guest code"))
+
     def save(self, *args, **kwargs):
         retval = super(CompetitionQuestionSetUpdateForm,self).save(*args, **kwargs)
         if self.cleaned_data['create_guest_code'] and \
@@ -449,10 +512,12 @@ class CompetitionQuestionSetUpdateForm(forms.ModelForm):
             self.instance.save()
         return retval
 
+
 class QuestionSetForm(forms.ModelForm):
     class Meta:
         model = QuestionSet
         exclude = ['resource_caches']
+
     def save(self, *args, **kwargs):
         retval = super(QuestionSetForm, self).save(*args, **kwargs)
         self.instance.rebuild_caches()
@@ -464,23 +529,32 @@ class CompetitionQuestionSetCreateInline(InlineFormSet):
     form_class = CompetitionQuestionSetCreateForm
     can_delete = False
 
+
 class CompetitionQuestionSetUpdateInline(InlineFormSet):
     model = CompetitionQuestionSet
     form_class = CompetitionQuestionSetUpdateForm
 
-CompetitionCreateFormSet = inlineformset_factory(Competition,
-    CompetitionQuestionSet, form = CompetitionQuestionSetCreateForm, can_delete = False)
 
-CompetitionUpdateFormSet = inlineformset_factory(Competition,
-    CompetitionQuestionSet, form = CompetitionQuestionSetUpdateForm, fields='__all__')
+CompetitionCreateFormSet = inlineformset_factory(
+    Competition,
+    CompetitionQuestionSet,
+    form=CompetitionQuestionSetCreateForm,
+    can_delete=False)
+
+CompetitionUpdateFormSet = inlineformset_factory(
+    Competition,
+    CompetitionQuestionSet,
+    form=CompetitionQuestionSetUpdateForm,
+    fields='__all__')
 
 
 class MailForm(forms.Form):
-
-    #mailFrom = forms.CharField(widget=forms.Textarea(attrs={'cols':70,'rows':1,'style':'resize:none;'}),label=_("From"), required=True)
-    mail_to = forms.CharField(widget=forms.TextInput(attrs={'size': 71,'style':'margin-bottom:10px;'}),label=_("To"), required=True)
-    mail_subject = forms.CharField(widget=forms.TextInput(attrs={'size': 71, 'style':'margin-bottom:10px;'}),label=_("Subject"), required=True)
-    # mail_content=forms.CharField(widget=TinyMCE(attrs={'cols':70, 'rows': 15}),label=_("Content"), required=True)
+    mail_to = forms.CharField(
+        widget=forms.TextInput(attrs={'size': 71,'style':'margin-bottom:10px;'}),
+        label=_("To"),
+        required=True)
+    mail_subject = forms.CharField(
+        widget=forms.TextInput(attrs={'size': 71, 'style':'margin-bottom:10px;'}),
+        label=_("Subject"),
+        required=True)
     mail_content=forms.CharField(label=_("Content"), required=True)
-    # class Media:
-    #    js = ('mce_filebrowser/js/filebrowser_init.js',)

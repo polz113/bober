@@ -17,6 +17,8 @@ from django.utils.translation import ugettext_lazy as _
 from django.utils import timezone
 from django.core.exceptions import ValidationError
 from django.core.cache import cache
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 from collections import OrderedDict
 from . import graders
 import random
@@ -107,14 +109,25 @@ class Competition(models.Model):
     promoted = models.BooleanField(default=False, verbose_name=_("promoted"))
     slug = SlugField(unique=True,verbose_name=_("slug"))
 
-    administrator_code_generator = ForeignKey(CodeGenerator, related_name='administrator_code_competition_set',                                          verbose_name=_("administrator code generator")
+    administrator_code_generator = ForeignKey(
+        CodeGenerator,
+        related_name='administrator_code_competition_set',
+        verbose_name=_("administrator code generator")
     )
-
-    competitor_code_generator = ForeignKey(CodeGenerator, related_name='competitor_code_competition_set',                                           verbose_name=_("competitor code generator"))
-    questionsets = ManyToManyField('QuestionSet', through='CompetitionQuestionSet',        verbose_name=_("Question sets"))
+    competitor_code_generator = ForeignKey(
+        CodeGenerator,
+        related_name='competitor_code_competition_set',
+        verbose_name=_("competitor code generator"))
+    questionsets = ManyToManyField(
+        'QuestionSet',
+        through='CompetitionQuestionSet',
+        verbose_name=_("Question sets"))
     start = DateTimeField(verbose_name=_("start"))
     # duration in seconds
-    duration = IntegerField(default=60*60,verbose_name=_("duration")) # 60s * 60 = 1h.
+    duration = IntegerField(
+        default=60*60,
+        verbose_name=_("duration"),
+        help_text=_("Duration of the competition in seconds")) # 60s * 60 = 1h.
     end = DateTimeField(verbose_name=_("end"))
     motd = TextField(blank=True,verbose_name=_("message of the day"))
 
@@ -907,6 +920,7 @@ class Attempt(models.Model):
     def latest_answers_sum(self):
         return float(sum([a.score for a in self.gradedanswer_set.all() if a.score is not None]))
 
+
 @python_2_unicode_compatible
 class Profile(models.Model):
     
@@ -921,21 +935,13 @@ class Profile(models.Model):
     date_of_birth = DateField(null=True, blank=True)
     managed_profiles = models.ManyToManyField('Profile', related_name='managers',
         blank=True)
-    # managed_users = models.ManyToManyField(User, related_name='managers', null=True, blank=True)
-    #first_competition = models.ForeignKey(Competition, null=True, blank=True)
-    #registration_code = CodeField(null=True, blank=True)
-    created_codes = ManyToManyField(Code, blank=True,
-        related_name='creator_set')
-    received_codes = ManyToManyField(Code, blank=True,
-        related_name='recipient_set')
-    used_codes = ManyToManyField(Code, blank=True,
-        related_name='user_set')
+    created_codes = ManyToManyField(Code, blank=True, related_name='creator_set')
+    received_codes = ManyToManyField(Code, blank=True, related_name='recipient_set')
+    used_codes = ManyToManyField(Code, blank=True, related_name='user_set')
     question_sets = ManyToManyField(QuestionSet, blank=True)
-    created_question_sets = ManyToManyField(QuestionSet, blank=True,
-        related_name='creator_set')
+    created_question_sets = ManyToManyField(QuestionSet, blank=True, related_name='creator_set')
     questions = ManyToManyField(Question, blank=True)
     merged_with = ForeignKey('Profile', null = True, blank=True, related_name='former_profile_set')
-    # merged_with = ForeignKey(User, null = True, blank=True, related_name='merged_set')
     update_used_codes_timestamp = DateTimeField(null=True, blank=True)
     update_managers_timestamp = DateTimeField(null=True, blank=True)
     vcard = models.TextField(blank=True)
@@ -961,7 +967,7 @@ class Profile(models.Model):
                 salt = codegen.salt):
             for o in c.owner_set.all():
                 if o not in known:
-                    s1 = superiors(o, codegen, known)
+                    s1 = Profile.__superiors(o, codegen, known)
                     known = s1.union(known)
                     known.add(o)
         return known
@@ -1069,14 +1075,15 @@ class Profile(models.Model):
         return self
 
 
-
-def create_profile(sender, instance=None, **kwargs):
-    try:
-        p = instance.profile
-    except Profile.DoesNotExist:
-        p = Profile()
+@receiver(post_save, sender=User)
+def create_user_profile(sender, instance, created, **kwargs):
+    if created:
+        p = Profile.objects.create()
         p.user = instance
         p.save()
         p.managed_profiles.add(p)
 
-signals.post_save.connect(create_profile, sender=User)
+
+@receiver(post_save, sender=User)
+def save_user_profile(sender, instance, **kwargs):
+    instance.profile.save()
