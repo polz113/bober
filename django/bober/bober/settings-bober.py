@@ -55,9 +55,10 @@ INSTALLED_APPS = (
     'sorl.thumbnail',
     'mce_filebrowser',
     'popup_modelviews',
-    #'PIL',
-    # 'autocomplete_light'
+    'crispy_forms',
 )
+
+CRISPY_TEMPLATE_PACK = 'bootstrap3'
 
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -115,15 +116,25 @@ WSGI_APPLICATION = 'bober.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.6/ref/settings/#databases
 
+import os
+
+PROJECT_DIR = os.path.abspath(os.path.dirname(__file__))
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'bober',
-        'USER': 'bober',
-        'PASSWORD': 'YOURPASSWORD',
-        'HOST': 'localhost',
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(PROJECT_DIR, 'bober.db'),
     }
 }
+
+#DATABASES = {
+#    'default': {
+#        'ENGINE': 'django.db.backends.mysql',
+#        'NAME': 'bober',
+#        'USER': 'bober',
+#        'PASSWORD': 'YOURPASSWORD',
+#        'HOST': 'localhost',
+#    }
+#}
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.6/topics/i18n/
