@@ -1,39 +1,41 @@
-from django.shortcuts import render
-from django.shortcuts import render, redirect, resolve_url, get_object_or_404
-from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse, QueryDict, HttpResponseRedirect, Http404
-from django.core.mail import EmailMultiAlternatives
-from django.shortcuts import get_object_or_404
-from bober_simple_competition.forms import *
-from django.utils.translation import ugettext_lazy as _
-from bober_simple_competition import tables
-from bober_simple_competition import filters
-from bober_simple_competition.models import Profile
-from bober_simple_competition.models import QuestionSet
-from popup_modelviews.views import PopupUpdateView, PopupCreateView, PopupFormView, PopupFormViewMixin, InvalidFormRespond422
-import django.contrib.auth
-from django.contrib.auth import authenticate
-from django.core.serializers.json import DjangoJSONEncoder
-from django.core.exceptions import PermissionDenied
-from django.utils import timezone
-from django.template import RequestContext
-from django.views.generic import ListView, DetailView, CreateView, DeleteView, UpdateView, FormView, TemplateView
-from extra_views import CreateWithInlinesView, UpdateWithInlinesView, InlineFormSet
-from django.views.decorators.csrf import ensure_csrf_cookie
-from django.conf import settings
-from django import forms
-from django.db.models import Q
-from braces.views import LoginRequiredMixin
-from django_tables2 import SingleTableView
-import code_based_auth.models
-from django.core.urlresolvers import reverse, reverse_lazy
-from django.utils.six.moves.urllib.parse import urlparse, urlunparse
+#Standard library
 import datetime
 import time
 import json
 import random
 import string
 import email.utils
+
+# Django
+from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
+from django.http import HttpResponse, QueryDict, HttpResponseRedirect
+from django.core.mail import EmailMultiAlternatives
+from django.shortcuts import get_object_or_404
+from django.utils.translation import ugettext_lazy as _
+from django.contrib.auth import authenticate
+from django.core.exceptions import PermissionDenied
+from django.utils import timezone
+from django.views.generic import ListView, DetailView, CreateView, DeleteView, UpdateView, FormView, TemplateView
+from django.views.decorators.csrf import ensure_csrf_cookie
+from django.conf import settings
+from django import forms
+from django.db.models import Q
+
+# Other Django
+from django_tables2 import SingleTableView
+from braces.views import LoginRequiredMixin
+from extra_views import CreateWithInlinesView, UpdateWithInlinesView
+
+# Local django
+import code_based_auth.models
+from bober_simple_competition.forms import *
+from bober_simple_competition import tables
+from bober_simple_competition import filters
+from bober_simple_competition.models import Profile
+from bober_simple_competition.models import QuestionSet
+from popup_modelviews.views import PopupUpdateView, PopupCreateView, PopupFormViewMixin, InvalidFormRespond422
+
 
 def send_email(request):
     mail_users = request.GET.getlist('select')
@@ -42,6 +44,7 @@ def send_email(request):
     ).values_list('user__email', flat=True)
     form = MailForm(initial={'mail_to': ", ".join(emails)})
     return render(request, 'bober_simple_competition/send_email.html', {'form': form})
+
 
 def send_to_mail(request):
     if request.method == 'GET':
@@ -234,19 +237,19 @@ def competitionquestionset_access_code(request, competition_questionset_id, next
         return redirect(next)
     return render(request, 'bober_simple_competition/access_code.html', locals())
 
-
-# Create your views here.
-
 def index(request):
 #    raise Exception(request.META["SERVER_SOFTWARE"])
     return render(request, "bober_simple_competition/index.html", locals())
+
 
 class CompetitionList(ListView):
     model = Competition
     queryset = Competition.objects.all().order_by('-promoted')
 
+
 class CompetitionDetail(DetailView):
     model = Competition
+
 
 class CompetitionUpdate(SmartCompetitionAdminCodeRequiredMixin,
             UpdateWithInlinesView):
@@ -278,6 +281,7 @@ class CompetitionUpdate(SmartCompetitionAdminCodeRequiredMixin,
                     # print f.instance, f.cleaned_data['create_guest_code']
         return retval
 
+
 # 8. create competition (from multiple questionsets)
 #   all questionsets for competitions you have admin access to can be used.
 #   Also, newly created questionsets can be used.
@@ -285,12 +289,6 @@ class CompetitionCreate(LoginRequiredMixin, CreateWithInlinesView):
     model = Competition
     form_class = CompetitionCreateForm
     inlines = [CompetitionQuestionSetCreateInline,]
-    #def get_context_data(self, **kwargs):
-        # Call the base implementation first to get a context
-    #    context = super(CompetitionCreate, self).get_context_data(**kwargs)
-        # Add in a QuerySet of all the books
-    #    context['formset'] = CompetitionCreateFormSet()
-    #    return context
 
     def forms_valid(self, form, inlines):
         # print "Creating new competition after retval!"
@@ -346,6 +344,7 @@ class CompetitionCreate(LoginRequiredMixin, CreateWithInlinesView):
                 random.choice(string.ascii_letters+string.digits)
                 for i in range(10)]),
             }
+
 
 class AdminCodeFormatList(ListView, LoginRequiredMixin):
     model = code_based_auth.models.CodeFormat
