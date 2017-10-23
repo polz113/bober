@@ -56,7 +56,7 @@ class Command(BaseCommand):
                     group_name = award.questionset.name,
                     serial = serial)
                 aa.save()
-            #for school, attempts in attempts_by_school.iteritems():
+            #for school, attempts in attempts_by_school.items():
             #    print "  ", school
             #    new_awards, revoke_awards = assign_si_awards(attempts, awards, max_score)
             #    attempt_awards += new_awards

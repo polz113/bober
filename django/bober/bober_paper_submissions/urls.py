@@ -1,6 +1,6 @@
 from django.conf.urls import include, url
 from django.views.generic import ListView
-import views
+from bober_paper_submissions import views
 
 
 urlpatterns = [

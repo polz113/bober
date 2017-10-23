@@ -22,7 +22,7 @@ from bober_tasks.tables import TaskTable
 from bober_tasks.filters import TaskFilter
 from extra_views import CreateWithInlinesView, UpdateWithInlinesView, InlineFormSet
 from braces.views import LoginRequiredMixin
-import StringIO
+from io import StringIO
 from json import dumps as to_json
 from django.http import HttpResponse
 from bober_tasks import forms
@@ -541,7 +541,7 @@ class TaskTranslationUpdate(UpdateWithInlinesView, LoginRequiredMixin):
         return self.forms_invalid(form, inlines)
     
     def save(self, *args, **kwargs):
-        print "saving", args, kwargs
+        print("saving", args, kwargs)
         self.remark_form.save()
         return super(TaskTranslationUpdate, self).save(*args, **kwargs)
 
@@ -600,7 +600,7 @@ def save_task(request):
         while True:
             categories[i] = request.POST["category[" + str(i) + "]"]
             i += 1
-    except Exception, e:
+    except Exception as e:
         True
     for category_id in categories:
         c = Category.objects.get(id=categories[category_id])
@@ -615,7 +615,7 @@ def save_task(request):
             agt = AgeGroupTask.objects.get_or_create(age_group_id=temp[0], difficulty_level_id=temp[1], task=task)
             agt.save()
             i += 1
-    except Exception, e:
+    except Exception as e:
         pass
     return redirect("tasks.task", task.id)
 
@@ -753,7 +753,7 @@ def get_age_groups(obj):
                 break
             i += 1
         return groups
-    except Exception, e:
+    except Exception as e:
         return groups
 
 
@@ -773,5 +773,5 @@ def get_categories(obj):
         while True:
             categories[i] = obj["category[" + str(i) + "]"]
             i += 1
-    except Exception, e:
+    except Exception as e:
         return categories

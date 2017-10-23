@@ -9,8 +9,8 @@ def managed_users_to_profiles(apps, schema_editor):
         for u in p.managed_users.all():
             try:
                 p.managed_profiles.add(u.profile)
-            except Exception, e:
-                print e
+            except Exception as e:
+                print(e)
         
 
 class Migration(migrations.Migration):

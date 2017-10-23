@@ -27,7 +27,7 @@
 <a href="{% url "competition_code_create" slug=slug user_type='competitor' %}" class="btn">{% trans "Generate code" %}</a>
 {% endif %}
 <ul>
-{% for cqs, codes in competitor_codes.iteritems %}
+{% for cqs, codes in competitor_codes.items %}
 <li>
 {{cqs.name}}
   <ul>{%for i in codes %}
@@ -35,4 +35,5 @@
   {% endfor %}</ul>
 </li>
 {% endfor %}
+</ul>
 {% endblock %}
