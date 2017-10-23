@@ -48,8 +48,8 @@ class Migration(migrations.Migration):
                 ('slug', models.SlugField()),
                 ('start', models.DateTimeField()),
                 ('end', models.DateTimeField()),
-                ('administrator_code_generator', models.ForeignKey(related_name=b'administrator_code_competition_set', to='code_based_auth.CodeGenerator')),
-                ('competitor_code_generator', models.ForeignKey(related_name=b'competitor_code_competition_set', to='code_based_auth.CodeGenerator')),
+                ('administrator_code_generator', models.ForeignKey(related_name='administrator_code_competition_set', to='code_based_auth.CodeGenerator')),
+                ('competitor_code_generator', models.ForeignKey(related_name='competitor_code_competition_set', to='code_based_auth.CodeGenerator')),
             ],
             options={
             },
@@ -71,8 +71,8 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('registration_code', code_based_auth.models.CodeField(null=True, blank=True)),
                 ('vcard', models.TextField()),
-                ('created_codes', models.ManyToManyField(related_name=b'owner_set', null=True, to='code_based_auth.Code', blank=True)),
-                ('merged_with', models.ForeignKey(related_name=b'merged_set', blank=True, to=settings.AUTH_USER_MODEL, null=True)),
+                ('created_codes', models.ManyToManyField(related_name='owner_set', null=True, to='code_based_auth.Code', blank=True)),
+                ('merged_with', models.ForeignKey(related_name='merged_set', blank=True, to=settings.AUTH_USER_MODEL, null=True)),
                 ('user', models.OneToOneField(to=settings.AUTH_USER_MODEL)),
             ],
             options={

@@ -128,7 +128,7 @@ class Command(BaseCommand):
             CompetitionRecognition.objects.get_or_create(
                 competition = competition,
                 template = 'potrdilo',
-                serial_prefix = 't-' + cslug
+                defaults = {'serial_prefix' : 't-' + cslug}
             )
         organizer = competition.administrator_code_generator.codes.filter(
                 code_parts__name='admin_privileges', 

@@ -50,8 +50,8 @@ class Command(BaseCommand):
         revoked_ids = list()
         for award in revoked_awards:
             revoked_ids.append(award.id)
-        print "    revoking:", revoked_ids
+        print("    revoking:", revoked_ids)
         AttemptAward.objects.filter(id__in = revoked_ids).update(
             revoked_by = organizer)
-        print "    new:", attempt_awards
+        print("    new:", attempt_awards)
         AttemptAward.objects.bulk_create(attempt_awards)

@@ -9,7 +9,7 @@ import uuid
 from lxml import etree
 
 def _data_into_svg(svg, data):
-    for k, v in data.iteritems():
+    for k, v in data.items():
         if v is None:
             v = ''
         t = svg.xpath(u"//node()[@id='{}']".format(k))
@@ -97,7 +97,7 @@ try:
         for d in data:
             used_templates.add(d['template'])
         # load the templates
-        print "loading templates"
+        print("loading templates")
         for t in used_templates:
             back_template_file = os.path.join(template_prefix, t + '.pdf')
             text_template_file = os.path.join(template_prefix, 'front', t + '.svg')
@@ -106,7 +106,7 @@ try:
                 text_templates[t] = etree.parse(f)
         text_pages = []
         # create the overlay PDFs
-        print "creating overlays"
+        print("creating overlays")
         for d in data:
             text_template = text_templates[d['template']]
             text_pages.append(
@@ -128,8 +128,8 @@ try:
         # insert the back_templates resources into the parent of all pages
         parent = page['/Parent'].getObject()
         # first, rename everything in back_templates, remember the contents
-        print "renaming backs"
-        for name, back_page in back_templates.iteritems():
+        print("renaming backs")
+        for name, back_page in back_templates.items():
             resources, renames = _rename_pdf_resources(back_page['/Resources'].getObject(), name)
             _update_resources(back_template_resources, resources)
             # back_template_resources = resources
@@ -142,9 +142,9 @@ try:
         page[NameObject('/Resources')] = back_template_resources
         #page.pop(NameObject('/Resources'))
         page[NameObject('/Contents')] = ContentStream(contents, page.pdf)
-        print "done"
+        print("done")
         for i, d in enumerate(data[1:], start=1):
-            print d
+            print(d)
             back_template = back_templates[d['template']]
             front_template = text_pages[i]
             box = back_template.mediaBox
@@ -179,6 +179,6 @@ if __name__ == "__main__":
     data = [ data[i % len(data)].copy() for i in xrange(10)]
     for k, d in enumerate(data):
         d['name'] = "" + d['name'] + str(k)
-        print d['name'], d['template']
+        print(d['name'], d['template'])
     generate_award_pdf(os.path.expanduser("~/Desktop/priznanja.pdf"), data, 'award_templates/')
             

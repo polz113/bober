@@ -3,7 +3,7 @@ from django.views.generic import ListView
 from django.views.generic.base import RedirectView
 from bober_simple_competition.models import *
 from dal import autocomplete
-import views
+from bober_simple_competition import views
 
 
 urlpatterns = [
