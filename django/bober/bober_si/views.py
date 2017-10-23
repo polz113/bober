@@ -329,7 +329,7 @@ class CompetitionXlsResults(SmartCompetitionAdminCodeRequiredMixin, TemplateView
                 if revoked_by is not None:
                     revoked_awards[attempt_id].append("{}: {}".format(award_name, award_serial))
                 else:
-                    awards[attempt_id].append("{}: {}".format(award_name, award_serial)
+                    awards[attempt_id].append("{}: {}".format(award_name, award_serial))
             attempts = cqs.attempt_set.all()
             for (
                     attempt_id,
