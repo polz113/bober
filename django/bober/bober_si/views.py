@@ -321,15 +321,15 @@ class CompetitionXlsResults(SmartCompetitionAdminCodeRequiredMixin, TemplateView
                 ))
             awards = defaultdict(list)
             revoked_awards = defaultdict(list)
-            for attempt_id, revoked_by, award_name in AttemptAward.objects.filter(
+            for attempt_id, revoked_by, award_name, award_serial in AttemptAward.objects.filter(
                         attempt__competitionquestionset__id = cqs.id
                     ).distinct().values_list('attempt_id', 
                         'revoked_by',
-                        'award__name'):
+                        'award__name', 'serial'):
                 if revoked_by is not None:
-                    revoked_awards[attempt_id].append(award_name)
+                    revoked_awards[attempt_id].append("{}: {}".format(award_name, award_serial))
                 else:
-                    awards[attempt_id].append(award_name)
+                    awards[attempt_id].append("{}: {}".format(award_name, award_serial)
             attempts = cqs.attempt_set.all()
             for (
                     attempt_id,
