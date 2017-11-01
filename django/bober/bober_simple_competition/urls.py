@@ -1,7 +1,8 @@
 from django.conf.urls import include, url
-from django.views.generic import ListView
+from django.views.generic import ListView, TemplateView
 from django.views.generic.base import RedirectView
-from bober_simple_competition.models import *
+from bober_simple_competition.models import Competition,\
+    QuestionSet, Question
 from dal import autocomplete
 from bober_simple_competition import views
 
@@ -193,8 +194,8 @@ urlpatterns = [
     #   all questionsets for competitions you have admin access to can be used.
     #   Also, newly created questionsets can be used.
     # handling code formats
-    url(r'^code_format/$', views.TemplateView.as_view(
-            template_name = "bober_simple_competition/codeformat_index.html"),
+    url(r'^code_format/$', TemplateView.as_view(
+            template_name="bober_simple_competition/codeformat_index.html"),
         name="code_format_index"),
     url(r'^code_format/admin/$', views.AdminCodeFormatList.as_view(),
         name="admin_code_format_list"),

@@ -1,22 +1,29 @@
 from django import forms
 from collections import OrderedDict
-from django.forms.models import inlineformset_factory, model_to_dict, fields_for_model
+from django.forms.models import inlineformset_factory, model_to_dict,\
+    fields_for_model
 from django.contrib.admin import widgets
-from bober_simple_competition.models import *
+from bober_simple_competition.models import\
+    ADMIN_PRIVILEGES, COMPETITOR_PRIVILEGES,\
+    Profile, Competitor, Competition,\
+    CompetitionQuestionSet, QuestionSet
+from django.utils.text import slugify
 from django.utils.translation import ugettext_lazy as _
 from extra_views import InlineFormSet
 import code_based_auth.models
-import django.forms.extras.widgets as django_widgets
-from django.forms import ModelForm, TextInput
-from django.core.validators import validate_email
-from django.contrib.flatpages.models import FlatPage
+from django.core.exceptions import ValidationError
+# import django.forms.extras.widgets as django_widgets
+# from django.forms import ModelForm, TextInput
+# from django.core.validators import validate_email
+# from django.contrib.flatpages.models import FlatPage
 from dal import autocomplete
-from django.contrib import admin
-from django.contrib.admin.widgets import RelatedFieldWidgetWrapper
-from django.template.loader import render_to_string
+# from django.contrib import admin
+from django.contrib.auth.models import User
+# from django.contrib.admin.widgets import RelatedFieldWidgetWrapper
+# from django.template.loader import render_to_string
 from popup_modelviews.widgets import add_related_field_wrapper
 from crispy_forms.helper import FormHelper, Layout
-from crispy_forms.layout import Fieldset, Div, HTML
+from crispy_forms.layout import Fieldset, Div
 
 
 class ProfileForm(forms.ModelForm):
@@ -82,14 +89,13 @@ class BasicProfileForm(forms.ModelForm):
         unordered_fields = self.fields
         unordered_fields.update(fields_for_model(User, _fields))
         self.fields = OrderedDict()
-        for k in ['first_name', 'last_name', 'email', 'merged_with',]:
+        for k in ['first_name', 'last_name', 'email', 'merged_with']:
             try:
                 self.fields[k] = unordered_fields.pop(k)
             except:
                 pass
         # add the fields not listed above at the end
         self.fields.update(unordered_fields)
-
 
     def save(self, *args, **kwargs):
         cleaned_data = self.cleaned_data
@@ -98,7 +104,7 @@ class BasicProfileForm(forms.ModelForm):
             if len(cleaned_data.get(k, '')):
                 user_data[k] = cleaned_data[k]
         if self.instance.id is not None:
-            u = User.objects.filter(profile__id = self.instance.id)
+            u = User.objects.filter(profile__id=self.instance.id)
             u.update(**user_data)
             u = u[0]
         else:
@@ -114,7 +120,7 @@ class BasicProfileForm(forms.ModelForm):
             for p in self.instance.former_profile_set.all():
                 p.merged_with = self.instance.merged_with
                 p.save()
-        profile = super(BasicProfileForm, self).save(*args,**kwargs)
+        profile = super(BasicProfileForm, self).save(*args, **kwargs)
         profile = profile.merge_to_top(limit=10)
         # by default, each user should be able to manage their own profile.
         profile.managed_profiles.add(profile)
@@ -131,19 +137,18 @@ class ProfileMergeForm(forms.ModelForm):
         """exclude = ('user', 'created_codes', 'received_codes',
             'vcard', 'question_sets', 'managed_profiles', 'used_codes',
             'update_used_codes_timestamp', 'update_managers_timestamp')"""
-        fields = ('merged_with',);
+        fields = ('merged_with',)
         # fields = ()
         widgets = {
             # the autocomplete: off is supposed to prevent firefox from filling in the form
             # with the current username
-            'merged_with': autocomplete.ModelSelect2(url='profile_autocomplete'),
-
+            'merged_with': autocomplete.ModelSelect2(url='profile_autocomplete')
         #    'merged_with': autocomplete_light.ChoiceWidget('ManagedUsersAutocomplete',
         #        attrs={'class':'modern-style', 'autocomplete': 'off'}),
         #    'merged_with': django_widgets.Select()
         }
         labels = {
-            'merged_with': _('Merged with'),
+            'merged_with': _('Merged with')
         }
         def clean(self):
             # assert both profiles are managed
@@ -219,7 +224,8 @@ class CompetitionRegistrationForm(QuestionSetRegistrationForm):
         if cqs is not None:
             questionset_slug = self.cleaned_data['competition_questionset'].slug_str()
             full_code = questionset_slug + self.codegen.format.separator + self.cleaned_data['access_code']
-            if not self.codegen.code_matches(full_code,
+            if not self.codegen.code_matches(
+                    full_code,
                     {'competitor_privileges':['attempt']}):
                 self.errors['access_code']=[_('Wrong access code')]
             self.cleaned_data['full_code'] = full_code
@@ -491,9 +497,9 @@ class CompetitionQuestionSetCreateForm(forms.ModelForm):
 class CompetitionQuestionSetUpdateForm(forms.ModelForm):
     class Meta:
         model = CompetitionQuestionSet
-        exclude = []
+        exclude = ['guest_code']
     create_guest_code = forms.BooleanField(required=False, label=_("Create guest code"))
-
+    guest_permissions = forms.MultipleChoiceField(choices=COMPETITOR_PRIVILEGES)
     def save(self, *args, **kwargs):
         retval = super(CompetitionQuestionSetUpdateForm,self).save(*args, **kwargs)
         if self.cleaned_data['create_guest_code'] and \
