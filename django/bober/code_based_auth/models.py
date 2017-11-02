@@ -20,8 +20,6 @@ CODE_COMPONENT_FORMATS = (
 )
 
 
-CASE_INSENSITIVE_FORMATS = ['h', 'i', 'L', 'W']
-
 HASH_ALGORITHMS = tuple(
     [(i, i) for i in list(hashlib.algorithms_available)] + [('noop', _('No hash'))]
 )
@@ -112,10 +110,11 @@ def b_to_decstr(s):
     return long_to_b(long(s))
 
 
-def words_codecs(words=DEFAULT_WORDS, separator=" "):
+def words_codecs(words=DEFAULT_WORDS, separator=" ", canonical_fn=None):
     val_words_dict = dict(((i, w) for i, w in enumerate(words)))
     n_words = len(words)
-
+    if canonical_fn is None:
+        canonical_fn = lambda x: x
     def __b_to_words(s):
         l = b_to_long(s)
         res = ""
@@ -131,7 +130,6 @@ def words_codecs(words=DEFAULT_WORDS, separator=" "):
         return res
 
     def __words_to_b(s):
-        print("haha", s)
         l = 0
         while(s):
             if separator:
@@ -146,17 +144,17 @@ def words_codecs(words=DEFAULT_WORDS, separator=" "):
             l = l * n_words
             l += val_words_dict.get(word, 0)
         return long_to_b(l)
-    return (__b_to_words, __words_to_b)
+    return (__b_to_words, __words_to_b, canonical_fn)
 
 
 FORMAT_FUNCTIONS = {
-    'h': (b_to_hexstr, hexstr_to_b),
-    'i': (b_to_decstr, decstr_to_b),
+    'h': (b_to_hexstr, hexstr_to_b, lambda x: x.lower()),
+    'i': (b_to_decstr, decstr_to_b, lambda x: x),
     'w': words_codecs(DEFAULT_WORDS, " "),
-    'W': words_codecs([w.lower() for w in DEFAULT_WORDS], " "),
+    'W': words_codecs([w.lower() for w in DEFAULT_WORDS], " ", lambda x: x.lower()),
     'l': words_codecs(LETTERS_AND_DIGITS, ''),
-    'L': words_codecs(LOWERCASE_LETTERS_AND_DIGITS, ''),
-    'r': (lambda x: x.decode('iso8859-1'), lambda x: x.encode('iso8859-1')),
+    'L': words_codecs(LOWERCASE_LETTERS_AND_DIGITS, '', lambda x: x.lower()),
+    'r': (lambda x: x.decode('iso8859-1'), lambda x: x.encode('iso8859-1'), lambda x: x),
 }
 
 
@@ -204,7 +202,6 @@ class CodeFormat(models.Model):
             str(i) for i in self.components.order_by('ordering')])
     separator = models.CharField(max_length=1, default=DEFAULT_SEPARATOR)
 
-
     @classmethod
     def from_components(cls, components, separator=DEFAULT_SEPARATOR):
         cf = cls(separator = separator)
@@ -214,11 +211,11 @@ class CodeFormat(models.Model):
             cc.save()
         return cf
 
-
     def code_matches(self, code, salt, parts):
         if len(parts) < 1:
             return False
         format_components = self.components.order_by('ordering')
+        code = self.canonical_code(code)
         # hash_params is a dict of 
         # (  format conversion function, 
         #    hash algorithm, 
@@ -234,8 +231,6 @@ class CodeFormat(models.Model):
             hashes = defaultdict(set)
             for i, component in enumerate(format_components):
                 h = split_parts[i]
-                if component.hash_format in CASE_INSENSITIVE_FORMATS:
-                    h = h.lower()
                 if component.max_parts == 1 and component.hash_algorithm == 'noop':
                     challenge += h.encode('iso8859-1')
                 if not component.part_separator:
@@ -269,7 +264,7 @@ class CodeFormat(models.Model):
                         # print ("  ", h, "not in", hashes[k])
                         return False
         except Exception as e:
-            print(e)
+            # print(e)
             return False
         return True
 
@@ -277,11 +272,11 @@ class CodeFormat(models.Model):
         component = self.components.get(
             name=part,
             hash_algorithm='noop', max_parts=1)
-        fn =  FORMAT_FUNCTIONS[component.hash_format][0]
+        fn = FORMAT_FUNCTIONS[component.hash_format][0]
         return fn(value)[-component.hash_len:]
 
     def code_from_parts(self, salt, parts):
-        print ("parts:", parts)
+        # print ("parts:", parts)
         salt = salt.encode('utf-8')
         format_components = self.components.order_by('ordering')
         challenge = bytes()
@@ -300,14 +295,20 @@ class CodeFormat(models.Model):
                 h = value_hash(salt + challenge,
                     value, component.hash_algorithm)
                 s = FORMAT_FUNCTIONS[component.hash_format][0](h)
-                if hash_format in CASE_INSENSITIVE_FORMATS:
-                    s = s.lower()
                 hash_list.append(s[-component.hash_len:])
             hashed_components.append(component.part_separator.join(hash_list))
         return self.separator.join(hashed_components)
 
     def canonical_code(self, code):
-        return code
+        format_components = self.components.order_by('ordering')
+        split_parts = code.split(self.separator)
+        canonical_parts = []
+        for i, component in enumerate(format_components):
+            canonical_parts.append(
+                FORMAT_FUNCTIONS[component.hash_format][2](
+                    split_parts[i]))
+        return self.separator.join(canonical_parts)
+
 
 @python_2_unicode_compatible
 class CodePart(models.Model):
@@ -398,3 +399,5 @@ class CodeGenerator(models.Model):
         return self.format.code_matches(salt = self.salt,
             code = code, parts = parts)
 
+    def canonical_code(self, code):
+        return self.format.canonical_code(code)
