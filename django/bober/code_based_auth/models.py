@@ -215,7 +215,6 @@ class CodeFormat(models.Model):
         if len(parts) < 1:
             return False
         format_components = self.components.order_by('ordering')
-        code = self.canonical_code(code)
         # hash_params is a dict of 
         # (  format conversion function, 
         #    hash algorithm, 
@@ -230,7 +229,8 @@ class CodeFormat(models.Model):
             # collect the hashes, calculate challenge
             hashes = defaultdict(set)
             for i, component in enumerate(format_components):
-                h = split_parts[i]
+                format_functions = FORMAT_FUNCTIONS[component.hash_format]
+                h = format_functions[2](split_parts[i])
                 if component.max_parts == 1 and component.hash_algorithm == 'noop':
                     challenge += h.encode('iso8859-1')
                 if not component.part_separator:
@@ -242,7 +242,7 @@ class CodeFormat(models.Model):
                     return False
                 for h in split_hash:
                     hashes[component.name].add(h)
-                hash_params[component.name] = (FORMAT_FUNCTIONS[component.hash_format][0],
+                hash_params[component.name] = (format_functions[0],
                     component.hash_algorithm, component.hash_len, hashes)
             # calculate the hashes for components
             # print ("hashes:", hashes)
@@ -300,14 +300,18 @@ class CodeFormat(models.Model):
         return self.separator.join(hashed_components)
 
     def canonical_code(self, code):
-        format_components = self.components.order_by('ordering')
-        split_parts = code.split(self.separator)
-        canonical_parts = []
-        for i, component in enumerate(format_components):
-            canonical_parts.append(
-                FORMAT_FUNCTIONS[component.hash_format][2](
-                    split_parts[i]))
-        return self.separator.join(canonical_parts)
+        try:
+            format_components = self.components.order_by('ordering')
+            split_parts = code.split(self.separator)
+            canonical_parts = []
+            for i, component in enumerate(format_components):
+                canonical_parts.append(
+                    FORMAT_FUNCTIONS[component.hash_format][2](
+                        split_parts[i]))
+            return self.separator.join(canonical_parts)
+        except:
+            pass
+        return code
 
 
 @python_2_unicode_compatible
