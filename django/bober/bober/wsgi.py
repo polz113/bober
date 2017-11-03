@@ -8,7 +8,7 @@ https://docs.djangoproject.com/en/1.6/howto/deployment/wsgi/
 """
 
 import os, sys
-sys.path.append('/var/www/bober/django/bober')
+sys.path.append('/home/bober/bober/django/bober')
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "bober.settings")
 
 from django.core.wsgi import get_wsgi_application

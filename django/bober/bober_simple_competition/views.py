@@ -106,6 +106,7 @@ def access_code_required(function=None):
 
 
 def smart_competition_admin_code_required(function = None):
+    """Try to find an access code this user already has before asking for it"""
     def code_fn(*args, **kwargs):
         request = kwargs.get('request', args[0])
         access_code = request.session.get('access_code', None)
@@ -123,7 +124,7 @@ def smart_competition_admin_code_required(function = None):
                     and codegen.code_matches(
                         access_code,
                         {'competitor_privileges': ['attempt']}):
-                codes = [access_code]
+                codes = [codegen.format.canonical_code(access_code)]
             # print "pre:", codes
             if len(codes) < 1:
                 codes = codegen.codes.filter(
@@ -147,7 +148,7 @@ def smart_competition_admin_code_required(function = None):
             access_code = codes[0]
         except Exception as e:
             pass
-            print(e)
+            # print(e)
         if access_code is not None:
             _use_access_code(request, access_code)
         else:
@@ -197,7 +198,7 @@ def _use_access_code(request, access_code,
             code = Code.objects.get(value=access_code)
             profile.used_codes.add(code)
     except Exception as e:
-        print("_use_access_code:", e)
+        # print("_use_access_code:", e)
         pass
     try:
         if not defer_code_effects:
@@ -259,7 +260,7 @@ def competitionquestionset_access_code(request, competition_questionset_id, next
         cqs = CompetitionQuestionSet.objects.get(
             id=competition_questionset_id)
         cqs_slug = cqs.slug_str()
-        separator = cqs.competition.competitor_code_generator.format.separator
+        code_format = cqs.competition.competitor_code_generator.format
     except Exception as e:
         cqs_slug = None
     if cqs_slug is not None and form.is_valid():
@@ -267,7 +268,8 @@ def competitionquestionset_access_code(request, competition_questionset_id, next
         defer_effects = form.cleaned_data.get('defer_effects', False)
         short_access_code = form.cleaned_data['access_code']
         request.session['short_access_code'] = short_access_code
-        access_code = cqs_slug + separator + short_access_code
+        access_code = cqs_slug + code_format.separator + short_access_code
+        access_code = code_format.canonical_code(access_code)
         _use_access_code(request, access_code, defer_update, defer_effects)
         # print "    ", request.session['access_code']
         return redirect(next)
@@ -966,7 +968,6 @@ def attempt_results(request, competition_questionset_id, attempt_id):
 
 # 3. create registration codes
 def registration_codes(request):
-    pass
     return render(
         request,
         "bober_simple_competition/registration_codes.html", locals())

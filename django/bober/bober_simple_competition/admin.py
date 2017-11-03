@@ -9,7 +9,8 @@ from bober_simple_competition.forms import ProfileAdminForm,\
 
 class CompetitionQuestionSetInline(admin.TabularInline):
     model = CompetitionQuestionSet
-    form = CompetitionQuestionSetInlineAdminForm
+    # form = CompetitionQuestionSetInlineAdminForm
+    raw_id_fields = ('guest_code',)
 
 class CompetitionAdmin(admin.ModelAdmin):
     inlines = [ CompetitionQuestionSetInline ]
