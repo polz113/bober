@@ -80,5 +80,8 @@ tinyMCE.init({
   toolbar: "insertfile undo redo | styleselect fontsizeselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link nalaganje_slik",
   autosave_ask_before_unload: false,
   forced_root_block : false,
-  document_base_url: tinyMCEbaseURL
+  document_base_url: tinyMCEbaseURL,
+  setup: function(editor) {
+    editor.getElement().removeAttribute('required');
+  },
 });
