@@ -1078,9 +1078,7 @@ class Profile(models.Model):
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
     if created:
-        p = Profile.objects.create()
-        p.user = instance
-        p.save()
+        p = Profile.objects.create(user=instance)
         p.managed_profiles.add(p)
 
 
