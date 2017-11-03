@@ -343,7 +343,7 @@ class CompetitionQuestionSet(models.Model):
 
 class CodeEffect(models.Model):
     code = ForeignKey(Code)
-    effect = models.CharField(max_length = 64, choices=CODE_EFFECTS)
+    effect = models.CharField(max_length=64, choices=CODE_EFFECTS)
     def apply(self, users=None):
         def let_manage(profile):
             for owner in self.code.owner_set:
@@ -372,12 +372,12 @@ class QuestionSet(models.Model):
     def __str__(self):
         return u"{}".format(self.name)
         # return u"{}: {}".format(self.name, ",".join([str(i) for i in self.questions.all()]))
-    
+
     def get_absolute_url(self):
         return reverse('questionset_detail', kwargs={'pk': str(self.id)})
-    
+
     slug = SlugField(unique=True, verbose_name=_("Slug"))
-    name = CharField(max_length = 255, verbose_name=_("Name"))
+    name = CharField(max_length=255, verbose_name=_("Name"))
     questions = ManyToManyField('Question', blank=True, verbose_name=_("Questions"))
     resource_caches = ManyToManyField('ResourceCache', blank=True)
 
@@ -405,7 +405,7 @@ class QuestionSet(models.Model):
     def reverse_question_mapping(self, random_seed):
         return {v: k for k, v in self.question_mapping(random_seed).items()}
 
-    def rebuild_caches(self, embed_images = True):
+    def rebuild_caches(self, embed_images=True):
         html_resources = {}
         self.resource_caches.all().delete()
         html_cache = ResourceCache(format = 'zip')
@@ -450,9 +450,9 @@ class QuestionSet(models.Model):
         self.resource_caches.add(html_cache)
         for q in self.questions.all():
             for r in q.resource_set.exclude(part_of_solution = True).exclude(
-                id__in = embeded_resource_ids):
+                id__in=embeded_resource_ids):
                 print("must create cache for ", r.id, r.question.identifier, r.file.name)
-        question_cache_id = 'questionset_question_ids_' + str(self.id)
+        # question_cache_id = 'questionset_question_ids_' + str(self.id)
 
 def _qs_rebuild_caches(sender, instance=None, **kwargs):
     if instance is not None:
@@ -465,7 +465,7 @@ class ResourceCache(models.Model):
     def __str__(self):
         return u"{}: {}".format(self.format, self.file)
     file = FileField(upload_to='caches')
-    format = CharField(max_length = 16, choices=CACHE_FORMATS)
+    format = CharField(max_length=16, choices=CACHE_FORMATS)
     resources = ManyToManyField('Resource')
 
 @python_2_unicode_compatible
@@ -473,14 +473,16 @@ class Resource(models.Model):
     def __str__(self):
         return u"{}: {}".format(self.relative_url, self.file)
     question = ForeignKey('Question')
-    relative_url = CharField(max_length = 255)
-    file = FileField(null = True, upload_to = 'resources')
-    resource_type = CharField(max_length = 255)
-    mimetype = CharField(max_length = 255)
-    data = BinaryField(null = True)
+    relative_url = CharField(max_length=255)
+    file = FileField(null=True, upload_to='resources')
+    resource_type = CharField(max_length=255)
+    mimetype = CharField(max_length=255)
+    data = BinaryField(null=True)
     part_of_solution = BooleanField(default=False)
+    
     def url(self):
         return self.file.url
+    
     def as_bytes(self):
         s = bytes()
         if self.file:
@@ -963,8 +965,8 @@ class Profile(models.Model):
         return self.user.username
 
     def __superiors(self, codegen, known):
-        for c in self.received_codes.filter(format = codegen.format,
-                salt = codegen.salt):
+        for c in self.received_codes.filter(format=codegen.format,
+                salt=codegen.salt):
             for o in c.owner_set.all():
                 if o not in known:
                     s1 = Profile.__superiors(o, codegen, known)
@@ -1021,7 +1023,7 @@ class Profile(models.Model):
                     for u in c.owner_set:
                         u.managed_profiles.add(self)
                         for competition in competitions:
-                            for superior in superiors(u,
+                            for superior in __superiors(u,
                                     competition.administrator_code_generator):
                                 superior.managed_profiles.add(self)
 
