@@ -351,8 +351,9 @@ class CompetitionCompetitorForm(QuestionSetCompetitorForm):
             questionset_slug = self.cleaned_data['competition_questionset'].slug_str()
             short_code = self.cleaned_data.get('short_access_code', '')
             if len(short_code):
-                full_code = questionset_slug + self.codegen.format.separator \
-                    + short_code
+                full_code = self.codegen.canonical_code(
+                    questionset_slug + self.codegen.format.separator
+                    + short_code)
             else:
                 full_code = None
                 if cqs.guest_code is not None:
