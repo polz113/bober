@@ -491,7 +491,7 @@ class Resource(models.Model):
             fname = os.path.join('resources', self.question.identifier, self.relative_url)
             self.file.name = fname
             ensure_dir_exists(self.file.path)
-            with open(self.file.path, 'w') as f:
+            with open(self.file.path, 'wb') as f:
                 f.write(self.data)
             # self.file.save(fname, ContentFile(self.data))
             s = self.data
