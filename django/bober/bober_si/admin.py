@@ -21,7 +21,7 @@ class AwardInline(admin.TabularInline):
 class CompetitionQuestionSetInline(admin.TabularInline):
     model = CompetitionQuestionSet
     # form = CompetitionQuestionSetInlineAdminForm
-    raw_id_fields = ('guest_code')
+    raw_id_fields = ('guest_code',)
 
 class SchoolCategoryQuestionSetsInline(admin.TabularInline):
     model = SchoolCategoryQuestionSets
