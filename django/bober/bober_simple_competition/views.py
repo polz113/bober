@@ -111,12 +111,9 @@ def smart_competition_admin_code_required(function = None):
         request = kwargs.get('request', args[0])
         access_code = request.session.get('access_code', None)
         try:
-            slug = kwargs['slug']
             competition = Competition.get_cached_by_slug(slug=kwargs['slug'])
             codegen = competition.administrator_code_generator
             codes = []
-            # print codegen.id
-            # print request.profile.id
             if access_code is not None:
                 codes = codegen.codes.filter(
                     value=access_code).values_list('value', flat=True)
@@ -125,20 +122,14 @@ def smart_competition_admin_code_required(function = None):
                         access_code,
                         {'competitor_privileges': ['attempt']}):
                 codes = [codegen.format.canonical_code(access_code)]
-            # print "pre:", codes
             if len(codes) < 1:
                 codes = codegen.codes.filter(
                     recipient_set__id=request.profile.id).values_list(
                         'value', flat=True)
-            # print "rec:", codes
-            #print "rec:", codegen.codes.filter(recipient_set__id = request.profile.id).values_list('value', flat=True)
             if len(codes) < 1:
                 codes = codegen.codes.filter(
                     user_set__id=request.profile.id).values_list(
                         'value', flat=True)
-            # print "used:", codes
-            # print "user:", codegen.codes.filter(
-            #        user_set__id = request.profile.id).values_list('value', flat=True)
             if len(codes) < 1:
                 codes = codegen.codes.filter(
                     creator_set__id=request.profile.id).values_list(
@@ -206,7 +197,7 @@ def _use_access_code(request, access_code,
             for effect in code.codeeffect_set.all():
                 effect.apply(users=[profile])
     except Exception as e:
-        print("_use_access_code2:", e)
+        # print("_use_access_code2:", e)
         pass
 
 
@@ -238,7 +229,6 @@ def access_code(request, next):
         defer_update = form.cleaned_data.get('defer_update_used_codes', False)
         defer_effects = form.cleaned_data.get('defer_effects', False)
         access_code = form.cleaned_data['access_code']
-        # print "access_code", access_code
         _use_access_code(request, access_code, defer_update, defer_effects)
         return HttpResponseRedirect('/' + next)
     return render(
