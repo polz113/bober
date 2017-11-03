@@ -1,6 +1,8 @@
 from django.contrib import admin
 from bober_si.models import *
 from bober_simple_competition.models import CompetitionQuestionSet
+from bober_simple_competition.forms import CompetitionQuestionSetInlineAdminForm
+
 
 try:
     from import_export.admin import ImportExportModelAdmin, ImportExportActionModelAdmin
@@ -18,7 +20,8 @@ class AwardInline(admin.TabularInline):
 
 class CompetitionQuestionSetInline(admin.TabularInline):
     model = CompetitionQuestionSet
-    # inlines = [ AwardInline ]
+    # form = CompetitionQuestionSetInlineAdminForm
+    raw_id_fields = ('guest_code')
 
 class SchoolCategoryQuestionSetsInline(admin.TabularInline):
     model = SchoolCategoryQuestionSets
