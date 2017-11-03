@@ -296,6 +296,9 @@ class QuestionSetCompetitorForm(forms.ModelForm):
         if self.codegen.code_matches(
                 full_code,
                 {'competitor_privileges': ['resume_attempt']}):
+            # print("code:", full_code)
+            full_code = self.codegen.canonical_code(full_code)
+            # print("  canonical:", full_code)
             if not self.profile:
                 self.profile = None
         self.cleaned_data['full_code'] = full_code
@@ -351,9 +354,11 @@ class CompetitionCompetitorForm(QuestionSetCompetitorForm):
             questionset_slug = self.cleaned_data['competition_questionset'].slug_str()
             short_code = self.cleaned_data.get('short_access_code', '')
             if len(short_code):
+                # print("short code: ", short_code)
                 full_code = self.codegen.canonical_code(
                     questionset_slug + self.codegen.format.separator
                     + short_code)
+                # print("canonical code: ", full_code)
             else:
                 full_code = None
                 if cqs.guest_code is not None:
