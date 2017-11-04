@@ -130,7 +130,7 @@ $(document).ready(function(){
             {% trans "Codes for each school" %}<br/>
         </th>
         <td>
-            {% for school, codes_mentorship in schools.iteritems %}
+            {% for school, codes_mentorship in schools.items %}
                 <div class="school">
                     <p>{{school}}</p>
                     {% if codes_mentorship.1 %}
@@ -155,7 +155,7 @@ $(document).ready(function(){
     <tr>
         <th>{% trans "Certificates" %}</th>
         <td>
-            {% for school, cqsa in attempts.iteritems %}
+            {% for school, cqsa in attempts.items %}
                  <p>{{ school }}</p>
                  <p style="padding-bottom: 20px">
                  {% for cqs, attempts in cqsa %}{% if attempts %}
@@ -181,7 +181,7 @@ $(document).ready(function(){
     <div>
 {{competition.motd | safe}}
     </div>
-{% for school, cqsa in attempts.iteritems %}
+{% for school, cqsa in attempts.items %}
     <div class="results-school">{{ school }}</div>
     {% for cqs, attempts in cqsa %}{% if attempts %}<div>
         <div class="results-group">{{cqs.name}}</div>
@@ -217,7 +217,7 @@ $(document).ready(function(){
                          <img src="/static/img/qualify.png" class="confirm" onclick="switch_qualify(this, '{% url "attempt_confirm" attempt_id=attempt.id competition_questionset_id=cqs.id %}', true); invalidate_award('{% url "revalidate_awards" profile_id=profile.id slug=competition.slug attempt_id=attempt.id %}')" />
                          <img src="/static/img/disqualify.png" class="confirm" onclick="switch_qualify(this, '{% url "attempt_unconfirm" attempt_id=attempt.id competition_questionset_id=cqs.id %}', false); invalidate_award('{% url "revalidate_awards" profile_id=profile.id slug=competition.slug attempt_id=attempt.id %}')" />
                     </th>
-                    {% for q, answer in attempt.graded_answers_by_question_id.iteritems %}
+                    {% for q, answer in attempt.graded_answers_by_question_id.items %}
                         <td>
                             {% if answer.score > 0 %}
                                 <span class="correct">&#x2714;</span>

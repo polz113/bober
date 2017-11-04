@@ -422,7 +422,7 @@
         enabledConfirmExit = false;
         cleanupLastQuestionCookie();
         alert(gettext("You are out of time for solving the competition."));
-        window.close();
+        /* window.close(); */
         window.location = '/';
     }
 
@@ -611,7 +611,7 @@
                     },
                     "complete": function() {
                         disableEnableControls(true);
-                        window.close();
+                        /* window.close(); */
                         window.location = redirect_url;
                     }
                 });

@@ -1,9 +1,10 @@
 from django.conf.urls import include, url
-from django.views.generic import ListView
+from django.views.generic import ListView, TemplateView
 from django.views.generic.base import RedirectView
-from bober_simple_competition.models import *
+from bober_simple_competition.models import Competition,\
+    QuestionSet, Question
 from dal import autocomplete
-import views
+from bober_simple_competition import views
 
 
 urlpatterns = [
@@ -178,9 +179,9 @@ urlpatterns = [
     url(r'^questionset/$', views.QuestionSetList.as_view(), name="questionset_id_list"),
     url(r'^questionset/(?P<slug>[\w\-_]+)/update$', views.QuestionSetUpdate.as_view(),
         name="questionset_update"),
-    url(r'^questionset/id=(?P<pk>.*)/update$', views.QuestionSetUpdate.as_view(),
+    url(r'^questionset/id=(?P<pk>\d+)/update$', views.QuestionSetUpdate.as_view(),
         name="questionset_change"),
-    url(r'^questionset/id=(?P<pk>.*)/update$', views.QuestionSetUpdate.as_view(),
+    url(r'^questionset/id=(.*)/update$', views.QuestionSetUpdate.as_view(),
         name="questionset_change"),
     url(r'^questionset/id=(?P<pk>\d+)/delete$', views.QuestionSetDelete.as_view()),
     url(r'^questionset/(?P<slug>[\w\-_]+)/delete$', views.QuestionSetDelete.as_view()),
@@ -193,8 +194,8 @@ urlpatterns = [
     #   all questionsets for competitions you have admin access to can be used.
     #   Also, newly created questionsets can be used.
     # handling code formats
-    url(r'^code_format/$', views.TemplateView.as_view(
-            template_name = "bober_simple_competition/codeformat_index.html"),
+    url(r'^code_format/$', TemplateView.as_view(
+            template_name="bober_simple_competition/codeformat_index.html"),
         name="code_format_index"),
     url(r'^code_format/admin/$', views.AdminCodeFormatList.as_view(),
         name="admin_code_format_list"),

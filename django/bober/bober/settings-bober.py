@@ -14,6 +14,7 @@ from django.utils.translation import ugettext_lazy as _
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
+SITE_ID = 1
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.6/howto/deployment/checklist/
@@ -53,9 +54,11 @@ INSTALLED_APPS = (
     'tinymce',
     'sorl.thumbnail',
     'mce_filebrowser',
-    #'PIL',
-    # 'autocomplete_light'
+    'popup_modelviews',
+    'crispy_forms',
 )
+
+CRISPY_TEMPLATE_PACK = 'bootstrap3'
 
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -85,7 +88,7 @@ TEMPLATES = [
                 'django.template.context_processors.i18n',
                 'django.template.context_processors.media',
                 'django.template.context_processors.static',
-                'django.core.context_processors.request',
+                'django.template.context_processors.request',
                 'django.template.context_processors.tz',
                 'django.contrib.messages.context_processors.messages',
             ],
@@ -113,15 +116,25 @@ WSGI_APPLICATION = 'bober.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.6/ref/settings/#databases
 
+import os
+
+PROJECT_DIR = os.path.abspath(os.path.dirname(__file__))
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'bober',
-        'USER': 'bober',
-        'PASSWORD': 'YOURPASSWORD',
-        'HOST': 'localhost',
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(PROJECT_DIR, 'bober.db'),
     }
 }
+
+#DATABASES = {
+#    'default': {
+#        'ENGINE': 'django.db.backends.mysql',
+#        'NAME': 'bober',
+#        'USER': 'bober',
+#        'PASSWORD': 'YOURPASSWORD',
+#        'HOST': 'localhost',
+#    }
+#}
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.6/topics/i18n/
