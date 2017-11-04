@@ -1,13 +1,17 @@
 from django.contrib import admin
 from bober_si.models import *
 from bober_simple_competition.models import CompetitionQuestionSet
+from import_export.admin import ImportExportActionModelAdmin
+
 
 class AwardInline(admin.TabularInline):
     model = Award
 
+
 class CompetitionQuestionSetInline(admin.TabularInline):
     model = CompetitionQuestionSet
     # inlines = [ AwardInline ]
+
 
 class SchoolCategoryQuestionSetsInline(admin.TabularInline):
     model = SchoolCategoryQuestionSets
@@ -30,7 +34,7 @@ class CompetitionQuestionSetAdmin(admin.ModelAdmin):
     inlines = [ AwardInline ]
     model = CompetitionQuestionSet
 
-class SchoolAdmin(admin.ModelAdmin):
+class SchoolAdmin(ImportExportActionModelAdmin):
     model = School
     search_fields = ['name']
 

@@ -29,8 +29,8 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         if len(args) < 2:
             args += (None,) * (2 - len(args))
-        cslug = unicode(options.get('competition_slug', [args[0]])[0])
-        cqs_name = unicode(options.get('questionset_name', [args[1]])[0])
+        cslug = unicode(options.get('competition_slug', [args[0]])[0], "utf8")
+        cqs_name = unicode(options.get('questionset_name', [args[1]])[0], "utf8")
         competition = Competition.objects.get(slug=cslug)
         cqss = CompetitionQuestionSet.objects.filter(
             competition = competition,
