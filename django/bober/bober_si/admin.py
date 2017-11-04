@@ -1,7 +1,19 @@
 from django.contrib import admin
 from bober_si.models import *
 from bober_simple_competition.models import CompetitionQuestionSet
-from import_export.admin import ImportExportActionModelAdmin
+from bober_simple_competition.forms import CompetitionQuestionSetInlineAdminForm
+
+
+try:
+    from import_export.admin import ImportExportModelAdmin, ImportExportActionModelAdmin
+    DefaultAdmin = ImportExportActionModelAdmin
+except:
+    DefaultAdmin = admin.ModelAdmin
+
+
+class SchoolAdmin(DefaultAdmin):
+    model = School
+    search_fields = ['name'] 
 
 
 class AwardInline(admin.TabularInline):
@@ -10,7 +22,8 @@ class AwardInline(admin.TabularInline):
 
 class CompetitionQuestionSetInline(admin.TabularInline):
     model = CompetitionQuestionSet
-    # inlines = [ AwardInline ]
+    # form = CompetitionQuestionSetInlineAdminForm
+    raw_id_fields = ('guest_code',)
 
 
 class SchoolCategoryQuestionSetsInline(admin.TabularInline):
@@ -24,26 +37,23 @@ class SchoolCategoryQuestionSetsInline(admin.TabularInline):
                 kwargs["queryset"] = CompetitionQuestionSet.objects.none()
         return super(SchoolCategoryQuestionSetsInline, self).formfield_for_foreignkey(db_field, request, **kwargs)
 
-class CompetitionAdmin(admin.ModelAdmin):
+class CompetitionAdmin(DefaultAdmin):
     inlines = [ CompetitionQuestionSetInline, SchoolCategoryQuestionSetsInline ]
     def get_form(self, request, obj=None, **kwargs):
         request._obj_ = obj
         return super(CompetitionAdmin, self).get_form(request, obj, **kwargs)
 
-class CompetitionQuestionSetAdmin(admin.ModelAdmin):
+class CompetitionQuestionSetAdmin(DefaultAdmin):
     inlines = [ AwardInline ]
     model = CompetitionQuestionSet
 
-class SchoolAdmin(ImportExportActionModelAdmin):
-    model = School
-    search_fields = ['name']
 
 # Register your models here.
 admin.site.register(School, SchoolAdmin)
-admin.site.register(Award)
-admin.site.register(AttemptAward)
+admin.site.register(Award, DefaultAdmin)
+admin.site.register(AttemptAward, DefaultAdmin)
 admin.site.register(CompetitionQuestionSet, CompetitionQuestionSetAdmin)
-admin.site.register(SchoolTeacherCode)
+admin.site.register(SchoolTeacherCode, DefaultAdmin)
 admin.site.register(SchoolCompetition, CompetitionAdmin)
-admin.site.register(CompetitionRecognition)
-admin.site.register(TeacherRecognition)
+admin.site.register(CompetitionRecognition, DefaultAdmin)
+admin.site.register(TeacherRecognition, DefaultAdmin)

@@ -1,7 +1,7 @@
 from bober_tasks.models import *
 from django.conf import settings
-from django.shortcuts import render_to_response, redirect, render
-from django.core.urlresolvers import reverse, reverse_lazy
+from django.shortcuts import render_to_response, redirect, render, get_object_or_404
+from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.contrib.auth.models import User
@@ -9,43 +9,43 @@ from django.db.models import Q
 from django.template.loader import render_to_string
 from django.template.context import RequestContext
 from bober_tasks.helper import *
-import zipfile
 import codecs
 import re
 import os
 from django.utils.translation import ugettext_lazy as _
-from django.views.generic import ListView, DetailView, CreateView, DeleteView, UpdateView, FormView, TemplateView
-import django.forms
-from django.forms.models import modelform_factory, model_to_dict
+from django.views.generic import DetailView, CreateView
 from django_tables2 import RequestConfig
 from bober_tasks.tables import TaskTable
 from bober_tasks.filters import TaskFilter
-from extra_views import CreateWithInlinesView, UpdateWithInlinesView, InlineFormSet
+from extra_views import UpdateWithInlinesView
 from braces.views import LoginRequiredMixin
-import StringIO
 from json import dumps as to_json
 from django.http import HttpResponse
 from bober_tasks import forms
 from django.contrib import auth, messages
 from django.utils.text import slugify
-from django.shortcuts import render, get_object_or_404
-from django.core.validators import validate_email
+from django.contrib.auth.decorators import permission_required
+from django.contrib.auth.mixins import PermissionRequiredMixin
 import mimetypes
-import random
+
 
 def render_to_file(template, filename, template_data, context): # loads template with context data and returns it as a file
     return codecs.open(os.path.join(settings.MEDIA_DIR, 'tasks_private') + filename, 'w', 'utf-8').write(render_to_string(template, template_data, context)) # save file to 'private folder'
+
 
 def export_task_language_version( request, task_id, language_code, version ):
     task_translation = TaskTranslation.objects.get(language_locale = language_code, task_id=task_id, version=version)
     return export_task_translation(request, task_translation)
 
-def export_task_language( request, task_id, language_code ):
-    task = Task.objects.get(id = task_id)
+
+def export_task_language(request, task_id, language_code):
+    task = Task.objects.get(id=task_id)
     task_translation = task.get_latest_translation(language_code)
     return export_task_translation(request, task_translation)
 
-def export_task_translation( request, pk ):
+
+@permission_required('bober_tasks.view_tasktranslation')
+def export_task_translation(request, pk):
     task_translation = TaskTranslation.objects.get(pk = pk)
     # Grab ZIP file from in-memory, make response with correct MIME-type
     resp = HttpResponse(task_translation.as_zip(), content_type = "application/zip")
@@ -57,7 +57,8 @@ def export_task_translation( request, pk ):
     return resp
     #return HttpResponse(str(current_task_interactive_translated_answer_values))
 
-#TODO: add pager
+
+# TODO: add pager
 def parameters(request):
     age_groups = AgeGroup.objects.all()
     difficultys = DifficultyLevel.objects.all()
@@ -65,31 +66,41 @@ def parameters(request):
 
     return render_to_response("control-panel/parameters.html", locals(), context_instance = RequestContext( request ) )
 
+
 # Age groups
-def edit_age_group( request, id ):
-  ag = AgeGroup.objects.get( id = id )
-  if request.method == 'POST':
-      form = forms.AgeGroupForm( request.POST, instance = ag )
-      if form.is_valid():
-        form.save()
-        return redirect( "control_panel.age_groups" )
-  else:
-      form = forms.AgeGroupForm( instance = ag )
-  return render_to_response("control-panel/edit-age-group.html", locals(), context_instance = RequestContext( request ) )
+def edit_age_group(request, id):
+    ag = AgeGroup.objects.get(id=id)
+    if request.method == 'POST':
+        form = forms.AgeGroupForm(request.POST, instance=ag)
+        if form.is_valid():
+            form.save()
+            return redirect( "control_panel.age_groups" )
+    else:
+        form = forms.AgeGroupForm(instance=ag)
+    return render_to_response(
+        "control-panel/edit-age-group.html",
+        locals(),
+        context_instance=RequestContext(request)
+    )
 
-def new_age_group( request ):
-  if request.method == 'POST':
-      form = forms.AgeGroupForm( request.POST )
-      if form.is_valid():
-        form.save()
-        return redirect( "control_panel.age_groups" )
-  else:
-      form = forms.AgeGroupForm()
-  return render_to_response("control-panel/edit-age-group.html", locals(), context_instance = RequestContext( request ) )
 
-def delete_age_group( request, id ):
-  AgeGroup.objects.get( id = id ).delete()
+def new_age_group(request):
+    if request.method == 'POST':
+        form = forms.AgeGroupForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect("control_panel.age_groups")
+    else:
+        form = forms.AgeGroupForm()
+    return render_to_response(
+        "control-panel/edit-age-group.html",locals(),
+        context_instance=RequestContext(request))
+
+
+def delete_age_group(request, id):
+  AgeGroup.objects.get(id=id).delete()
   return redirect( "control_panel.age_groups" )
+
 
 # Categories
 def edit_category( request, id ):
@@ -306,24 +317,8 @@ def index( request ):
 
     return render_to_response("index.html", locals(), context_instance = RequestContext( request ) )
 """
-
-#def tasks_list_language(request, language_locale = None):
-    #language = language_locale
-    #languages = settings.LANGUAGES
-    #all_task_translations = TaskTranslation.objects.all()
-    #if language:
-        #all_task_translations = task_translations.filter(
-            #language_locale = language_locale)
-    #all_task_translation = all_task_translations.order_by('task', '-version')
-    #task_translations = []
-    #prev_task = None
-    # collect the tasks with largest versions
-    #for translation in all_task_translations:
-        #if prev_task != translation.task:
-            #task_translations.append(translation)
-        #prev_task = translation.task
-    #return render(request, "bober_tasks/list.html", locals())
 @login_required()
+@permission_required('bober_tasks.view_tasktranslation')
 def tasks_list_language(request, language_locale):
     queryset = TaskTranslation.objects.select_related().all()
     f = TaskFilter(request.GET, queryset=queryset)
@@ -331,7 +326,9 @@ def tasks_list_language(request, language_locale):
     RequestConfig(request, paginate={'per_page': 10}).configure(table)
     return render(request, "bober_tasks/list.html", {'table': table})
 
+
 @login_required()
+@permission_required('bober_tasks.change_tasktranslation')
 def tasks_upload(request, id=0):
     task_translation = TaskTranslation.objects.get(id = id)
 
@@ -346,6 +343,8 @@ def tasks_upload(request, id=0):
     handle_uploaded_file(request.FILES.get('images'), file, task_translation)
     return HttpResponse(to_json({'status': 'ok', 'filename': file, 'filepath': urlpath }))
 
+
+@permission_required('bober_tasks.view_tasktranslation')
 def export_multiple_tasks(request):
     export_values = request.POST.getlist('taskValues')
     for i in range(len(export_values)):
@@ -376,6 +375,7 @@ def handle_uploaded_file(f,name, task_translation):
 
 
 #TODO fix this!
+@permission_required('bober_tasks.add_tasktranslation')
 @login_required()
 def tasks_translate(request, id):
     all_languages = settings.LANGUAGES
@@ -415,6 +415,7 @@ def tasks_translate(request, id):
     return render_to_response("task/translate.html", locals(), context_instance=RequestContext(request))
 
 
+@permission_required('bober_tasks.add_tasktranslation')
 @login_required()
 def tasks_new_from(request, id):
     parent_id = None
@@ -480,6 +481,7 @@ def tasks_new_from(request, id):
     return render_to_response("task/edit.html", locals(), context_instance=RequestContext(request))
 
 
+@permission_required('bober_tasks.view_tasktranslation')
 @login_required()
 def tasks_history(request, id):
     language = False
@@ -498,6 +500,8 @@ def tasks_history(request, id):
 
     return render_to_response("task/history.html", locals(), context_instance=RequestContext(request))
 
+
+@permission_required('bober_tasks.view_tasktranslation')
 def tasktranslation_render(request, pk): # loads template with context data and returns it as a file
     tt = get_object_or_404(TaskTranslation, pk=pk)
     return HttpResponse(tt.render_to_string(), "text/html")
@@ -508,11 +512,14 @@ class TaskDetail(LoginRequiredMixin, DetailView):
     model = Task
     template_name = 'bober_tasks/task_detail.html'
 
-class TaskTranslationUpdate(UpdateWithInlinesView, LoginRequiredMixin):
+
+class TaskTranslationUpdate(PermissionRequiredMixin, UpdateWithInlinesView, LoginRequiredMixin):
     model = TaskTranslation
     form_class = forms.TaskTranslationForm
     template_name = 'bober_tasks/tasktranslation_form.html'
     inlines = [ forms.AnswerInline ]
+    permission_required = ('bober_tasks.change_tasktranslation')
+
     
     def get_success_url(self):
         return reverse('tasktranslation_detail', kwargs = {'pk': self.object.pk})
@@ -541,19 +548,21 @@ class TaskTranslationUpdate(UpdateWithInlinesView, LoginRequiredMixin):
         return self.forms_invalid(form, inlines)
     
     def save(self, *args, **kwargs):
-        print "saving", args, kwargs
+        print("saving", args, kwargs)
         self.remark_form.save()
         return super(TaskTranslationUpdate, self).save(*args, **kwargs)
 
 
-class TaskTranslationPreview(DetailView, LoginRequiredMixin):
+class TaskTranslationPreview(PermissionRequiredMixin, DetailView, LoginRequiredMixin):
     model = TaskTranslation
     template_name = 'bober_tasks/tasktranslation_preview.html'
+    permission_required = ('bober_tasks.view_tasktranslation')
 
 
-class TaskTranslationDetail(DetailView, LoginRequiredMixin):
+class TaskTranslationDetail(PermissionRequiredMixin, DetailView, LoginRequiredMixin):
     model = TaskTranslation
     template_name = 'bober_tasks/tasktranslation_detail.html'
+    permission_required = ('bober_tasks.view_tasktranslation')
 
 
 @login_required()
@@ -573,9 +582,12 @@ def edit_task(request, id):
     all_languages = settings.LANGUAGES
     return render(request, "task/edit.html", locals())
 
-class TaskCreate(LoginRequiredMixin, CreateView):
+
+class TaskCreate(PermissionRequiredMixin, LoginRequiredMixin, CreateView):
     template_name = 'bober_tasks/task_form.html'
     form_class = forms.TaskForm
+    permission_required = ('bober_tasks.add_tasktranslation')
+
     
     def get_success_url(self):
         first_translation = TaskTranslation(task = self.object,
@@ -600,7 +612,7 @@ def save_task(request):
         while True:
             categories[i] = request.POST["category[" + str(i) + "]"]
             i += 1
-    except Exception, e:
+    except Exception as e:
         True
     for category_id in categories:
         c = Category.objects.get(id=categories[category_id])
@@ -615,26 +627,30 @@ def save_task(request):
             agt = AgeGroupTask.objects.get_or_create(age_group_id=temp[0], difficulty_level_id=temp[1], task=task)
             agt.save()
             i += 1
-    except Exception, e:
+    except Exception as e:
         pass
     return redirect("tasks.task", task.id)
 
+
 @login_required
+@permission_required('bober_tasks.add_tasktranslation')
 def tasktranslation_clone(request, pk):
     t = get_object_or_404(TaskTranslation, id = pk)
     t.author = request.user
     t.save_new_version()
     return redirect("tasktranslation_update", pk = t.id)
 
-@login_required
-def export_to_simple_competition(request, pk):
-    #if request.method == 'GET':
-    #    return redirect("/")
-    tt = get_object_or_404(TaskTranslation, id=pk)
-    tt.export_to_simple_competition()
-    return redirect("tasktranslation_detail", pk = pk)
 
 @login_required
+@permission_required('bober_tasks.view_tasktranslation')
+def export_to_simple_competition(request, pk):
+    tt = get_object_or_404(TaskTranslation, id=pk)
+    tt.export_to_simple_competition()
+    return redirect("tasktranslation_detail", pk=pk)
+
+
+@login_required
+@permission_required('bober_tasks.view_tasktranslation')
 def tasks_save_translation(request):
     if request.method == 'GET':
         return redirect("/")
@@ -679,6 +695,7 @@ def tasks_save_translation(request):
 
 
 @login_required()
+@permission_required('bober_tasks.view_tasktranslation')
 def delete_task(request, id):
     task = Task.objects.get(id=id)
     # print task
@@ -708,6 +725,7 @@ def delete_task(request, id):
 
 
 @login_required()
+@permission_required('bober_tasks.view_tasktranslation')
 def display_task(request, id):
     task_translation = TaskTranslation.objects.get(id=id)
     task = task_translation.task
@@ -720,6 +738,7 @@ def display_task(request, id):
 
 
 @login_required()
+@permission_required('bober_tasks.view_tasktranslation')
 def task_detail(request, id):
     task = Task.objects.get(id=id)
     task_categories = task.categories.all()
@@ -731,6 +750,8 @@ def task_detail(request, id):
 
     return render_to_response("task/details.html", locals(), context_instance=RequestContext(request))
 
+
+@permission_required('bober_tasks.view_tasktranslation')
 @login_required()
 def tasks_resource(request, pk, filename):
     """Image path redirect for task display. Because images have relative paths for export."""
@@ -753,7 +774,7 @@ def get_age_groups(obj):
                 break
             i += 1
         return groups
-    except Exception, e:
+    except Exception as e:
         return groups
 
 
@@ -773,5 +794,5 @@ def get_categories(obj):
         while True:
             categories[i] = obj["category[" + str(i) + "]"]
             i += 1
-    except Exception, e:
+    except Exception as e:
         return categories

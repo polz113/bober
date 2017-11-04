@@ -15,8 +15,10 @@ from django.core.urlresolvers import reverse
 from django.utils.text import slugify
 from django.utils.translation import ugettext_lazy as _
 from django.utils import timezone
-from django.core.exceptions import ValidationError
+# from django.core.exceptions import ValidationError
 from django.core.cache import cache
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 from collections import OrderedDict
 from . import graders
 import random
@@ -26,6 +28,8 @@ import base64
 import zipfile
 from bs4 import BeautifulSoup
 import mimetypes
+from django.utils.encoding import python_2_unicode_compatible
+
 
 # Create your models here.
 GRADER_FUNCTION_TYPES = (
@@ -35,10 +39,12 @@ GRADER_FUNCTION_TYPES = (
     (16, 'python'),
 )
 
+
 CACHE_FORMATS = (
     ('zip', 'ZIP'),
     ('raw', 'raw data'),
 )
+
 
 def ensure_dir_exists(fname):
     d = os.path.dirname(fname)
@@ -47,10 +53,12 @@ def ensure_dir_exists(fname):
     except:
         pass
 
+
 USER_ROLES = (
     ('competitor', 'Competitor'),
     ('admin', 'Administrator'),
 )
+
 
 COMPETITOR_PRIVILEGES = (
     ('attempt', _('Participate in the competition')),
@@ -59,10 +67,12 @@ COMPETITOR_PRIVILEGES = (
     ('resume_attempt', _('Resume existing attempts')),
 )
 
+
 CODE_EFFECTS = (
     ('let_manage', _('Allow the creator to manage the profile of anyone using this code')),
     ('let_manage_recursive', _('Allow the creator and their managers to manage the profile of anyone using this code')),
 )
+
 
 ADMIN_PRIVILEGES = (
     ('create_admin_codes', _('Create administrator codes')),
@@ -85,6 +95,7 @@ ADMIN_PRIVILEGES = (
     #       2.4 can use questionset to create new competitions
     #           'reuse_questions' in components['privileges']
 
+
 FEATURE_LEVELS = [
     (0, _('Reduced functionality')),
     (1, _('Basic features only')),
@@ -92,8 +103,10 @@ FEATURE_LEVELS = [
     (128, _('All features')),
 ]
 
+
+@python_2_unicode_compatible
 class Competition(models.Model):
-    def __unicode__(self):
+    def __str__(self):
         s = self.slug
         s += ": " + ", ".join([i.slug for i in self.questionsets.all()])
         return s
@@ -103,18 +116,28 @@ class Competition(models.Model):
 
     title = CharField(max_length=256, null=True, blank=True, verbose_name=_("title"))
     promoted = models.BooleanField(default=False, verbose_name=_("promoted"))
-    slug = SlugField(unique=True,verbose_name=_("slug"))
-
-    administrator_code_generator = ForeignKey(CodeGenerator, related_name='administrator_code_competition_set',                                          verbose_name=_("administrator code generator")
+    slug = SlugField(unique=True, verbose_name=_("slug"))
+    administrator_code_generator = ForeignKey(
+        CodeGenerator,
+        related_name='administrator_code_competition_set',
+        verbose_name=_("administrator code generator")
     )
-
-    competitor_code_generator = ForeignKey(CodeGenerator, related_name='competitor_code_competition_set',                                           verbose_name=_("competitor code generator"))
-    questionsets = ManyToManyField('QuestionSet', through='CompetitionQuestionSet',        verbose_name=_("Question sets"))
+    competitor_code_generator = ForeignKey(
+        CodeGenerator,
+        related_name='competitor_code_competition_set',
+        verbose_name=_("competitor code generator"))
+    questionsets = ManyToManyField(
+        'QuestionSet',
+        through='CompetitionQuestionSet',
+        verbose_name=_("Question sets"))
     start = DateTimeField(verbose_name=_("start"))
     # duration in seconds
-    duration = IntegerField(default=60*60,verbose_name=_("duration")) # 60s * 60 = 1h.
+    duration = IntegerField(
+        default=45*60,  # 60s * 45 = 1h.
+        verbose_name=_("duration"),
+        help_text=_("Duration of the competition in seconds"))
     end = DateTimeField(verbose_name=_("end"))
-    motd = TextField(blank=True,verbose_name=_("message of the day"))
+    motd = TextField(blank=True, verbose_name=_("message of the day"))
 
     @property
     def is_over(self):
@@ -124,10 +147,13 @@ class Competition(models.Model):
     def get_cached_by_slug(cls, slug):
         c = cache.get('competition_by_slug__' + slug, None)
         if c is None:
-            c = cls.objects.get(slug = slug)
-            codegen = c.administrator_code_generator
-            codegen = c.competitor_code_generator
-            print "  adding", slug, "to cache"
+            c = cls.objects.select_related(
+                'administrator_code_generator',
+                'competitor_code_generator',
+                'administrator_code_generator__format',
+                'competitor_code_generator__format',
+            ).get(slug=slug)
+            print("  adding", slug, "to cache")
             cache.set('competition_by_slug__' + slug, c)
         return c
 
@@ -140,45 +166,50 @@ class Competition(models.Model):
         return access_code.split(sep)
 
     def grade_answers(self, grader_runtime_manager=None,
-            update_graded=False, regrade=False):
+                      update_graded=False, regrade=False):
         grader_runtime_manager = graders.init_runtimes(
             grader_runtime_manager)
         if grader_runtime_manager is None:
             grader_runtime_manager = graders.RuntimeManager()
             grader_runtime_manager.start_runtimes()
         if update_graded:
-            self.update_graded_answers(regrade = regrade,
-                grader_runtime_manager = grader_runtime_manager)
+            self.update_graded_answers(
+                regrade=regrade,
+                grader_runtime_manager=grader_runtime_manager)
             if regrade:
                 return
         for cq in CompetitionQuestionSet.objects.filter(competition=self):
             cq.grade_answers(grader_runtime_manager=grader_runtime_manager,
-                update_graded=False, regrade=regrade)
+                             update_graded=False, regrade=regrade)
 
-    def update_graded_answers(self, regrade=False, grader_runtime_manager = None):
+    def update_graded_answers(self, regrade=False, grader_runtime_manager=None):
         grader_runtime_manager = graders.init_runtimes(
             grader_runtime_manager)
         for cq in CompetitionQuestionSet.objects.filter(competition=self):
-            cq.update_graded_answers(regrade=regrade,
+            cq.update_graded_answers(
+                regrade=regrade,
                 grader_runtime_manager=grader_runtime_manager)
 
     def admin_privilege_choices(self, access_code):
         return filter(
-            lambda x: self.administrator_code_generator.code_matches(access_code,
+            lambda x: self.administrator_code_generator.code_matches(
+                access_code,
                 {'admin_privileges': [x[0]]}),
             ADMIN_PRIVILEGES)
 
     def allowed_effect_choices(self, access_code):
         return filter(
-            lambda x: self.administrator_code_generator.code_matches(access_code,
+            lambda x: self.administrator_code_generator.code_matches(
+                access_code,
                 {'allowed_effects': [x[0]]}),
             CODE_EFFECTS)
 
     def competitor_privilege_choices(self, access_code):
         return filter(
-        lambda x: self.administrator_code_generator.code_matches(access_code,
-            {'competitor_privileges': [x[0]]}),
-        COMPETITOR_PRIVILEGES)
+            lambda x: self.administrator_code_generator.code_matches(
+                access_code,
+                {'competitor_privileges': [x[0]]}),
+            COMPETITOR_PRIVILEGES)
 
     def max_admin_code_data(self, access_code):
         return {
@@ -197,8 +228,8 @@ class Competition(models.Model):
             }
 
     def competitor_code_create(self, access_code,
-            competition_questionset = None,
-            code_data = None):
+                               competition_questionset=None,
+                               code_data=None):
         if code_data is None:
             code_data = self.max_competitor_code_data(access_code)
         if competition_questionset is not None:
@@ -216,7 +247,7 @@ class Competition(models.Model):
         c.save()
         return c
 
-    def admin_code_create(self, access_code, code_data = None):
+    def admin_code_create(self, access_code, code_data=None):
         if code_data is None:
             code_data = self.max_admin_code_data(access_code)
         c = self.administrator_code_generator.create_code(code_data)
@@ -226,14 +257,15 @@ class Competition(models.Model):
 
 ANSWER_BATCH_SIZE = 100000
 
+
 def _create_graded(answer, regrade, grader_runtime_manager):
     try:
         a = answer
         if regrade:
             # print a
             g_a = GradedAnswer(
-                attempt_id = a.attempt_id, question_id=a.question_id,
-                answer = a
+                attempt_id=a.attempt_id, question_id=a.question_id,
+                answer=a
             )
             q = Question.objects.get(id=g_a.question_id)
             grader = grader_runtime_manager.get_grader(
@@ -248,45 +280,48 @@ def _create_graded(answer, regrade, grader_runtime_manager):
                 g_a.answer = a
                 g_a.score = None
                 g_a.save()
-    except Exception, e:
-        print e
+    except Exception as e:
+        print(e)
     return None
 
 
+@python_2_unicode_compatible
 class CompetitionQuestionSet(models.Model):
-    def __unicode__(self):
+    def __str__(self):
         return u"{}: {}".format(self.competition.slug, self.name)
 
-    name = models.CharField(max_length=256, null=True, blank=True,verbose_name=_("Name"))
-    questionset = models.ForeignKey('QuestionSet',verbose_name=_("Questionset"))
+    name = models.CharField(max_length=256, null=True, blank=True,verbose_name=("Name"))
+    questionset = models.ForeignKey('QuestionSet', verbose_name=_("Questionset"))
     competition = models.ForeignKey('Competition')
     guest_code = ForeignKey(Code, null=True, blank=True)
 
     def slug_str(self):
-        return unicode(self.id) + '.' + self.questionset.slug
+        return str(self.id) + '.' + self.questionset.slug
 
     @classmethod
     def get_by_slug(cls, slug):
         return cls.objects.get(id=slug[:slug.find('.')])
 
     def grade_answers(self, grader_runtime_manager=None,
-            update_graded=False, regrade=False):
+                      update_graded=False, regrade=False):
         grader_runtime_manager = graders.init_runtimes(
             grader_runtime_manager)
-        #for i in self.attempt_set.all():
-        #    i.grade_answers(grader_runtime_manager = grader_runtime_manager,
-        #        update_graded = update_graded, regrade=regrade)
-        #return
-        #the implementation below should be faster.
+        # for i in self.attempt_set.all():
+        #     i.grade_answers(grader_runtime_manager = grader_runtime_manager,
+        #         update_graded = update_graded, regrade=regrade)
+        # return
+        # the implementation below should be faster.
         if update_graded:
-            self.update_graded_answers(regrade=regrade,
+            self.update_graded_answers(
+                regrade=regrade,
                 grader_runtime_manager=grader_runtime_manager)
             if regrade:
                 return
         graded_answers = GradedAnswer.objects.filter(attempt__competitionquestionset=self).distinct()
         if not regrade:
             graded_answers = graded_answers.filter(score=None)
-        graded_answers.select_related('question__verification_function',
+        graded_answers.select_related(
+            'question__verification_function',
             'question__verification_function_type',
             'answer__value', 'attempt')
         for g_a in graded_answers:
@@ -297,8 +332,8 @@ class CompetitionQuestionSet(models.Model):
             g_a.score = grader(g_a.answer.value, g_a.attempt.random_seed, q)
             g_a.save()
 
-    def update_graded_answers(self, check_timestamp = False,
-            regrade=False, grader_runtime_manager=None):
+    def update_graded_answers(self, check_timestamp=False,
+                              regrade=False, grader_runtime_manager=None):
         grader_runtime_manager = graders.init_runtimes(
             grader_runtime_manager)
         answers = Answer.objects.filter(
@@ -328,18 +363,20 @@ class CompetitionQuestionSet(models.Model):
 
 class CodeEffect(models.Model):
     code = ForeignKey(Code)
-    effect = models.CharField(max_length = 64, choices=CODE_EFFECTS)
+    effect = models.CharField(max_length=64, choices=CODE_EFFECTS)
+
     def apply(self, users=None):
         def let_manage(profile):
             for owner in self.code.owner_set:
                 owner.managed_profiles.add(profile)
         def let_manage_recursive(profile):
             competitions = Competition.objects.filter(
-                competitor_code_generator = self.generator).unique()
+                competitor_code_generator=self.generator).unique()
             for owner in self.code.owner_set:
                 owner.managed_profiles.add(profile)
                 for competition in competitions:
-                    for superior in superiors(owner,
+                    for superior in __superiors(
+                            owner,
                             competition.administrator_code_generator):
                         superior.managed_profiles.add(profile)
         effects = {
@@ -353,16 +390,17 @@ class CodeEffect(models.Model):
             effects[self.effect](user)
 
 
+@python_2_unicode_compatible
 class QuestionSet(models.Model):
-    def __unicode__(self):
-        return u"{}".format(unicode(self.name))
-        # return u"{}: {}".format(self.name, ",".join([unicode(i) for i in self.questions.all()]))
-    
+    def __str__(self):
+        return u"{}".format(self.name)
+        # return u"{}: {}".format(self.name, ",".join([str(i) for i in self.questions.all()]))
+
     def get_absolute_url(self):
         return reverse('questionset_detail', kwargs={'pk': str(self.id)})
-    
+
     slug = SlugField(unique=True, verbose_name=_("Slug"))
-    name = CharField(max_length = 255, verbose_name=_("Name"))
+    name = CharField(max_length=255, verbose_name=_("Name"))
     questions = ManyToManyField('Question', blank=True, verbose_name=_("Questions"))
     resource_caches = ManyToManyField('ResourceCache', blank=True)
 
@@ -370,7 +408,7 @@ class QuestionSet(models.Model):
         q = self.questions.order_by('identifier').values_list('identifier')
         d = dict()
         r = random.Random(random_seed)
-        c = r.sample(xrange(2**24), len(q))
+        c = r.sample(range(2**24), len(q))
         for n, i in enumerate(q):
             d[i[0]] = c[n]
         return d
@@ -388,33 +426,34 @@ class QuestionSet(models.Model):
         return str(self.id) + "-" + self.slug
 
     def reverse_question_mapping(self, random_seed):
-        return {v: k for k, v in self.question_mapping(random_seed).iteritems()}
+        return {v: k for k, v in self.question_mapping(random_seed).items()}
 
-    def rebuild_caches(self, embed_images = True):
+    def rebuild_caches(self, embed_images=True):
         html_resources = {}
         self.resource_caches.all().delete()
-        html_cache = ResourceCache(format = 'zip')
+        html_cache = ResourceCache(format='zip')
         html_cache.file.name = os.path.join("caches", self.cache_dir(), "html_cache.zip")
         html_cache.save()
         ensure_dir_exists(html_cache.file.path)
         embeded_resource_ids = []
         html_resource_zip = zipfile.ZipFile(html_cache.file.path, 'w')
         for q in self.questions.all():
-            for r in q.resource_set.filter(resource_type = "html",
-                part_of_solution = False):
+            for r in q.resource_set.filter(
+                    resource_type="html",
+                    part_of_solution=False):
                 html_resources[q.identifier + '/' + r.relative_url] = r
                 html_resource_zip.writestr(
                     q.identifier + '/' + 'Manifest.json',
-                    json.dumps(q.manifest(safe = True)))
-        for url, r in html_resources.iteritems():
+                    json.dumps(q.manifest(safe=True)))
+        for url, r in html_resources.items():
             if embed_images:
                 index_soup = BeautifulSoup(r.as_bytes())
                 imgs = index_soup.find_all('img')
                 objs = index_soup.find_all('object')
                 scripts = index_soup.find_all('script')
                 for items, item_type, url_property in [
-                    (imgs, 'image', 'src'),
-                    (objs, 'image', 'data'),
+                        (imgs, 'image', 'src'),
+                        (objs, 'image', 'data'),
                     (scripts, 'javascript', 'src')]:
                     for i in items:
                         url_str = i.get(url_property, None)
@@ -423,8 +462,13 @@ class QuestionSet(models.Model):
                                 data_res = r.question.resource_set.get(relative_url = url_str)
                                 i[url_property] = "data:" + data_res.mimetype + ";base64,"  + data_res.as_base64()
                                 embeded_resource_ids.append(data_res.id)
+<<<<<<< HEAD
                             except Exception, e:
                                 print (url, url_str, e)
+=======
+                            except Exception as e:
+                                print(url_str, e)
+>>>>>>> a474f05f9384fa476c06257d38d506849c4d1cf7
                 embeded_resource_ids.append(r.id)
                 index_str = bytes(index_soup.prettify().encode('utf-8'))
             else:
@@ -434,38 +478,44 @@ class QuestionSet(models.Model):
         html_resource_zip.close()
         self.resource_caches.add(html_cache)
         for q in self.questions.all():
-            for r in q.resource_set.exclude(part_of_solution = True).exclude(
-                id__in = embeded_resource_ids):
-                print "must create cache for ", r.id, r.question.identifier, r.file.name
-        question_cache_id = 'questionset_question_ids_' + str(self.id)
+            for r in q.resource_set.exclude(part_of_solution=True).exclude(
+                    id__in=embeded_resource_ids):
+                print("must create cache for ", r.id, r.question.identifier, r.file.name)
+        # question_cache_id = 'questionset_question_ids_' + str(self.id)
+
 
 def _qs_rebuild_caches(sender, instance=None, **kwargs):
-    print("poopie!")
     if instance is not None:
         instance.rebuild_caches()
 
+
 signals.m2m_changed.connect(_qs_rebuild_caches, sender=QuestionSet)
 
+
+@python_2_unicode_compatible
 class ResourceCache(models.Model):
-    def __unicode__(self):
+    def __str__(self):
         return u"{}: {}".format(self.format, self.file)
     file = FileField(upload_to='caches')
-    format = CharField(max_length = 16, choices=CACHE_FORMATS)
+    format = CharField(max_length=16, choices=CACHE_FORMATS)
     resources = ManyToManyField('Resource')
 
 
+@python_2_unicode_compatible
 class Resource(models.Model):
-    def __unicode__(self):
+    def __str__(self):
         return u"{}: {}".format(self.relative_url, self.file)
     question = ForeignKey('Question')
-    relative_url = CharField(max_length = 255)
-    file = FileField(null = True, upload_to = 'resources')
-    resource_type = CharField(max_length = 255)
-    mimetype = CharField(max_length = 255)
-    data = BinaryField(null = True)
+    relative_url = CharField(max_length=255)
+    file = FileField(null=True, upload_to='resources')
+    resource_type = CharField(max_length=255)
+    mimetype = CharField(max_length=255)
+    data = BinaryField(null=True)
     part_of_solution = BooleanField(default=False)
+
     def url(self):
         return self.file.url
+
     def as_bytes(self):
         s = bytes()
         if self.file:
@@ -476,11 +526,12 @@ class Resource(models.Model):
             fname = os.path.join('resources', self.question.identifier, self.relative_url)
             self.file.name = fname
             ensure_dir_exists(self.file.path)
-            with open(self.file.path, 'w') as f:
+            with open(self.file.path, 'wb') as f:
                 f.write(self.data)
             # self.file.save(fname, ContentFile(self.data))
             s = self.data
         return s
+
     def as_base64(self):
         return base64.b64encode(self.as_bytes())
 
@@ -491,9 +542,9 @@ def _resource_list(soup):
     objs = soup.find_all('object')
     scripts = soup.find_all('script')
     for items, item_type, url_property in [
-        (imgs, 'image', 'src'),
-        (objs, 'image', 'data'),
-        (scripts, 'javascript', 'src')]:
+            (imgs, 'image', 'src'),
+            (objs, 'image', 'data'),
+            (scripts, 'javascript', 'src')]:
         for i in items:
             url = i.get(url_property, None)
             if url is not None:
@@ -503,11 +554,12 @@ def _resource_list(soup):
     ]
 
 
-def _question_from_dirlike(cls, identifier = '-1',
-        language = None,
-        regenerate_modules = True,
-        regenerate_manifest = True,
-        remove_correct_answer_class = True,
+def _question_from_dirlike(
+        cls, identifier='-1',
+        language=None,
+        regenerate_modules=True,
+        regenerate_manifest=True,
+        remove_correct_answer_class=True,
         my_open=None, my_path=None, my_close=None):
     question = None
     if language is None:
@@ -515,10 +567,11 @@ def _question_from_dirlike(cls, identifier = '-1',
     try:
         f = my_open(my_path('Manifest.json'))
         manifest = json.load(f)
-    except Exception, e:
-        manifest = {'id': identifier,
+    except Exception as e:
+        manifest = {
+            'id': identifier,
             'language': language}
-        print " no manifest? ", e
+        print(" no manifest? ", e)
         regenerate_manifest = True
     try:
         my_close(f)
@@ -529,7 +582,7 @@ def _question_from_dirlike(cls, identifier = '-1',
     # get properties from database into question_dict
     try:
         question = cls.objects.filter(identifier=identifier)
-        q1 = question.filter(language = language)
+        q1 = question.filter(language=language)
         if len(q1) == 1:
             question = q1
         elif len(question) < 1:
@@ -555,7 +608,7 @@ def _question_from_dirlike(cls, identifier = '-1',
     index_dict = {}
     index_soup = BeautifulSoup(index_str)
     try:
-        index_dict['title'] = unicode(index_soup.title.contents[0]).strip()
+        index_dict['title'] = str(index_soup.title.contents[0]).strip()
     except:
         pass
     try:
@@ -595,16 +648,17 @@ def _question_from_dirlike(cls, identifier = '-1',
         'version': '0.1',
         'authors': ''
     }
-    for k, v in default_manifest_values.iteritems():
+    for k, v in default_manifest_values.items():
         if k not in manifest:
             manifest[k] = v
     if question is None:
-        print "creating question", manifest['title'], type(manifest['title'])
-        question = cls(country = manifest['country'],
-            slug = slugify(manifest['title']) + '-' + manifest['id'],
-            identifier = manifest['id'], title = manifest['title'],
-            version = manifest['version'], authors = manifest['authors'],
-            verification_function = ",".join(manifest['acceptedAnswers']))
+        print("creating question", manifest['title'], type(manifest['title']))
+        question = cls(
+            country=manifest['country'],
+            slug=slugify(manifest['title']) + '-' + manifest['id'],
+            identifier=manifest['id'], title=manifest['title'],
+            version=manifest['version'], authors=manifest['authors'],
+            verification_function=",".join(manifest['acceptedAnswers']))
         question.save()
     else:
         question.country = manifest['country']
@@ -624,20 +678,22 @@ def _question_from_dirlike(cls, identifier = '-1',
             f = my_open(fname)
             data = f.read()
             my_close(f)
-            r = Resource(question = question,
-                relative_url = i['url'],
-                file = None,
-                mimetype = mimetypes.guess_type(i['url'])[0],
-                resource_type = i['type'],
-                data = data)
+            r = Resource(
+                question=question,
+                relative_url=i['url'],
+                file=None,
+                mimetype=mimetypes.guess_type(i['url'])[0],
+                resource_type=i['type'],
+                data=data)
             r.save()
-        except Exception, e:
+        except Exception as e:
             modules_list.append(i)
     return question
 
 
+@python_2_unicode_compatible
 class Question(models.Model):
-    def __unicode__(self):
+    def __str__(self):
         return self.title
     country = CharField(max_length = 5)
     slug = SlugField()
@@ -722,15 +778,15 @@ class Question(models.Model):
         kwargs['my_close']=lambda x: x.close()
         return _question_from_dirlike(cls, *args, **kwargs)
 
-
+@python_2_unicode_compatible
 class Answer(models.Model):
-    def __unicode__(self):
+    def __str__(self):
         #print self.correct()
         return "{} ({}): {}".format(
-            unicode(self.attempt.reverse_question_mapping().get(
+            str(self.attempt.reverse_question_mapping().get(
                 self.randomized_question_id, "??")),
-            unicode(self.randomized_question_id),
-            unicode(self.value))
+            str(self.randomized_question_id),
+            str(self.value))
 
     attempt = ForeignKey('Attempt')
     randomized_question_id = IntegerField()
@@ -758,16 +814,16 @@ class AttemptInvalidation(models.Model):
     by = ForeignKey('Profile')
     reason = TextField(blank=True)
 
-
+@python_2_unicode_compatible
 class AttemptConfirmation(models.Model):
-    def __unicode__(self):
+    def __str__(self):
         return u"{}: {}".format(self.by, self.attempt)
     by = ForeignKey('Profile')
     attempt = ForeignKey('Attempt')
 
-
+@python_2_unicode_compatible
 class Competitor(models.Model):
-    def __unicode__(self):
+    def __str__(self):
         return u"{} {} ({})".format(self.first_name, self.last_name,
             self.profile or '?')
     profile = ForeignKey('Profile', null=True, blank=True)
@@ -781,9 +837,9 @@ class GradedAnswer(models.Model):
     answer = ForeignKey('Answer')
     score = FloatField(null=True)
 
-
+@python_2_unicode_compatible
 class Attempt(models.Model):
-    def __unicode__(self):
+    def __str__(self):
         return u"{}: {} - {}: {} ({} - {})".format(self.competitor,
             self.competition.slug,
             self.questionset.name,
@@ -906,9 +962,10 @@ class Attempt(models.Model):
         return float(sum([a.score for a in self.gradedanswer_set.all() if a.score is not None]))
 
 
-class Profile(models.Model):
-    def __unicode__(self):
-        return unicode(self.user)
+@python_2_unicode_compatible
+class Profile(models.Model): 
+    def __str__(self):
+        return str(self.user)
 
     def get_absolute_url(self):
         return reverse('profile_detail', kwargs={'pk': str(self.pk)})
@@ -918,21 +975,13 @@ class Profile(models.Model):
     date_of_birth = DateField(null=True, blank=True)
     managed_profiles = models.ManyToManyField('Profile', related_name='managers',
         blank=True)
-    # managed_users = models.ManyToManyField(User, related_name='managers', null=True, blank=True)
-    #first_competition = models.ForeignKey(Competition, null=True, blank=True)
-    #registration_code = CodeField(null=True, blank=True)
-    created_codes = ManyToManyField(Code, blank=True,
-        related_name='creator_set')
-    received_codes = ManyToManyField(Code, blank=True,
-        related_name='recipient_set')
-    used_codes = ManyToManyField(Code, blank=True,
-        related_name='user_set')
+    created_codes = ManyToManyField(Code, blank=True, related_name='creator_set')
+    received_codes = ManyToManyField(Code, blank=True, related_name='recipient_set')
+    used_codes = ManyToManyField(Code, blank=True, related_name='user_set')
     question_sets = ManyToManyField(QuestionSet, blank=True)
-    created_question_sets = ManyToManyField(QuestionSet, blank=True,
-        related_name='creator_set')
+    created_question_sets = ManyToManyField(QuestionSet, blank=True, related_name='creator_set')
     questions = ManyToManyField(Question, blank=True)
     merged_with = ForeignKey('Profile', null = True, blank=True, related_name='former_profile_set')
-    # merged_with = ForeignKey(User, null = True, blank=True, related_name='merged_set')
     update_used_codes_timestamp = DateTimeField(null=True, blank=True)
     update_managers_timestamp = DateTimeField(null=True, blank=True)
     vcard = models.TextField(blank=True)
@@ -954,11 +1003,12 @@ class Profile(models.Model):
         return self.user.username
 
     def __superiors(self, codegen, known):
-        for c in self.received_codes.filter(format = codegen.format,
-                salt = codegen.salt):
+        for c in self.received_codes.filter(
+                format=codegen.format,
+                salt=codegen.salt):
             for o in c.owner_set.all():
                 if o not in known:
-                    s1 = superiors(o, codegen, known)
+                    s1 = Profile.__superiors(o, codegen, known)
                     known = s1.union(known)
                     known.add(o)
         return known
@@ -986,8 +1036,8 @@ class Profile(models.Model):
                 )
                 for c in codes:
                     used_codes.add(c)
-            except Exception, e:
-                print e
+            except Exception as e:
+                print(e)
                 pass
 
     def apply_code_effects(self, codes = None):
@@ -998,25 +1048,30 @@ class Profile(models.Model):
             for effect in c.code_effect_set:
                 effect.apply(users=[self])
 
-    def update_managers(self, codes = None):
+    def update_managers(self, codes=None):
         for c in codes:
-            if c.format.code_matches(c.salt,
-                c.value, {'code_effects': ['let_manage']}):
-                    for u in c.owner_set:
-                        u.managed_profiles.add(self)
-            if c.format.code_matches(c.salt,
-                c.value, {'code_effects': ['let_manage_recursive']}):
-                    competitions = Competition.objects.filter(
-                        competitor_code_generator__salt = c.salt,
-                        competitor_code_generator__format = c.format).unique()
-                    for u in c.owner_set:
-                        u.managed_profiles.add(self)
-                        for competition in competitions:
-                            for superior in superiors(u,
-                                    competition.administrator_code_generator):
-                                superior.managed_profiles.add(self)
+            if c.format.code_matches(
+                    c.salt,
+                    c.value, {'code_effects': ['let_manage']}):
+                for u in c.owner_set:
+                    u.managed_profiles.add(self)
+            if c.format.code_matches(
+                    c.salt,
+                    c.value, {'code_effects': ['let_manage_recursive']}):
+                competitions = Competition.objects.filter(
+                    competitor_code_generator__salt=c.salt,
+                    competitor_code_generator__format=c.format).unique()
+                superiors = set()
+                for u in c.owner_set:
+                    superiors.add(u)
+                    for competition in competitions:
+                        superiors = u.__superiors(
+                                competition.administrator_code_generator,
+                                superiors)
+                for superior in superiors:
+                    superior.managed_profiles.add(self)
 
-    def update_managed_profiles(self, codes = None):
+    def update_managed_profiles(self, codes=None):
         if codes is None:
             codes = Code.objects.filter(owner_set = self).unique()
         for c in codes:
@@ -1066,14 +1121,13 @@ class Profile(models.Model):
         return self
 
 
-
-def create_profile(sender, instance=None, **kwargs):
-    try:
-        p = instance.profile
-    except Profile.DoesNotExist:
-        p = Profile()
-        p.user = instance
-        p.save()
+@receiver(post_save, sender=User)
+def create_user_profile(sender, instance, created, **kwargs):
+    if created:
+        p = Profile.objects.create(user=instance)
         p.managed_profiles.add(p)
 
-signals.post_save.connect(create_profile, sender=User)
+
+@receiver(post_save, sender=User)
+def save_user_profile(sender, instance, **kwargs):
+    instance.profile.save()

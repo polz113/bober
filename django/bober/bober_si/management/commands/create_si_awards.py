@@ -53,7 +53,7 @@ class Command(BaseCommand):
             group_name = group_name,
             name = 'bronasto',
             defaults = {
-                'template': 'bronasto2016',
+                'template': 'bronasto',
                 'threshold': max_score,
                 'min_threshold': 0.0,
                 'serial_prefix': year_str + group_prefix + 'B',
@@ -76,7 +76,7 @@ class Command(BaseCommand):
             name = 'priznanje',
             threshold = 0,
             defaults = {
-                'template': 'priznanje2016',
+                'template': 'priznanje',
                 'min_threshold': 0.0,        
                 'serial_prefix': year_str + group_prefix + 'P'
             },

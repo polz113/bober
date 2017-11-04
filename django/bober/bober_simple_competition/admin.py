@@ -2,11 +2,15 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import User
 from bober_simple_competition.models import *
-from bober_simple_competition.forms import ProfileAdminForm
+from bober_simple_competition.forms import ProfileAdminForm,\
+    CompetitionQuestionSetInlineAdminForm
 
 # Register your models here.
+
 class CompetitionQuestionSetInline(admin.TabularInline):
     model = CompetitionQuestionSet
+    # form = CompetitionQuestionSetInlineAdminForm
+    raw_id_fields = ('guest_code',)
 
 class CompetitionAdmin(admin.ModelAdmin):
     inlines = [ CompetitionQuestionSetInline ]
