@@ -1,5 +1,5 @@
+from math import ceil
 from django.db import models
-from django.core.cache import cache
 import hashlib
 from django.utils.translation import ugettext_lazy as _
 from django.utils.encoding import python_2_unicode_compatible
@@ -14,6 +14,8 @@ CODE_COMPONENT_FORMATS = (
     ('i', _('decimal')),
     ('l', _('letters and digits')),
     ('L', _('case-insensitive letters and digits')),
+    ('s', _('unambiguous letters and digits')),
+    ('S', _('case-insensitive unambiguous letters and digits')),
     ('w', _('words')),
     ('W', _('case-insensitive words')),
     ('r', _('raw no hash')),
@@ -33,6 +35,7 @@ DEFAULT_PART_SEPARATOR = "+"
 # TODO load words from a file or database
 DEFAULT_WORDS = ['Beaver', 'Tree', 'Brook', 'Stream']
 LOWERCASE_LETTERS = 'abcdefghijklmnopqrstuvwxyz'
+UNAMBIGUOUS_LETTERS_AND_DIGITS = 'abcdefghjkmnpqrstuvwxyz23456789'
 UPPERCASE_LETTERS = LOWERCASE_LETTERS.upper()
 DIGITS = "0123456789"
 LOWERCASE_LETTERS_AND_DIGITS = LOWERCASE_LETTERS + DIGITS
@@ -49,7 +52,7 @@ def __compat_ord(c):
         return ord(c)
 
 
-def value_hash(salt, value, algorithm = DEFAULT_HASH_ALGORITHM):
+def value_hash(salt, value, algorithm=DEFAULT_HASH_ALGORITHM):
     value = value.encode('iso8859-1')
     if algorithm == 'noop':
         return value
@@ -63,7 +66,7 @@ def str_last_bits(s, bits):
     s_out = ""
     if bits % 8 != 0 and len(s) > bits//8:
         i = __compat_ord(s[-bits//8-1])
-        i = i & (2**(bits%8) -1)
+        i = i & (2**(bits % 8) - 1)
         s_out = chr(i).encode('iso8859-1')
     return s_out + s[-bits//8]
 
@@ -93,7 +96,7 @@ def long_to_str(l):
 
 
 def hexstr_to_b(s):
-    if version_info >= (3,0,0) or type(s) == unicode:
+    if version_info >= (3, 0, 0) or type(s) == unicode:
         s = s.encode('iso8859-1')
     return codecs.decode(s, 'hex')
 
@@ -107,14 +110,16 @@ def decstr_to_b(s):
 
 
 def b_to_decstr(s):
-    return long_to_b(long(s))
+    return long_to_str(int(s))
 
 
 def words_codecs(words=DEFAULT_WORDS, separator=" ", canonical_fn=None):
     val_words_dict = dict(((i, w) for i, w in enumerate(words)))
     n_words = len(words)
     if canonical_fn is None:
-        canonical_fn = lambda x: x
+        def canonical_fn(x):
+            return x
+
     def __b_to_words(s):
         l = b_to_long(s)
         res = ""
@@ -133,7 +138,7 @@ def words_codecs(words=DEFAULT_WORDS, separator=" ", canonical_fn=None):
         l = 0
         while(s):
             if separator:
-                word_end = find(s, separator)
+                word_end = s.find(separator)
                 if word_end == -1:
                     word_end = len(s)
             else:
@@ -143,7 +148,7 @@ def words_codecs(words=DEFAULT_WORDS, separator=" ", canonical_fn=None):
             word = s[:word_end]
             l = l * n_words
             l += val_words_dict.get(word, 0)
-        return long_to_b(l)
+        return long_to_str(l)
     return (__b_to_words, __words_to_b, canonical_fn)
 
 
@@ -152,6 +157,9 @@ FORMAT_FUNCTIONS = {
     'i': (b_to_decstr, decstr_to_b, lambda x: x),
     'w': words_codecs(DEFAULT_WORDS, " "),
     'W': words_codecs([w.lower() for w in DEFAULT_WORDS], " ", lambda x: x.lower()),
+
+    's': words_codecs(UNAMBIGUOUS_LETTERS_AND_DIGITS, "", lambda x: x),
+    'S': words_codecs(UNAMBIGUOUS_LETTERS_AND_DIGITS, "", lambda x: x.lower()),
     'l': words_codecs(LETTERS_AND_DIGITS, ''),
     'L': words_codecs(LOWERCASE_LETTERS_AND_DIGITS, '', lambda x: x.lower()),
     'r': (lambda x: x.decode('iso8859-1'), lambda x: x.encode('iso8859-1'), lambda x: x),
@@ -184,15 +192,18 @@ class CodeComponent(models.Model):
 
     code_format = models.ForeignKey('CodeFormat', related_name='components')
     ordering = models.PositiveIntegerField()
-    name = models.CharField(max_length = 64)
-    hash_format = models.CharField(max_length=2,
-        choices = CODE_COMPONENT_FORMATS)
+    name = models.CharField(max_length=64)
+    hash_format = models.CharField(
+        max_length=2,
+        choices=CODE_COMPONENT_FORMATS)
     # hash_bits = models.PositiveIntegerField()
     hash_len = models.PositiveIntegerField()
-    hash_algorithm = models.CharField(max_length = 16,
-        choices = HASH_ALGORITHMS, null=True, blank=True)
+    hash_algorithm = models.CharField(
+        max_length = 16, choices = HASH_ALGORITHMS,
+        null=True, blank=True)
     max_parts = models.IntegerField(default=1)
-    part_separator = models.CharField(max_length=1, default=DEFAULT_PART_SEPARATOR)
+    part_separator = models.CharField(
+        max_length=1, default=DEFAULT_PART_SEPARATOR)
 
 
 @python_2_unicode_compatible
@@ -204,10 +215,10 @@ class CodeFormat(models.Model):
 
     @classmethod
     def from_components(cls, components, separator=DEFAULT_SEPARATOR):
-        cf = cls(separator = separator)
+        cf = cls(separator=separator)
         cf.save()
         for i, p in enumerate(components):
-            cc = CodeComponent(code_format = cf, ordering = i, **p)
+            cc = CodeComponent(code_format=cf, ordering=i, **p)
             cc.save()
         return cf
 
@@ -215,14 +226,14 @@ class CodeFormat(models.Model):
         if len(parts) < 1:
             return False
         format_components = self.components.order_by('ordering')
-        # hash_params is a dict of 
-        # (  format conversion function, 
-        #    hash algorithm, 
-        #    max. nr. of parts, 
+        # hash_params is a dict of
+        # (  format conversion function,
+        #    hash algorithm,
+        #    max. nr. of parts,
         #    set of component parts)
         # indexed by code component name
-        hash_params = dict() 
-        challenge = bytes() # the fixed part of the code
+        hash_params = dict()
+        challenge = bytes()  # the fixed part of the code
         try:
             split_parts = code.split(self.separator)
             salt_b = salt.encode('utf-8')
@@ -242,7 +253,8 @@ class CodeFormat(models.Model):
                     return False
                 for h in split_hash:
                     hashes[component.name].add(h)
-                hash_params[component.name] = (format_functions[0],
+                hash_params[component.name] = (
+                    format_functions[0],
                     component.hash_algorithm, component.hash_len, hashes)
             # calculate the hashes for components
             # print ("hashes:", hashes)
@@ -255,7 +267,8 @@ class CodeFormat(models.Model):
                 for value in values:
                     # print(value, to_b_fn, algorithm)
                     # print("static pre:", salt_b, challenge)
-                    h = to_b_fn(value_hash(salt_b + challenge,
+                    h = to_b_fn(value_hash(
+                            salt_b + challenge,
                             value, algorithm))[-hash_len:]
                     # if component.hash_format in CASE_INSENSITIVE_FORMATS:
                     #    h = h.lower()
@@ -300,6 +313,7 @@ class CodeFormat(models.Model):
         return self.separator.join(hashed_components)
 
     def canonical_code(self, code):
+        # print("canonizing:", code)
         try:
             format_components = self.components.order_by('ordering')
             split_parts = code.split(self.separator)
@@ -308,8 +322,10 @@ class CodeFormat(models.Model):
                 canonical_parts.append(
                     FORMAT_FUNCTIONS[component.hash_format][2](
                         split_parts[i]))
+            # print("  parts:", canonical_parts)
             return self.separator.join(canonical_parts)
-        except:
+        except Exception as e:
+            # print(e)
             pass
         return code
 

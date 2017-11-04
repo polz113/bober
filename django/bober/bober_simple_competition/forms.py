@@ -289,6 +289,7 @@ class QuestionSetCompetitorForm(forms.ModelForm):
                 full_code = self.guest_code.value
             if full_code is None:
                 self.errors['short_access_code'] = [_('Wrong access code')]
+        full_code = self.codegen.canonical_code(full_code)
         if not self.codegen.code_matches(
                 full_code,
                 {'competitor_privileges': ['attempt']}):
@@ -297,7 +298,6 @@ class QuestionSetCompetitorForm(forms.ModelForm):
                 full_code,
                 {'competitor_privileges': ['resume_attempt']}):
             # print("code:", full_code)
-            full_code = self.codegen.canonical_code(full_code)
             # print("  canonical:", full_code)
             if not self.profile:
                 self.profile = None
@@ -558,23 +558,8 @@ class CompetitionQuestionSetFormHelper(FormHelper):
         )
 
 
+
 class CompetitionQuestionSetCreateForm(forms.ModelForm):
-    class Meta:
-        model = CompetitionQuestionSet
-        exclude = ('guest_code',)
-
-    create_guest_code = forms.BooleanField(
-        required=False, label=_("Create guest code"))
-
-    def __init__(self, *args, **kwargs):
-        super(CompetitionQuestionSetCreateForm, self).__init__(*args, **kwargs)
-        add_related_field_wrapper(self, 'questionset',
-                                  add_related_view='questionset_add',
-                                  change_related_view='questionset_change')
-        self.helper = CompetitionQuestionSetFormHelper()
-
-
-class CompetitionQuestionSetUpdateForm(forms.ModelForm):
     class Meta:
         model = CompetitionQuestionSet
         exclude = ('guest_code',)
@@ -591,7 +576,7 @@ class CompetitionQuestionSetUpdateForm(forms.ModelForm):
         try:
             generator = self.instance.competition.competitor_code_generator
             if self.instance.guest_code is not None:
-                print(self.instance.guest_code.value)
+                # print(self.instance.guest_code.value)
                 for privilege, description in COMPETITOR_PRIVILEGES:
                     if generator.code_matches(
                             self.instance.guest_code.value,
@@ -626,10 +611,14 @@ class CompetitionQuestionSetUpdateForm(forms.ModelForm):
                 }
                 self.new_code_created = True
                 c = generator.create_code(code_data)
-                print("created new code: {} -> {}".format(new_guest_privileges, c))
+                # print("created new code: {} -> {}".format(new_guest_privileges, c))
                 self.instance.guest_code = c
                 self.instance.save()
         return retval
+
+
+class CompetitionQuestionSetUpdateForm(CompetitionQuestionSetCreateForm):
+    pass
 
 
 class QuestionSetForm(forms.ModelForm):
