@@ -1242,6 +1242,8 @@ class QuestionSetRegistration(CreateView):
         return super(QuestionSetRegistration, self).get(request, *args, **kwargs)
 
     def get_form(self, form_class=None):
+        if form_class is None:
+            form_class = self.get_form_class()
         kwargs = self.get_form_kwargs()
         kwargs['competitionquestionset'] = self.competitionquestionset
         f = form_class(**kwargs)
@@ -1269,6 +1271,8 @@ class CompetitionRegistration(QuestionSetRegistration):
         return super(QuestionSetRegistration, self).dispatch(*args, **kwargs)
 
     def get_form(self, form_class=None):
+        if form_class is None:
+            form_class = self.get_form_class()
         kwargs = self.get_form_kwargs()
         kwargs['competition'] = self.competition
         f = form_class(**kwargs)
