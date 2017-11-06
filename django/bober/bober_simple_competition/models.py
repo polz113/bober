@@ -462,8 +462,8 @@ class QuestionSet(models.Model):
                                 data_res = r.question.resource_set.get(relative_url = url_str)
                                 i[url_property] = "data:" + data_res.mimetype + ";base64,"  + data_res.as_base64()
                                 embeded_resource_ids.append(data_res.id)
-                            except Exception as e:
-                                print(url_str, e)
+                            except Exception, e:
+                                print (url, url_str, e)
                 embeded_resource_ids.append(r.id)
                 index_str = bytes(index_soup.prettify().encode('utf-8'))
             else:

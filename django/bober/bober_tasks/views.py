@@ -25,7 +25,11 @@ from bober_tasks import forms
 from django.contrib import auth, messages
 from django.utils.text import slugify
 from django.contrib.auth.decorators import permission_required
-from django.contrib.auth.mixins import PermissionRequiredMixin
+try:
+    from django.contrib.auth.mixins import PermissionRequiredMixin
+except:
+    # Django 1.8 compatibility
+    from auth_mixins import PermissionRequiredMixin
 import mimetypes
 
 

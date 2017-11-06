@@ -10,6 +10,7 @@ try:
 except:
     DefaultAdmin = admin.ModelAdmin
 
+
 class SchoolAdmin(DefaultAdmin):
     model = School
     search_fields = ['name'] 
@@ -18,10 +19,12 @@ class SchoolAdmin(DefaultAdmin):
 class AwardInline(admin.TabularInline):
     model = Award
 
+
 class CompetitionQuestionSetInline(admin.TabularInline):
     model = CompetitionQuestionSet
     # form = CompetitionQuestionSetInlineAdminForm
     raw_id_fields = ('guest_code',)
+
 
 class SchoolCategoryQuestionSetsInline(admin.TabularInline):
     model = SchoolCategoryQuestionSets
@@ -43,6 +46,7 @@ class CompetitionAdmin(DefaultAdmin):
 class CompetitionQuestionSetAdmin(DefaultAdmin):
     inlines = [ AwardInline ]
     model = CompetitionQuestionSet
+
 
 # Register your models here.
 admin.site.register(School, SchoolAdmin)

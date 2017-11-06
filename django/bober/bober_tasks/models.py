@@ -266,9 +266,9 @@ class TaskTranslation(models.Model):
         for d in resource_list:
             print(d['url'])
             try:
-                resource = self.task.resources_set.get(
+                resource = self.task.resources_set.filter(
                     language = self.language_locale,
-                    filename = os.path.basename(d['url']))
+                    filename = os.path.basename(d['url']))[0]
                 f_path = os.path.join(
                     settings.MEDIA_ROOT, 
                     'task',
