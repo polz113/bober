@@ -568,7 +568,7 @@ class CompetitionQuestionSetCreateForm(forms.ModelForm):
         widget=forms.CheckboxSelectMultiple())
 
     def __init__(self, *args, **kwargs):
-        super(CompetitionQuestionSetUpdateForm, self).__init__(*args, **kwargs)
+        super(CompetitionQuestionSetCreateForm, self).__init__(*args, **kwargs)
         add_related_field_wrapper(self, 'questionset',
                                   add_related_view='questionset_add',
                                   change_related_view='questionset_change')
@@ -588,7 +588,7 @@ class CompetitionQuestionSetCreateForm(forms.ModelForm):
         self.helper = CompetitionQuestionSetFormHelper()
 
     def save(self, *args, **kwargs):
-        retval = super(CompetitionQuestionSetUpdateForm, self).save(*args, **kwargs)
+        retval = super(CompetitionQuestionSetCreateForm, self).save(*args, **kwargs)
         self.new_code_created = False
         old_guest_privileges = set()
         generator = self.instance.competition.competitor_code_generator
