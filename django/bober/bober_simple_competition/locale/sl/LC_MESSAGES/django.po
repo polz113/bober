@@ -31,6 +31,9 @@ msgstr "Obnovi seznam obnovljenih kod kasneje"
 msgid "Execute effects later"
 msgstr "Izvedi učinke kasneje (po samomoru)"
 
+msgid "Date of birth"
+msgstr "Datum rojstva"
+
 #: forms.py:128 forms.py:162 forms.py:193 forms.py:237
 msgid "Wrong access code"
 msgstr "Vnesi kodo za dostop"
