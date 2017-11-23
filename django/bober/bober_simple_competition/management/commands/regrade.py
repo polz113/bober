@@ -13,7 +13,11 @@ class Command(BaseCommand):
     def make_manifest(dirname):
         pass
 
+    def add_arguments(self, parser):
+        parser.add_argument(
+            'competition_slug', type=str)
+
     def handle(self, *args, **options):
-        cslug = args[0]
+        cslug = options['competition_slug']
         competition = Competition.objects.get(slug=cslug)
         competition.grade_answers(regrade=True, update_graded=True)

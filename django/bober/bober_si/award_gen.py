@@ -32,15 +32,15 @@ def _data_into_svg(svg, data):
     return etree.tostring(svg)
 
 def generate_award_pdf_svg(output, data, template_prefix):
-    svgs = """<svg>"""
+    svgs = b'<svg>'
     for d in data:
         t = d['template']
         if len(t) < 1:
             continue
         text_template_filename = os.path.join(template_prefix, t + '.svg')
-        with open(text_template_filename) as f:
+        with open(text_template_filename, 'r') as f:
             svgs += _data_into_svg(etree.parse(f), d)
-    svgs += "</svg>"
+    svgs += b'</svg>'
     with open(output + '.svg', 'wb') as f:
         f.write(svgs)
     cairosvg.svg2pdf(svgs, write_to = output)

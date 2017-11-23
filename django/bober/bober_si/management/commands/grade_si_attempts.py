@@ -12,8 +12,8 @@ import os
 class Command(BaseCommand):
     # @transaction.atomic
     def add_arguments(self, parser):
-        parser.add_argument('competition_slug', nargs=1)
-        parser.add_argument('questionset_name', nargs=1)
+        parser.add_argument('competition_slug', type=str)
+        parser.add_argument('questionset_name', type=str)
     
     def make_manifest(dirname):
         pass
@@ -21,8 +21,8 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         if len(args) < 3:
             args += (None,) * (3 - len(args))
-        cslug = unicode(options.get('competition_slug', [args[0]])[0])
-        cqs_name = unicode(options.get('questionset_name', [args[1]])[0])
+        cslug = options['competition_slug']
+        cqs_name = options['questionset_name']
         cqss = CompetitionQuestionSet.objects.filter(
             competition__slug = cslug,
             name = cqs_name
@@ -35,8 +35,8 @@ class Command(BaseCommand):
         # cslug = args[0]
         competition = Competition.objects.get(slug=cslug)
         for cqs in cqss:
-            print cqs
-            cqs.grade_answers(regrade=True, update_graded=True)
+            print(cqs)
+            # cqs.grade_answers(regrade=True, update_graded=True)
             for attempt in Attempt.objects.filter(
                         competitionquestionset = cqs
                     ).exclude(confirmed_by = None):
