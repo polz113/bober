@@ -835,7 +835,8 @@ class GradedAnswer(models.Model):
 @python_2_unicode_compatible
 class Attempt(models.Model):
     def __str__(self):
-        return u"{}: {} - {}: {} ({} - {})".format(self.competitor,
+        return u"({}) {}, {} - {}: {} ({} - {})".format(
+            self.id, self.competitor,
             self.competition.slug,
             self.questionset.name,
             self.access_code,
@@ -855,6 +856,10 @@ class Attempt(models.Model):
     #graded_answers = ManyToManyField('Answer', through='GradedAnswer',
     #    related_name = 'graded_attempt',
     #    null=True, blank=True)
+
+    @property
+    def duration(self):
+        return self.finish - self.start
 
     @property
     def competition(self):
@@ -967,7 +972,9 @@ class Profile(models.Model):
 
     user = models.OneToOneField(User)
     feature_level = IntegerField(choices=FEATURE_LEVELS, default=1)
-    date_of_birth = DateField(null=True, blank=True)
+    date_of_birth = DateField(
+        null=True, blank=True, 
+        verbose_name=_('Date of birth'))
     managed_profiles = models.ManyToManyField('Profile', related_name='managers',
         blank=True)
     created_codes = ManyToManyField(Code, blank=True, related_name='creator_set')

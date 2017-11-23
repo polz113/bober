@@ -107,6 +107,12 @@ msgstr "Priznanja"
 msgid "Certificates of achievement"
 msgstr "Priznanja za tekmovalce"
 
+msgid "Show attempt times"
+msgstr "Prikaži čase poizkusov"
+
+msgid "Hide attempt times"
+msgstr "Skrij čase poizkusov"
+
 #: templates/bober_si/teacher_overview.html:127
 #: templates/bober_si/teacher_overview.html:128
 #: templates/bober_si/teacher_overviewx.html:127

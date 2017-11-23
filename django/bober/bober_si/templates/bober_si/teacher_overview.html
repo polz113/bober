@@ -102,6 +102,13 @@ $(document).ready(function(){
         $('#profile_edit').show();
         $('#profile_edit_hider').hide();
     });
+    $('#times_showhide').click(function() {
+        $('.attempt_time').toggle();
+        $('#times_hider').toggle();
+        $('#times_shower').toggle();
+    });
+    $('#times_hider').hide();
+    $('.attempt_time').hide();
 });
 
 
@@ -181,6 +188,10 @@ $(document).ready(function(){
     <div>
 {{competition.motd | safe}}
     </div>
+    <div id="times_showhide">
+        <a id="times_hider" class="times_showhide">{% trans "Hide attempt times" %}</a>
+        <a id="times_shower" class="times_showhide">{% trans "Show attempt times" %}</a>
+    </div>
 {% for school, cqsa in attempts.items %}
     <div class="results-school">{{ school }}</div>
     {% for cqs, attempts in cqsa %}{% if attempts %}<div>
@@ -202,20 +213,22 @@ $(document).ready(function(){
                                 <img src="{% static "img/award_icons/" %}{{aaward.award.icon}}" />
                             {% endif %}
                         {% endfor %}
-                         <span class="name first_name" onclick="edit_name(this);">{{attempt.competitor.first_name}}</span> <span class="name last_name" onclick="edit_name(this);">{{attempt.competitor.last_name}}</span>
-                         <span class="edit-name" style="display: none">
-                         <form action="{% url "competitor_update" pk=attempt.competitor.id %}" method="post" />
-                             <input name="first_name" type="text" value="{{attempt.competitor.first_name}}"/> 
-                             <input name="last_name" type="text" value="{{attempt.competitor.last_name}}"/>
-                             <input name="cqs_id" type="hidden" value="{{cqs.id}}">
-                             <input name="attempt_id" type="hidden" value="{{attempt.id}}">
-                             <input name="invalidate_url" class="invalidate-url" type="hidden" value="{% url "revalidate_awards" profile_id=profile.id slug=competition.slug attempt_id=attempt.id %}" />
+                        <span class="name" onclick="edit_name(this);">
+                            <span class="first_name">{{attempt.competitor.first_name}}</span> <span class="last_name">{{attempt.competitor.last_name}}</span>
+                            <span class="attempt_time">(<span class="attempt_start">{{attempt.start}}</span>, <span class="attempt_duration">{{attempt.duration}}</span>)</span></span>
+                        <span class="edit-name" style="display: none">
+                        <form action="{% url "competitor_update" pk=attempt.competitor.id %}" method="post" />
+                            <input name="first_name" type="text" value="{{attempt.competitor.first_name}}"/> 
+                            <input name="last_name" type="text" value="{{attempt.competitor.last_name}}"/>
+                            <input name="cqs_id" type="hidden" value="{{cqs.id}}">
+                            <input name="attempt_id" type="hidden" value="{{attempt.id}}">
+                            <input name="invalidate_url" class="invalidate-url" type="hidden" value="{% url "revalidate_awards" profile_id=profile.id slug=competition.slug attempt_id=attempt.id %}" />
               
-                         </form>
-                         </span>
-                         <img class="pencil" src="/static/img/pencil.png" onclick="edit_name(this); " />
-                         <img src="/static/img/qualify.png" class="confirm" onclick="switch_qualify(this, '{% url "attempt_confirm" attempt_id=attempt.id competition_questionset_id=cqs.id %}', true); invalidate_award('{% url "revalidate_awards" profile_id=profile.id slug=competition.slug attempt_id=attempt.id %}')" />
-                         <img src="/static/img/disqualify.png" class="confirm" onclick="switch_qualify(this, '{% url "attempt_unconfirm" attempt_id=attempt.id competition_questionset_id=cqs.id %}', false); invalidate_award('{% url "revalidate_awards" profile_id=profile.id slug=competition.slug attempt_id=attempt.id %}')" />
+                        </form>
+                        </span>
+                        <img class="pencil" src="/static/img/pencil.png" onclick="edit_name(this); " />
+                        <img src="/static/img/qualify.png" class="confirm" onclick="switch_qualify(this, '{% url "attempt_confirm" attempt_id=attempt.id competition_questionset_id=cqs.id %}', true); invalidate_award('{% url "revalidate_awards" profile_id=profile.id slug=competition.slug attempt_id=attempt.id %}')" />
+                        <img src="/static/img/disqualify.png" class="confirm" onclick="switch_qualify(this, '{% url "attempt_unconfirm" attempt_id=attempt.id competition_questionset_id=cqs.id %}', false); invalidate_award('{% url "revalidate_awards" profile_id=profile.id slug=competition.slug attempt_id=attempt.id %}')" />
                     </th>
                     {% for q, answer in attempt.graded_answers_by_question_id.items %}
                         <td>

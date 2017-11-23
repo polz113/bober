@@ -6,7 +6,7 @@ from django.contrib.admin import widgets
 from bober_simple_competition.models import\
     ADMIN_PRIVILEGES, COMPETITOR_PRIVILEGES,\
     Profile, Competitor, Competition,\
-    CompetitionQuestionSet, QuestionSet
+    CompetitionQuestionSet, QuestionSet, Answer
 from django.utils.text import slugify
 from django.utils.translation import ugettext_lazy as _
 from extra_views import InlineFormSet
@@ -45,6 +45,21 @@ class ProfileAdminForm(forms.ModelForm):
         }
 
 
+class AnswerInlineAdminForm(forms.ModelForm):
+    class Meta:
+        model = Answer
+        fields = ['value', 'score', 'attempt']
+    question_id = forms.IntegerField(required=True)
+
+
+class AnswerAdminForm(forms.ModelForm):
+    class Meta:
+        model = Answer
+        fields = ['value', 'score', 'attempt', 'randomized_question_id']
+        widgets = {'attempt': forms.CharField() }
+    question_id = forms.IntegerField(required=False)
+
+
 class CompetitionQuestionSetInlineAdminForm(forms.ModelForm):
     class Meta:
         model = Profile
@@ -52,7 +67,6 @@ class CompetitionQuestionSetInlineAdminForm(forms.ModelForm):
         widgets = {
             'guest_code': autocomplete.ModelSelect2Multiple(url='code_autocomplete'),
         }
-
 
 
 class AccessCodeForm(forms.Form):
