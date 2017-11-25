@@ -89,9 +89,13 @@ def long_to_str(l):
     """maybe replace most of this with int.to_bytes in python3"""
     s = ""
     while l > 0:
-        c = chr(l % 256)
+        c = "" + chr(l % 256)
         l = l // 256
         s = c + s
+    try:
+        return unicode(s, 'iso8859-1')
+    except:
+        pass
     return s
 
 

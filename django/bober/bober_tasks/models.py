@@ -232,9 +232,12 @@ class TaskTranslation(models.Model):
         accepted_answers = self.answer_set.filter(correct=True)
         authors = []
         if self.task.author:
-            authors.append(str(self.task.author))
+            try:
+                authors.append(str(self.task.author))
+            except:
+                authors.append(unicode(self.task.author))
         if self.author:
-            authors.append(str(self.author))
+            authors.append(u"%s" % self.author)
         q, created = bober_simple_competition.models.Question.objects.get_or_create(
             identifier = str(self.task.id))
         if created:
