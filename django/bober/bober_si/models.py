@@ -92,7 +92,7 @@ class School(models.Model):
     def __str__(self):
         return u"{}, {}".format(self.name, self.post, self.category)
 
-    name = models.CharField(unique=True, max_length=255)
+    name = models.CharField(max_length=255)
     display_name = models.TextField(max_length=255)
     category = models.CharField(choices=SCHOOL_CATEGORIES, max_length=24)
     address = models.CharField(max_length=1024, blank=True, null=True)
