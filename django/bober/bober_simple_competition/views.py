@@ -757,7 +757,7 @@ def _can_attempt(request, competition_questionset):
         access_allowed |= competition.start < now and \
             codegen.code_matches(
                 access_code, {'competitor_privileges':['attempt']})
-        access_allowed &= (competition.finish > now)
+        access_allowed &= (competition.end > now)
         # print "access_allowed before competition_questionset", access_allowed
         access_allowed &= codegen.code_matches(
             access_code, {'competition_questionset':[
