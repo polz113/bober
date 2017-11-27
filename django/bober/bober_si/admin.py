@@ -11,6 +11,15 @@ except:
     DefaultAdmin = admin.ModelAdmin
 
 
+class SchoolTeacherCodeAdmin(DefaultAdmin):
+    search_fields = [
+        'code__value',
+        'teacher__user__username',
+        'teacher__user__first_name', 'teacher__user__last_name',
+        'school__name'
+    ]
+
+
 class SchoolAdmin(DefaultAdmin):
     model = School
     search_fields = ['name'] 
@@ -53,7 +62,7 @@ admin.site.register(School, SchoolAdmin)
 admin.site.register(Award, DefaultAdmin)
 admin.site.register(AttemptAward, DefaultAdmin)
 admin.site.register(CompetitionQuestionSet, CompetitionQuestionSetAdmin)
-admin.site.register(SchoolTeacherCode, DefaultAdmin)
+admin.site.register(SchoolTeacherCode, SchoolTeacherCodeAdmin)
 admin.site.register(SchoolCompetition, CompetitionAdmin)
 admin.site.register(CompetitionRecognition, DefaultAdmin)
 admin.site.register(TeacherRecognition, DefaultAdmin)
