@@ -18,7 +18,7 @@ class SchoolTeacherCodeAdmin(DefaultAdmin):
         'teacher__user__first_name', 'teacher__user__last_name',
         'school__name'
     ]
-    raw_id_fields = ['school', 'code']
+    raw_id_fields = ['school', 'code', 'teacher']
 
 
 class SchoolAdmin(DefaultAdmin):
