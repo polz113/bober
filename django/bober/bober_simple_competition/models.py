@@ -1,10 +1,10 @@
 from django.db import models
 from django.db.models import SlugField, CharField, TextField, IntegerField, FloatField
 from django.db.models import FileField, BooleanField
-from django.db.models import DateField, DateTimeField
+from django.db.models import DateField, DateTimeField, DurationField
 from django.db.models import ForeignKey, ManyToManyField, OneToOneField
 from django.db.models import FileField, BinaryField, CommaSeparatedIntegerField
-from django.db.models import signals
+from django.db.models import signals, F, ExpressionWrapper
 from django.contrib.auth.models import User
 from django.core.files.base import ContentFile, File
 from code_based_auth.models import Code, CodeField, CodeGenerator, CODE_COMPONENT_FORMATS, HASH_ALGORITHMS, FORMAT_FUNCTIONS, DEFAULT_COMPONENT_FORMAT, DEFAULT_HASH_ALGORITHM
@@ -447,7 +447,7 @@ class QuestionSet(models.Model):
                     json.dumps(q.manifest(safe=True)))
         for url, r in html_resources.items():
             if embed_images:
-                index_soup = BeautifulSoup(r.as_bytes())
+                index_soup = BeautifulSoup(r.as_bytes(), "lxml")
                 imgs = index_soup.find_all('img')
                 objs = index_soup.find_all('object')
                 scripts = index_soup.find_all('script')
@@ -460,10 +460,10 @@ class QuestionSet(models.Model):
                         if url_str is not None:
                             try:
                                 data_res = r.question.resource_set.get(relative_url = url_str)
-                                i[url_property] = "data:" + data_res.mimetype + ";base64,"  + data_res.as_base64()
+                                i[url_property] = "data:" + data_res.mimetype + ";base64,"  + data_res.as_base64().decode('utf-8')
                                 embeded_resource_ids.append(data_res.id)
                             except Exception as e:
-                                print (url, url_str, e)
+                                print ("error embedding", url, url_str, e)
                 embeded_resource_ids.append(r.id)
                 index_str = bytes(index_soup.prettify().encode('utf-8'))
             else:
@@ -601,7 +601,7 @@ def _question_from_dirlike(
     index_dict = {}
     # get properties from index
     index_dict = {}
-    index_soup = BeautifulSoup(index_str)
+    index_soup = BeautifulSoup(index_str, "lxml")
     try:
         index_dict['title'] = str(index_soup.title.contents[0]).strip()
     except:
@@ -647,7 +647,6 @@ def _question_from_dirlike(
         if k not in manifest:
             manifest[k] = v
     if question is None:
-        print("creating question", manifest['title'], type(manifest['title']))
         question = cls(
             country=manifest['country'],
             slug=slugify(manifest['title']) + '-' + manifest['id'],
@@ -670,7 +669,7 @@ def _question_from_dirlike(
     for i in resource_list:
         try:
             fname = my_path(i['url'])
-            f = my_open(fname)
+            f = my_open(fname, 'rb')
             data = f.read()
             my_close(f)
             r = Resource(
@@ -682,6 +681,7 @@ def _question_from_dirlike(
                 data=data)
             r.save()
         except Exception as e:
+            print(i, ": ", e)
             modules_list.append(i)
     return question
 
@@ -694,7 +694,7 @@ class Question(models.Model):
     slug = SlugField()
     identifier = CharField(max_length = 64, unique=True)
     title = TextField()
-    tags = TaggableManager()
+    tags = TaggableManager(blank=True)
     version = CharField(max_length = 255, default='0')
     verification_function_type = IntegerField(
         choices=GRADER_FUNCTION_TYPES, default=0)
@@ -832,6 +832,14 @@ class GradedAnswer(models.Model):
     answer = ForeignKey('Answer')
     score = FloatField(null=True)
 
+
+class AttemptManager(models.Manager):
+    def get_queryset(self):
+        duration = ExpressionWrapper(F('finish') - F('start'), output_field=DurationField())
+        qs = super(AttemptManager, self).get_queryset().annotate(duration=duration)
+        return qs
+
+
 @python_2_unicode_compatible
 class Attempt(models.Model):
     def __str__(self):
@@ -853,13 +861,15 @@ class Attempt(models.Model):
     start = DateTimeField(auto_now_add = True)
     finish = DateTimeField(null=True, blank=True)
     score = FloatField(null=True, blank=True)
+ 
+    objects = AttemptManager()
     #graded_answers = ManyToManyField('Answer', through='GradedAnswer',
     #    related_name = 'graded_attempt',
     #    null=True, blank=True)
 
-    @property
-    def duration(self):
-        return self.finish - self.start
+    # @property
+    # def duration(self):
+    #     return self.finish - self.start
 
     @property
     def competition(self):

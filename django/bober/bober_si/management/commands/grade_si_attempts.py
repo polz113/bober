@@ -36,7 +36,7 @@ class Command(BaseCommand):
         competition = Competition.objects.get(slug=cslug)
         for cqs in cqss:
             print(cqs)
-            # cqs.grade_answers(regrade=True, update_graded=True)
+            cqs.grade_answers(regrade=True, update_graded=True)
             for attempt in Attempt.objects.filter(
                         competitionquestionset = cqs
                     ).exclude(confirmed_by = None):

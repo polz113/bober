@@ -446,6 +446,7 @@ def mentor_recognition_pdf(request, slug, username):
             data, template_dir)
     return safe_media_redirect(cert_path)
 
+
 @login_required
 def school_awards_pdf(request, username, slug, school_id, cqs_name):
     profile = Profile.objects.get(user__username=username)
@@ -454,8 +455,8 @@ def school_awards_pdf(request, username, slug, school_id, cqs_name):
             request.profile.managed_profiles.filter(
                 id=profile.id).count() <= 0:
         raise PermissionDenied
-    cert_dir = os.path.join(_profile_file_path(profile, 
-        os.path.join(slug, school_id)))
+    cert_dir = os.path.join(_profile_file_path(
+        profile, os.path.join(slug, school_id, 'all')))
     cert_fname = cqs_name + '.pdf'
     cert_path = os.path.join(cert_dir, cert_fname)
     cert_full_fname = os.path.join(settings.MEDIA_ROOT, cert_path)
@@ -516,6 +517,151 @@ def school_awards_pdf(request, username, slug, school_id, cqs_name):
             data, template_dir)
     #return None
     return safe_media_redirect(cert_path)
+
+
+@login_required
+def awards_school_type_pdf(request, username,
+                           slug, school_id, award_name, cqs_name):
+    profile = Profile.objects.get(user__username=username)
+    
+    if profile.user != request.user and \
+            request.profile.managed_profiles.filter(
+                id=profile.id).count() <= 0:
+        raise PermissionDenied
+    cert_dir = os.path.join(_profile_file_path(profile, 
+        os.path.join(slug, school_id, 'by_type', award_name)))
+    cert_fname = cqs_name + '.pdf'
+    cert_path = os.path.join(cert_dir, cert_fname)
+    cert_full_fname = os.path.join(settings.MEDIA_ROOT, cert_path)
+    try:
+        # print "f:", os.path.join(settings.MEDIA_ROOT, cert_path)
+        assert os.path.isfile(cert_full_fname)
+    except:
+        try:
+            cert_full_dir = os.path.join(settings.MEDIA_ROOT, cert_dir)
+            os.makedirs(cert_full_dir)
+        except Exception as e:
+            pass
+        #    print e
+        # regenerate award. Ignore the template
+        # template_file = os.path.join(AWARD_TEMPLATE_DIR, 'all_si.svg')
+        #print "generating..."
+        data = []
+        competition = SchoolCompetition.get_cached_by_slug(slug=slug)
+        #print cqs_name
+        #for i in profile.schoolteachercode_set.all():
+        #    print "  ", i.competition_questionset.name
+        #print profile.schoolteachercode_set.filter(school_id = school_id,
+        #    competition_questionset__name=cqs_name)
+        stcs = profile.schoolteachercode_set.filter(
+                    code__codegenerator = competition.competitor_code_generator,
+                    competition_questionset__name = cqs_name,
+                    school_id = school_id
+                ).order_by(
+                    'code'
+                ).prefetch_related(
+                    'code')
+        # print stcs
+        for stc in stcs:
+            stc.assign_si_awards(revoked_by = profile)
+            awards = stc.attempt_awards().filter(
+                    award__name = award_name
+                ).order_by(
+                    'attempt__competitor__last_name',
+                    'attempt__competitor__first_name'
+                ).select_related(
+                    'award')
+            for award in awards:
+                data.append(
+                    {
+                        'name': award.competitor_name,
+                        'competition': award.attempt.competitionquestionset.competition,
+                        'group': award.attempt.competitionquestionset.name,
+                        'school': award.school_name,
+                        'group': award.group_name,
+                        'serial': award.serial,
+                        'template': award.award.template,
+                    }
+                )
+        try:
+            template_dir = os.path.join(AWARD_TEMPLATE_DIR, competition.slug)
+            assert os.path.isdir(template_dir)
+        except:
+            template_dir = os.path.join(AWARD_TEMPLATE_DIR, 'default')
+        generate_award_pdf(cert_full_fname,
+            data, template_dir)
+    #return None
+    return safe_media_redirect(cert_path)
+
+
+
+
+@login_required
+def awards_type_pdf(request, username, slug, award_name, cqs_name):
+    profile = Profile.objects.get(user__username=username)
+    
+    if profile.user != request.user and \
+            request.profile.managed_profiles.filter(
+                id=profile.id).count() <= 0:
+        raise PermissionDenied
+    cert_dir = os.path.join(_profile_file_path(profile, 
+        os.path.join(slug, 'by_type', award_name)))
+    cert_fname = cqs_name + '-' + award_name + '.pdf'
+    cert_path = os.path.join(cert_dir, cert_fname)
+    cert_full_fname = os.path.join(settings.MEDIA_ROOT, cert_path)
+    try:
+        # print "f:", os.path.join(settings.MEDIA_ROOT, cert_path)
+        assert os.path.isfile(cert_full_fname)
+    except:
+        try:
+            cert_full_dir = os.path.join(settings.MEDIA_ROOT, cert_dir)
+            os.makedirs(cert_full_dir)
+        except Exception as e:
+            pass
+        #    print e
+        # regenerate award. Ignore the template
+        # template_file = os.path.join(AWARD_TEMPLATE_DIR, 'all_si.svg')
+        #print "generating..."
+        data = []
+        competition = SchoolCompetition.get_cached_by_slug(slug=slug)
+        #print cqs_name
+        #for i in profile.schoolteachercode_set.all():
+        #    print "  ", i.competition_questionset.name
+        #print profile.schoolteachercode_set.filter(school_id = school_id,
+        #    competition_questionset__name=cqs_name)
+        # print stcs
+        awards = AttemptAward.objects.filter(
+                attempt__competitionquestionset__competition = competition,
+                attempt__competitionquestionset__name = cqs_name,
+                award__name = award_name,
+                revoked_by = None,
+            ).order_by(
+                'attempt__competitor__last_name',
+                'attempt__competitor__first_name'
+            ).select_related(
+                'award')
+        for award in awards:
+            data.append(
+                {
+                    'name': award.competitor_name,
+                    'school': award.school_name,
+                    'group': award.group_name,
+                    # 'date': '7. - 11. novembra 2016',
+                    'serial': award.serial,
+                    'template': award.award.template,
+                }
+            )
+        try:
+            template_dir = os.path.join(AWARD_TEMPLATE_DIR, competition.slug)
+            assert os.path.isdir(template_dir)
+        except:
+            template_dir = os.path.join(AWARD_TEMPLATE_DIR, 'default')
+        generate_award_pdf(cert_full_fname,
+            data, template_dir)
+    #return None
+    return safe_media_redirect(cert_path)
+
+
 
 @login_required
 def all_awards_pdf(request, username, slug, cqs_name):

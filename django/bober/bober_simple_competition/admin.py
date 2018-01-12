@@ -73,10 +73,18 @@ class AnswerAdmin(admin.ModelAdmin):
     raw_id_fields = ('attempt',)
     form = AnswerAdminForm
 
+class AttemptConfirmationAdmin(admin.ModelAdmin):
+    search_fields = (
+        'by__user__username', 'by__user__first_name', 'by__user__last_name',
+        'attempt__id',
+        'attempt__competitor__first_name', 'attempt__competitor__last_name')
+    raw_id_fields = ('by', 'attempt')
+
 # Re-register UserAdmin
 admin.site.unregister(User)
 admin.site.register(User, ProfileUserAdmin)
 
+admin.site.register(AttemptConfirmation, AttemptConfirmationAdmin)
 admin.site.register(Competitor, CompetitorAdmin)
 admin.site.register(Competition, CompetitionAdmin)
 admin.site.register(QuestionSet, QuestionSetAdmin)

@@ -19,19 +19,16 @@ class Command(BaseCommand):
     # @transaction.atomic
     help = "Create the awards for slovenian national championships"
 
-    def make_manifest(dirname):
-        print "haha"
-
     def add_arguments(self, parser):
         parser.add_argument('competition_slug', nargs=1)
 
 
     def __create_awards(self, cqs):
-        print "creating for", cqs
+        print ("creating for", cqs)
         max_score = cqs.questionset.questions.all().aggregate(
             Sum('max_score'))['max_score__sum']
         group_name = cqs.name
-        year_str = str(timezone.now().year)[-2:]
+        year_str = 'TEST' + str(timezone.now().year)[-2:]
         group_prefix = {
             '1. letnik': '11',
             '2. letnik': '12',
@@ -47,11 +44,11 @@ class Command(BaseCommand):
             '8. razred': '08',
             '9. razred': '09',
         }.get(group_name, slugify(group_name))
-        l = Attempt.objects.filter(
+        l = list(Attempt.objects.filter(
             competitionquestionset = cqs
         ).exclude(
             confirmed_by = None
-        ).order_by('-score').values_list('score', flat=True)
+        ).order_by('-score').values_list('score', flat=True))
         first_place_award, created = Award.objects.get_or_create(
             questionset = cqs,
             group_name = group_name,
@@ -102,13 +99,15 @@ class Command(BaseCommand):
                 'serial_prefix': year_str + group_prefix + 'G',
             }
         )
-        print cqs, l
+        print (cqs, l)
+        if len(l) < 1:
+            return
         silver_defaults = {
-                'threshold': l[(len(l)-1)//2],
-                'min_threshold': 0.0,
-                'template': 'srebrno',
-                'serial_prefix': year_str + group_prefix + 'S',
-            }
+            'threshold': l[(len(l)-1)//2],
+            'min_threshold': 0.0,
+            'template': 'srebrno',
+            'serial_prefix': year_str + group_prefix + 'S',
+        }
         if gold_award.to_place is not None:
             silver_defaults['from_place'] = gold_award.to_place+1
         silver_award, created = Award.objects.get_or_create(
@@ -138,7 +137,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         if len(args) < 1:
             args += (None,) * (3 - len(args))
-        cslug = unicode(options.get('competition_slug', [args[0]])[0])
+        cslug = options.get('competition_slug', [args[0]])[0]
         competition = SchoolCompetition.objects.get(slug=cslug)
         for cqs in competition.competitionquestionset_set.all():
             self.__create_awards(cqs)

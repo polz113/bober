@@ -19,9 +19,6 @@ class Command(BaseCommand):
     # @transaction.atomic
     help = "Assign the award for the national championship, create .pdfs"
 
-    def make_manifest(dirname):
-        print "haha"
-
     def add_arguments(self, parser):
         parser.add_argument('competition_slug', nargs=1)
         parser.add_argument('questionset_name', nargs=1)
@@ -29,8 +26,8 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         if len(args) < 2:
             args += (None,) * (2 - len(args))
-        cslug = unicode(options.get('competition_slug', [args[0]])[0], "utf8")
-        cqs_name = unicode(options.get('questionset_name', [args[1]])[0], "utf8")
+        cslug = options.get('competition_slug', [args[0]])[0]
+        cqs_name = options.get('questionset_name', [args[1]])[0]
         competition = Competition.objects.get(slug=cslug)
         cqss = CompetitionQuestionSet.objects.filter(
             competition = competition,
