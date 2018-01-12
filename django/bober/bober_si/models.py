@@ -5,6 +5,7 @@ from django.db.models import Q, F, Sum
 from django.utils.translation import ugettext as _
 from collections import OrderedDict, defaultdict
 import os
+import traceback
 from django.utils.encoding import python_2_unicode_compatible
 # Create your models here.
 
@@ -25,7 +26,7 @@ def assign_attempt_awards(attempt, awards, data, commit=False):
     competitor_name = u"{} {}".format(
         attempt.competitor.first_name, 
         attempt.competitor.last_name)
-    to_assign = awards
+    to_assign = set(awards)
     aawards = attempt.attemptaward_set.all()
     serials = set(aawards.values_list('serial', flat=True))
     # aawards = aawards.filter(revoked_by = None)
@@ -42,7 +43,7 @@ def assign_attempt_awards(attempt, awards, data, commit=False):
                     aaward.group_name == aaward.award.group_name and \
                     aaward.revoked_by == None:
                     # print "    match", aaward, aaward.school_name.encode('utf-8')
-                to_assign.remove(aaward.award)
+                to_assign.discard(aaward.award)
             else:
                 # print "    revoke (data)",
                 # print u"        {}".format(aaward.competitor_name).encode('utf-8')
@@ -151,30 +152,33 @@ class School(models.Model):
                 if attempts.count() < 1:
                     continue
                 l = [a.score for a in attempts.all()]
-                #print len(l), l
-                bronze_threshold = min(l[(len(l) - 1) // 3], bronze_award.threshold)
-                bronze_threshold = max(bronze_threshold, bronze_award.min_threshold)
-                #print self, cqs.name, max_score, bronze_threshold, "t:", bronze_award.threshold, "1/3:", l[(len(l) - 1) // 3]
-                #print cqs.name, max_score, bronze_threshold
-                #print bronze_threshold
+                # print(len(l), l)
+                bronze_threshold = max(l[(len(l) - 1) // 3], bronze_award.min_threshold)
+                bronze_threshold = min(bronze_threshold, bronze_award.threshold)
+                # print (self, cqs.name, max_score, bronze_threshold, "t:", bronze_award.threshold, "1/3:", l[(len(l) - 1) // 3])
+                # print (cqs.name, max_score, bronze_threshold)
+                # print (bronze_threshold)
                 for attempt in attempts:
                     to_assign = set()
-                    to_assign.add(general_award)
-                    for aaward in attempt.attemptaward_set.filter(revoked_by = None):
-                        if aaward.award != bronze_award:
-                            to_assign.add(aaward.award)
+                    for existing_award in attempt.attemptaward_set.filter(revoked_by = None):
+                        if existing_award.award.min_threshold >= attempt.score:
+                            to_assign.add(existing_award.award)
                     if attempt.score >= bronze_threshold:
                         to_assign.add(bronze_award)
                     else:
-                        to_assign.add(general_award)
-                        to_create, to_revoke = assign_attempt_awards(
-                                attempt, to_assign, 
-                                {'revoked_by': revoked_by, 'school_name':self.display_name},
-                                commit = False)
-                        new_awards += to_create
-                        revoke_awards += to_revoke
+                        to_assign.discard(bronze_award)
+                    for award in awards.filter(questionset=attempt.competitionquestionset):
+                        if attempt.score >= max(award.threshold, award.min_threshold):
+                            to_assign.add(award)
+                    to_create, to_revoke = assign_attempt_awards(
+                            attempt, to_assign, 
+                            {'revoked_by': revoked_by, 'school_name':self.display_name},
+                            commit = False)
+                    new_awards += to_create
+                    revoke_awards += to_revoke
             except Exception as e:
                 print(e)
+                traceback.print_exc()
                 pass
         if commit:
             assert revoked_by is not None
@@ -183,6 +187,7 @@ class School(models.Model):
                 revoked_by = revoked_by)
             AttemptAward.objects.bulk_create(new_awards)        
         return new_awards, revoke_awards
+
 
 @python_2_unicode_compatible
 class SchoolTeacherCode(models.Model):
@@ -249,7 +254,7 @@ class Award(models.Model):
     from_place = models.IntegerField(null = True, blank=True)
     to_place = models.IntegerField(null = True, blank=True)
     serial_prefix = models.CharField(max_length=256)
-    replaces = models.ManyToManyField('Award', related_name='replaced_by', symmetrical=False)
+    replaces = models.ManyToManyField('Award', blank=True, related_name='replaced_by', symmetrical=False)
 
 @python_2_unicode_compatible
 class AttemptAward(models.Model):

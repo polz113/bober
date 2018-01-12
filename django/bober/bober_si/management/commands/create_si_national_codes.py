@@ -19,9 +19,6 @@ class Command(BaseCommand):
     # @transaction.atomic
     help = "Assign an award for each attempt in a list"
 
-    def make_manifest(dirname):
-        print "haha"
-
     def add_arguments(self, parser):
         parser.add_argument('school_competition_slug', nargs=1)
         parser.add_argument('national_competition_slug', nargs=1)
@@ -29,8 +26,8 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         if len(args) < 3:
             args += (None,) * (3 - len(args))
-        scslug = unicode(options.get('school_competition_slug', [args[0]])[0])
-        ncslug = unicode(options.get('national_competition_slug', [args[1]])[0])
+        scslug = options.get('school_competition_slug', [args[0]])[0]
+        ncslug = options.get('national_competition_slug', [args[1]])[0]
         school_competition = SchoolCompetition.objects.get(slug=scslug)
         national_competition = SchoolCompetition.objects.get(slug=ncslug)
         organizer = national_competition.administrator_code_generator.codes.filter(
@@ -49,10 +46,10 @@ class Command(BaseCommand):
             cqs_list.append(cqs)
             for a in Attempt.objects.filter(
                     competitionquestionset = school_cqs,
-                    attemptaward__award__name = 'napreduje'):
+                    attemptaward__award__name = 'napreduje').distinct():
                 # print a.id, school_cqs
                 if a.attemptaward_set.filter(award__name = 'napreduje', 
-                        revoked_by=None).count() < 1:
+                        revoked_by=None).exclude(attempt__confirmed_by=None).count() < 1:
                     # print "ha-ha!"
                     continue
                 teacher = a.confirmed_by.all()[0]
@@ -98,4 +95,4 @@ class Command(BaseCommand):
                         competitor_name = u"{} {}".format(
                             a.competitor.first_name,
                             a.competitor.last_name)
-                        print u"\t".join([str(a.id), school.name, teacher_name, competitor_name, short_code_value]).encode('utf-8')
+                        print (u"\t".join([str(a.id), school.name, teacher_name, competitor_name, short_code_value]))

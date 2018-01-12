@@ -19,4 +19,4 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         dirname = options['dirname'][0]
         q = Question.from_dir(dirname) 
-        print q, q.resource_set.all()
+        print(q, q.resource_set.all())

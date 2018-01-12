@@ -166,7 +166,7 @@ $(document).ready(function(){
                  <p>{{ school }}</p>
                  <p style="padding-bottom: 20px">
                  {% for cqs, attempts in cqsa %}{% if attempts %}
-                    <a style="padding-left: 20px" href="{% url "school_awards_pdf" slug=competition.slug username=request.user.username cqs_name=cqs.name school_id=school.id %}">{{ cqs.name }}</a>
+                    <a style="padding-left: 20px" href="{% url "awards_school_pdf" slug=competition.slug username=request.user.username cqs_name=cqs.name school_id=school.id %}">{{ cqs.name }}</a>
                  {% else %}
                  <!--   <span style="padding-left: 20px">{{cqs.name}}: {% trans "no competitors" %}</span> -->
                  {% endif %}{% endfor %}

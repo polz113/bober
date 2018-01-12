@@ -31,6 +31,13 @@ Bober, ki je potekalo 14. 1. 2017, mentor(ica)
 {award_listing}
 {top_places_listing}
 """,
+    "solsko-2017": u"""je bil(a) na šolskem nivoju mednarodnega tekmovanja 
+Bober, ki je potekalo med 13. in 17. novembrom 2017, mentor(ica)
+{n_confirmed}.
+{next_round_listing}
+{award_listing}
+""",
+ 
 }
 
 
@@ -100,7 +107,7 @@ def _compose_text(teacher, attempts, template):
     top_places_listing = u"\n".join(top_places_listing)
     name = u"{} {}".format(teacher.user.first_name, teacher.user.last_name)
     if teacher.date_of_birth:
-        name += ', roj. {},'.format(unicode(teacher.date_of_birth))
+        name += u', roj. {},'.format(str(teacher.date_of_birth))
     return template.format(**locals())
 
 class Command(BaseCommand):
@@ -114,14 +121,13 @@ class Command(BaseCommand):
     def add_arguments(self, parser):
         parser.add_argument('competition_slug', nargs=1)
 
-
     def __create_awards(self, cqs):
         pass
 
     def handle(self, *args, **options):
         if len(args) < 1:
             args += (None,) * (3 - len(args))
-        cslug = unicode(options.get('competition_slug', [args[0]])[0])
+        cslug = options.get('competition_slug', [args[0]])[0]
         competition = SchoolCompetition.objects.get(slug=cslug)
         template = TEXT_TEMPLATES.get(cslug, DEFAULT_TEXT_TEMPLATE)
         default_recognition, created = \
@@ -152,8 +158,8 @@ class Command(BaseCommand):
                 name_str = u"{} {}".format(
                     teacher.user.first_name, teacher.user.last_name)
                 if teacher.date_of_birth is not None:
-                    name_str += ", roj. {},".format(
-                        unicode(teacher.date_of_birth.strftime('%d. %m. %Y')))
+                    name_str += u", roj. {},".format(
+                        teacher.date_of_birth.strftime('%d. %m. %Y'))
                 teacher_recognition, created = TeacherRecognition.objects.get_or_create(
                     template = default_recognition,
                     teacher = teacher,

@@ -19,14 +19,11 @@ class Command(BaseCommand):
     # @transaction.atomic
     help = "Create awards for a slovenian school-level competition"
 
-    def make_manifest(dirname):
-        print "haha"
-
     def add_arguments(self, parser):
         parser.add_argument('competition_slug', nargs='+')
 
     def __create_awards(self, cqs):
-        print "creating for", cqs
+        self.stdout.write("creating for {}".format(cqs))
         max_score = cqs.questionset.questions.all().aggregate(
             Sum('max_score'))['max_score__sum']
         group_name = cqs.name
@@ -55,7 +52,7 @@ class Command(BaseCommand):
             defaults = {
                 'template': 'bronasto',
                 'threshold': max_score,
-                'min_threshold': 0.0,
+                'min_threshold': max_score // 2,
                 'serial_prefix': year_str + group_prefix + 'B',
             }
         )
@@ -66,16 +63,16 @@ class Command(BaseCommand):
                 ).exclude(
                     confirmed_by = None
                 ).order_by('-score').values_list('score', flat=True)
-            print bronze_award, ":", l
-            bronze_award.threshold = l[(len(l) - 1) / 5]
+            self.stdout.write("{}: {}".format(bronze_award, l))
+            bronze_award.threshold = l[(len(l) - 1) // 5]
             bronze_award.save()
-            print "Created bronze", bronze_award
+            self.stdout.write("Created bronze {}".format(bronze_award))
         general_award, created = Award.objects.get_or_create(
             questionset = cqs,
             group_name = group_name,
             name = 'priznanje',
-            threshold = 0,
             defaults = {
+                'threshold': 0,
                 'template': 'priznanje',
                 'min_threshold': 0.0,        
                 'serial_prefix': year_str + group_prefix + 'P'
@@ -99,7 +96,7 @@ class Command(BaseCommand):
             first_arg = args[0]
         except:
             first_arg = None
-        cslug = unicode(options.get('competition_slug', [first_arg])[0])
+        cslug = options.get('competition_slug', [first_arg])[0]
         competition = SchoolCompetition.objects.get(slug=cslug)
         for cqs in competition.competitionquestionset_set.all():
             self.__create_awards(cqs)
