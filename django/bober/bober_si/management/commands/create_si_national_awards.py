@@ -28,7 +28,7 @@ class Command(BaseCommand):
         max_score = cqs.questionset.questions.all().aggregate(
             Sum('max_score'))['max_score__sum']
         group_name = cqs.name
-        year_str = 'TEST' + str(timezone.now().year)[-2:]
+        year_str = str(timezone.now().year)[-2:]
         group_prefix = {
             '1. letnik': '11',
             '2. letnik': '12',
