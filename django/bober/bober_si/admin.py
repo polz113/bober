@@ -21,6 +21,16 @@ class SchoolTeacherCodeAdmin(DefaultAdmin):
     raw_id_fields = ['school', 'code', 'teacher']
 
 
+class AttemptAwardAdmin(DefaultAdmin):
+    search_fields = [
+        "award__name",
+        "competitor_name",
+        "school_name",
+        "group_name",
+        "serial",
+    ]
+    raw_id_fields = ['attempt']
+
 class SchoolAdmin(DefaultAdmin):
     model = School
     search_fields = ['name'] 
@@ -61,7 +71,7 @@ class CompetitionQuestionSetAdmin(DefaultAdmin):
 # Register your models here.
 admin.site.register(School, SchoolAdmin)
 admin.site.register(Award, DefaultAdmin)
-admin.site.register(AttemptAward, DefaultAdmin)
+admin.site.register(AttemptAward, AttemptAwardAdmin)
 admin.site.register(CompetitionQuestionSet, CompetitionQuestionSetAdmin)
 admin.site.register(SchoolTeacherCode, SchoolTeacherCodeAdmin)
 admin.site.register(SchoolCompetition, CompetitionAdmin)
