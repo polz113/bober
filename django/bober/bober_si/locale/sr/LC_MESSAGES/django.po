@@ -77,6 +77,13 @@ msgstr "Priznanja"
 msgid "Certificates of achievement"
 msgstr "Priznanja za takmičenje"
 
+msgid "Show attempt times"
+msgstr "Pokaži vreme pokušaja"
+
+msgid "Hide attempt times"
+msgstr "Sakrij vreme pokušaja"
+
+
 #: bober_si/templates/bober_si/teacher_overview.html:44
 msgid "Certificates for mentors"
 msgstr "Priznanja za mentore"

@@ -749,19 +749,22 @@ def _can_attempt(request, competition_questionset):
     try:
         competition = competition_questionset.competition
         access_code = request.session['access_code']
+        now = timezone.now()
         codegen = competition.competitor_code_generator
         access_allowed |= codegen.code_matches(
             access_code, {'competitor_privileges':['attempt_before_start']})
         # print "competition started:", competition.start < timezone.now()
-        access_allowed |= competition.start < timezone.now() and \
+        access_allowed |= competition.start < now and \
             codegen.code_matches(
                 access_code, {'competitor_privileges':['attempt']})
+        access_allowed &= (competition.end > now)
         # print "access_allowed before competition_questionset", access_allowed
         access_allowed &= codegen.code_matches(
             access_code, {'competition_questionset':[
                 competition_questionset.slug_str()]})
     except Exception as e:
         print(e)
+        access_allowed = False
         pass
     return access_allowed
 
