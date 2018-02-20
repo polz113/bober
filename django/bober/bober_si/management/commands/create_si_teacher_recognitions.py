@@ -13,10 +13,24 @@ import json
 import os
 from django.db.models import Sum
 
-DEFAULT_TEXT_TEMPLATE = u"""{name} je bil(a) mentor(ica)
+DEFAULT_TEXT_TEMPLATE = (u"""{name} je bil(a) na tekmovanju Bober, ki je potekalo {time_string}, mentor(ica)
 {n_confirmed}.
+{next_round_listing}
+{award_listing}
+""", 
+    {
+        "m": u"""{name} je bil na tekmovanju Bober, ki je potekalo {time_string}, mentor
+{n_confirmed}.
+{next_round_listing}
+{award_listing}
+""",
+        "f": u"""{name} je bila na tekmovanju Bober, ki je potekalo {time_string}, mentorica
+{n_confirmed}.
+{next_round_listing}
 {award_listing}
 """
+    }
+)
 
 TEXT_TEMPLATES = {
     "solsko-2016": (
@@ -43,20 +57,20 @@ Bober, ki je potekalo 14. 1. 2017, mentor(ica)
         }),
     "solsko-2017": (
         u"""je bil(a) na šolskem nivoju mednarodnega tekmovanja 
-Bober, ki je potekalo med 13. in 17. novembrom 2017, mentor(ica)
+Bober, ki je potekalo {competition_time}, mentor(ica)
 {n_confirmed}.
 {next_round_listing}
 {award_listing}
 """,
         { 
             "m": u"""je bil na šolskem nivoju mednarodnega tekmovanja 
-Bober, ki je potekalo med 13. in 17. novembrom 2017, mentor
+Bober, ki je potekalo {competition_time}, mentor
 {n_confirmed}.
 {next_round_listing}
 {award_listing}
 """,
             "f": u"""je bila na šolskem nivoju mednarodnega tekmovanja 
-Bober, ki je potekalo med 13. in 17. novembrom 2017, mentorica
+Bober, ki je potekalo {competition_time}, mentorica
 {n_confirmed}.
 {next_round_listing}
 {award_listing}
@@ -64,20 +78,20 @@ Bober, ki je potekalo med 13. in 17. novembrom 2017, mentorica
         }),
     "drzavno-2017": (
         u"""je bil(a) na državnem nivoju mednarodnega tekmovanja 
-Bober, ki je potekalo 1 februarja 2018, mentor(ica)
+Bober, ki je potekalo {competition_time}, mentor(ica)
 {n_confirmed}.
 {next_round_listing}
 {award_listing}
 """,
         { 
-            "m": u"""je bila na državnem nivoju mednarodnega tekmovanja 
-Bober, ki je potekalo 1 februarja 2018, mentor
+            "m": u"""je bil na državnem nivoju mednarodnega tekmovanja 
+Bober, ki je potekalo {competition_time}, mentor
 {n_confirmed}.
 {next_round_listing}
 {award_listing}
 """,
             "f": u"""je bila na državnem nivoju mednarodnega tekmovanja 
-Bober, ki je potekalo 1 februarja 2018, mentorica
+Bober, ki je potekalo {competition_time}, mentorica
 {n_confirmed}.
 {next_round_listing}
 {award_listing}
@@ -87,7 +101,27 @@ Bober, ki je potekalo 1 februarja 2018, mentorica
 }
 
 
-def _compose_text(teacher, attempts, template):
+def _competition_time_string(competition):
+    start = competition.start.date()
+    end = competition.end.date()
+    months = [None, 'januarjem', 'februarjem', 'marcem', 'aprilom', 'majem', 'junijem'
+              'julijem', 'avgustom', 'septembrom', 'oktobrom', 'novembrom', 'decembrom']
+    if start.year != end.year:
+        res = "med {}. {} {} in {}. {} {}".format(
+            start.day, months[start.month], start.year,
+            end.day, months[end.month], end.year)
+    elif start.month != end.month:
+        res = "med {}. {} in {}. {} {}".format(start.day, months[start.month],
+            end.day, months[end.month], end.year)
+    elif start.day != end.day:
+        res = "med {}. in {}. {} {}".format(start.day,
+            end.day, months[end.month], end.year)
+    else:
+        res = "{}. {} {}".format(end.day, months[end.month], end.year)
+    return res
+
+
+def _compose_text(competition, teacher, attempts, template):
     # a poor man's slovenian gettext pluralization by Janez Demsar
     class Plural:
         def __init__(self, *forms):
@@ -155,6 +189,7 @@ def _compose_text(teacher, attempts, template):
     if teacher.date_of_birth:
         name += u', roj. {},'.format(str(teacher.date_of_birth))
     template = template[1].get(teacher.gender, template[0])
+    competition_time = _competition_time_string(competition)
     return template.format(**locals())
 
 class Command(BaseCommand):
@@ -176,7 +211,7 @@ class Command(BaseCommand):
             args += (None,) * (3 - len(args))
         cslug = options.get('competition_slug', [args[0]])[0]
         competition = SchoolCompetition.objects.get(slug=cslug)
-        template = TEXT_TEMPLATES[cslug]
+        template = TEXT_TEMPLATES.get(cslug, DEFAULT_TEXT_TEMPLATE)
         default_recognition, created = \
             CompetitionRecognition.objects.get_or_create(
                 competition = competition,
@@ -201,7 +236,7 @@ class Command(BaseCommand):
                     n_confirmations = Count('confirmed_by')
                 ).filter(n_confirmations = 1)
             if attempts.count():
-                s = _compose_text(teacher, attempts, template)
+                s = _compose_text(competition, teacher, attempts, template)
                 name_str = u"{} {}".format(
                     teacher.user.first_name, teacher.user.last_name)
                 if teacher.date_of_birth is not None:
