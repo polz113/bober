@@ -54,6 +54,13 @@ def ensure_dir_exists(fname):
         pass
 
 
+GENDERS = (
+    ('m', 'Male'),
+    ('female', 'Female'),
+    ('na', 'Not applicable')
+)
+
+
 USER_ROLES = (
     ('competitor', 'Competitor'),
     ('admin', 'Administrator'),
@@ -985,6 +992,7 @@ class Profile(models.Model):
     date_of_birth = DateField(
         null=True, blank=True, 
         verbose_name=_('Date of birth'))
+    gender = CharField(choices=GENDERS, max_length=16, blank=True)
     managed_profiles = models.ManyToManyField('Profile', related_name='managers',
         blank=True)
     created_codes = ManyToManyField(Code, blank=True, related_name='creator_set')

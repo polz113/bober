@@ -19,24 +19,70 @@ DEFAULT_TEXT_TEMPLATE = u"""{name} je bil(a) mentor(ica)
 """
 
 TEXT_TEMPLATES = {
-    "solsko-2016": u"""je bil(a) na šolskem nivoju mednarodnega tekmovanja 
+    "solsko-2016": (
+        u"""je bil(a) na šolskem nivoju mednarodnega tekmovanja 
 Bober, ki je potekalo med 7. in 11. novembrom 2016, mentor(ica)
 {n_confirmed}.
 {next_round_listing}
 {award_listing}
-""",
-    "drzavno-2016":u"""je bil(a) na državnem nivoju mednarodnega tekmovanja
+""", 
+        { 
+            "m": None,
+            "f": None
+        }),
+    "drzavno-2016": (
+        u"""je bil(a) na državnem nivoju mednarodnega tekmovanja
 Bober, ki je potekalo 14. 1. 2017, mentor(ica) 
 {n_confirmed}.
 {award_listing}
 {top_places_listing}
 """,
-    "solsko-2017": u"""je bil(a) na šolskem nivoju mednarodnega tekmovanja 
+        { 
+            "m": None,
+            "f": None
+        }),
+    "solsko-2017": (
+        u"""je bil(a) na šolskem nivoju mednarodnega tekmovanja 
 Bober, ki je potekalo med 13. in 17. novembrom 2017, mentor(ica)
 {n_confirmed}.
 {next_round_listing}
 {award_listing}
 """,
+        { 
+            "m": u"""je bil na šolskem nivoju mednarodnega tekmovanja 
+Bober, ki je potekalo med 13. in 17. novembrom 2017, mentor
+{n_confirmed}.
+{next_round_listing}
+{award_listing}
+""",
+            "f": u"""je bila na šolskem nivoju mednarodnega tekmovanja 
+Bober, ki je potekalo med 13. in 17. novembrom 2017, mentorica
+{n_confirmed}.
+{next_round_listing}
+{award_listing}
+"""
+        }),
+    "drzavno-2017": (
+        u"""je bil(a) na državnem nivoju mednarodnega tekmovanja 
+Bober, ki je potekalo 1 februarja 2018, mentor(ica)
+{n_confirmed}.
+{next_round_listing}
+{award_listing}
+""",
+        { 
+            "m": u"""je bila na državnem nivoju mednarodnega tekmovanja 
+Bober, ki je potekalo 1 februarja 2018, mentor
+{n_confirmed}.
+{next_round_listing}
+{award_listing}
+""",
+            "f": u"""je bila na državnem nivoju mednarodnega tekmovanja 
+Bober, ki je potekalo 1 februarja 2018, mentorica
+{n_confirmed}.
+{next_round_listing}
+{award_listing}
+""",
+        }),
  
 }
 
@@ -108,6 +154,7 @@ def _compose_text(teacher, attempts, template):
     name = u"{} {}".format(teacher.user.first_name, teacher.user.last_name)
     if teacher.date_of_birth:
         name += u', roj. {},'.format(str(teacher.date_of_birth))
+    template = template[1].get(teacher.gender, template[0])
     return template.format(**locals())
 
 class Command(BaseCommand):
@@ -129,7 +176,7 @@ class Command(BaseCommand):
             args += (None,) * (3 - len(args))
         cslug = options.get('competition_slug', [args[0]])[0]
         competition = SchoolCompetition.objects.get(slug=cslug)
-        template = TEXT_TEMPLATES.get(cslug, DEFAULT_TEXT_TEMPLATE)
+        template = TEXT_TEMPLATES[cslug]
         default_recognition, created = \
             CompetitionRecognition.objects.get_or_create(
                 competition = competition,
