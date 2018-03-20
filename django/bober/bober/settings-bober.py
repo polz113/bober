@@ -25,8 +25,6 @@ SECRET_KEY = 'pb&ae^s3%52i5=$y#seb4vvsd6=$tegss%v5nyx#v(@jt%06t('
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-TEMPLATE_DEBUG = True
-
 ALLOWED_HOSTS = []
 
 LOGIN_REDIRECT_URL="/"
