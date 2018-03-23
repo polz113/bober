@@ -7,12 +7,34 @@
 
 {% block content %}
 	<!-- Jumbotron on the left -->		
+	<div class="row">
+		<div class="col-8">
+			<div class="jumbotron jumbotron-fluid">
+  				<div class="container">
+	    			<h1 class="display-4">Bober</h1>
+	    			<p class="lead">Dobrodošli na tekmovanju Bober!</p>
+	    			<p class="">Izberite vašo vlogo iz menija na desni.</p>
+  				</div>
+			</div>
+		</div>
+		<div class="col-4">
+			<ul class="list-group">	
+				<!-- Login links on the right -->
+				<!-- Link for competitors -->
+				<li class="list-group-item">
+					<a href="{% url "competition_list" %}" class="btn">
+						{% trans "Competitor" %}
+					</a>
+				</li>
+				<li class="list-group-item">
+					<a href="{% url "login" %}" class="btn">{% trans "Teacher" %}</a>
+				</li>
+				<li class="list-group-item">
+					<a href="{% url "competition_list" %}" class="btn">{% trans "Guest" %}</a>
+				</li>	
+			</ul>	
+		</div>
+	</div>
 	
-	<!-- Login links on the right -->
-	<!-- Link for competitors -->
-	<a href="{% url "competition_list" %}" class="btn">
-		{% trans "Competitor" %}
-	</a>
-	<a href="{% url "login" %}" class="btn">{% trans "Login" %}</a>
-	<a href="{% url "competition_list" %}" class="btn">{% trans "Guest" %}</a>
+	
 {% endblock %}
