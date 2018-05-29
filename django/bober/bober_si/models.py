@@ -202,7 +202,7 @@ class SchoolTeacherCode(models.Model):
     
     def attempts(self, confirmed=True):
         a = Attempt.objects.filter(
-            competition_questionset = self.competition_questionset,
+            competitionquestionset = self.competition_questionset,
             access_code = self.code.value,
         )
         if confirmed:
