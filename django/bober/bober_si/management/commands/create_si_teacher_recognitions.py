@@ -242,8 +242,6 @@ class Command(BaseCommand):
                 if teacher.date_of_birth is not None:
                     name_str += u", roj. {},".format(
                         teacher.date_of_birth.strftime('%d. %m. %Y'))
-                print(s)
-                continue
                 teacher_recognition, created = TeacherRecognition.objects.get_or_create(
                     template = default_recognition,
                     teacher = teacher,
