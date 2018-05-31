@@ -104,7 +104,7 @@ Bober, ki je potekalo {competition_time}, mentorica
 def _competition_time_string(competition):
     start = competition.start.date()
     end = competition.end.date()
-    months = [None, 'januarjem', 'februarjem', 'marcem', 'aprilom', 'majem', 'junijem'
+    months = [None, 'januarjem', 'februarjem', 'marcem', 'aprilom', 'majem', 'junijem',
               'julijem', 'avgustom', 'septembrom', 'oktobrom', 'novembrom', 'decembrom']
     if start.year != end.year:
         res = "med {}. {} {} in {}. {} {}".format(
@@ -242,6 +242,8 @@ class Command(BaseCommand):
                 if teacher.date_of_birth is not None:
                     name_str += u", roj. {},".format(
                         teacher.date_of_birth.strftime('%d. %m. %Y'))
+                print(s)
+                continue
                 teacher_recognition, created = TeacherRecognition.objects.get_or_create(
                     template = default_recognition,
                     teacher = teacher,
