@@ -55,6 +55,48 @@ Bober, ki je potekalo 14. 1. 2017, mentor(ica)
             "m": None,
             "f": None
         }),
+    "drzavno2015": (
+        u"""je bil(a) na šolskem nivoju mednarodnega tekmovanja 
+Bober, ki je potekalo {competition_time}, mentor(ica)
+{n_confirmed}.
+{next_round_listing}
+{award_listing}
+""",
+        { 
+            "m": u"""je bil na šolskem nivoju mednarodnega tekmovanja 
+Bober, ki je potekalo {competition_time}, mentor
+{n_confirmed}.
+{next_round_listing}
+{award_listing}
+""",
+            "f": u"""je bila na šolskem nivoju mednarodnega tekmovanja 
+Bober, ki je potekalo {competition_time}, mentorica
+{n_confirmed}.
+{next_round_listing}
+{award_listing}
+"""
+        }),
+    "finale2015": (
+        u"""je bil(a) na državnem nivoju mednarodnega tekmovanja 
+Bober, ki je potekalo {competition_time}, mentor(ica)
+{n_confirmed}.
+{next_round_listing}
+{award_listing}
+""",
+        { 
+            "m": u"""je bil na državnem nivoju mednarodnega tekmovanja 
+Bober, ki je potekalo {competition_time}, mentor
+{n_confirmed}.
+{next_round_listing}
+{award_listing}
+""",
+            "f": u"""je bila na državnem nivoju mednarodnega tekmovanja 
+Bober, ki je potekalo {competition_time}, mentorica
+{n_confirmed}.
+{next_round_listing}
+{award_listing}
+""",
+        }),
     "solsko-2017": (
         u"""je bil(a) na šolskem nivoju mednarodnega tekmovanja 
 Bober, ki je potekalo {competition_time}, mentor(ica)
