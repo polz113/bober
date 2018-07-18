@@ -148,7 +148,24 @@ class Competition(models.Model):
 
     @property
     def is_over(self):
+        """
+        Return true when competition is finished.
+        """
         return self.end < timezone.now()
+    
+    @staticmethod
+    def ongoing_competitions():
+        """
+        Return a list of ongoing competitions. 
+        Complexity: linearly dependent on the number of all competitions.
+        """
+        #return [c for c in Competition.objects.all() if c.is_ongoing]
+        now = timezone.now()
+        return Competition.objects.filter(start__lte=now, end__gte=now)
+
+    @property
+    def is_ongoing(self):
+        return self.start <= timezone.now() <= self.end
 
     @classmethod
     def get_cached_by_slug(cls, slug):

@@ -267,10 +267,17 @@ def competitionquestionset_access_code(request, competition_questionset_id, next
         request,
         'bober_simple_competition/access_code.html', locals())
 
-
 def index(request):
-    # raise Exception(request.META["SERVER_SOFTWARE"])
-    return render(request, "bober_simple_competition/index.html", locals())
+    """
+    Main competition page. When we have exactly one ongoing competition show one form, 
+    otherwise redirect to the competition list page.
+    """
+    ongoing = Competition.ongoing_competitions()
+    promoted = ongoing.filter(promoted=True)
+    if promoted.count() == 1:
+        return render(request, "bober_simple_competition/index.html", locals())
+    else:
+        return redirect('competition_list')
 
 
 class CompetitionList(ListView):
