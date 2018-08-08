@@ -274,8 +274,10 @@ def index(request):
     """
     ongoing = Competition.ongoing_competitions()
     promoted = ongoing.filter(promoted=True)
-    if promoted.count() == 1:
-        return render(request, "bober_simple_competition/index.html", locals())
+    if promoted.count() == 1:        
+        competition = promoted.get()
+        return redirect('competition_compete_promoted', slug=competition.slug)
+        #return render(request, "bober_simple_competition/index.html", locals())
     else:
         return redirect('competition_list')
 

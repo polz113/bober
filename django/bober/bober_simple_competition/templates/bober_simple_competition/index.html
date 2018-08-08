@@ -2,37 +2,41 @@
 <!-- View is shown only when no competition is currently running -->
 {% extends "base.html" %}
 {% load i18n %}
+{% load staticfiles %}
 
 {% block title %}{% trans "Welcome to the Bober competition" %}{% endblock %}
 
 {% block content %}
 	<!-- Jumbotron on the left -->		
 	<div class="row">
-		<div class="col-8">
+		<div class="col-md-7 col-xl-6">
 			<div class="jumbotron jumbotron-fluid">
-  				<div class="container">
-	    			<h1 class="display-4">Bober</h1>
-	    			<p class="lead">Dobrodošli na tekmovanju Bober!</p>
-	    			<p class="">Izberite vašo vlogo iz menija na desni.</p>
-  				</div>
+  					<div class='row'>
+  						<div class='col-6'>
+  							<p class="text-center">
+		    					<img src='{% static "img/herr-bober.svg" %}'>  						
+  							</p>
+  						</div>
+  						<div class='col-6'>
+  							<h1>{% trans "Beaver" %}</h1>
+  							<p></p>
+		    				<div class="lead">{% trans "Welcome to the competition" %}</div>
+		    				<h2> {{ competition.title }}</h2>
+  						</div>
+  					</div>
 			</div>
 		</div>
-		<div class="col-4">
-			<ul class="list-group">	
-				<!-- Login links on the right -->
-				<!-- Link for competitors -->
-				<li class="list-group-item">
-					<a href="{% url "competition_list" %}" class="btn">
-						{% trans "Competitor" %}
-					</a>
-				</li>
-				<li class="list-group-item">
-					<a href="{% url "login" %}" class="btn">{% trans "Teacher" %}</a>
-				</li>
-				<li class="list-group-item">
-					<a href="{% url "competition_list" %}" class="btn">{% trans "Guest" %}</a>
-				</li>	
-			</ul>	
+		<div class="col-md-5 col-xl-6">
+			<div class='row'>
+				<form action="" method="post" id="competition_registration" class="form_compete_table">
+					{% csrf_token %}
+					{{ form.as_p }}
+					<input type="submit" value='{% trans "Compete" %}' class="btn"/>
+				</form>
+			</div>
+			<div class='row'>
+			<a href=''>I am a teacher</a>
+			</div>
 		</div>
 	</div>
 	
