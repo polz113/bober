@@ -506,9 +506,7 @@ class QuestionSet(models.Model):
 def _qs_rebuild_caches(sender, instance=None, **kwargs):
     if instance is not None:
         instance.rebuild_caches()
-
-
-signals.m2m_changed.connect(_qs_rebuild_caches, sender=QuestionSet)
+        signals.m2m_changed.connect(_qs_rebuild_caches, sender=QuestionSet)
 
 
 @python_2_unicode_compatible

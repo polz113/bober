@@ -281,7 +281,6 @@ def index(request):
     else:
         return redirect('competition_list')
 
-
 class CompetitionList(ListView):
     model = Competition
     queryset = Competition.objects.all().order_by('-promoted')
@@ -707,7 +706,6 @@ def competition_index(request, competition_questionset_id):
     return render(
         request,
         "bober_simple_competition/competition_index.html", locals())
-
 
 # 2.2.1.1 get question page as guest
 def competition_guest(request, competition_questionset_id):
