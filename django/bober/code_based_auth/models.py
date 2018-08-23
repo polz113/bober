@@ -383,9 +383,7 @@ class Code(models.Model):
         return c
 
 
-@python_2_unicode_compatible
 class CodeGenerator(models.Model):
-
     def __str__(self):
         return self.salt + " " + str(self.format)
 

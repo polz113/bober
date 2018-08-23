@@ -1,5 +1,5 @@
-from django.conf.urls import include, url
-from django.views.generic import ListView, TemplateView
+from django.conf.urls import url
+from django.views.generic import TemplateView
 from django.views.generic.base import RedirectView
 from bober_simple_competition.models import Competition,\
     QuestionSet, Question
@@ -8,8 +8,6 @@ from bober_simple_competition import views
 
 
 urlpatterns = [
-    # Examples:
-    # url(r'^blog/', include('blog.urls')),
     url(r'^$', views.index, name="simple_index"),
     url(r'^$', views.index, name="index"),
     # autocompletion links
@@ -97,6 +95,9 @@ urlpatterns = [
         name="competition_compete_compat"),
     url(r'^competition/(?P<slug>[\w\-_]+)/$',
         views.CompetitionCompete.as_view(), name="competition_compete"),
+    url(r'^competition/promoted/(?P<slug>[\w\-_]+)/$',
+        views.CompetitionCompete.as_view(template_name="bober_simple_competition/index.html"),
+        name="competition_compete_promoted"),
     url(r'^competition/(?P<slug>[\w\-_]+)/registration$',
         views.CompetitionRegistration.as_view(), name="competition_registration"),
     url(r'^compete/(?P<competition_questionset_id>[\d]+)/access_code/(?P<next>.*)$',

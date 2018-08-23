@@ -267,11 +267,19 @@ def competitionquestionset_access_code(request, competition_questionset_id, next
         request,
         'bober_simple_competition/access_code.html', locals())
 
-
 def index(request):
-    # raise Exception(request.META["SERVER_SOFTWARE"])
-    return render(request, "bober_simple_competition/index.html", locals())
-
+    """
+    Main competition page. When we have exactly one ongoing competition show one form, 
+    otherwise redirect to the competition list page.
+    """
+    ongoing = Competition.ongoing_competitions()
+    promoted = ongoing.filter(promoted=True)
+    if promoted.count() == 1:        
+        competition = promoted.get()
+        return redirect('competition_compete_promoted', slug=competition.slug)
+        #return render(request, "bober_simple_competition/index.html", locals())
+    else:
+        return redirect('competition_list')
 
 class CompetitionList(ListView):
     model = Competition
@@ -698,7 +706,6 @@ def competition_index(request, competition_questionset_id):
     return render(
         request,
         "bober_simple_competition/competition_index.html", locals())
-
 
 # 2.2.1.1 get question page as guest
 def competition_guest(request, competition_questionset_id):

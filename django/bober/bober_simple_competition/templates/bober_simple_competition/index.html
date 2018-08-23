@@ -1,22 +1,44 @@
+<!-- Only unauthenticated users should access this view -->
+<!-- View is shown only when no competition is currently running -->
 {% extends "base.html" %}
 {% load i18n %}
+{% load staticfiles %}
 
 {% block title %}{% trans "Welcome to the Bober competition" %}{% endblock %}
 
-{% block headline %}{% trans "Bober" %}{% endblock %}
-
 {% block content %}
-<a href="{% url "competition_list" %}" class="btn">{% trans "Competitions" %}</a>
-{% if not request.user.is_authenticated %}
-<a href="{% url "login" %}" class="btn">{% trans "Login" %}</a>
-{% else %}
-{% if request.profile.manages_self %}
-<a href="{% url "profile_detail" pk=request.profile.pk %}" class="btn">{% trans "My profile" %}</a>
-{% endif %}
-{% if request.profile.managed_others.exists %}
-<a href="{% url "profile_list" %}" class="btn">{% trans "Managed users" %}</a>
-{% endif %}
-<a href="{% url "questionset_list" %}" class="btn">{% trans "Question sets" %}</a>
-<a href="{% url "question_list" %}" class="btn">{% trans "Questions" %}</a>
-{% endif %}
+	<!-- Jumbotron on the left -->		
+	<div class="row">
+		<div class="col-md-7 col-xl-6">
+			<div class="jumbotron jumbotron-fluid">
+  					<div class='row'>
+  						<div class='col-6'>
+  							<p class="text-center">
+		    					<img src='{% static "img/herr-bober.svg" %}'>  						
+  							</p>
+  						</div>
+  						<div class='col-6'>
+  							<h1>{% trans "Beaver" %}</h1>
+  							<p></p>
+		    				<div class="lead">{% trans "Welcome to the competition" %}</div>
+		    				<h2> {{ competition.title }}</h2>
+  						</div>
+  					</div>
+			</div>
+		</div>
+		<div class="col-md-5 col-xl-6">
+			<div class='row'>
+				<form action="" method="post" id="competition_registration" class="form_compete_table">
+					{% csrf_token %}
+					{{ form.as_p }}
+					<input type="submit" value='{% trans "Compete" %}' class="btn"/>
+				</form>
+			</div>
+			<div class='row'>
+			<a href='{% url 'competition_list' %}'>I am a teacher</a>
+			</div>
+		</div>
+	</div>
+	
+	
 {% endblock %}
