@@ -1,25 +1,17 @@
-try:
-    from bond import make_bond
-except:
-    pass
+from bond import make_bond
 
-import inspect
-import hashlib
 
 class NoneRuntime:
     def __init__(self):
         self.graders = dict()
 
     def add_grader(self, s):
-        # print [i.strip() for i in s.split(',')]
         accepted_set = set([i.strip() for i in s.split(',')])
-        #print accepted_set
+
         def grader(answer, token, question):
-            #print "accepted:", accepted_set, (answer,), answer in accepted_set
-            if answer == '' or answer == None:
+            if answer == '' or answer is None:
                 return question.none_score
             if answer in accepted_set:
-            #    print "correct!"
                 return question.max_score
             return question.min_score
         self.graders[s] = grader
@@ -40,25 +32,25 @@ class BondRuntime(NoneRuntime):
     def start(self):
         pass
 
-    def prepare_source(s):
+    def prepare_source(self, s):
         return s
 
-    def add_grader_format(s, fn_name, lang):
+    def add_grader_format(self, s, fn_name, lang):
         source = self.prepare_source(s)
-        b = bond.make_bond(lang)
+        b = make_bond(lang)
         b.eval_block(source)
         self.graders[s] = self.b.callable(fn_name)
-        return grader
+        return self.graders[s]
 
 
 class JSGostisaRuntime(BondRuntime):
-    def add_grader(s):
-        return add_grader_format(s, 'grader', 'JavaScript')
+    def add_grader(self, s):
+        return self.add_grader_format(s, 'grader', 'JavaScript')
 
 
 class JSFranceRuntime(BondRuntime):
     def add_grader(self, s):
-        return add_grader_format(s, 'grader', 'JavaScript')
+        return self.add_grader_format(s, 'grader', 'JavaScript')
 
 
 class PythonExecRuntime(NoneRuntime):
@@ -69,12 +61,12 @@ class PythonExecRuntime(NoneRuntime):
         compiled = compile(s, '<string>', 'single')
         exec(compiled)
         self.graders[s] = eval(compiled.co_names[0])
-        return grader
+        return self.graders[s]
 
 
 class PythonBondRuntime(NoneRuntime):
     def add_grader(self, s):
-        return add_grader_format(s, 'grader', 'Python')
+        return self.add_grader_format(s, 'grader', 'Python')
 
 
 runtimes_dict = {
