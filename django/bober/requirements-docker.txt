@@ -1,0 +1,10 @@
+Django
+django-autocomplete-light
+django-filter
+django-taggit
+django-social-auth
+django-tables2
+django-tinymce
+django-tinymce-filebrowser
+django-crispy-forms # Gregor attempt to make forms nicer
+python-bond # bober_simple_competition.graders.py 
