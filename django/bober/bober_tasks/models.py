@@ -1,11 +1,7 @@
-__author__ = 'Gregor Pompe'
 from django.db import models
 from django.conf import settings
-from django.db.models import Max, signals
 from django.contrib.auth.models import User
-from django.db.models.signals import post_save
 import django.template
-from django.forms.models import model_to_dict
 import os
 import zipfile
 from io import StringIO
@@ -14,12 +10,15 @@ from bs4 import BeautifulSoup
 from django.utils.text import slugify
 import mimetypes
 from django.utils.encoding import python_2_unicode_compatible
-# from tinymce.models import HTMLField
 
 import bober_simple_competition
 
-TASK_TEMPLATE_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'task_templates')
-TASK_TEMPLATES = tuple([(i[:-len('.html')], i) for i in os.listdir(TASK_TEMPLATE_DIR) if i.endswith('.html')])
+TASK_TEMPLATE_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                                 'task_templates')
+TASK_TEMPLATES = tuple([(i[:-len('.html')], i)
+                        for i in os.listdir(TASK_TEMPLATE_DIR)
+                        if i.endswith('.html')])
+
 
 class AgeGroup(models.Model):
     value = models.CharField(max_length=45)
@@ -31,16 +30,17 @@ class AgeGroupTask(models.Model):
     age_group = models.ForeignKey('AgeGroup')
     difficulty_level = models.ForeignKey('DifficultyLevel')
 
-@python_2_unicode_compatible
+
 class Answer(models.Model):
     def __str__(self):
-        return u"{}: {}({}, {}) - {}".format(self.task_translation.task, 
-                                             self.task_translation.title, 
-                                             self.task_translation.version,
-                                             self.task_translation.language_locale, 
-                                             self.label)
-        return self.international_id    
-    
+        return u"{}: {}({}, {}) - {}".format(
+            self.task_translation.task,
+            self.task_translation.title,
+            self.task_translation.version,
+            self.task_translation.language_locale,
+            self.label)
+        return self.international_id
+
     task_translation = models.ForeignKey('TaskTranslation')
     value = models.TextField(null=True)
     label = models.CharField(max_length=8, blank=True, default='')
@@ -65,36 +65,38 @@ class Remark(models.Model):
     task_translation = models.ForeignKey('TaskTranslation')
     user = models.ForeignKey(User)
 
-@python_2_unicode_compatible
+
 class Resources(models.Model):
     def __str__(self):
-        return u"{}: {}({}, {})".format(self.task, 
-                                        self.filename, self.type, 
+        return u"{}: {}({}, {})".format(self.task,
+                                        self.filename, self.type,
                                         self.language)
 
     filename = models.CharField(max_length=90)
     type = models.CharField(max_length=40)
     task = models.ForeignKey('Task')
-    language = models.CharField(max_length = 8, choices=settings.LANGUAGES)
+    language = models.CharField(max_length=8, choices=settings.LANGUAGES)
 
-@python_2_unicode_compatible
+
 class Task(models.Model):
     def __str__(self):
         return self.international_id
 
     international_id = models.CharField(max_length=16, unique=True)
-    interaction_type = models.CharField(max_length=45, default='non-interactive')
-    parent = models.ForeignKey("self", null = True)
-    country = models.CharField(max_length = 5)
+    interaction_type = models.CharField(max_length=45,
+                                        default='non-interactive')
+    parent = models.ForeignKey("self", null=True)
+    country = models.CharField(max_length=5)
     categories = models.ManyToManyField("Category")
     age_groups = models.ManyToManyField("AgeGroup", through="AgeGroupTask")
-    difficulty_levels = models.ManyToManyField("DifficultyLevel", through="AgeGroupTask")
+    difficulty_levels = models.ManyToManyField("DifficultyLevel",
+                                               through="AgeGroupTask")
     created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now = True)
-    #author = models.ForeignKey(User, null = True)
+    updated_at = models.DateTimeField(auto_now=True)
     author = models.CharField(max_length=128, blank=True)
+
     def age_group_categories(self):
-        return AgeGroupTask.objects.filter(task_id = self.id).all()
+        return AgeGroupTask.objects.filter(task_id=self.id).all()
 
     def get_latest(self):
         return TaskTranslation.objects.filter(task=self).order_by('timestamp')[0]
@@ -103,23 +105,24 @@ class Task(models.Model):
         return self.tasktranslation_set.filter(language_locale=language).latest('version')
 
     def available_languages(self):
-        return self.tasktranslation_set.values_list('language_locale', flat=True).distinct()
+        return self.tasktranslation_set.values_list(
+            'language_locale', flat=True).distinct()
 
-@python_2_unicode_compatible
+
 class TaskTranslation(models.Model):
     def __str__(self):
-        return u"{}: {}({}, {})".format(self.task, self.title, self.version, self.language_locale)
-    
+        return u"{}: {}({}, {})".format(self.task, self.title,
+                                        self.version, self.language_locale)
+
     title = models.CharField(max_length=90)
-    template = models.CharField(max_length=255, choices = TASK_TEMPLATES)
+    template = models.CharField(max_length=255, choices=TASK_TEMPLATES)
     body = models.TextField()
     solution = models.TextField()
     it_is_informatics = models.TextField(blank=True)
     language_locale = models.CharField(max_length=8, null=True, blank=True,
-                                        choices=settings.LANGUAGES)
+                                       choices=settings.LANGUAGES)
     task = models.ForeignKey('Task')
-    author = models.ForeignKey(User, null = True)
-    # correct_answer = models.ForeignKey('Answer', null=True)
+    author = models.ForeignKey(User, null=True)
     comment = models.TextField(null=True)
     version = models.IntegerField(default=1)
     timestamp = models.DateTimeField(auto_now_add=True, null=True)
@@ -128,7 +131,8 @@ class TaskTranslation(models.Model):
     def correct_answer(self):
         try:
             return self.answer_set.filter(correct=True)[0]
-        except:
+        except Exception:
+            # TODO: handle exception
             return None
 
     def save_new_version(self):
@@ -143,11 +147,14 @@ class TaskTranslation(models.Model):
             a.save()
 
     def versions(self):
-        return TaskTranslation.objects.filter(task = self.task, language_locale = self.language_locale).order_by("-version")
+        return TaskTranslation.objects.filter(
+            task=self.task,
+            language_locale=self.language_locale).order_by("-version")
 
     @staticmethod
     def last_translation(task_id, language):
-        return TaskTranslation.objects.filter(language_locale=language, task=task_id).order_by('timestamp')[0]
+        return TaskTranslation.objects.filter(
+            language_locale=language, task=task_id).order_by('timestamp')[0]
 
     def create_default_answers(self):
         if self.answer_set.count() > 0:
@@ -164,7 +171,7 @@ class TaskTranslation(models.Model):
         d['answers'] = self.answer_set.all()
         d['title'] = self.title
         return template.render(django.template.Context(d))
-    
+
     def render_solution_to_string(self):
         with open(os.path.join(TASK_TEMPLATE_DIR, 'api', 'solution.html'), 'r') as f:
             template = django.template.Template(f.read())
@@ -176,7 +183,6 @@ class TaskTranslation(models.Model):
         return template.render(django.template.Context(d))
 
     def as_zip(self):
-        answers = self.answer_set.all()
         authors = []
         translators = []
         if self.task.author is not None:
@@ -193,22 +199,24 @@ class TaskTranslation(models.Model):
             "translators": translators,
             "license": "Creative commons CCBy",
             "browserSupport": [{"name": "ie", "version": 6, "os": "windows", "supported": False}],
-            "acceptedAndsers":list(self.answer_set.filter(correct=True).values_list('value', flat=True)),
+            "acceptedAndsers": list(self.answer_set.filter(correct=True).values_list('value', flat=True)),
             "task": [{'type': 'html', 'url': 'index.html'}],
             "solution": [{"type": "html", "content": "solution.html"},],
             "task_modules": [{"type": "javascript", "url": "js/jquery.js"}],
             "grader_modules": [],
             "solution_modules": [{"type": "javascript", "url": "js/jquery.js"}],
             }
-        resources = Resources.objects.filter(task = self.task, language = self.language_locale)
-        # Check for specific task resources and add them to 'task' section in Manifest.json (default resources are index.html and Functions.js)
+        resources = Resources.objects.filter(task=self.task,
+                                             language=self.language_locale)
+        # Check for specific task resources and add them to 'task' section
+        # in Manifest.json (default resources are index.html and Functions.js)
         zip_stringio = StringIO.StringIO()
         zf = zipfile.ZipFile(zip_stringio, "w")
         for r in resources.all():
             f_path = os.path.join(
-                settings.MEDIA_ROOT, 
+                settings.MEDIA_ROOT,
                 'task',
-                str(self.task_id), 
+                str(self.task_id),
                 str(self.language_locale),
                 'resources',
                 r.filename)
@@ -225,7 +233,7 @@ class TaskTranslation(models.Model):
         zf.writestr('solution.html', solution_site)
         zf.close()
         return zip_stringio.getvalue()
-    
+
     def export_to_simple_competition(self, rebuild_caches=False):
         # if request.method == 'GET':
         #    return redirect("/")
@@ -234,18 +242,19 @@ class TaskTranslation(models.Model):
         if self.task.author:
             try:
                 authors.append(str(self.task.author))
-            except:
-                authors.append(unicode(self.task.author))
+            except Exception:
+                # TODO: handle exception
+                authors.append(str(self.task.author))
         if self.author:
             authors.append(u"%s" % self.author)
         q, created = bober_simple_competition.models.Question.objects.get_or_create(
-            identifier = str(self.task.id))
+            identifier=str(self.task.id))
         if created:
             q.slug = slugify(self.title) + '-' + str(self.task.id)
         else:
             q.resource_set.all().delete()
         q.country = self.task.country
-        q.verification_function_type = 0 # non-interactive
+        q.verification_function_type = 0  # non-interactive
         q.verification_function = u",".join([str(a.id) for a in accepted_answers])
         q.title = self.title
         q.version = self.version
@@ -258,52 +267,46 @@ class TaskTranslation(models.Model):
         # print index_str.encode('utf-8')
         # print resource_list
         index_resource = bober_simple_competition.models.Resource(
-            question = q,
-            relative_url = 'index.html',
-            file = None,
-            resource_type = 'html',
-            mimetype = 'text/html',
-            data = index_str.encode('utf-8'))
+            question=q,
+            relative_url='index.html',
+            file=None,
+            resource_type='html',
+            mimetype='text/html',
+            data=index_str.encode('utf-8'))
         index_resource.save()
         resource_list = bober_simple_competition.models._resource_list(index_soup)
         for d in resource_list:
             print(d['url'])
             try:
                 resource = self.task.resources_set.filter(
-                    language = self.language_locale,
-                    filename = os.path.basename(d['url']))[0]
+                    language=self.language_locale,
+                    filename=os.path.basename(d['url']))[0]
                 f_path = os.path.join(
-                    settings.MEDIA_ROOT, 
+                    settings.MEDIA_ROOT,
                     'task',
-                    str(self.task_id), 
-                    str(self.language_locale), 
+                    str(self.task_id),
+                    str(self.language_locale),
                     'resources',
                     resource.filename)
                 with open(f_path, mode='rb') as f:
                     data = bytes(f.read())
                     r = bober_simple_competition.models.Resource(
-                        question = q,
-                        relative_url = 'resources/' + resource.filename,
-                        resource_type = d['type'],
-                        mimetype = mimetypes.guess_type(d['url'])[0],
-                        file = None,
+                        question=q,
+                        relative_url='resources/' + resource.filename,
+                        resource_type=d['type'],
+                        mimetype=mimetypes.guess_type(d['url'])[0],
+                        file=None,
                     )
                     r.save()
-                    # print r.id, type(data)
                     r.data = data
-                    # print "  saving"
                     r.save()
-                    # print "  done!"
             except Exception as e:
+                # TODO: handle exception
                 pass
-                print(e)
         if rebuild_caches:
             for qs in q.questionset_set.all():
-                print(qs)
                 qs.rebuild_caches()
 
- 
+
 def create_default_answers(sender, instance=None, **kwargs):
     instance.create_default_answers()
-
-# signals.post_save.connect(create_default_answers, sender=TaskTranslation)
