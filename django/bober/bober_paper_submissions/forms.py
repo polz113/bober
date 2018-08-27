@@ -1,12 +1,7 @@
-#!/usr/bin/python
-# -*- coding: utf-8 -*-
-
-from django.forms import ModelForm, HiddenInput, Textarea, CharField
-from django.utils.translation import ugettext_lazy as _
-from bober_paper_submissions.models import JuniorYear, JuniorMentorship, JuniorAttempt, Competitor, parse_competitor_data
+from django.forms import ModelForm, HiddenInput, Textarea
+from bober_paper_submissions.models import JuniorYear, JuniorMentorship, parse_competitor_data
 from extra_views import InlineFormSet
-from django.core.exceptions import ValidationError
-import re
+
 
 class JuniorYearForm(ModelForm):
     class Meta:
@@ -36,6 +31,7 @@ class JuniorMentorshipForm(ModelForm):
     class Meta:
         model = JuniorMentorship
         fields = ()
+
 
 class JuniorYearInline(InlineFormSet):
     model = JuniorYear

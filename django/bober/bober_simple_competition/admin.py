@@ -1,20 +1,21 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import User
-from bober_simple_competition.models import *
+from bober_simple_competition.models import CompetitionQuestionSet,\
+    Profile, Answer, GradedAnswer, AttemptConfirmation, Competition,\
+    QuestionSet, ResourceCache, Competitor, Resource, Question, Attempt
 from bober_simple_competition.forms import ProfileAdminForm,\
-    CompetitionQuestionSetInlineAdminForm,\
     AnswerAdminForm, AnswerInlineAdminForm
 
-# Register your models here.
 
 class CompetitionQuestionSetInline(admin.TabularInline):
     model = CompetitionQuestionSet
-    # form = CompetitionQuestionSetInlineAdminForm
     raw_id_fields = ('guest_code',)
 
+
 class CompetitionAdmin(admin.ModelAdmin):
-    inlines = [ CompetitionQuestionSetInline ]
+    inlines = [CompetitionQuestionSetInline]
+
 
 class QuestionSetAdmin(admin.ModelAdmin):
     filter_horizontal = ['questions']
@@ -26,7 +27,8 @@ class ProfileInline(admin.StackedInline):
     model = Profile
     fk_name = 'user'
     can_delete = False
-    # filter_horizontal = ['created_codes', 'received_codes', 'used_codes', 'questions', 'question_sets', 'created_question_sets']
+    # filter_horizontal = ['created_codes', 'received_codes', 'used_codes',
+    # 'questions', 'question_sets', 'created_question_sets']
     form = ProfileAdminForm
 
 
@@ -62,7 +64,7 @@ class AttemptAdmin(admin.ModelAdmin):
         if lookup in self.search_fields:
             return True
         return super(AttemptAdmin, self).lookup_allowed(lookup, value)
-            
+
 
 class CompetitorAdmin(admin.ModelAdmin):
     raw_id_fields = ('profile',)
@@ -73,12 +75,14 @@ class AnswerAdmin(admin.ModelAdmin):
     raw_id_fields = ('attempt',)
     form = AnswerAdminForm
 
+
 class AttemptConfirmationAdmin(admin.ModelAdmin):
     search_fields = (
         'by__user__username', 'by__user__first_name', 'by__user__last_name',
         'attempt__id',
         'attempt__competitor__first_name', 'attempt__competitor__last_name')
     raw_id_fields = ('by', 'attempt')
+
 
 # Re-register UserAdmin
 admin.site.unregister(User)
@@ -93,4 +97,3 @@ admin.site.register(Resource)
 admin.site.register(Question)
 admin.site.register(Answer, AnswerAdmin)
 admin.site.register(Attempt, AttemptAdmin)
-# admin.site.register(Profile)

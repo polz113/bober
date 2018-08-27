@@ -1,4 +1,3 @@
-#Standard library
 import datetime
 import time
 import json
@@ -6,8 +5,8 @@ import random
 import string
 import email.utils
 import os
+import logging
 
-# Django
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, QueryDict, HttpResponseRedirect
@@ -25,13 +24,14 @@ from django.conf import settings
 from django import forms
 from django.db.models import Q
 
-# Other Django
 from django_tables2 import SingleTableView
 from braces.views import LoginRequiredMixin
 from extra_views import CreateWithInlinesView, UpdateWithInlinesView
 from dal import autocomplete
+from popup_modelviews.views import\
+    PopupUpdateView, PopupCreateView, PopupFormViewMixin,\
+    InvalidFormRespond422
 
-# Local django
 import code_based_auth.models
 from bober_simple_competition.forms import\
     MailForm, CompetitorCodeFormatForm,\
@@ -48,9 +48,6 @@ from bober_simple_competition.models import\
     QuestionSet, Code, Question, Attempt, Competitor,\
     ADMIN_PRIVILEGES, COMPETITOR_PRIVILEGES, CODE_EFFECTS,\
     graders, Answer, GradedAnswer, AttemptConfirmation
-from popup_modelviews.views import\
-    PopupUpdateView, PopupCreateView, PopupFormViewMixin,\
-    InvalidFormRespond422
 
 
 def send_email(request):
@@ -65,6 +62,7 @@ def send_email(request):
 
 
 def send_to_mail(request):
+    logger = logging.getLogger(__name__)
     if request.method == 'GET':
         mail_form = MailForm(data=request.GET)
         if mail_form.is_valid():
@@ -75,6 +73,10 @@ def send_to_mail(request):
             ]
             subject = mail_form.cleaned_data['mail_subject']
             mail_content = mail_form.cleaned_data['mail_content']
+            logger.debug("Send email with subject {} from {}".format(
+                subject, mail_from))
+            logger.debug("Mail to: {}".format(mail_to_list))
+            logger.debug("Mail content: {}".format(mail_content))
             msg = EmailMultiAlternatives(subject, mail_content, mail_from,
                                          mail_to_list)
             msg.send()
@@ -83,10 +85,8 @@ def send_to_mail(request):
 
 # get rid of this when we stop supporting django 1.5
 def JsonResponse(data, **kwargs):
-    return HttpResponse(json.dumps(data), content_type='application/json', **kwargs)
-
-
-epoch = datetime.datetime.utcfromtimestamp(0).replace(tzinfo=timezone.get_current_timezone())
+    return HttpResponse(json.dumps(data), content_type='application/json',
+                        **kwargs)
 
 
 class OutOfTimeError(Exception):
@@ -94,18 +94,19 @@ class OutOfTimeError(Exception):
 
 
 def access_code_required(function=None):
-    def code_fn(*args, **kwargs):
+    """
+    Decorator requiring access code to proceed.
+    """
+    def wrap(*args, **kwargs):
         request = kwargs.get('request', args[0])
-        try:
-            access_code = request.session['access_code']
-        except:
-            next = request.get_full_path()
-            return redirect('access_code', next=next)
-        return function(*args, **kwargs)
-    return code_fn
+        if "access_code" in request.session:
+            return function(*args, **kwargs)
+        else:
+            return redirect('access_code', next=request.get_full_path())
+    return wrap
 
 
-def smart_competition_admin_code_required(function = None):
+def smart_competition_admin_code_required(function=None):
     """Try to find an access code this user already has before asking for it"""
     def code_fn(*args, **kwargs):
         request = kwargs.get('request', args[0])
@@ -117,34 +118,33 @@ def smart_competition_admin_code_required(function = None):
             if access_code is not None:
                 codes = codegen.codes.filter(
                     value=access_code).values_list('value', flat=True)
-            if len(codes) < 1 and access_code is not None\
+            if not codes and access_code is not None\
                     and codegen.code_matches(
                         access_code,
                         {'competitor_privileges': ['attempt']}):
                 codes = [codegen.format.canonical_code(access_code)]
-            if len(codes) < 1:
+            if not codes:
                 codes = codegen.codes.filter(
                     recipient_set__id=request.profile.id).values_list(
                         'value', flat=True)
-            if len(codes) < 1:
+            if not codes:
                 codes = codegen.codes.filter(
                     user_set__id=request.profile.id).values_list(
                         'value', flat=True)
-            if len(codes) < 1:
+            if not codes:
                 codes = codegen.codes.filter(
                     creator_set__id=request.profile.id).values_list(
                         'value', flat=True)
-            # print "created:", codes
-            # print "creat:", codegen.codes.filter(creator_set__id = request.profile.id).values_list('value', flat=True)
             access_code = codes[0]
-        except Exception as e:
+        except Exception:
+            logger = logging.getLogger(__name__)
+            logger.exception("smart_competition_admin_code_required")
             pass
-            # print(e)
         if access_code is not None:
             _use_access_code(request, access_code)
         else:
-            next = request.get_full_path()
-            return redirect('access_code', next=next)
+            _next = request.get_full_path()
+            return redirect('access_code', next=_next)
         return function(*args, **kwargs)
     return login_required(code_fn)
 
@@ -159,7 +159,8 @@ class AccessCodeRequiredMixin(object):
 class SmartCompetitionAdminCodeRequiredMixin(object):
     @classmethod
     def as_view(cls, **initkwargs):
-        view = super(SmartCompetitionAdminCodeRequiredMixin, cls).as_view(**initkwargs)
+        view = super(SmartCompetitionAdminCodeRequiredMixin,
+                     cls).as_view(**initkwargs)
         return smart_competition_admin_code_required(view)
 
 
@@ -189,7 +190,7 @@ def _use_access_code(request, access_code,
             code = Code.objects.get(value=access_code)
             profile.used_codes.add(code)
     except Exception as e:
-        # print("_use_access_code:", e)
+        # TODO: add exception handling
         pass
     try:
         if not defer_code_effects:
@@ -197,7 +198,7 @@ def _use_access_code(request, access_code,
             for effect in code.codeeffect_set.all():
                 effect.apply(users=[profile])
     except Exception as e:
-        # print("_use_access_code2:", e)
+        # TODO: add exception handling
         pass
 
 
@@ -217,7 +218,7 @@ class CodeAutocomplete(autocomplete.Select2QuerySetView):
         return qs
 
 
-def access_code(request, next):
+def access_code(request, url_next):
     qd = QueryDict(dict(), mutable=True)
     qd.update(request.GET)
     qd.update(request.POST)
@@ -230,13 +231,14 @@ def access_code(request, next):
         defer_effects = form.cleaned_data.get('defer_effects', False)
         access_code = form.cleaned_data['access_code']
         _use_access_code(request, access_code, defer_update, defer_effects)
-        return HttpResponseRedirect('/' + next)
+        return HttpResponseRedirect('/' + url_next)
     return render(
         request,
         'bober_simple_competition/access_code.html', locals())
 
 
-def competitionquestionset_access_code(request, competition_questionset_id, next):
+def competitionquestionset_access_code(request, competition_questionset_id,
+                                       url_next):
     qd = QueryDict(dict(), mutable=True)
     qd.update(request.GET)
     qd.update(request.POST)
@@ -262,24 +264,24 @@ def competitionquestionset_access_code(request, competition_questionset_id, next
         access_code = code_format.canonical_code(access_code)
         _use_access_code(request, access_code, defer_update, defer_effects)
         # print "    ", request.session['access_code']
-        return redirect(next)
+        return redirect(url_next)
     return render(
         request,
         'bober_simple_competition/access_code.html', locals())
 
+
 def index(request):
     """
-    Main competition page. When we have exactly one ongoing competition show one form, 
-    otherwise redirect to the competition list page.
+    When there is exactly one ongoing promoted competition show
+    login page, otherwise redirect to the competition list page.
     """
-    ongoing = Competition.ongoing_competitions()
-    promoted = ongoing.filter(promoted=True)
-    if promoted.count() == 1:        
+    promoted = Competition.ongoing_competitions().filter(promoted=True)
+    if promoted.count() == 1:
         competition = promoted.get()
         return redirect('competition_compete_promoted', slug=competition.slug)
-        #return render(request, "bober_simple_competition/index.html", locals())
     else:
         return redirect('competition_list')
+
 
 class CompetitionList(ListView):
     model = Competition
@@ -378,10 +380,10 @@ class CompetitionCreate(LoginRequiredMixin, CreateWithInlinesView):
                 ).order_by('id')[:1] or [None])[0],
             'admin_salt': ''.join([
                 random.choice(string.ascii_letters+string.digits)
-                for i in range(10)]),
+                for _ in range(10)]),
             'competitor_salt': ''.join([
                 random.choice(string.ascii_letters+string.digits)
-                for i in range(10)]),
+                for _ in range(10)]),
             }
 
 
@@ -707,6 +709,7 @@ def competition_index(request, competition_questionset_id):
         request,
         "bober_simple_competition/competition_index.html", locals())
 
+
 # 2.2.1.1 get question page as guest
 def competition_guest(request, competition_questionset_id):
     competition_questionset = get_object_or_404(CompetitionQuestionSet,
@@ -731,11 +734,10 @@ def competition_guest(request, competition_questionset_id):
 def safe_media_redirect(resource_path):
     response = HttpResponse()
     response['Content-Type'] = ''
-    # url = (os.path.join(settings.MEDIA_URL, resource_path)).encode('utf-8')
     url = os.path.join(settings.MEDIA_URL, resource_path)
     try:
         response[settings.SAFE_REDIRECT_HEADER] = url
-    except:
+    except Exception:
         response = redirect(url)
     return response
 
@@ -759,20 +761,17 @@ def _can_attempt(request, competition_questionset):
         now = timezone.now()
         codegen = competition.competitor_code_generator
         access_allowed |= codegen.code_matches(
-            access_code, {'competitor_privileges':['attempt_before_start']})
-        # print "competition started:", competition.start < timezone.now()
+            access_code, {'competitor_privileges': ['attempt_before_start']})
         access_allowed |= competition.start < now and \
             codegen.code_matches(
-                access_code, {'competitor_privileges':['attempt']})
+                access_code, {'competitor_privileges': ['attempt']})
         access_allowed &= (competition.end > now)
-        # print "access_allowed before competition_questionset", access_allowed
         access_allowed &= codegen.code_matches(
-            access_code, {'competition_questionset':[
-                competition_questionset.slug_str()]})
+            access_code, {'competition_questionset':
+                          [competition_questionset.slug_str()]})
     except Exception as e:
-        print(e)
+        # TODO: add exception handling
         access_allowed = False
-        pass
     return access_allowed
 
 
@@ -781,8 +780,8 @@ def competition_resources(request, competition_questionset_id, resource_path):
     cq = CompetitionQuestionSet.objects.get(
         id=competition_questionset_id)
     if _can_attempt(request, cq):
-        cache_dir = "caches/" + str(cq.questionset.id) + "-" + cq.questionset.slug
-        # print "redirect to ", os.path.join(cache_dir, resource_path)
+        cache_dir = ("caches/" + str(cq.questionset.id) + "-"
+                     + cq.questionset.slug)
         return safe_media_redirect(os.path.join(cache_dir, resource_path))
     raise PermissionDenied
 
@@ -791,12 +790,11 @@ def competition_resources(request, competition_questionset_id, resource_path):
 def question_resources(request, pk, resource_path):
     try:
         q = request.profile.questions.get(pk=pk)
-    except:
+        r = get_object_or_404(Resource, relative_url=resource_path,
+                              question_id=pk)
+        return HttpResponse(r.data)
+    except Exception:
         raise PermissionDenied
-    r = get_object_or_404(Resource, relative_url=resource_path, question_id=pk)
-    return HttpResponse(r.data)
-    # resource_dir = 'resources/' + str(pk)
-    # return safe_media_redirect(os.path.join(resource_dir, resource_path))
 
 
 # 2.2.3 get question data (existing answers, attempt_id, randomised_question map)
@@ -805,8 +803,9 @@ def question_resources(request, pk, resource_path):
 @ensure_csrf_cookie
 def competition_data(request, competition_questionset_id):
     try:
-        competitor = Competitor.objects.get(id=request.session['competitor_id'])
-    except:
+        competitor = Competitor.objects.get(
+            id=request.session['competitor_id'])
+    except Exception:
         competitor = None
     access_code = request.session['access_code']
     competition_questionset = CompetitionQuestionSet.objects.get(
@@ -814,20 +813,21 @@ def competition_data(request, competition_questionset_id):
     if not _can_attempt(request, competition_questionset):
         try:
             request.session.pop('access_code')
-        except:
+        except Exception:
             pass
         raise PermissionDenied
     try:
         competition = competition_questionset.competition
         codegen = competition.competitor_code_generator
         assert codegen.code_matches(
-            access_code, {'competitor_privileges':['resume_attempt']})
+            access_code, {'competitor_privileges': ['resume_attempt']})
         sep = codegen.format.separator
         # access_code_id_part contains both the group and the code id
         access_code_id_part = sep.join(access_code.split(sep)[:2])
-        attempt = Attempt.objects.filter(competitor=competitor,
+        attempt = Attempt.objects.filter(
+            competitor=competitor,
             access_code__startswith=access_code_id_part,
-            competitionquestionset_id = competition_questionset_id)[0]
+            competitionquestionset_id=competition_questionset_id)[0]
         answers = []
         finish = attempt.finish
         attempt.grade_answers()
@@ -835,16 +835,16 @@ def competition_data(request, competition_questionset_id):
             val = g_a.answer.value
             if val is None:
                 val = ''
-            answers.append({ 'q': a.randomized_question_id, 'a': str(val)})
+            answers.append({'q': a.randomized_question_id, 'a': str(val)})
     except Exception as e:
         competition = competition_questionset.competition
         finish = timezone.now() + datetime.timedelta(
-            seconds = competition.duration)
+            seconds=competition.duration)
         attempt = Attempt(competitor=competitor,
-            competitionquestionset_id = competition_questionset_id,
-            access_code=access_code,
-            finish = finish,
-            random_seed = random.getrandbits(31))
+                          competitionquestionset_id=competition_questionset_id,
+                          access_code=access_code,
+                          finish=finish,
+                          random_seed=random.getrandbits(31))
         attempt.save()
         answers = []
     request.session['attempt_id'] = attempt.id
@@ -853,6 +853,8 @@ def competition_data(request, competition_questionset_id):
     data['competition_title'] = competition_questionset.name
     data['question_map'] = attempt.competitionquestionset.questionset.question_mapping(attempt.random_seed)
     data['random_seeds'] = {}
+    epoch = datetime.datetime.utcfromtimestamp(0).replace(
+        tzinfo=timezone.get_current_timezone())
     data['finish'] = (finish - epoch).total_seconds()
     r = random.Random(attempt.random_seed)
     for i in data['question_map']:
@@ -864,7 +866,8 @@ def competition_data(request, competition_questionset_id):
 # 2.2.4 get remaining time
 # @login_required
 def server_time(request, *args, **kwargs):
-    return HttpResponse(json.dumps({'timestamp': time.time()}), content_type="application/json")
+    return HttpResponse(json.dumps({'timestamp': time.time()}),
+                        content_type="application/json")
 
 
 def time_remaining(request, competition_questionset_id, attempt_id):
@@ -876,12 +879,12 @@ def time_remaining(request, competition_questionset_id, attempt_id):
         seconds_left = (attempt.finish - now).total_seconds()
         if seconds_left < 0:
             all_data = {'success': False, "seconds_to_end": seconds_left,
-                'errorCode': 9}
+                        'errorCode': 9}
         else:
             all_data = {'success': True, "seconds_to_end": seconds_left}
     except Exception as e:
         all_data = {'success': False, "seconds_to_end": seconds_left,
-            'message': str(e)}
+                    'message': str(e)}
     return HttpResponse(json.dumps(all_data), content_type="application/json")
 
 
@@ -892,7 +895,7 @@ def submit_answer(request, competition_questionset_id, attempt_id):
         assert request.method == 'POST'
         try:
             val = int(request.POST['a'])
-        except:
+        except Exception:
             val = None
         now = timezone.now()
         a = Answer(attempt_id=attempt_id,
@@ -901,7 +904,7 @@ def submit_answer(request, competition_questionset_id, attempt_id):
         a.save()
         try:
             # uncomment the line below for offline checking
-            raise Exception();
+            raise Exception()
 
             graded_answer, created = GradedAnswer.objects.get_or_create(
                 attempt_id=attempt_id,
@@ -919,7 +922,8 @@ def submit_answer(request, competition_questionset_id, attempt_id):
                 raise OutOfTimeError("out_of_time")
         except OutOfTimeError as e:
             raise e
-        except:
+        except Exception:
+            # TODO: add exception handling
             pass
         data['success'] = True
         # don't do a read before each write!
@@ -981,7 +985,8 @@ def attempt_confirm(request, competition_questionset_id, attempt_id):
     if request.method != 'POST':
         raise PermissionDenied
     attempt = get_object_or_404(Attempt, id=attempt_id)
-    cqs = get_object_or_404(CompetitionQuestionSet, id=competition_questionset_id)
+    cqs = get_object_or_404(CompetitionQuestionSet,
+                            id=competition_questionset_id)
     profile = request.profile
     if request.profile.created_codes.filter(
                 codegenerator=cqs.competition.competitor_code_generator,
@@ -1000,7 +1005,8 @@ def attempt_unconfirm(request, competition_questionset_id, attempt_id):
     if request.method != 'POST':
         raise PermissionDenied
     attempt = get_object_or_404(Attempt, id=attempt_id)
-    cqs = get_object_or_404(CompetitionQuestionSet, id=competition_questionset_id)
+    cqs = get_object_or_404(CompetitionQuestionSet,
+                            id=competition_questionset_id)
     profile = request.profile
     if request.profile.created_codes.filter(
                 codegenerator=cqs.competition.competitor_code_generator,
@@ -1020,7 +1026,8 @@ class CompetitorUpdateJson(LoginRequiredMixin,
     form_class = CompetitorUpdateForm
 
     def form_valid(self, form):
-        attempt = get_object_or_404(Attempt, id=form.cleaned_data['attempt_id'])
+        attempt = get_object_or_404(Attempt,
+                                    id=form.cleaned_data['attempt_id'])
         if attempt.competitor != self.object:
             raise PermissionDenied
         cqs = get_object_or_404(CompetitionQuestionSet,
@@ -1147,7 +1154,8 @@ class QuestionSetCompete(CreateView):
     def get_success_url(self):
         return reverse(
             'competition_index',
-            kwargs={'competition_questionset_id': self.competitionquestionset.id})
+            kwargs={'competition_questionset_id':
+                    self.competitionquestionset.id})
 
     def dispatch(self, *args, **kwargs):
         cqs = CompetitionQuestionSet.objects.get(
@@ -1168,7 +1176,8 @@ class QuestionSetCompete(CreateView):
             profile = self.request.profile
             d['first_name'] = profile.user.first_name
             d['last_name'] = profile.user.last_name
-        d['short_access_code'] = self.request.session.get('short_access_code', '')
+        d['short_access_code'] = self.request.session.get('short_access_code',
+                                                          '')
         return d
 
     def get_form(self, form_class=None):
@@ -1183,7 +1192,6 @@ class QuestionSetCompete(CreateView):
 
     def form_valid(self, form):
         retval = super(QuestionSetCompete, self).form_valid(form)
-        # print user, form.cleaned_data['username'], form.cleaned_data['password']
         _use_access_code(self.request, form.cleaned_data['full_code'])
         self.request.session['competitor_id'] = form.instance.id
         return retval
@@ -1221,7 +1229,8 @@ class QuestionSetRegistration(CreateView):
     def get_success_url(self):
         return reverse(
             'competition_index',
-            kwargs = {'competition_questionset_id': self.competitionquestionset.id})
+            kwargs={'competition_questionset_id':
+                    self.competitionquestionset.id})
 
     def dispatch(self, *args, **kwargs):
         cqs = CompetitionQuestionSet.objects.get(
@@ -1240,7 +1249,8 @@ class QuestionSetRegistration(CreateView):
         if request.user.is_authenticated():
             if 'access_code' in request.session:
                 try:
-                    assert _can_attempt(self.request, self.competitionquestionset)
+                    assert _can_attempt(self.request,
+                                        self.competitionquestionset)
                 except Exception as e:
                     # print "No attempt for you!"
                     request.session.pop('access_code')
@@ -1249,7 +1259,8 @@ class QuestionSetRegistration(CreateView):
                 'competitionquestionset_access_code',
                 competition_questionset_id=self.competitionquestionset.id,
                 next=self.get_success_url())
-        return super(QuestionSetRegistration, self).get(request, *args, **kwargs)
+        return super(QuestionSetRegistration, self).get(request, *args,
+                                                        **kwargs)
 
     def get_form(self, form_class=None):
         if form_class is None:
@@ -1264,7 +1275,6 @@ class QuestionSetRegistration(CreateView):
         user = authenticate(
             username=form.cleaned_data['username'],
             password=form.cleaned_data['password'])
-        # print user, form.cleaned_data['username'], form.cleaned_data['password']
         if user:
             login(self.request, user)
             _use_access_code(self.request, form.cleaned_data['full_code'])

@@ -1,13 +1,14 @@
-from math import ceil
-from django.db import models
-import hashlib
-from django.utils.translation import ugettext_lazy as _
-from django.utils.encoding import python_2_unicode_compatible
-from sys import version_info
-
-from collections import defaultdict
 import random
 import codecs
+import hashlib
+from math import ceil
+from sys import version_info
+from collections import defaultdict
+
+from django.db import models
+from django.utils.translation import ugettext_lazy as _
+from django.utils.encoding import python_2_unicode_compatible
+
 
 CODE_COMPONENT_FORMATS = (
     ('h', _('hex')),
@@ -78,29 +79,30 @@ def split_by_bits(s, bits):
 
 def b_to_long(s):
     """maybe replace this with int.from_bytes in python3"""
-    l = 0
+    my_long = 0
     for c in s:
-        l = l * 256
-        l += __compat_ord(c)
-    return l
+        my_long *= 256
+        my_long += __compat_ord(c)
+    return my_long
 
 
-def long_to_str(l):
+def long_to_str(my_long):
     """maybe replace most of this with int.to_bytes in python3"""
     s = ""
-    while l > 0:
-        c = "" + chr(l % 256)
-        l = l // 256
+    while my_long > 0:
+        c = "" + chr(my_long % 256)
+        my_long = my_long // 256
         s = c + s
     try:
-        return unicode(s, 'iso8859-1')
-    except:
+        return s
+    except Exception:
+        # TODO: handle exception
         pass
     return s
 
 
 def hexstr_to_b(s):
-    if version_info >= (3, 0, 0) or type(s) == unicode:
+    if version_info >= (3, 0, 0) or type(s) == str:
         s = s.encode('iso8859-1')
     return codecs.decode(s, 'hex')
 
@@ -125,13 +127,13 @@ def words_codecs(words=DEFAULT_WORDS, separator=" ", canonical_fn=None):
             return x
 
     def __b_to_words(s):
-        l = b_to_long(s)
+        my_long = b_to_long(s)
         res = ""
-        if l <= 0:
+        if my_long <= 0:
             return words[0]
-        while l > 0:
-            w = words[l % n_words]
-            l = l // n_words
+        while my_long > 0:
+            w = words[my_long % n_words]
+            my_long = my_long // n_words
             if res == "":
                 res = w
             else:
@@ -139,7 +141,7 @@ def words_codecs(words=DEFAULT_WORDS, separator=" ", canonical_fn=None):
         return res
 
     def __words_to_b(s):
-        l = 0
+        my_long = 0
         while(s):
             if separator:
                 word_end = s.find(separator)
@@ -150,9 +152,9 @@ def words_codecs(words=DEFAULT_WORDS, separator=" ", canonical_fn=None):
                 while s[:word_end] not in val_words_dict:
                     word_end += 1
             word = s[:word_end]
-            l = l * n_words
-            l += val_words_dict.get(word, 0)
-        return long_to_str(l)
+            my_long = my_long * n_words
+            my_long += val_words_dict.get(word, 0)
+        return long_to_str(my_long)
     return (__b_to_words, __words_to_b, canonical_fn)
 
 
@@ -171,9 +173,8 @@ FORMAT_FUNCTIONS = {
 
 
 class CodeField(models.CharField):
-
     def __init__(self, *args, **kwargs):
-        kwargs['max_length'] = 256 # up to 2048 bits total
+        kwargs['max_length'] = 256  # up to 2048 bits total
         super(CodeField, self).__init__(*args, **kwargs)
 
     def deconstruct(self):
@@ -182,9 +183,7 @@ class CodeField(models.CharField):
         return name, path, args, kwargs
 
 
-@python_2_unicode_compatible
 class CodeComponent(models.Model):
-
     def __str__(self):
         if self.max_parts > 1:
             part_desc = self.part_separator + str(self.max_parts)
@@ -203,14 +202,13 @@ class CodeComponent(models.Model):
     # hash_bits = models.PositiveIntegerField()
     hash_len = models.PositiveIntegerField()
     hash_algorithm = models.CharField(
-        max_length = 16, choices = HASH_ALGORITHMS,
+        max_length=16, choices=HASH_ALGORITHMS,
         null=True, blank=True)
     max_parts = models.IntegerField(default=1)
     part_separator = models.CharField(
         max_length=1, default=DEFAULT_PART_SEPARATOR)
 
 
-@python_2_unicode_compatible
 class CodeFormat(models.Model):
     def __str__(self):
         return self.separator.join([
@@ -310,7 +308,7 @@ class CodeFormat(models.Model):
             values = parts.get(component.name, [])
             for value in values:
                 h = value_hash(salt + challenge,
-                    value, component.hash_algorithm)
+                               value, component.hash_algorithm)
                 s = FORMAT_FUNCTIONS[component.hash_format][0](h)
                 hash_list.append(s[-component.hash_len:])
             hashed_components.append(component.part_separator.join(hash_list))
@@ -338,10 +336,10 @@ class CodeFormat(models.Model):
 class CodePart(models.Model):
     def __str__(self):
         return str(self.ordering) + self.value
-    code = models.ForeignKey('Code', related_name = 'code_parts')
+    code = models.ForeignKey('Code', related_name='code_parts')
     ordering = models.IntegerField(default=0)
-    name = models.CharField(max_length = 64)
-    value = models.CharField(max_length = 256)
+    name = models.CharField(max_length=64)
+    value = models.CharField(max_length=256)
 
 
 @python_2_unicode_compatible
@@ -364,10 +362,8 @@ class Code(models.Model):
         self.code_parts.all().delete()
         for k, values in parts_dict.items():
             for i, value in enumerate(values):
-                #if type(value) != unicode:
-                #    value = value.decode('iso8859-1')
-                part = CodePart(code = self, ordering = i,
-                    name = k, value = value)
+                part = CodePart(code=self, ordering=i,
+                                name=k, value=value)
                 part.save()
         self.value = self.format.code_from_parts(self.salt, parts_dict)
 
@@ -377,7 +373,7 @@ class Code(models.Model):
 
     @classmethod
     def create(cls, format, salt, parts):
-        c = cls(format=format, salt=salt, value = "foo")
+        c = cls(format=format, salt=salt, value="foo")
         c.save()
         c.parts = parts
         return c
@@ -387,8 +383,8 @@ class CodeGenerator(models.Model):
     def __str__(self):
         return self.salt + " " + str(self.format)
 
-    unique_code_component = models.CharField(null = True, blank = True,
-        max_length = 256)
+    unique_code_component = models.CharField(null=True, blank=True,
+                                             max_length=256)
     format = models.ForeignKey('CodeFormat')
     salt = models.CharField(max_length=256)
     codes = models.ManyToManyField('Code', blank=True)
@@ -396,17 +392,16 @@ class CodeGenerator(models.Model):
     def create_code(self, parts, random_unique=False):
         if not random_unique:
             created_code = Code.create(salt=self.salt, format=self.format,
-                parts={})
+                                       parts={})
             code_id = created_code.id
         if self.unique_code_component:
             if random_unique:
                 parts[self.unique_code_component] = [long_to_str(random.getrandbits(64))]
             else:
                 parts[self.unique_code_component] = [long_to_str(code_id)]
-        code_value = self.format.code_from_parts(self.salt, parts)
         if random_unique:
             created_code = Code.create(salt=self.salt, format=self.format,
-                   parts = parts)
+                                       parts=parts)
         else:
             created_code.parts = parts
         created_code.save()
@@ -415,11 +410,10 @@ class CodeGenerator(models.Model):
 
     def variable_components(self):
         return self.format.components.order_by('ordering').exclude(
-            name = self.unique_code_component)
+            name=self.unique_code_component)
 
     def code_matches(self, code, parts):
-        return self.format.code_matches(salt = self.salt,
-            code = code, parts = parts)
+        return self.format.code_matches(salt=self.salt, code=code, parts=parts)
 
     def canonical_code(self, code):
         return self.format.canonical_code(code)
