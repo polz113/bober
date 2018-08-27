@@ -1,10 +1,8 @@
-from bober_tasks.models import *
 from django.conf import settings
-from django.shortcuts import render_to_response, redirect, render, get_object_or_404
+from django.shortcuts import render_to_response,\
+    redirect, render, get_object_or_404
 from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.contrib.auth.models import User
 from django.db.models import Q
 from django.template.loader import render_to_string
 from django.template.context import RequestContext
@@ -12,7 +10,6 @@ from bober_tasks.helper import *
 import codecs
 import re
 import os
-from django.utils.translation import ugettext_lazy as _
 from django.views.generic import DetailView, CreateView
 from django_tables2 import RequestConfig
 from bober_tasks.tables import TaskTable
@@ -22,23 +19,25 @@ from braces.views import LoginRequiredMixin
 from json import dumps as to_json
 from django.http import HttpResponse
 from bober_tasks import forms
-from django.contrib import auth, messages
 from django.utils.text import slugify
 from django.contrib.auth.decorators import permission_required
-try:
-    from django.contrib.auth.mixins import PermissionRequiredMixin
-except:
-    # Django 1.8 compatibility
-    from auth_mixins import PermissionRequiredMixin
+from django.contrib.auth.mixins import PermissionRequiredMixin
 import mimetypes
+from bober_tasks.models import Answer, TaskTranslation, AgeGroupTask, Task,\
+    Resources
 
 
-def render_to_file(template, filename, template_data, context): # loads template with context data and returns it as a file
-    return codecs.open(os.path.join(settings.MEDIA_DIR, 'tasks_private') + filename, 'w', 'utf-8').write(render_to_string(template, template_data, context)) # save file to 'private folder'
+# loads template with context data and returns it as a file
+def render_to_file(template, filename, template_data, context):
+    path = os.path.join(settings.MEDIA_DIR, 'tasks_private') + filename
+    tp = codecs.open(path, 'w', 'utf-8').write(
+        render_to_string(template, template_data, context))
+    return tp
 
 
-def export_task_language_version( request, task_id, language_code, version ):
-    task_translation = TaskTranslation.objects.get(language_locale = language_code, task_id=task_id, version=version)
+def export_task_language_version(request, task_id, language_code, version):
+    task_translation = TaskTranslation.objects.get(
+        language_locale=language_code, task_id=task_id, version=version)
     return export_task_translation(request, task_translation)
 
 
@@ -50,16 +49,16 @@ def export_task_language(request, task_id, language_code):
 
 @permission_required('bober_tasks.view_tasktranslation')
 def export_task_translation(request, pk):
-    task_translation = TaskTranslation.objects.get(pk = pk)
+    task_translation = TaskTranslation.objects.get(pk=pk)
     # Grab ZIP file from in-memory, make response with correct MIME-type
-    resp = HttpResponse(task_translation.as_zip(), content_type = "application/zip")
+    resp = HttpResponse(task_translation.as_zip(), content_type="application/zip")
     # ..and correct content-disposition
-    zip_filename = '{}-{}_{}_v{}.zip'.format(slugify(task_translation.title),
-            task_translation.task_id, task_translation.language_locale, task_translation.version)
+    zip_filename = '{}-{}_{}_v{}.zip'.format(
+        slugify(task_translation.title),
+        task_translation.task_id, task_translation.language_locale,
+        task_translation.version)
     resp['Content-Disposition'] = 'attachment; filename={}'.format(zip_filename)
-    #if True: return render_to_response("api/task_interactive.html",  locals())
     return resp
-    #return HttpResponse(str(current_task_interactive_translated_answer_values))
 
 
 # TODO: add pager
@@ -67,8 +66,7 @@ def parameters(request):
     age_groups = AgeGroup.objects.all()
     difficultys = DifficultyLevel.objects.all()
     categories = Category.objects.all()
-
-    return render_to_response("control-panel/parameters.html", locals(), context_instance = RequestContext( request ) )
+    return render_to_response("control-panel/parameters.html", locals(), context_instance=RequestContext(request))
 
 
 # Age groups
@@ -78,7 +76,7 @@ def edit_age_group(request, id):
         form = forms.AgeGroupForm(request.POST, instance=ag)
         if form.is_valid():
             form.save()
-            return redirect( "control_panel.age_groups" )
+            return redirect("control_panel.age_groups")
     else:
         form = forms.AgeGroupForm(instance=ag)
     return render_to_response(
@@ -97,230 +95,75 @@ def new_age_group(request):
     else:
         form = forms.AgeGroupForm()
     return render_to_response(
-        "control-panel/edit-age-group.html",locals(),
+        "control-panel/edit-age-group.html", locals(),
         context_instance=RequestContext(request))
 
 
 def delete_age_group(request, id):
-  AgeGroup.objects.get(id=id).delete()
-  return redirect( "control_panel.age_groups" )
+    AgeGroup.objects.get(id=id).delete()
+    return redirect("control_panel.age_groups")
 
 
 # Categories
-def edit_category( request, id ):
-  category = Category.objects.get( id = id )
-  if request.method == 'POST':
-      form = forms.CategoryForm( request.POST, instance = category )
-      if form.is_valid():
-        form.save()
-        return redirect( "control_panel.categories" )
-  else:
-      form = forms.CategoryForm( instance = category )
-  return render_to_response("control-panel/edit-category.html", locals(), context_instance = RequestContext( request ) )
+def edit_category(request, id):
+    category = Category.objects.get(id=id)
+    if request.method == 'POST':
+        form = forms.CategoryForm(request.POST, instance=category)
+        if form.is_valid():
+            form.save()
+            return redirect("control_panel.categories")
+    else:
+        form = forms.CategoryForm(instance=category)
+    return render_to_response("control-panel/edit-category.html", locals(), context_instance=RequestContext(request))
 
-def new_category( request ):
-  if request.method == 'POST':
-      form = forms.CategoryForm( request.POST )
-      if form.is_valid():
-        form.save()
-        return redirect( "control_panel.categories" )
-  else:
-      form = forms.CategoryForm()
-  return render_to_response("control-panel/edit-category.html", locals(), context_instance = RequestContext( request ) )
 
-def delete_category( request, id ):
-  Category.objects.filter( id = id ).delete()
-  return redirect( "control_panel.categories" )
+def new_category(request):
+    if request.method == 'POST':
+        form = forms.CategoryForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect("control_panel.categories")
+    else:
+        form = forms.CategoryForm()
+    return render_to_response("control-panel/edit-category.html", locals(), context_instance=RequestContext(request))
+
+
+def delete_category(request, id):
+    Category.objects.get(pk=id).delete()
+    return redirect("control_panel.categories")
+
 
 # Difficulties
-def edit_difficulty( request, id ):
-  difficulty = DifficultyLevel.objects.get( id = id )
-  if request.method == 'POST':
-      form = forms.DifficultyForm( request.POST, instance = difficulty )
-      if form.is_valid():
-        form.save()
-        return redirect( "control_panel.difficulty_levels" )
-  else:
-      form = forms.DifficultyForm( instance = difficulty )
-  return render_to_response("control-panel/edit-difficultys.html", locals(), context_instance = RequestContext( request ) )
-
-def new_difficulty( request ):
-  if request.method == 'POST':
-      form = forms.DifficultyForm( request.POST )
-      if form.is_valid():
-        form.save()
-        return redirect( "control_panel.difficulty_levels" )
-  else:
-      form = forms.DifficultyForm()
-  return render_to_response("control-panel/edit-difficultys.html", locals(), context_instance = RequestContext( request ) )
-
-def delete_difficulty( request, id ):
-  DifficultyLevel.objects.get( id = id ).delete()
-  return redirect( "control_panel.difficulty_levels" )
-
-# User management
-@login_required()
-def static_html( request, page ):
-    return render_to_response( page, context_instance = RequestContext( request ) )
-
-@login_required()
-def index( request ):
-    user = request.user
-    # user_profile = user.get_profile()
-    # if True: return redirect("/list/"+user_profile.interface_lang_code)
-
-    tasks=[]
-
-    """
-
-    ORDERING THE TASK LIST
-
-    ""
-    order_by = "timestamp"
-    if request.method == "GET" and 'order' in request.GET:
-        order = request.GET.get('order')
-        order_translation_dict = {
-            'title': 'title',
-            'category': 'task__category__title',
-            'age': 'task__agegroup__value',
-            'description': 'body',
-            'language': 'language_locale'}
-        if order[0] == '-':
-            direction = '-'
-            order = order[1:]
-        else:
-            direction = ''
-        order_by = direction + order_translation_dict.get(order, order)
-
-    """
-"""
-
-    SEARCHING THE TASK LIST
-
-    ""
-
-    if request.method == "GET" and 'search' in request.GET:
-        ""
-
-        getting all the search values
-
-        ""
-
-        q_obj= Q()
-
-        if 't' in request.GET and request.GET['t'] != "":
-            #if OR
-            if request.GET['tc'] == "1":
-                q_obj |= Q(title__icontains=request.GET['t'])
-            #IF AND
-            elif request.GET['tc'] == "2":
-                q_obj &= Q(title__icontains=request.GET['t'])
-        if 'ca' in request.GET and request.GET['ca'] != "":
-            #IF MORE THAN 1 VALUE
-            if len(request.GET.getlist('ca')) > 1:
-                #IF OR
-                if request.GET['cac'] == "1":
-                    category=request.GET.getlist('ca')
-                    for c in category:
-                        q_obj |= Q(task__category__title__icontains=c)
-                #IF AND
-                elif request.GET['cac'] == "2":
-                    category=request.GET.getlist('ca')
-                    for c in category:
-                        q_obj &= Q(task__category__title__icontains=c)
-            #IF 1 VALUE
-            else:
-                #IF OR
-                if request.GET['cac'] == "1":
-                    category=request.GET['ca']
-                    q_obj |= Q(task__category__title__icontains=category)
-                #IF AND
-                elif request.GET['cac'] == "2":
-                    category=request.GET['ca']
-                    q_obj &= Q(task__category__title__icontains=category)
-        if 'a' in request.GET and request.GET['a'] != "":
-            #IF MORE THAN 1 VALUE
-            if len(request.GET.getlist('a')) > 1:
-                #IF OR
-                if request.GET['ac'] == "1":
-                    category=request.GET.getlist('ca')
-                    for c in category:
-                        q_obj |= Q(task__agegroup__value__icontains=c)
-                #IF AND
-                elif request.GET['ac'] == "2":
-                    category=request.GET.getlist('a')
-                    for c in category:
-                        q_obj &= Q(task__agegroup__value__icontains=c)
-            #IF 1 VALUE
-            else:
-                #IF OR
-                if request.GET['ac'] == "1":
-                    category=request.GET['a']
-                    q_obj |= Q(task__agegroup__value__icontains=category)
-                #IF AND
-                elif request.GET['ac'] == "2":
-                    category=request.GET['a']
-                    q_obj &= Q(task__agegroup__value__icontains=category)
-        if 'desc' in request.GET and request.GET['desc'] != "":
-            #if OR
-            if request.GET['dc'] == "1":
-                q_obj |= Q(body__icontains=request.GET['desc'])
-            #IF AND
-            elif request.GET['dc'] == "2":
-                q_obj &= Q(body__icontains=request.GET['desc'])
-        if 'l' in request.GET and request.GET['l'] != "":
-            #IF MORE THAN 1 VALUE
-            if len(request.GET.getlist('l')) > 1:
-                #IF OR
-                if request.GET['lc'] == "1":
-                    category=request.GET.getlist('la')
-                    for c in category:
-                        q_obj |= Q(language_locale__icontains=c)
-                #IF AND
-                elif request.GET['lc'] == "2":
-                    category=request.GET.getlist('l')
-                    for c in category:
-                        q_obj &= Q(language_locale__icontains=c)
-            #IF 1 VALUE
-            else:
-                #IF OR
-                if request.GET['lc'] == "1":
-                    category=request.GET['l']
-                    q_obj |= Q(language_locale__icontains=category)
-                #IF AND
-                elif request.GET['lc'] == "2":
-                    category=request.GET['l']
-                    q_obj &= Q(language_locale__icontains=category)
-        elif 'searchFull' in request.GET and request.GET['searchFull']!="":
-            s = request.GET['searchFull']
-            q = Q(tasktranslation__language_locale__icontains=s) | Q(tasktranslation__body__icontains=s) | Q(category__title__icontains=s) | Q(agegroup__value__icontains=s) | Q(tasktranslation__title__icontains=s)
-            tasks = Task.objects.filter(q)
-        else:
-            messages.error(request, _("No search field filled."))
-        tasks_translations = TaskTranslation.objects.select_related().filter(q_obj).order_by(order_by)
-
-    #we are not searching, display all tasks
+def edit_difficulty(request, id):
+    difficulty = DifficultyLevel.objects.get(id=id)
+    if request.method == 'POST':
+        form = forms.DifficultyForm(request.POST, instance=difficulty)
+        if form.is_valid():
+            form.save()
+            return redirect("control_panel.difficulty_levels")
     else:
-        #tasks_translations = Task.objects.select_related('tasktranslation').filter(parent_id=None).order_by(order_by)
-        tasks = Task.objects.order_by('created_at')
+        form = forms.DifficultyForm(instance=difficulty)
+    return render_to_response("control-panel/edit-difficultys.html", locals(),
+                              context_instance=RequestContext(request))
 
-    paginator = Paginator( tasks, 5 )
-    page = request.GET.get( 'page' )
-    categories = Category.objects.values('title').distinct()
-    age = AgeGroup.objects.values('value').distinct()
-    all_languages = settings.LANGUAGES
 
-    try:
-        tasks = paginator.page( page )
-    except PageNotAnInteger:
-        tasks = paginator.page( 1 )
-    except EmptyPage:
-        tasks = paginator.page( paginator.num_pages )
+def new_difficulty(request):
+    if request.method == 'POST':
+        form = forms.DifficultyForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect("control_panel.difficulty_levels")
+    else:
+        form = forms.DifficultyForm()
+    return render_to_response("control-panel/edit-difficultys.html", locals(),
+                              context_instance=RequestContext(request))
 
-    #tasks_translations = TaskTranslation.objects.filter(language_locale=language).order_by(order_by)
 
-    return render_to_response("index.html", locals(), context_instance = RequestContext( request ) )
-"""
+def delete_difficulty(request, id):
+    DifficultyLevel.objects.get(pk=id).delete()
+    return redirect("control_panel.difficulty_levels")
+
+
 @login_required()
 @permission_required('bober_tasks.view_tasktranslation')
 def tasks_list_language(request, language_locale):
@@ -334,7 +177,7 @@ def tasks_list_language(request, language_locale):
 @login_required()
 @permission_required('bober_tasks.change_tasktranslation')
 def tasks_upload(request, id=0):
-    task_translation = TaskTranslation.objects.get(id = id)
+    task_translation = TaskTranslation.objects.get(pk=id)
 
     # Clean and add version information to filename (for conflict avoid)
     filetype = "." + str(request.FILES.get('images')).split(".")[-1]
@@ -342,25 +185,25 @@ def tasks_upload(request, id=0):
     rx = re.compile('\W+')
     filename = rx.sub('_', filename).strip()
     filename = filename + "_v" + str(task_translation.version)
-    file = filename +filetype
+    file = filename + filetype
     urlpath = 'resources/'
     handle_uploaded_file(request.FILES.get('images'), file, task_translation)
-    return HttpResponse(to_json({'status': 'ok', 'filename': file, 'filepath': urlpath }))
+    return HttpResponse(to_json({'status': 'ok', 'filename': file, 'filepath': urlpath}))
 
 
 @permission_required('bober_tasks.view_tasktranslation')
 def export_multiple_tasks(request):
     export_values = request.POST.getlist('taskValues')
     for i in range(len(export_values)):
-        #TaskTranslation.export_to_simple_competition(export_values[i])
         t = TaskTranslation.objects.get(pk=export_values[i])
-        t.export_to_simple_competition(rebuild_caches = True)
+        t.export_to_simple_competition(rebuild_caches=True)
     return redirect("/tasks")
 
 
-def handle_uploaded_file(f,name, task_translation):
-    #save_path  = path( MEDIA_ROOT , 'taskresources', 'Image', task_id , task_language )
-    save_path  = os.path.join(settings.MEDIA_ROOT, 'task', str(task_translation.task_id) , str(task_translation.language_locale), 'resources' )
+def handle_uploaded_file(f, name, task_translation):
+    save_path = os.path.join(
+        settings.MEDIA_ROOT, 'task', str(task_translation.task_id),
+        str(task_translation.language_locale), 'resources')
     # Check if upload folder of a specific task already exists and create it, if it doesn't.
     if not os.path.exists(save_path):
         os.makedirs(save_path)
@@ -371,14 +214,14 @@ def handle_uploaded_file(f,name, task_translation):
             destination.write(chunk)
 
     # Write filename to DB
-    resource = Resources(filename = name, type = "image", task = task_translation.task, language = task_translation.language_locale)
+    resource = Resources(filename=name, type="image", task=task_translation.task,
+                         language=task_translation.language_locale)
     resource.save()
 
     return save_path
 
 
-
-#TODO fix this!
+# TODO: fix this!
 @permission_required('bober_tasks.add_tasktranslation')
 @login_required()
 def tasks_translate(request, id):
@@ -405,8 +248,8 @@ def tasks_translate(request, id):
         categories = get_categories(request.POST)
 
         new_trans = TaskTranslation(title=title, body=body, solution=solution,
-                                           task_id=task.id, language_locale=language,
-                                           it_is_informatics=it_is_informatics, comment=comment)
+                                    task_id=task.id, language_locale=language,
+                                    it_is_informatics=it_is_informatics, comment=comment)
         new_trans.save()
 
         for i in range(0, 4):
@@ -417,72 +260,6 @@ def tasks_translate(request, id):
         new_trans.save()
         return redirect(reverse('/show/' + str(task.id) + '?language=' + str(language)))
     return render_to_response("task/translate.html", locals(), context_instance=RequestContext(request))
-
-
-@permission_required('bober_tasks.add_tasktranslation')
-@login_required()
-def tasks_new_from(request, id):
-    parent_id = None
-    all_languages = settings.LANGUAGES
-
-    if request.method == 'POST':
-        title = request.POST['title']
-        body = request.POST['body']
-        language = request.POST['language']
-        solution = request.POST['solution']
-        comment = request.POST['diff']
-        correctness = request.POST['correctness']
-        it_is_informatics = request.POST['informatics']
-
-        answers = get_answers(request.POST, language)
-        age_groups = get_age_groups(request.POST)
-        categories = get_categories(request.POST)
-
-        new_task = Task(parent_id=parent_id, author=request.user)
-        new_task.save()
-
-        for category_id in categories:
-            c = Category.objects.get(id=categories[category_id])
-            new_task.categories.add(c)
-
-        new_task.save()
-
-        answer_multiple_choice = Answer(task_id=new_task.id, correctness=(int(correctness) + 1))
-        answer_multiple_choice.save()
-
-        for i in range(0, 4):
-            answers[i].answer_multiple_choice_id = answer_multiple_choice.id
-            answers[i].save()
-
-        for i in range(0, len(age_groups)):
-            age_groups[i].task_id = new_task.id
-            age_groups[i].save()
-
-        national_problem = TaskTranslation(title=title, body=body, solution=solution,
-                                           task_id=new_task.id, language_locale=language,
-                                           it_is_informatics=it_is_informatics, comment=comment)
-        national_problem.save()
-
-        return redirect('/show/' + str(new_task.id))
-
-    task = Task.objects.get(id=id)
-    task_translation = TaskTranslation.objects.filter(task_id=id)
-    task_translation = task_translation[0]
-
-    answers = Answer.objects.filter(task_id=id)
-
-    answers_id = map(lambda answer: answer.id, answers)
-    answer_multiple_choice = \
-        AnswerTranslation.objects.filter(answer_multiple_choice_id__in=answers_id,
-            language_locale=task_translation.language_locale)
-    task_categories = task.categories.all()
-    task_age_groups = AgeGroupTask.objects.filter(task_id=task.id)
-
-    content_categories = all_cat()
-    age_groups = all_ages()
-    difficulty_levels = all_dif()
-
-    return render_to_response("task/edit.html", locals(), context_instance=RequestContext(request))
 
 
 @permission_required('bober_tasks.view_tasktranslation')
@@ -506,10 +283,9 @@ def tasks_history(request, id):
 
 
 @permission_required('bober_tasks.view_tasktranslation')
-def tasktranslation_render(request, pk): # loads template with context data and returns it as a file
+def tasktranslation_render(request, pk):  # loads template with context data and returns it as a file
     tt = get_object_or_404(TaskTranslation, pk=pk)
     return HttpResponse(tt.render_to_string(), "text/html")
-    # return codecs.open(os.path.join(settings.MEDIA_DIR, 'tasks_private') + filename, 'w', 'utf-8').write(render_to_string(template, template_data, context)) # save file to 'private folder'
 
 
 class TaskDetail(LoginRequiredMixin, DetailView):
@@ -521,26 +297,25 @@ class TaskTranslationUpdate(PermissionRequiredMixin, UpdateWithInlinesView, Logi
     model = TaskTranslation
     form_class = forms.TaskTranslationForm
     template_name = 'bober_tasks/tasktranslation_form.html'
-    inlines = [ forms.AnswerInline ]
+    inlines = [forms.AnswerInline]
     permission_required = ('bober_tasks.change_tasktranslation')
 
-    
     def get_success_url(self):
-        return reverse('tasktranslation_detail', kwargs = {'pk': self.object.pk})
-    
+        return reverse('tasktranslation_detail', kwargs={'pk': self.object.pk})
+
     def get(self, request, *args, **kwargs):
         self.remark_form = forms.InlineRemarkForm()
         return super(TaskTranslationUpdate, self).get(request, *args, **kwargs)
-    
+
     def get_form_kwargs(self):
         kwargs = super(TaskTranslationUpdate, self).get_form_kwargs()
         return kwargs
-    
+
     def get_context_data(self, *args, **kwargs):
         context = super(TaskTranslationUpdate, self).get_context_data(*args, **kwargs)
         context['remark_form'] = self.remark_form
         return context
-    
+
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
         self.remark_form = forms.InlineRemarkForm(self.request.POST)
@@ -550,7 +325,7 @@ class TaskTranslationUpdate(PermissionRequiredMixin, UpdateWithInlinesView, Logi
         form_class = self.get_form_class()
         form = self.get_form(form_class)
         return self.forms_invalid(form, inlines)
-    
+
     def save(self, *args, **kwargs):
         print("saving", args, kwargs)
         self.remark_form.save()
@@ -592,14 +367,14 @@ class TaskCreate(PermissionRequiredMixin, LoginRequiredMixin, CreateView):
     form_class = forms.TaskForm
     permission_required = ('bober_tasks.add_tasktranslation')
 
-    
     def get_success_url(self):
-        first_translation = TaskTranslation(task = self.object,
-            language_locale = self.cleaned_data['language_locale'])
+        first_translation = TaskTranslation(
+            task=self.object,
+            language_locale=self.cleaned_data['language_locale'])
         first_translation.save()
         first_translation.create_default_answers()
         return reverse('tasktranslation_update', kwargs={'pk': first_translation.pk})
-    
+
     def form_valid(self, form):
         self.cleaned_data = form.cleaned_data
         return super(TaskCreate, self).form_valid(form)
@@ -617,12 +392,12 @@ def save_task(request):
             categories[i] = request.POST["category[" + str(i) + "]"]
             i += 1
     except Exception as e:
+        # TODO: handle exception
         True
     for category_id in categories:
         c = Category.objects.get(id=categories[category_id])
         task.categories.add(c)
     i = 0
-    groups = []
     try:
         while True:
             temp = request.POST.getlist("age_group[" + str(i) + "]")
@@ -632,6 +407,7 @@ def save_task(request):
             agt.save()
             i += 1
     except Exception as e:
+        # TODO: handle exception
         pass
     return redirect("tasks.task", task.id)
 
@@ -639,10 +415,10 @@ def save_task(request):
 @login_required
 @permission_required('bober_tasks.add_tasktranslation')
 def tasktranslation_clone(request, pk):
-    t = get_object_or_404(TaskTranslation, id = pk)
+    t = get_object_or_404(TaskTranslation, pk=pk)
     t.author = request.user
     t.save_new_version()
-    return redirect("tasktranslation_update", pk = t.id)
+    return redirect("tasktranslation_update", pk=t.id)
 
 
 @login_required
@@ -659,8 +435,7 @@ def tasks_save_translation(request):
     if request.method == 'GET':
         return redirect("/")
     if request.method == 'POST':
-        if request.POST.has_key('id'): # Updating object
-            id = request.POST['id']
+        if 'id' in request.POST:  # Updating object
             task_translation = TaskTranslation.objects.get(id=request.POST['id'])
             old_task_translation = TaskTranslation.objects.get(id=request.POST['id'])
             if not task_translation.title:
@@ -670,10 +445,10 @@ def tasks_save_translation(request):
                 task_translation.save_new_version()
             # Delete if no title
 
-        else: # New task
+        else:  # New task
             task = Task()
             task.save()
-            task_translation = TaskTranslation(task = task)
+            task_translation = TaskTranslation(task=task)
             task_translation.language_locale = request.POST['language']
             task_translation.save()
 
@@ -692,40 +467,7 @@ def tasks_save_translation(request):
                 task_translation.correct_answer = answer
 
         task_translation.save()
-
-
-
     return redirect('tasks.display', task_translation.id)
-
-
-@login_required()
-@permission_required('bober_tasks.view_tasktranslation')
-def delete_task(request, id):
-    task = Task.objects.get(id=id)
-    # print task
-    answers = Answer.objects.filter(task_id=id)
-    answers_id = map(lambda answer: answer.id, answers)
-    answer_multiple_choice = AnswerTranslation.objects.filter(answer_multiple_choice_id__in=answers_id)
-    if task.parent_id is None:
-        task.delete()
-        TaskTranslation.objects.filter(id=id).delete()
-        answers.delete()
-        for answer in answer_multiple_choice:
-            answer.delete()
-    else:
-        task.delete()
-        TaskTranslation.objects.filter(id=id).delete()
-        answers.delete()
-        answer_multiple_choice.delete()
-        for t in Task.objects.filter(parent_id=id):
-            t.delete()
-            TaskTranslation.objects.filter(task_id=t.id).delete()
-            answers = Answer.objects.filter(task_id=t.id)
-            answers_id = map(lambda answer: answer.id, answers)
-            answer_multiple_choice = AnswerTranslation.objects.filter(answer_multiple_choice_id__in=answers_id)
-            answers.delete()
-            answer_multiple_choice.delete()
-    return redirect('/')
 
 
 @login_required()
@@ -736,8 +478,8 @@ def display_task(request, id):
     answers = task_translation.answer_set.all()
     correct = str(task_translation.correct_answer.id)
     languages = task.available_languages
-    versions = TaskTranslation.objects.filter(task = task, language_locale = task_translation.language_locale).order_by("-version")
-
+    versions = TaskTranslation.objects.filter(
+        task=task, language_locale=task_translation.language_locale).order_by("-version")
     return render_to_response("task/display.html", locals(), context_instance=RequestContext(request))
 
 
@@ -759,26 +501,28 @@ def task_detail(request, id):
 @login_required()
 def tasks_resource(request, pk, filename):
     """Image path redirect for task display. Because images have relative paths for export."""
-    #TODO check permissions
+    # TODO: check permissions
     task_translation = TaskTranslation.objects.get(pk=pk)
-    file_path = os.path.join(settings.MEDIA_ROOT, 'task', str(task_translation.task_id) , task_translation.language_locale, 'resources', filename )
+    file_path = os.path.join(settings.MEDIA_ROOT, 'task', str(task_translation.task_id),
+                             task_translation.language_locale, 'resources', filename)
     image_data = open(file_path, "rb").read()
     content_type = mimetypes.guess_type(file_path, strict=False)[0]
     return HttpResponse(image_data, content_type)
 
 
 def get_age_groups(obj):
-    i = 0;
+    i = 0
     groups = []
     try:
         while True:
             temp = obj.getlist("age_group[" + str(i) + "]")
-            groups[i] = AgeGroupTask(age_group_id=temp[0], difficulty_level_id=temp[1], task=tas)
+            groups[i] = AgeGroupTask(age_group_id=temp[0], difficulty_level_id=temp[1], task=obj)
             if len(temp) < 1:
                 break
             i += 1
         return groups
     except Exception as e:
+        # TODO: handle exception
         return groups
 
 
@@ -792,11 +536,12 @@ def get_answers(obj):
 
 @login_required()
 def get_categories(obj):
-    i = 0;
+    i = 0
     categories = {}
     try:
         while True:
             categories[i] = obj["category[" + str(i) + "]"]
             i += 1
     except Exception as e:
+        # TODO: log exception
         return categories
