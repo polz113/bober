@@ -1,12 +1,11 @@
+import copy
 import django.forms as forms
 from django.contrib.admin.options import IS_POPUP_VAR, TO_FIELD_VAR
 from django.db.models.deletion import CASCADE
 from django.utils.safestring import mark_safe
 from django.template.loader import render_to_string
-try:
-    from django.urls import reverse
-except:
-    from django.core.urlresolvers import reverse
+from django.urls import reverse
+
 
 class RelatedFieldWidgetWrapper(forms.Widget):
     """
@@ -15,10 +14,10 @@ class RelatedFieldWidgetWrapper(forms.Widget):
     """
     template = 'popup_modelviews/related_widget_wrapper.html'
 
-    def __init__(self, widget, rel, current_app = None, current_site = None, 
-                 add_related_view = None,
-                 change_related_view = None,
-                 delete_related_view = None
+    def __init__(self, widget, rel, current_app=None, current_site=None,
+                 add_related_view=None,
+                 change_related_view=None,
+                 delete_related_view=None
                  ):
         self.needs_multipart_form = widget.needs_multipart_form
         self.attrs = widget.attrs
@@ -59,7 +58,6 @@ class RelatedFieldWidgetWrapper(forms.Widget):
 
     def render(self, name, value, *args, **kwargs):
         rel_opts = self.rel.model._meta
-        info = (rel_opts.app_label, rel_opts.model_name)
         self.widget.choices = self.choices
         url_params = '&'.join("%s=%s" % param for param in [
             (TO_FIELD_VAR, self.rel.get_related_field().name),
@@ -72,7 +70,7 @@ class RelatedFieldWidgetWrapper(forms.Widget):
             'model': rel_opts.verbose_name,
         }
         if self.change_related_view:
-            change_related_template_url = reverse(self.change_related_view, 
+            change_related_template_url = reverse(self.change_related_view,
                                                   args=['__fk__'])
             context.update(
                 can_change_related=True,
@@ -86,7 +84,7 @@ class RelatedFieldWidgetWrapper(forms.Widget):
             )
         if self.delete_related_view:
             delete_related_template_url = reverse(self.delete_related_view,
-                                                  args = ['__fk__'])
+                                                  args=['__fk__'])
             context.update(
                 can_delete_related=True,
                 delete_related_template_url=delete_related_template_url,
@@ -104,14 +102,15 @@ class RelatedFieldWidgetWrapper(forms.Widget):
     def id_for_label(self, id_):
         return self.widget.id_for_label(id_)
 
-def add_related_field_wrapper(form, col_name, 
-                              add_related_view = None,
-                              change_related_view = None,
-                              delete_related_view = None):
+
+def add_related_field_wrapper(form, col_name,
+                              add_related_view=None,
+                              change_related_view=None,
+                              delete_related_view=None):
     rel_model = form.Meta.model
     rel = rel_model._meta.get_field(col_name).rel
-    form.fields[col_name].widget =  RelatedFieldWidgetWrapper(
+    form.fields[col_name].widget = RelatedFieldWidgetWrapper(
         form.fields[col_name].widget, rel,
-        add_related_view = add_related_view, 
-        change_related_view = change_related_view, 
-        delete_related_view = delete_related_view)
+        add_related_view=add_related_view,
+        change_related_view=change_related_view,
+        delete_related_view=delete_related_view)
