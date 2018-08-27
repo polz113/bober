@@ -1,15 +1,15 @@
+import os
+import json
+import zipfile
+import mimetypes
+from io import StringIO
+from bs4 import BeautifulSoup
+
 from django.db import models
 from django.conf import settings
 from django.contrib.auth.models import User
 import django.template
-import os
-import zipfile
-from io import StringIO
-import json
-from bs4 import BeautifulSoup
 from django.utils.text import slugify
-import mimetypes
-from django.utils.encoding import python_2_unicode_compatible
 
 import bober_simple_competition
 
@@ -201,7 +201,7 @@ class TaskTranslation(models.Model):
             "browserSupport": [{"name": "ie", "version": 6, "os": "windows", "supported": False}],
             "acceptedAndsers": list(self.answer_set.filter(correct=True).values_list('value', flat=True)),
             "task": [{'type': 'html', 'url': 'index.html'}],
-            "solution": [{"type": "html", "content": "solution.html"},],
+            "solution": [{"type": "html", "content": "solution.html"}],
             "task_modules": [{"type": "javascript", "url": "js/jquery.js"}],
             "grader_modules": [],
             "solution_modules": [{"type": "javascript", "url": "js/jquery.js"}],
