@@ -1,31 +1,15 @@
-#!/usr/bin/python
-# -*- coding: utf-8 -*-
-
+import re
 from django.db import models
 from django.utils.html import escape
 from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
+
 from code_based_auth.models import CodeField
-from bober_simple_competition.models import Competition, Competitor, Profile, CompetitionQuestionSet, Attempt, AttemptConfirmation
-from bober_si.models import School, SCHOOL_CATEGORIES, Award
-import re
-from django.utils.encoding import python_2_unicode_compatible
+from bober_simple_competition.models import Competition, Competitor, Profile, CompetitionQuestionSet, Attempt,\
+     AttemptConfirmation
+from bober_si.models import School, SCHOOL_CATEGORIES
 
-#DEFAULT_YEARS = {
-#    u'1. razred': u'Jože Primer  10',
-#    u'2. razred': u'Jana Novak 11',
-#    u'3. razred': u'Tina Pobriši T. Primere 8',
-#    u'2. razred': None,
-#    u'3. razred': None,
-#    u'4. razred': None,
-#    u'5. razred': None,
-#}
 
-#DEFAULT_EXAMPLES = set(DEFAULT_YEARS.values())
-#DEFAULT_EXAMPLES.remove(None)
-# Create your models here.
-
-@python_2_unicode_compatible
 class JuniorMentorship(models.Model):
     def __str__(self):
         return u"{}:{} - {}".format(self.teacher, self.school, self.competition.slug)
@@ -35,14 +19,9 @@ class JuniorMentorship(models.Model):
 
 
 def parse_competitor_data(data):
-    #if raw_data in DEFAULT_EXAMPLES:
-    #    raise ValidationError(_('Remove the provided examples'), code='remove_examples')
     competitor_data = list()
-    #re_rez = re.compile(r"(\d+\.?\s*)?(?P<name>([A-Za-zřéöčćžüšđČĆŽŠĐ]+[\s.-]+){1,4}"
-    #            r"[A-Za-zřéöüčćžšđČĆŽŠĐ.]+)[\s;:-]*(?P<points>\d+)\s*")
     re_rez = re.compile(r"(\d+\.?\s*)?(?P<name>([^\W\d_]+[\s.-]+){1,4}"
-                r"([^\W\d_]|.)+)[\s;:-]+(?P<points>\d+)\s*", re.UNICODE)
-        # re_rez = re.compile(ur"(\d+\.?\s*)?(?P<name>[^\W\d_]*)(?P<points>.*)",re.UNICODE)
+                        r"([^\W\d_]|.)+)[\s;:-]+(?P<points>\d+)\s*")
     seen_students = set()
     for line, rezultat in enumerate(data.split("\n")):
         rezultat = rezultat.strip()
@@ -63,25 +42,26 @@ def parse_competitor_data(data):
             raise ValidationError(
                 _('Error in line %(line_no)d: %(line)s.'),
                 code='error_parsing',
-                params = {'line_no': line+1, 'line': escape(rezultat)}
+                params={'line_no': line+1, 'line': escape(rezultat)}
             )
     return competitor_data
 
-@python_2_unicode_compatible
+
 class JuniorYear(models.Model):
     def __str__(self):
         return u"{}: {}".format(self.name, self.mentorship)
+
     class Meta:
         ordering = ['name']
 
     mentorship = models.ForeignKey(JuniorMentorship)
     access_code = CodeField()
     questionset = models.ForeignKey(CompetitionQuestionSet, null=True)
-    name = models.CharField(max_length = 16)
+    name = models.CharField(max_length=16)
     raw_data = models.TextField(blank=True)
     remarks = models.TextField(blank=True)
     attempts = models.ManyToManyField(Attempt, through='JuniorAttempt')
-    
+
     def save_results(self, competitor_data=None, profile=None):
         if competitor_data is None:
             competitor_data = parse_competitor_data(self.raw_data)
@@ -125,9 +105,9 @@ class JuniorYear(models.Model):
                 c = a.competitor
             else:
                 c = Competitor()
-                a = Attempt(competitionquestionset = self.questionset,
-                    random_seed=0, access_code = self.access_code)
-                j_a = JuniorAttempt(year_class = self)
+                a = Attempt(competitionquestionset=self.questionset,
+                            random_seed=0, access_code=self.access_code)
+                j_a = JuniorAttempt(year_class=self)
             c.first_name = first_name
             c.last_name = last_name
             c.save()
@@ -146,10 +126,10 @@ class JuniorYear(models.Model):
             j_a.attempt.delete()
             j_a.delete()
         created_one = False
-        my_attempts = list(Attempt.objects.filter(juniorattempt__year_class = self))
+        my_attempts = list(Attempt.objects.filter(juniorattempt__year_class=self))
         for a in my_attempts:
-            confirmation, created = AttemptConfirmation.objects.get_or_create(
-                by=self.mentorship.teacher, attempt=a)
+            created = AttemptConfirmation.objects.get_or_create(
+                by=self.mentorship.teacher, attempt=a)[1]
             created_one = created_one or created
         if created_one:
             # we should probably recreate the awards.
@@ -158,41 +138,39 @@ class JuniorYear(models.Model):
             if profile is None:
                 codegen = self.questionset.competition.administrator_code_generator
                 profile = codegen.codes.filter(
-                    code_parts__name='admin_privileges', 
+                    code_parts__name='admin_privileges',
                     code_parts__value='view_all_admin_codes'
                 )[0].creator_set.all()[0]
             self.mentorship.school.assign_si_awards(awards,
                 CompetitionQuestionSet.objects.filter(id=self.questionset_id),
                 revoked_by = profile, commit = True)"""
 
-@python_2_unicode_compatible
+
 class JuniorDefaultYear(models.Model):
     def __str__(self):
         return u"{}: {}".format(self.competition.slug, self.questionset.name)
     competition = models.ForeignKey(Competition)
     school_category = models.CharField(choices=SCHOOL_CATEGORIES, max_length=24)
     questionset = models.ForeignKey(CompetitionQuestionSet)
-    name = models.CharField(max_length = 16)
+    name = models.CharField(max_length=16)
     value = models.TextField(blank=True, null=True)
-    
+
     def create_year(self, schoolteachercode):
-        mentorship, created = JuniorMentorship.objects.get_or_create(
-            competition = self.competition,
-            teacher_id = schoolteachercode.teacher.id,
-            school_id = schoolteachercode.school.id)
-        #if created:
-        #    mentorship.save()
+        mentorship = JuniorMentorship.objects.get_or_create(
+            competition=self.competition,
+            teacher_id=schoolteachercode.teacher.id,
+            school_id=schoolteachercode.school.id)[0]
         year, created = JuniorYear.objects.get_or_create(
-                mentorship = mentorship,
-                name = self.name,
-                questionset = self.questionset,
-                access_code = schoolteachercode.code.value)
+                mentorship=mentorship,
+                name=self.name,
+                questionset=self.questionset,
+                access_code=schoolteachercode.code.value)
         if created:
             year.raw_data = self.value
             year.save()
         return year
 
-@python_2_unicode_compatible
+
 class JuniorAttempt(models.Model):
     def __str__(self):
         return u"{}:{} {}".format(self.attempt.competitor, self.year_class, self.remarks)
@@ -201,26 +179,3 @@ class JuniorAttempt(models.Model):
     attempt = models.OneToOneField(Attempt, null=True)
     line = models.IntegerField(default=-1)
     remarks = models.TextField(blank=True, null=True)
-    # score = models.FloatField(null=True)
-
-#class JuniorAward(models.Model):
-#    award = models.ForeignKey(Award)
-#    attempt = models.ForeignKey(JuniorAttempt)
-#    note = models.CharField(max_length=1024, 
-#        blank=True, default='')
-#    serial = models.CharField(max_length=256, blank=True, default='')
-
-
-#def fill_mentorship_years(sender, instance=None, **kwargs):
-#    if instance:
-#        for default_year in JuniorDefaultYear.objects.filter(
-#                competition = instance.competition,
-#                school_category = instance.school.category):
-#            year, created = JuniorYear.objects.get_or_create(
-#                mentorship = instance,
-#                name = default_year.name)
-#            if created:
-#                year.raw_data = default_year.value
-#                year.save()
-
-#models.signals.post_save.connect(fill_mentorship_years, sender=JuniorMentorship)
