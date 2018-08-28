@@ -37,6 +37,7 @@ RUN apt-get update \
   unixodbc-dev \
   python3-cairo \
   python3-lxml \
+  python3-psycopg2 \
    && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /home/bober

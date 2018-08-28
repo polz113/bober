@@ -120,10 +120,15 @@ WSGI_APPLICATION = 'bober.wsgi.application'
 import os
 
 PROJECT_DIR = os.path.abspath(os.path.dirname(__file__))
+
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(PROJECT_DIR, 'bober.db'),
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',   
+        'NAME': 'bober',
+        'USER': 'bober',
+        'PASSWORD': 'database_password',
+        'HOST': 'db',
     }
 }
 
