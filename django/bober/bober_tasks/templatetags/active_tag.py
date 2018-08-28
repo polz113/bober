@@ -1,10 +1,11 @@
 from django import template
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 
 register = template.Library()
 
+
 @register.simple_tag
-def add_active( request, name, by_path=False ):
+def add_active(request, name, by_path=False):
     """ Return the string 'active' current request.path is same as name
         Keyword aruguments:
         request -- Django request object
