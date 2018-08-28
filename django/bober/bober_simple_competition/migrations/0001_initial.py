@@ -79,7 +79,7 @@ class Migration(migrations.Migration):
                 ('merged_with', models.ForeignKey(related_name='merged_set', blank=True,
                                                   to=settings.AUTH_USER_MODEL, null=True,
                                                   on_delete=models.CASCADE)),
-                ('user', models.OneToOneField(to=settings.AUTH_USER_MODEL)),
+                ('user', models.OneToOneField(to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE)),
             ],
             options={
             },
