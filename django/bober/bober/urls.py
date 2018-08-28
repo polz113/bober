@@ -2,7 +2,7 @@ from django.conf.urls import include, url
 from django.conf.urls.static import static
 from django.conf import settings
 from django.contrib.staticfiles import views
-from django.views.i18n import javascript_catalog
+from django.views.i18n import JavaScriptCatalog
 from django.contrib import admin
 import bober_paper_submissions.urls
 import bober_simple_competition.urls
@@ -27,7 +27,8 @@ urlpatterns = [
     url(r'^simple/', include(bober_paper_submissions.urls)),
     url(r'^simple/', include(bober_simple_competition.urls)),
     url(r'^tasks/', include(bober_tasks.urls)),
-    url(r'^jsi18n/(?P<packages>\S+?)/$', javascript_catalog, kwargs={'domain': 'django'}, name='javascript-catalog'),
+    url(r'^jsi18n/(?P<packages>\S+?)/$', JavaScriptCatalog.as_view(),
+        kwargs={'domain': 'django'}, name='javascript-catalog'),
     url('^accounts/', include('django.contrib.auth.urls')),
     # url('', include('social.apps.django_app.urls', namespace='social')),
     url('', include('password_reset.urls')),
