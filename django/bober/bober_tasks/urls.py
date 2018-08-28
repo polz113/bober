@@ -2,7 +2,7 @@ from django.conf.urls import url
 from bober_tasks.views import *
 from django.views.generic import RedirectView
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
-from django.core.urlresolvers import reverse_lazy
+from django.urls import reverse_lazy
 
 urlpatterns = [
     # Index
@@ -35,10 +35,12 @@ urlpatterns = [
     url(r'^list/([a-z]*)$', tasks_list_language, name="tasks.list"),
     url(r'^list/$', tasks_list_language, name="tasks.list"),
     url(r'^history/(\d+)$', tasks_history, name="tasks.history"),
-    url(r'^new_from/(\d+)$', tasks_new_from, name="tasks.new_form"),
+    # TODO: the code was badly broaken
+    # url(r'^new_from/(\d+)$', tasks_new_from, name="tasks.new_form"),
     url(r'^translate/(\d+)$', tasks_translate, name="tasks.translate"),
     url(r'^upload/(\d+)$', tasks_upload, name="tasks.upload"),
-    url(r'^delete/(\d+)$', delete_task, name="tasks.delete"),
+    # TODO: the code was badly broaken
+    # url(r'^delete/(\d+)$', delete_task, name="tasks.delete"),
     url(r'^display/(\d+)/$', display_task, name="tasks.display"),
     url(r'^display/(\d+)/resources/(\w.+)$', tasks_resource,
         name="tasks.resource"),

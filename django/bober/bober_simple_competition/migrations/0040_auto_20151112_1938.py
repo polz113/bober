@@ -15,8 +15,8 @@ class Migration(migrations.Migration):
             name='AttemptConfirmation',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('attempt', models.ForeignKey(to='bober_simple_competition.Attempt')),
-                ('by', models.ForeignKey(to='bober_simple_competition.Profile')),
+                ('attempt', models.ForeignKey(to='bober_simple_competition.Attempt', on_delete=models.CASCADE)),
+                ('by', models.ForeignKey(to='bober_simple_competition.Profile', on_delete=models.CASCADE)),
             ],
             options={
             },

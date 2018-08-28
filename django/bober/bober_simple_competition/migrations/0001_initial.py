@@ -48,8 +48,12 @@ class Migration(migrations.Migration):
                 ('slug', models.SlugField()),
                 ('start', models.DateTimeField()),
                 ('end', models.DateTimeField()),
-                ('administrator_code_generator', models.ForeignKey(related_name='administrator_code_competition_set', to='code_based_auth.CodeGenerator')),
-                ('competitor_code_generator', models.ForeignKey(related_name='competitor_code_competition_set', to='code_based_auth.CodeGenerator')),
+                ('administrator_code_generator', models.ForeignKey(related_name='administrator_code_competition_set',
+                                                                   to='code_based_auth.CodeGenerator',
+                                                                   on_delete=models.CASCADE)),
+                ('competitor_code_generator', models.ForeignKey(related_name='competitor_code_competition_set',
+                                                                to='code_based_auth.CodeGenerator',
+                                                                on_delete=models.CASCADE)),
             ],
             options={
             },
@@ -59,7 +63,7 @@ class Migration(migrations.Migration):
             name='CompetitionQuestionSet',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('competition', models.ForeignKey(to='bober_simple_competition.Competition')),
+                ('competition', models.ForeignKey(to='bober_simple_competition.Competition', on_delete=models.CASCADE)),
             ],
             options={
             },
@@ -72,7 +76,9 @@ class Migration(migrations.Migration):
                 ('registration_code', code_based_auth.models.CodeField(null=True, blank=True)),
                 ('vcard', models.TextField()),
                 ('created_codes', models.ManyToManyField(related_name='owner_set', null=True, to='code_based_auth.Code', blank=True)),
-                ('merged_with', models.ForeignKey(related_name='merged_set', blank=True, to=settings.AUTH_USER_MODEL, null=True)),
+                ('merged_with', models.ForeignKey(related_name='merged_set', blank=True,
+                                                  to=settings.AUTH_USER_MODEL, null=True,
+                                                  on_delete=models.CASCADE)),
                 ('user', models.OneToOneField(to=settings.AUTH_USER_MODEL)),
             ],
             options={
@@ -120,7 +126,7 @@ class Migration(migrations.Migration):
                 ('file', models.FileField(null=True, upload_to=b'resources')),
                 ('resource_type', models.CharField(max_length=255)),
                 ('data', models.BinaryField(null=True)),
-                ('question', models.ForeignKey(to='bober_simple_competition.Question')),
+                ('question', models.ForeignKey(to='bober_simple_competition.Question', on_delete=models.CASCADE)),
             ],
             options={
             },
@@ -147,7 +153,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='competitionquestionset',
             name='questionset',
-            field=models.ForeignKey(to='bober_simple_competition.QuestionSet'),
+            field=models.ForeignKey(to='bober_simple_competition.QuestionSet', on_delete=models.CASCADE),
             preserve_default=True,
         ),
         migrations.AddField(
@@ -159,25 +165,26 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='attempt',
             name='competitionquestionset',
-            field=models.ForeignKey(to='bober_simple_competition.CompetitionQuestionSet'),
+            field=models.ForeignKey(to='bober_simple_competition.CompetitionQuestionSet', on_delete=models.CASCADE),
             preserve_default=True,
         ),
         migrations.AddField(
             model_name='attempt',
             name='invalidated_by',
-            field=models.ForeignKey(related_name=b'invalidated_set', blank=True, to='bober_simple_competition.Profile', null=True),
+            field=models.ForeignKey(related_name=b'invalidated_set', blank=True, to='bober_simple_competition.Profile',
+                                    null=True, on_delete=models.CASCADE),
             preserve_default=True,
         ),
         migrations.AddField(
             model_name='attempt',
             name='user',
-            field=models.ForeignKey(to='bober_simple_competition.Profile'),
+            field=models.ForeignKey(to='bober_simple_competition.Profile', on_delete=models.CASCADE),
             preserve_default=True,
         ),
         migrations.AddField(
             model_name='answer',
             name='attempt',
-            field=models.ForeignKey(to='bober_simple_competition.Attempt'),
+            field=models.ForeignKey(to='bober_simple_competition.Attempt', on_delete=models.CASCADE),
             preserve_default=True,
         ),
     ]

@@ -26,7 +26,7 @@ class Migration(migrations.Migration):
             name='AgeGroupTask',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('age_group', models.ForeignKey(to='bober_tasks.AgeGroup')),
+                ('age_group', models.ForeignKey(to='bober_tasks.AgeGroup', on_delete=models.CASCADE)),
             ],
             options={
             },
@@ -101,7 +101,7 @@ class Migration(migrations.Migration):
                 ('age_groups', models.ManyToManyField(to='bober_tasks.AgeGroup', through='bober_tasks.AgeGroupTask')),
                 ('categories', models.ManyToManyField(to='bober_tasks.Category')),
                 ('difficulty_levels', models.ManyToManyField(to='bober_tasks.DifficultyLevel', through='bober_tasks.AgeGroupTask')),
-                ('parent', models.ForeignKey(to='bober_tasks.Task', null=True)),
+                ('parent', models.ForeignKey(to='bober_tasks.Task', null=True, on_delete=models.CASCADE)),
             ],
             options={
             },
@@ -115,13 +115,14 @@ class Migration(migrations.Migration):
                 ('body', models.TextField()),
                 ('solution', models.TextField()),
                 ('it_is_informatics', models.TextField(blank=True)),
-                ('language_locale', models.CharField(blank=True, max_length=8, null=True, choices=[(b'sl', 'Slovenian')])),
+                ('language_locale', models.CharField(blank=True, max_length=8, null=True,
+                                                     choices=[(b'sl', 'Slovenian')])),
                 ('comment', models.TextField(null=True)),
                 ('version', models.IntegerField(default=1)),
                 ('timestamp', models.DateTimeField(auto_now_add=True, null=True)),
-                ('correct_answer', models.ForeignKey(to='bober_tasks.Answer', null=True)),
-                ('task', models.ForeignKey(to='bober_tasks.Task')),
-                ('translator', models.ForeignKey(to=settings.AUTH_USER_MODEL, null=True)),
+                ('correct_answer', models.ForeignKey(to='bober_tasks.Answer', null=True, on_delete=models.CASCADE)),
+                ('task', models.ForeignKey(to='bober_tasks.Task', on_delete=models.CASCADE)),
+                ('translator', models.ForeignKey(to=settings.AUTH_USER_MODEL, null=True, on_delete=models.CASCADE)),
             ],
             options={
             },
@@ -130,19 +131,19 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='resources',
             name='task',
-            field=models.ForeignKey(to='bober_tasks.Task'),
+            field=models.ForeignKey(to='bober_tasks.Task', on_delete=models.CASCADE),
             preserve_default=True,
         ),
         migrations.AddField(
             model_name='remark',
             name='task_translation',
-            field=models.ForeignKey(to='bober_tasks.TaskTranslation'),
+            field=models.ForeignKey(to='bober_tasks.TaskTranslation', on_delete=models.CASCADE),
             preserve_default=True,
         ),
         migrations.AddField(
             model_name='remark',
             name='user',
-            field=models.ForeignKey(to=settings.AUTH_USER_MODEL),
+            field=models.ForeignKey(to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE),
             preserve_default=True,
         ),
         migrations.AddField(
@@ -154,19 +155,19 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='answer',
             name='task_translation',
-            field=models.ForeignKey(to='bober_tasks.TaskTranslation'),
+            field=models.ForeignKey(to='bober_tasks.TaskTranslation', on_delete=models.CASCADE),
             preserve_default=True,
         ),
         migrations.AddField(
             model_name='agegrouptask',
             name='difficulty_level',
-            field=models.ForeignKey(to='bober_tasks.DifficultyLevel'),
+            field=models.ForeignKey(to='bober_tasks.DifficultyLevel', on_delete=models.CASCADE),
             preserve_default=True,
         ),
         migrations.AddField(
             model_name='agegrouptask',
             name='task',
-            field=models.ForeignKey(to='bober_tasks.Task'),
+            field=models.ForeignKey(to='bober_tasks.Task', on_delete=models.CASCADE),
             preserve_default=True,
         ),
         migrations.AddField(

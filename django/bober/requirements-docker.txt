@@ -11,3 +11,9 @@ django-extra-views  # bober_simple_competition.forms
 django-crispy-forms  # Gregor attempt to make forms nicer
 python-bond  # bober_simple_competition.graders 
 beautifulsoup4  # bober_simple_compotition.models 
+django-braces  # bober_paper_submissions/views.py
+openpyxl  # bober_si/views.py
+cairosvg  # bober_si/award_gen.py
+django-password-reset  # bober/urls.py
+django-impersonate  # bober/urls.py
+

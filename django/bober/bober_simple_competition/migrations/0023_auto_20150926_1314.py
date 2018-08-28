@@ -20,7 +20,9 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='profile',
             name='merged_with',
-            field=models.ForeignKey(related_name='former_profile_set', blank=True, to='bober_simple_competition.Profile', null=True),
+            field=models.ForeignKey(related_name='former_profile_set', blank=True,
+                                    to='bober_simple_competition.Profile',
+                                    null=True, on_delete=models.CASCADE),
             preserve_default=True,
         ),
         migrations.AlterField(

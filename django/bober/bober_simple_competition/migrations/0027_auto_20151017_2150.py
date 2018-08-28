@@ -36,7 +36,8 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='shortenedcode',
             name='competition_question_set',
-            field=models.ForeignKey(default=1, to='bober_simple_competition.CompetitionQuestionSet'),
+            field=models.ForeignKey(default=1, to='bober_simple_competition.CompetitionQuestionSet',
+                                    on_delete=models.CASCADE),
             preserve_default=False,
         ),
     ]

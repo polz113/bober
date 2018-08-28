@@ -28,7 +28,11 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('ordering', models.PositiveIntegerField()),
                 ('name', models.CharField(max_length=64)),
-                ('hash_format', models.CharField(max_length=2, choices=[(b'h', b'hex default'), (b'i', b'decimal default'), (b'w', b'words default'), (b'r', b'raw no hash'), (b'a', b'match any')])),
+                ('hash_format', models.CharField(max_length=2, choices=[(b'h', b'hex default'),
+                                                                        (b'i', b'decimal default'),
+                                                                        (b'w', b'words default'),
+                                                                        (b'r', b'raw no hash'),
+                                                                        (b'a', b'match any')])),
                 ('hash_bits', models.PositiveIntegerField()),
                 ('hash_algorithm', models.CharField(default=b'default', max_length=16)),
                 ('max_parts', models.IntegerField(default=1)),
@@ -55,7 +59,7 @@ class Migration(migrations.Migration):
                 ('unique_code_component', models.CharField(max_length=256, null=True, blank=True)),
                 ('salt', models.CharField(max_length=256)),
                 ('codes', models.ManyToManyField(to='code_based_auth.Code')),
-                ('format', models.ForeignKey(to='code_based_auth.CodeFormat')),
+                ('format', models.ForeignKey(to='code_based_auth.CodeFormat', on_delete=models.CASCADE)),
             ],
             options={
             },
@@ -68,7 +72,8 @@ class Migration(migrations.Migration):
                 ('ordering', models.IntegerField(default=0)),
                 ('name', models.CharField(max_length=64)),
                 ('value', models.CharField(max_length=256)),
-                ('code', models.ForeignKey(related_name=b'parts', to='code_based_auth.Code')),
+                ('code', models.ForeignKey(related_name=b'parts', to='code_based_auth.Code',
+                                           on_delete=models.CASCADE)),
             ],
             options={
             },
@@ -77,13 +82,14 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='codecomponent',
             name='code_format',
-            field=models.ForeignKey(related_name=b'components', to='code_based_auth.CodeFormat'),
+            field=models.ForeignKey(related_name=b'components', to='code_based_auth.CodeFormat',
+                                    on_delete=models.CASCADE),
             preserve_default=True,
         ),
         migrations.AddField(
             model_name='code',
             name='format',
-            field=models.ForeignKey(to='code_based_auth.CodeFormat'),
+            field=models.ForeignKey(to='code_based_auth.CodeFormat', on_delete=models.CASCADE),
             preserve_default=True,
         ),
     ]

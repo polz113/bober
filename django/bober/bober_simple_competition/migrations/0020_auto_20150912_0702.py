@@ -3,11 +3,13 @@ from __future__ import unicode_literals
 
 from django.db import models, migrations
 
+
 def merged_user_to_profile(apps, schema_editor):
     Profile = apps.get_model('bober_simple_competition', 'Profile')
     for p in Profile.objects.all():
         if p.merged_with is not None:
             p.merged_with_profile = p.merged_with.profile
+
 
 class Migration(migrations.Migration):
 
@@ -19,7 +21,9 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='profile',
             name='merged_with_profile',
-            field=models.ForeignKey(related_name='merged_profile_set', blank=True, to='bober_simple_competition.Profile', null=True),
+            field=models.ForeignKey(related_name='merged_profile_set', blank=True,
+                                    to='bober_simple_competition.Profile', null=True,
+                                    on_delete=models.CASCADE),
             preserve_default=True,
         ),
         migrations.RunPython(merged_user_to_profile),

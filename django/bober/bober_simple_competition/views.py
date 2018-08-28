@@ -16,7 +16,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth import authenticate, login
 from django.core.exceptions import PermissionDenied
 from django.utils import timezone
-from django.core.urlresolvers import reverse  # use this for django 1.8
+from django.urls import reverse
 from django.views.generic import ListView, DetailView, CreateView, DeleteView,\
     UpdateView, FormView
 from django.views.decorators.csrf import ensure_csrf_cookie

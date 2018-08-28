@@ -16,9 +16,9 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('score', models.FloatField(null=True)),
-                ('answer', models.ForeignKey(to='bober_simple_competition.Answer')),
-                ('attempt', models.ForeignKey(to='bober_simple_competition.Attempt')),
-                ('question', models.ForeignKey(to='bober_simple_competition.Question')),
+                ('answer', models.ForeignKey(to='bober_simple_competition.Answer', on_delete=models.CASCADE)),
+                ('attempt', models.ForeignKey(to='bober_simple_competition.Attempt', on_delete=models.CASCADE)),
+                ('question', models.ForeignKey(to='bober_simple_competition.Question', on_delete=models.CASCADE)),
             ],
             options={
             },

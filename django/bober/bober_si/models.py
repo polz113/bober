@@ -271,7 +271,7 @@ class TeacherRecognition(models.Model):
 
 
 class AwardFile(models.Model):
-    file = models.FileField(upload_to='/tmp')
+    file = models.FileField()
     recipients = models.ManyToManyField(Profile, blank=True)
 
 

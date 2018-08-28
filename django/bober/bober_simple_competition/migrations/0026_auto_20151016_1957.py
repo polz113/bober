@@ -17,7 +17,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('short', models.CharField(max_length=256)),
-                ('code', models.ForeignKey(to='code_based_auth.Code')),
+                ('code', models.ForeignKey(to='code_based_auth.Code', on_delete=models.CASCADE)),
             ],
             options={
             },

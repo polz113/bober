@@ -17,7 +17,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('effect', models.CharField(max_length=64, choices=[(b'let_manage', 'Allow the creator to manage the profile of anyone using this code'), (b'let_invalidate', 'Allow the creator to invalidate any attempt using this code'), (b'let_manage_recursive', 'Allow the creator and their managers to manage the profile of anyone using this code')])),
-                ('code', models.ForeignKey(to='code_based_auth.Code')),
+                ('code', models.ForeignKey(to='code_based_auth.Code', on_delete=models.CASCADE)),
             ],
             options={
             },
@@ -32,7 +32,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='shortenedcode',
             name='code',
-            field=models.ForeignKey(to='code_based_auth.Code', unique=True),
+            field=models.ForeignKey(to='code_based_auth.Code', unique=True, on_delete=models.CASCADE),
             preserve_default=True,
         ),
         migrations.AlterUniqueTogether(

@@ -35,6 +35,8 @@ RUN apt-get update \
   libsasl2-dev \
   libldap2-dev \
   unixodbc-dev \
+  python3-cairo \
+  python3-lxml \
    && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /home/bober

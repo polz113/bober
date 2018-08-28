@@ -20,7 +20,8 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='codepart',
             name='code',
-            field=models.ForeignKey(related_name='code_parts', to='code_based_auth.Code'),
+            field=models.ForeignKey(related_name='code_parts', to='code_based_auth.Code',
+                                    on_delete=models.CASCADE),
             preserve_default=True,
         ),
     ]

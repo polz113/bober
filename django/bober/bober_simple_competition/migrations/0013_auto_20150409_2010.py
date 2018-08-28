@@ -18,7 +18,8 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('reason', models.TextField(blank=True)),
-                ('by', models.ForeignKey(to='bober_simple_competition.Profile')),
+                ('by', models.ForeignKey(to='bober_simple_competition.Profile',
+                                         on_delete=models.CASCADE)),
             ],
             options={
             },
@@ -27,7 +28,8 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='profile',
             name='first_competition',
-            field=models.ForeignKey(blank=True, to='bober_simple_competition.Competition', null=True),
+            field=models.ForeignKey(blank=True, to='bober_simple_competition.Competition',
+                                    null=True, on_delete=models.CASCADE),
             preserve_default=True,
         ),
         migrations.AddField(
@@ -39,7 +41,8 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='attempt',
             name='invalidated_by',
-            field=models.ForeignKey(blank=True, to='bober_simple_competition.AttemptInvalidation', null=True),
+            field=models.ForeignKey(blank=True, to='bober_simple_competition.AttemptInvalidation',
+                                    null=True, on_delete=models.CASCADE),
             preserve_default=True,
         ),
     ]

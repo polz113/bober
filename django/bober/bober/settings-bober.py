@@ -54,6 +54,7 @@ INSTALLED_APPS = (
     'mce_filebrowser',
     'popup_modelviews',
     'crispy_forms',
+    'impersonate',
 )
 
 CRISPY_TEMPLATE_PACK = 'bootstrap3'
@@ -66,6 +67,8 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'social.apps.django_app.middleware.SocialAuthExceptionMiddleware',
+    'impersonate.middleware.ImpersonateMiddleware',
     'bober_simple_competition.middleware.ProfileMiddleware',
 )
 

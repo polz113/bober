@@ -15,7 +15,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='competition',
             name='guest_admin_code',
-            field=models.ForeignKey(to='code_based_auth.Code', null=True),
+            field=models.ForeignKey(to='code_based_auth.Code', null=True, on_delete=models.CASCADE),
             preserve_default=True,
         ),
     ]

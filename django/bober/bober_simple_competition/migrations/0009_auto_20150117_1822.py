@@ -14,7 +14,8 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='attempt',
             name='user',
-            field=models.ForeignKey(blank=True, to='bober_simple_competition.Profile', null=True),
+            field=models.ForeignKey(blank=True, to='bober_simple_competition.Profile',
+                                    null=True, on_delete=models.CASCADE),
             preserve_default=True,
         ),
     ]

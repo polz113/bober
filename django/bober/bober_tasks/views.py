@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.shortcuts import render_to_response,\
     redirect, render, get_object_or_404
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.template.loader import render_to_string

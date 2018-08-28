@@ -32,7 +32,7 @@ urlpatterns = [
     url('^accounts/', include('django.contrib.auth.urls')),
     # url('', include('social.apps.django_app.urls', namespace='social')),
     url('', include('password_reset.urls')),
-    url(r'^admin/', include(admin.site.urls)),
+    url(r'^admin/', admin.site.urls),
     url(r'^impersonate/', include('impersonate.urls')),
     url(r'^i18n/', include('django.conf.urls.i18n')),
     # url(r'^mce_filebrowser/', include('mce_filebrowser.urls')),
