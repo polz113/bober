@@ -13,9 +13,9 @@ from bober_si.models import School, SCHOOL_CATEGORIES
 class JuniorMentorship(models.Model):
     def __str__(self):
         return u"{}:{} - {}".format(self.teacher, self.school, self.competition.slug)
-    competition = models.ForeignKey(Competition)
-    school = models.ForeignKey(School)
-    teacher = models.ForeignKey(Profile)
+    competition = models.ForeignKey(Competition, on_delete=models.CASCADE)
+    school = models.ForeignKey(School, on_delete=models.CASCADE)
+    teacher = models.ForeignKey(Profile, on_delete=models.CASCADE)
 
 
 def parse_competitor_data(data):
@@ -54,9 +54,9 @@ class JuniorYear(models.Model):
     class Meta:
         ordering = ['name']
 
-    mentorship = models.ForeignKey(JuniorMentorship)
+    mentorship = models.ForeignKey(JuniorMentorship, on_delete=models.CASCADE)
     access_code = CodeField()
-    questionset = models.ForeignKey(CompetitionQuestionSet, null=True)
+    questionset = models.ForeignKey(CompetitionQuestionSet, null=True, on_delete=models.CASCADE)
     name = models.CharField(max_length=16)
     raw_data = models.TextField(blank=True)
     remarks = models.TextField(blank=True)
@@ -149,9 +149,9 @@ class JuniorYear(models.Model):
 class JuniorDefaultYear(models.Model):
     def __str__(self):
         return u"{}: {}".format(self.competition.slug, self.questionset.name)
-    competition = models.ForeignKey(Competition)
+    competition = models.ForeignKey(Competition, on_delete=models.CASCADE)
     school_category = models.CharField(choices=SCHOOL_CATEGORIES, max_length=24)
-    questionset = models.ForeignKey(CompetitionQuestionSet)
+    questionset = models.ForeignKey(CompetitionQuestionSet, on_delete=models.CASCADE)
     name = models.CharField(max_length=16)
     value = models.TextField(blank=True, null=True)
 
@@ -174,8 +174,7 @@ class JuniorDefaultYear(models.Model):
 class JuniorAttempt(models.Model):
     def __str__(self):
         return u"{}:{} {}".format(self.attempt.competitor, self.year_class, self.remarks)
-    year_class = models.ForeignKey(JuniorYear)
-    # competitor = models.ForeignKey(Competitor)
+    year_class = models.ForeignKey(JuniorYear, on_delete=models.CASCADE)
     attempt = models.OneToOneField(Attempt, null=True)
     line = models.IntegerField(default=-1)
     remarks = models.TextField(blank=True, null=True)

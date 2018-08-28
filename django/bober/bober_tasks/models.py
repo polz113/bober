@@ -26,9 +26,9 @@ class AgeGroup(models.Model):
 
 
 class AgeGroupTask(models.Model):
-    task = models.ForeignKey('Task')
-    age_group = models.ForeignKey('AgeGroup')
-    difficulty_level = models.ForeignKey('DifficultyLevel')
+    task = models.ForeignKey('Task', on_delete=models.CASCADE)
+    age_group = models.ForeignKey('AgeGroup', on_delete=models.CASCADE)
+    difficulty_level = models.ForeignKey('DifficultyLevel', on_delete=models.CASCADE)
 
 
 class Answer(models.Model):
@@ -41,7 +41,7 @@ class Answer(models.Model):
             self.label)
         return self.international_id
 
-    task_translation = models.ForeignKey('TaskTranslation')
+    task_translation = models.ForeignKey('TaskTranslation', on_delete=models.CASCADE)
     value = models.TextField(null=True)
     label = models.CharField(max_length=8, blank=True, default='')
     correct = models.BooleanField(default=False)
@@ -62,8 +62,8 @@ class DifficultyLevel(models.Model):
 class Remark(models.Model):
     comment = models.TextField()
     timestamp = models.DateTimeField(auto_now_add=True)
-    task_translation = models.ForeignKey('TaskTranslation')
-    user = models.ForeignKey(User)
+    task_translation = models.ForeignKey('TaskTranslation', on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
 
 
 class Resources(models.Model):
@@ -74,7 +74,7 @@ class Resources(models.Model):
 
     filename = models.CharField(max_length=90)
     type = models.CharField(max_length=40)
-    task = models.ForeignKey('Task')
+    task = models.ForeignKey('Task', on_delete=models.CASCADE)
     language = models.CharField(max_length=8, choices=settings.LANGUAGES)
 
 
@@ -85,7 +85,7 @@ class Task(models.Model):
     international_id = models.CharField(max_length=16, unique=True)
     interaction_type = models.CharField(max_length=45,
                                         default='non-interactive')
-    parent = models.ForeignKey("self", null=True)
+    parent = models.ForeignKey("self", null=True, on_delete=models.CASCADE)
     country = models.CharField(max_length=5)
     categories = models.ManyToManyField("Category")
     age_groups = models.ManyToManyField("AgeGroup", through="AgeGroupTask")
@@ -121,8 +121,8 @@ class TaskTranslation(models.Model):
     it_is_informatics = models.TextField(blank=True)
     language_locale = models.CharField(max_length=8, null=True, blank=True,
                                        choices=settings.LANGUAGES)
-    task = models.ForeignKey('Task')
-    author = models.ForeignKey(User, null=True)
+    task = models.ForeignKey('Task', on_delete=models.CASCADE)
+    author = models.ForeignKey(User, null=True, on_delete=models.CASCADE)
     comment = models.TextField(null=True)
     version = models.IntegerField(default=1)
     timestamp = models.DateTimeField(auto_now_add=True, null=True)

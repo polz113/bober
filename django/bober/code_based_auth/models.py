@@ -337,7 +337,8 @@ class CodeFormat(models.Model):
 class CodePart(models.Model):
     def __str__(self):
         return str(self.ordering) + self.value
-    code = models.ForeignKey('Code', related_name='code_parts')
+    code = models.ForeignKey('Code', related_name='code_parts',
+                             on_delete=models.CASCADE)
     ordering = models.IntegerField(default=0)
     name = models.CharField(max_length=64)
     value = models.CharField(max_length=256)
@@ -349,7 +350,7 @@ class Code(models.Model):
         return self.value
     value = CodeField(db_index=True)
     salt = models.CharField(max_length=256)
-    format = models.ForeignKey('CodeFormat')
+    format = models.ForeignKey('CodeFormat', on_delete=models.CASCADE)
 
     @property
     def parts(self):
@@ -386,7 +387,7 @@ class CodeGenerator(models.Model):
 
     unique_code_component = models.CharField(null=True, blank=True,
                                              max_length=256)
-    format = models.ForeignKey('CodeFormat')
+    format = models.ForeignKey('CodeFormat', on_delete=models.CASCADE)
     salt = models.CharField(max_length=256)
     codes = models.ManyToManyField('Code', blank=True)
 

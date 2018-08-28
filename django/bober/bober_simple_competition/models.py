@@ -12,11 +12,11 @@ from django.db.models import FileField, BooleanField, FloatField, Model
 from django.db.models import DateField, DateTimeField, DurationField
 from django.db.models import ForeignKey, ManyToManyField, OneToOneField
 from django.db.models import signals, F, ExpressionWrapper, Manager
-from django.db.models import BinaryField
+from django.db.models import BinaryField, CASCADE
 from django.contrib.auth.models import User
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.utils.text import slugify
 from django.utils.translation import ugettext_lazy as _
 from django.utils import timezone
@@ -133,12 +133,14 @@ class Competition(Model):
     administrator_code_generator = ForeignKey(
         CodeGenerator,
         related_name='administrator_code_competition_set',
-        verbose_name=_("administrator code generator")
+        verbose_name=_("administrator code generator"),
+        on_delete=CASCADE
     )
     competitor_code_generator = ForeignKey(
         CodeGenerator,
         related_name='competitor_code_competition_set',
-        verbose_name=_("competitor code generator"))
+        verbose_name=_("competitor code generator"),
+        on_delete=CASCADE)
     questionsets = ManyToManyField(
         'QuestionSet',
         through='CompetitionQuestionSet',
@@ -323,9 +325,10 @@ class CompetitionQuestionSet(Model):
 
     name = CharField(max_length=256, null=True, blank=True,
                      verbose_name=("Name"))
-    questionset = ForeignKey('QuestionSet', verbose_name=_("Questionset"))
-    competition = ForeignKey('Competition')
-    guest_code = ForeignKey(Code, null=True, blank=True)
+    questionset = ForeignKey('QuestionSet', verbose_name=_("Questionset"),
+                             on_delete=CASCADE)
+    competition = ForeignKey('Competition', on_delete=CASCADE)
+    guest_code = ForeignKey(Code, null=True, blank=True, on_delete=CASCADE)
 
     def slug_str(self):
         return str(self.id) + '.' + self.questionset.slug
@@ -388,7 +391,7 @@ class CompetitionQuestionSet(Model):
 
 
 class CodeEffect(Model):
-    code = ForeignKey(Code)
+    code = ForeignKey(Code, on_delete=CASCADE)
     effect = CharField(max_length=64, choices=CODE_EFFECTS)
 
     def apply(self, users=None):
@@ -525,7 +528,7 @@ class ResourceCache(Model):
 class Resource(Model):
     def __str__(self):
         return u"{}: {}".format(self.relative_url, self.file)
-    question = ForeignKey('Question')
+    question = ForeignKey('Question', on_delete=CASCADE)
     relative_url = CharField(max_length=255)
     file = FileField(null=True, upload_to='resources')
     resource_type = CharField(max_length=255)
@@ -814,7 +817,7 @@ class Answer(Model):
             str(self.randomized_question_id),
             str(self.value))
 
-    attempt = ForeignKey('Attempt')
+    attempt = ForeignKey('Attempt', on_delete=CASCADE)
     randomized_question_id = IntegerField()
     timestamp = DateTimeField(auto_now_add=True)
     value = TextField(blank=True, null=True)
@@ -837,30 +840,30 @@ class Answer(Model):
 
 
 class AttemptInvalidation(Model):
-    by = ForeignKey('Profile')
+    by = ForeignKey('Profile', on_delete=CASCADE)
     reason = TextField(blank=True)
 
 
 class AttemptConfirmation(Model):
     def __str__(self):
         return u"{}: {}".format(self.by, self.attempt)
-    by = ForeignKey('Profile')
-    attempt = ForeignKey('Attempt')
+    by = ForeignKey('Profile', on_delete=CASCADE)
+    attempt = ForeignKey('Attempt', on_delete=CASCADE)
 
 
 class Competitor(Model):
     def __str__(self):
         return u"{} {} ({})".format(self.first_name, self.last_name,
                                     self.profile or '?')
-    profile = ForeignKey('Profile', null=True, blank=True)
+    profile = ForeignKey('Profile', null=True, blank=True, on_delete=CASCADE)
     first_name = CharField(max_length=128, verbose_name=_("First Name"))
     last_name = CharField(max_length=128, verbose_name=_("Last Name"))
 
 
 class GradedAnswer(Model):
-    attempt = ForeignKey('Attempt')
-    question = ForeignKey('Question')
-    answer = ForeignKey('Answer')
+    attempt = ForeignKey('Attempt', on_delete=CASCADE)
+    question = ForeignKey('Question', on_delete=CASCADE)
+    answer = ForeignKey('Answer', on_delete=CASCADE)
     score = FloatField(null=True)
 
 
@@ -884,10 +887,9 @@ class Attempt(Model):
             self.start, self.finish)
 
     access_code = CodeField()
-    competitionquestionset = ForeignKey('CompetitionQuestionSet')
-    # user = ForeignKey('Profile', null=True, blank=True)
-    competitor = ForeignKey('Competitor', null=True, blank=True)
-    invalidated_by = ForeignKey('AttemptInvalidation', null=True, blank=True)
+    competitionquestionset = ForeignKey('CompetitionQuestionSet', on_delete=CASCADE)
+    competitor = ForeignKey('Competitor', null=True, blank=True, on_delete=CASCADE)
+    invalidated_by = ForeignKey('AttemptInvalidation', null=True, blank=True, on_delete=CASCADE)
     confirmed_by = ManyToManyField('Profile', through='AttemptConfirmation',
                                    blank=True)
     random_seed = IntegerField()
@@ -1011,7 +1013,7 @@ class Profile(Model):
                                             related_name='creator_set')
     questions = ManyToManyField(Question, blank=True)
     merged_with = ForeignKey('Profile', null=True, blank=True,
-                             related_name='former_profile_set')
+                             related_name='former_profile_set', on_delete=CASCADE)
     update_used_codes_timestamp = DateTimeField(null=True, blank=True)
     update_managers_timestamp = DateTimeField(null=True, blank=True)
     vcard = TextField(blank=True)
