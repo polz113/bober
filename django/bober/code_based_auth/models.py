@@ -193,7 +193,8 @@ class CodeComponent(models.Model):
             self.name, self.hash_format, self.hash_algorithm,
             self.hash_len, part_desc)
 
-    code_format = models.ForeignKey('CodeFormat', related_name='components')
+    code_format = models.ForeignKey('CodeFormat', related_name='components',
+                                    on_delete=models.CASCADE)
     ordering = models.PositiveIntegerField()
     name = models.CharField(max_length=64)
     hash_format = models.CharField(
