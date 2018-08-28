@@ -42,7 +42,7 @@ RUN apt-get update \
 WORKDIR /home/bober
 
 # Pull tomo source into current working directory
-RUN git clone -b ${BOBER_GIT_BRANCH} ${BOBER_GIT_LOCATION}
+RUN git clone --depth 1 -b ${BOBER_GIT_BRANCH} ${BOBER_GIT_LOCATION}
 
 # Install dependencies
 RUN pip3 install -r bober/django/bober/requirements-docker.txt

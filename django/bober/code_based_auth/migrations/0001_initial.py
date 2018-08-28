@@ -72,7 +72,7 @@ class Migration(migrations.Migration):
                 ('ordering', models.IntegerField(default=0)),
                 ('name', models.CharField(max_length=64)),
                 ('value', models.CharField(max_length=256)),
-                ('code', models.ForeignKey(related_name=b'parts', to='code_based_auth.Code',
+                ('code', models.ForeignKey(related_name='parts', to='code_based_auth.Code',
                                            on_delete=models.CASCADE)),
             ],
             options={
@@ -82,7 +82,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='codecomponent',
             name='code_format',
-            field=models.ForeignKey(related_name=b'components', to='code_based_auth.CodeFormat',
+            field=models.ForeignKey(related_name='components', to='code_based_auth.CodeFormat',
                                     on_delete=models.CASCADE),
             preserve_default=True,
         ),

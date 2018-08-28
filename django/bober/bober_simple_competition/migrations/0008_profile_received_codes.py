@@ -15,7 +15,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='profile',
             name='received_codes',
-            field=models.ManyToManyField(related_name=b'user_set', null=True, to='code_based_auth.Code', blank=True),
+            field=models.ManyToManyField(related_name='user_set', null=True, to='code_based_auth.Code', blank=True),
             preserve_default=True,
         ),
     ]

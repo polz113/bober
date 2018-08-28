@@ -171,7 +171,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='attempt',
             name='invalidated_by',
-            field=models.ForeignKey(related_name=b'invalidated_set', blank=True, to='bober_simple_competition.Profile',
+            field=models.ForeignKey(related_name='invalidated_set', blank=True, to='bober_simple_competition.Profile',
                                     null=True, on_delete=models.CASCADE),
             preserve_default=True,
         ),
