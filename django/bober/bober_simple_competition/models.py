@@ -56,7 +56,7 @@ def ensure_dir_exists(fname):
 
 GENDERS = (
     ('m', 'Male'),
-    ('female', 'Female'),
+    ('f', 'Female'),
     ('na', 'Not applicable')
 )
 

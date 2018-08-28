@@ -68,6 +68,16 @@ class CompetitionQuestionSetAdmin(DefaultAdmin):
     model = CompetitionQuestionSet
 
 
+class TeacherRecognitionAdmin(DefaultAdmin):
+    search_fields = [
+        "teacher__user__username",
+        "teacher__user__first_name",
+        "teacher__user__last_name",
+        "text",
+        "serial",
+    ]
+
+
 # Register your models here.
 admin.site.register(School, SchoolAdmin)
 admin.site.register(Award, DefaultAdmin)
@@ -76,4 +86,4 @@ admin.site.register(CompetitionQuestionSet, CompetitionQuestionSetAdmin)
 admin.site.register(SchoolTeacherCode, SchoolTeacherCodeAdmin)
 admin.site.register(SchoolCompetition, CompetitionAdmin)
 admin.site.register(CompetitionRecognition, DefaultAdmin)
-admin.site.register(TeacherRecognition, DefaultAdmin)
+admin.site.register(TeacherRecognition, TeacherRecognitionAdmin)

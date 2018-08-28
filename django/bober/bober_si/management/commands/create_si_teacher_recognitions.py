@@ -148,6 +148,8 @@ def _competition_time_string(competition):
     end = competition.end.date()
     months = [None, 'januarjem', 'februarjem', 'marcem', 'aprilom', 'majem', 'junijem',
               'julijem', 'avgustom', 'septembrom', 'oktobrom', 'novembrom', 'decembrom']
+    months_n = [None, 'januarja', 'februarja', 'marca', 'aprila', 'maja', 'junija',
+              'julija', 'avgusta', 'septembra', 'oktobra', 'novembra', 'decembra']
     if start.year != end.year:
         res = "med {}. {} {} in {}. {} {}".format(
             start.day, months[start.month], start.year,
@@ -159,7 +161,7 @@ def _competition_time_string(competition):
         res = "med {}. in {}. {} {}".format(start.day,
             end.day, months[end.month], end.year)
     else:
-        res = "{}. {} {}".format(end.day, months[end.month], end.year)
+        res = "{}. {} {}".format(end.day, months_n[end.month], end.year)
     return res
 
 
@@ -264,7 +266,7 @@ class Command(BaseCommand):
                 code_parts__name='admin_privileges', 
                 code_parts__value='view_all_admin_codes'
             )[0].creator_set.all()[0]
-        for teacher in Profile.objects.filter(schoolteachercode__competition_questionset__competition = competition).distinct():
+        for teacher in Profile.objects.filter(schoolteachercode__competition_questionset__competition = competition, user_id=2341).distinct():
             print("----------------------------")
             print(teacher, teacher.user.email)
             print("----------------------------")
@@ -277,19 +279,21 @@ class Command(BaseCommand):
                 attempts = attempts.annotate(
                     n_confirmations = Count('confirmed_by')
                 ).filter(n_confirmations = 1)
-            if attempts.count():
+            if attempts.count() > 0:
                 s = _compose_text(competition, teacher, attempts, template)
                 name_str = u"{} {}".format(
                     teacher.user.first_name, teacher.user.last_name)
                 if teacher.date_of_birth is not None:
                     name_str += u", roj. {},".format(
                         teacher.date_of_birth.strftime('%d. %m. %Y'))
+                # the serial under here is WRONG
                 teacher_recognition, created = TeacherRecognition.objects.get_or_create(
                     template = default_recognition,
                     teacher = teacher,
                     revoked_by = None,
+                    recipient = name_str,
                     defaults = {
-                        "recipient": name_str,
+                        # "recipient": name_str,
                         "text": s,
                         "serial": u"{}{}-0".format(
                             default_recognition.serial_prefix,
