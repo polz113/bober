@@ -126,6 +126,9 @@ class Competition(Model):
     title = CharField(max_length=256, null=True, blank=True,
                       verbose_name=_("title"))
     promoted = BooleanField(default=False, verbose_name=_("promoted"))
+    public = BooleanField(default=True, verbose_name=_("public competition"),
+                          help_text=_("Public competitions are listed on the competiton list page")
+                          )
     slug = SlugField(unique=True, verbose_name=_("slug"))
     administrator_code_generator = ForeignKey(
         CodeGenerator,
