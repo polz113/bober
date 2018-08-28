@@ -285,7 +285,7 @@ def index(request):
 
 class CompetitionList(ListView):
     model = Competition
-    queryset = Competition.objects.all().order_by('-promoted')
+    queryset = Competition.objects.filter(public=True).order_by('-promoted')
 
 
 class CompetitionDetail(DetailView):
