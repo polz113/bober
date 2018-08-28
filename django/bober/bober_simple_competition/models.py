@@ -995,7 +995,7 @@ class Profile(Model):
     def get_absolute_url(self):
         return reverse('profile_detail', kwargs={'pk': str(self.pk)})
 
-    user = OneToOneField(User)
+    user = OneToOneField(User, on_delete=CASCADE)
     feature_level = IntegerField(choices=FEATURE_LEVELS, default=1)
     date_of_birth = DateField(
         null=True, blank=True,

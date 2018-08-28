@@ -2,10 +2,12 @@ Django
 django-autocomplete-light
 django-filter
 django-taggit
-python-social-auth
+python-social-auth  # Google login
+social-auth-app-django  # Django integration for python-social-auth
 django-tables2
 django-tinymce
 django-tinymce-filebrowser
+django-extra-views  # bober_simple_competition.forms
 django-crispy-forms  # Gregor attempt to make forms nicer
 python-bond  # bober_simple_competition.graders 
 beautifulsoup4  # bober_simple_compotition.models 
