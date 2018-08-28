@@ -1,50 +1,36 @@
-#!/usr/bin/python
-# -*- coding: utf-8 -*-
 from django.shortcuts import render, redirect
-from django.core.urlresolvers import reverse, reverse_lazy
+from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
-from django.conf import settings
-from extra_views import CreateWithInlinesView, UpdateWithInlinesView, InlineFormSet
-from braces.views import LoginRequiredMixin
-from django.http import HttpResponse
-from bober_paper_submissions.forms import JuniorYearForm, JuniorMentorshipForm, JuniorYearInline
-from bober_si.models import School, SchoolTeacherCode, SchoolCompetition
-from bober_paper_submissions.models import JuniorYear, JuniorMentorship, Competition, JuniorAttempt
-import bober_paper_submissions.models
-from bober_simple_competition.views import safe_media_redirect
-from bober_si.views import AWARD_TEMPLATE_DIR
-from bober_si.award_gen import generate_award_pdf
-import os
 
-# Create your views here.
+from extra_views import UpdateWithInlinesView
+from braces.views import LoginRequiredMixin
+
+from bober_paper_submissions.forms import JuniorMentorshipForm, JuniorYearInline
+from bober_si.models import SchoolTeacherCode
+from bober_paper_submissions.models import JuniorMentorship, Competition
+
 
 @login_required
 def mentorship_list(request, slug):
     profile = request.profile
     competition = Competition.objects.get(slug=slug)
-    #mentorship_list = JuniorMentorship.objects.filter(
-    #    competition=competition, teacher = profile)
     mentorship_list = list()
     for sc in SchoolTeacherCode.objects.filter(
-            teacher = profile,
-            code__codegenerator = competition.competitor_code_generator,
-        ):
+            teacher=profile, code__codegenerator=competition.competitor_code_generator):
         for dy in sc.competition_questionset.juniordefaultyear_set.all():
             dy.create_year(sc)
     mentorship_list = JuniorMentorship.objects.filter(
-        competition = competition, teacher = profile)
-        
+        competition=competition, teacher=profile)
     if len(mentorship_list) == 1:
-        return redirect('junior_results', slug=slug, pk = mentorship_list[0].id)
-    #seznam = bober_competition.models.SchoolMentor.objects.all()
+        return redirect('junior_results', slug=slug, pk=mentorship_list[0].id)
     return render(request, "bober_paper_submissions/school_mentor.html",
-        {'object_list': mentorship_list, 'slug':slug})
+                  {'object_list': mentorship_list, 'slug': slug})
 
 
 class JuniorResults(UpdateWithInlinesView, LoginRequiredMixin):
     model = JuniorMentorship
     form_class = JuniorMentorshipForm
-    inlines = [JuniorYearInline,]
+    inlines = [JuniorYearInline]
     template_name = "bober_paper_submissions/junior_results.html"
 
     def dispatch(self, *args, **kwargs):
@@ -60,4 +46,3 @@ class JuniorResults(UpdateWithInlinesView, LoginRequiredMixin):
 
     def get_success_url(self):
         return reverse('teacher_overview', kwargs={'slug': self.competition_slug})
-

@@ -59,3 +59,4 @@ splinter==0.7.3
 traitlets==4.3.0
 wcwidth==0.1.7
 django-crispy-forms
+python-bond # bober_simple_competition.graders.py 
