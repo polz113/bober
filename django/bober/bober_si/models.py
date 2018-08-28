@@ -168,11 +168,11 @@ class SchoolTeacherCode(models.Model):
     def __str__(self):
         return u"{} {}:{}".format(self.school, self.teacher, self.code)
 
-    school = models.ForeignKey(School)
-    teacher = models.ForeignKey(Profile)
+    school = models.ForeignKey(School, on_delete=models.CASCADE)
+    teacher = models.ForeignKey(Profile, on_delete=models.CASCADE)
     competition_questionset = models.ForeignKey(
-        CompetitionQuestionSet, null=True)
-    code = models.ForeignKey(Code)
+        CompetitionQuestionSet, null=True, on_delete=models.CASCADE)
+    code = models.ForeignKey(Code, on_delete=models.CASCADE)
 
     def attempts(self, confirmed=True):
         a = Attempt.objects.filter(
@@ -208,7 +208,7 @@ class SchoolCategoryQuestionSets(models.Model):
     class Meta:
         unique_together = (("competition", "school_category"))
 
-    competition = models.ForeignKey(Competition)
+    competition = models.ForeignKey(Competition, on_delete=models.CASCADE)
     questionsets = models.ManyToManyField(CompetitionQuestionSet)
     school_category = models.CharField(choices=SCHOOL_CATEGORIES, max_length=24)
 
@@ -220,7 +220,7 @@ class Award(models.Model):
 
     name = models.CharField(max_length=256)
     group_name = models.CharField(max_length=256)
-    questionset = models.ForeignKey(CompetitionQuestionSet)
+    questionset = models.ForeignKey(CompetitionQuestionSet, on_delete=models.CASCADE)
     template = models.CharField(max_length=256, blank=True)
     icon = models.CharField(max_length=256, blank=True)
     threshold = models.FloatField(null=True, blank=True)
@@ -236,13 +236,13 @@ class AttemptAward(models.Model):
         return u"{} {} {} {} {} ({})".format(self.attempt.competitor, self.award,
                                              self.attempt.score, self.serial, self.note, self.id)
 
-    award = models.ForeignKey(Award)
-    attempt = models.ForeignKey(Attempt)
+    award = models.ForeignKey(Award, on_delete=models.CASCADE)
+    attempt = models.ForeignKey(Attempt, on_delete=models.CASCADE)
     note = models.CharField(max_length=1024, blank=True, default='')
     competitor_name = models.TextField(blank=True)
     school_name = models.TextField(blank=True)
     group_name = models.TextField(blank=True)
-    revoked_by = models.ForeignKey(Profile, null=True)
+    revoked_by = models.ForeignKey(Profile, null=True, on_delete=models.CASCADE)
     serial = models.CharField(max_length=64, blank=True, default='', unique=True)
     files = models.ManyToManyField('AwardFile')
 
@@ -250,7 +250,7 @@ class AttemptAward(models.Model):
 class CompetitionRecognition(models.Model):
     def __str__(self):
         return self.template
-    competition = models.ForeignKey(Competition, null=True)
+    competition = models.ForeignKey(Competition, null=True, on_delete=models.CASCADE)
     template = models.CharField(max_length=256)
     serial_prefix = models.CharField(max_length=16)
 
@@ -258,15 +258,16 @@ class CompetitionRecognition(models.Model):
 class TeacherRecognition(models.Model):
     def __str__(self):
         return u"{} {}:{}".format(self.teacher, self.template, self.text)
-    template = models.ForeignKey(CompetitionRecognition)
-    teacher = models.ForeignKey(Profile)
+    template = models.ForeignKey(CompetitionRecognition, on_delete=models.CASCADE)
+    teacher = models.ForeignKey(Profile, on_delete=models.CASCADE)
     recipient = models.TextField()
     text = models.TextField()
     serial = models.CharField(max_length=64, unique=True)
     note = models.CharField(max_length=1024,
                             blank=True, default='')
     revoked_by = models.ForeignKey(Profile, null=True,
-                                   related_name='revoked_teacherrecognition_set')
+                                   related_name='revoked_teacherrecognition_set',
+                                   on_delete=models.CASCADE)
 
 
 class AwardFile(models.Model):
