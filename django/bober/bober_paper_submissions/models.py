@@ -175,6 +175,6 @@ class JuniorAttempt(models.Model):
     def __str__(self):
         return u"{}:{} {}".format(self.attempt.competitor, self.year_class, self.remarks)
     year_class = models.ForeignKey(JuniorYear, on_delete=models.CASCADE)
-    attempt = models.OneToOneField(Attempt, null=True)
+    attempt = models.OneToOneField(Attempt, null=True, on_delete=models.CASCADE)
     line = models.IntegerField(default=-1)
     remarks = models.TextField(blank=True, null=True)
