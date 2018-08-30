@@ -207,7 +207,7 @@ class CodeAutocomplete(autocomplete.Select2QuerySetView):
 
     def get_queryset(self):
         # Don't forget to filter out results depending on the visitor !
-        if not self.request.user.is_authenticated():
+        if not self.request.user.is_authenticated:
             return Code.objects.none()
         if self.request.user.is_superuser:
             return Code.objects.all()
@@ -1135,7 +1135,7 @@ class ProfileAutocomplete(autocomplete.Select2QuerySetView):
 
     def get_queryset(self):
         profiles = Profile.objects.none()
-        if not self.request.user.is_authenticated():
+        if not self.request.user.is_authenticated:
             return profiles
         if self.request.user.is_superuser:
             profiles = Profile.objects.all()
@@ -1172,7 +1172,7 @@ class QuestionSetCompete(CreateView):
 
     def get_initial(self):
         d = super(QuestionSetCompete, self).get_initial()
-        if self.request.user.is_authenticated():
+        if self.request.user.is_authenticated:
             profile = self.request.profile
             d['first_name'] = profile.user.first_name
             d['last_name'] = profile.user.last_name
@@ -1185,7 +1185,7 @@ class QuestionSetCompete(CreateView):
             form_class = self.form_class
         kwargs = self.get_form_kwargs()
         kwargs['competitionquestionset'] = self.competitionquestionset
-        if self.request.user.is_authenticated():
+        if self.request.user.is_authenticated:
             kwargs['profile'] = self.request.profile
         f = form_class(**kwargs)
         return f
@@ -1211,7 +1211,7 @@ class CompetitionCompete(QuestionSetCompete):
             form_class = self.form_class
         kwargs = self.get_form_kwargs()
         kwargs['competition'] = self.competition
-        if self.request.user.is_authenticated():
+        if self.request.user.is_authenticated:
             kwargs['profile'] = self.request.profile
         f = form_class(**kwargs)
         return f
@@ -1246,7 +1246,7 @@ class QuestionSetRegistration(CreateView):
         return context
 
     def get(self, request, *args, **kwargs):
-        if request.user.is_authenticated():
+        if request.user.is_authenticated:
             if 'access_code' in request.session:
                 try:
                     assert _can_attempt(self.request,

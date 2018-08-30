@@ -9,7 +9,7 @@ class ProfileMiddleware:
 
     def __call__(self, request):
         if not hasattr(request, 'profile') and \
-                request.user.is_authenticated():
+                request.user.is_authenticated:
             profile = request.user.profile
             if profile.merged_with is not None:
                 profile = profile.merge_to_top(limit=5)
