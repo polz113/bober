@@ -38,6 +38,7 @@ RUN apt-get update \
   python3-cairo \
   python3-lxml \
   python3-psycopg2 \
+  default-libmysqlclient-dev \
    && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /home/bober

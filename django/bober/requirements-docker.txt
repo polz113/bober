@@ -16,4 +16,5 @@ openpyxl  # bober_si/views.py
 cairosvg  # bober_si/award_gen.py
 django-password-reset  # bober/urls.py
 django-impersonate  # bober/urls.py
-
+django-import-export  # requirement on production?
+mysqlclient  # required for mysql database
