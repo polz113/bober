@@ -19,9 +19,6 @@ js_info_dict = {
 }
 
 urlpatterns = [
-    # Examples:
-    # url(r'^$', 'bober.views.home', name='home'),
-    # url(r'^blog/', include('blog.urls')),
     url(r'^$', RedirectView.as_view(url='simple/')),
     url(r'^simple/', include(bober_si.urls)),
     url(r'^simple/', include(bober_paper_submissions.urls)),
@@ -30,7 +27,7 @@ urlpatterns = [
     url(r'^jsi18n/(?P<packages>\S+?)/$', JavaScriptCatalog.as_view(),
         kwargs={'domain': 'django'}, name='javascript-catalog'),
     url('^accounts/', include('django.contrib.auth.urls')),
-    # url('', include('social.apps.django_app.urls', namespace='social')),
+    url('', include('social_django.urls', namespace='social')),
     url('', include('password_reset.urls')),
     url(r'^admin/', admin.site.urls),
     url(r'^impersonate/', include('impersonate.urls')),
