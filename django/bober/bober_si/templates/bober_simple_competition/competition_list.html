@@ -9,16 +9,25 @@
 <div style="margin:1%";>
 <a href="{% url "index" %}" class="btn">{% trans "Back to Menu" %}</a>
 </div>
-<div class="competitions-list">
-<ul>
-{% for i in object_list %}<li {% if i.promoted %}class="promoted"{% endif %}>{{i.title}} <a class="btn" href={% url "competition_compete" slug=i.slug %}>{% trans "Compete" %}</a> <a class="btn" href="{% url "teacher_overview" slug=i.slug %}">{% trans "Login as a teacher" %}</a></li>
-{% endfor %}
-</ul>
+
+<style>
+    .card-custom {
+        max-width: 700px;
+    }
+</style>
+<div class="row justify-content-center">
+	{% for i in object_list %}
+  	<div class="card card-custom mx-2 mb-3 {% if i.promoted %}bg-warning{% endif %}">
+	    <div class="card-body">
+	      <h5 class="card-title">{{i.title}}</h5>
+	      <p class="card-text">
+			  <a class="btn btn-secondary" href={% url "competition_compete" slug=i.slug %}>{% trans "Compete" %}</a>
+		  	  <a class="btn btn-secondary" href="{% url "teacher_overview" slug=i.slug %}">{% trans "Login as a teacher" %}</a>			      	
+	      </p>
+	    </div>
+	</div>
+	{% endfor %}
 </div>
-<!--<div class="toLeft">
-	<br>
-	<a href="{% url "competition_create" %}" class="btn">{% trans "Create competition" %}</a>
-	<br>
-</div> -->
+
 
 {% endblock %}
