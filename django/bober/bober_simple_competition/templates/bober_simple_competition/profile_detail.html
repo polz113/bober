@@ -13,108 +13,137 @@
 <div>
 <a href="{% url "index" %}" class="btn">{% trans "Back to Menu" %}</a>
 </div>
-<div>
-<table class="paleblue">
-<thead>
-<th colspan="2">{% trans "Profile Details"%}</th>
-</thead>
-<tr>
-<td><b>{% trans "First Name" %}:</b> </td>
-<td>{{object.user.first_name}}</td>
-</tr>
-<tr>
-<td><b>{% trans "Last Name" %}:</b> </td>
-<td>{{object.user.last_name}}</td>
-</tr>
-<tr>
-<td><b>{% trans "Email" %}:</b> </td>
-<td>{{object.user.email}}</td>
-</tr>
-{% if object.merged_with %}
-<tr>
-<td><b>{% trans "Merged with" %}:</b> </td>
-<td>{{object.merged_with}}</td>
-</tr>
+
+<div class="row">
+	<div class="col-sm">
+		<table class="table table-striped">
+			<thead>
+				<tr>
+					<th colspan="2">{% trans "Profile Details"%}</th>
+				</tr>
+			</thead>
+			<tr>
+				<th scope="row">{% trans "First Name" %}</th>
+				<td>{{object.user.first_name}}</td>
+			</tr>
+			<tr>
+				<th scope="row">{% trans "Last Name" %}</th>
+				<td>{{object.user.last_name}}</td>
+			</tr>
+			<tr>
+				<th scope="row">{% trans "Email" %}</th>
+				<td>{{object.user.email}}</td>
+			</tr>
+			{% if object.merged_with %}
+				<tr>
+					<th scope="row">{% trans "Merged with" %}</th>
+					<td>{{object.merged_with}}</td>
+				</tr>
+			{% endif %}
+		</table>
+	</div>
+</div>
+<div class="row">
+	<div class="col-sm-12">
+		<a class="btn btn-secondary" href="{% url "profile_update" object.pk %}">{% trans "Update profile" %}</a>
+		<a class="btn btn-secondary" href="{% url "profile_merge" object.pk %}">{% trans "Merge this profile into another" %}</a>
+	</div>
+</div>
+
+{% if object.former_profile_set.all %}
+<div class="row">
+	<div class="col-sm-12">
+		<div class="card">
+			  <div class="card-header">
+			    <h5>{% trans "Former profiles"%}</h5>			    
+			  </div>
+			  <ul class="list-group list-group-flush">
+				{% for p in object.former_profile_set.all %}
+					<li class="list-group-item">{{p}}</li>
+				{% endfor %}
+			  </ul>
+			</div>
+	</div>
+</div>
 {% endif %}
-</table>
-</div>
-<a href="{% url "profile_update" object.pk %}">{% trans "Update profile" %}</a>
-<br>
-<a href="{% url "profile_merge" object.pk %}">{% trans "Merge this profile into another" %}</a>
-<br>
-<div>
-	<table class="paleblue">
-	<thead>
-	<th>{% trans "Former profiles"%}</th>
-	</thead>
-	<tbody>
-	{% for p in object.former_profile_set.all %}
-	<tr class="{% if forloop.counter|divisibleby:2 %}even{% else %}odd{% endif %}">
-		<td>{{p}}</td>
-	</tr>
-	{% endfor %}
-	</tbody>
-	</table>
-</div>
-<br>
-<div>
-	<table class="paleblue">
-	<thead>
-	<th>{% trans "Attempts" %}</th>
-	</thead>
-	<tbody>
-	{% for a in object.attempt_list.all %}
-	<tr class="{% if forloop.counter|divisibleby:2 %}even{% else %}odd{% endif %}">
-		<td>{{a}}</td>
-	</tr>
-	{% endfor %}
-	</tbody>
-	</table>
-</div>
-<br><br>
-{% trans "Codes" %}
-<br>
-<a id="toggle_extended_form_fields1">{% trans "Show codes" %}</a>
-<div id="extended_form_fields1" class="longTextBreak">
-	<div><br>
-		{% trans "Used codes" %}<hr>
-		<ul>
-		{% for c in object.used_codes.all %}
-		<li>{{c}}</li>
-		{% endfor %}
-		</ul>
-	</div>
 
-	<div><br>
-		{% trans "Received codes" %}<hr>
-		<ul>
-		{% for c in object.received_codes.all %}
-		<li>{{c}}</li>
-		{% endfor %}
-		</ul>
-	</div>
 
-	<div><br>
-		{% trans "Created codes" %}<hr>
-		<ul>
-		{% for c in object.created_codes.all %}
-		<li>{{c}}</li>
-		{% endfor %}
-		</ul>
+{% if object.attempt_list.all %}
+<div class="row">
+	<div class="col-sm-12">
+		<div class="card">
+			  <div class="card-header">
+			    <h5>{% trans "Attempts" %}</h5>			    
+			  </div>
+			  <ul class="list-group list-group-flush">
+				{% for a in object.attempt_list.all %}
+					<li class="list-group-item">{{a}}</li>
+				{% endfor %}
+			  </ul>
+			</div>
 	</div>
 </div>
-</form>
-<script type="text/javascript">
-$('#extended_form_fields1').css('visibility','hidden');
-$('#toggle_extended_form_fields1').click(function(){
-  if ( $('#extended_form_fields1').css('visibility') == 'hidden' ){
-    $('#extended_form_fields1').css('visibility','visible');
-    $('#toggle_extended_form_fields1').text('{% trans "Hide codes" %}');
-  } else {
-    $('#extended_form_fields1').css('visibility','hidden');
-    $('#toggle_extended_form_fields1').text('{% trans "Show codes" %}');
-  }
-});
+{% endif %}
 
-</script>
+
+{% if object.used_codes.all or object.received_codes.all or object.created_codes.all %}
+
+<div id="accordion">
+  {% if object.used_codes.all %}
+  <div class="card">
+    <div class="card-header" id="headingOne">
+      <h5 class="mb-0">
+        <button class="btn btn-link" data-toggle="collapse" data-target="#collapseUsedCodes" aria-expanded="true" aria-controls="collapseOne">
+          {% trans "Used codes" %}
+        </button>
+      </h5>
+    </div>
+    <div id="collapseUsedCodes" class="collapse" aria-labelledby="headingOne" data-parent="#accordion">
+  	    <ul class="list-group list-group-flush">
+	  	  {% for c in object.used_codes.all %}
+			  <li class="list-group-item">{{c}}</li>
+		  {% endfor %}
+	    </ul>
+    </div>
+  </div>
+  {% endif %}
+  {% if object.received_codes.all %}
+  <div class="card">
+    <div class="card-header" id="headingTwo">
+      <h5 class="mb-0">
+        <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseReceivedCodes" aria-expanded="false" aria-controls="collapseTwo">
+          {% trans "Received codes" %}
+        </button>
+      </h5>
+    </div>
+    <div id="collapseReceivedCodes" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
+  	    <ul class="list-group list-group-flush">
+	  	  {% for c in object.received_codes.all %}
+			  <li class="list-group-item">{{c}}</li>
+		  {% endfor %}
+	    </ul>
+    </div>
+  </div>
+  {% endif %}  
+  {% if object.created_codes.all %}
+  <div class="card">
+    <div class="card-header" id="headingThree">
+      <h5 class="mb-0">
+        <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseCreatedCodes" aria-expanded="false" aria-controls="collapseThree">
+          {% trans "Created codes" %}
+        </button>
+      </h5>
+    </div>
+    <div id="collapseCreatedCodes" class="collapse" aria-labelledby="headingThree" data-parent="#accordion">
+  	    <ul class="list-group list-group-flush">
+	  	  {% for c in object.created_codes.all %}
+			  <li class="list-group-item">{{c}}</li>
+		  {% endfor %}
+	    </ul>
+    </div>
+  </div>
+  {% endif %}  
+</div>
+
+{% endif %}
 {% endblock %}
