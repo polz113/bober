@@ -826,6 +826,7 @@ class Answer(Model):
     timestamp = DateTimeField(auto_now_add=True)
     value = TextField(blank=True, null=True)
     score = FloatField(null=True)
+    remote_addr = CharField(max_length=128, blank=True, null=True)
 
     @property
     def question(self):

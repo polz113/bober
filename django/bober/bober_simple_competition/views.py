@@ -913,9 +913,10 @@ def submit_answer(request, competition_questionset_id, attempt_id):
         except Exception:
             val = None
         now = timezone.now()
+        remote_addr = request.META.get('REMOTE_ADDR', None)
         a = Answer(attempt_id=attempt_id,
                    randomized_question_id=request.POST['q'],
-                   value=val, timestamp=now)
+                   value=val, timestamp=now, remote_addr=remote_addr)
         a.save()
         try:
             # uncomment the line below for offline checking
