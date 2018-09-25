@@ -161,6 +161,10 @@ class Competition(Model):
         """
         return self.end < timezone.now()
 
+    @property
+    def guests_allowed(self):
+        return self.competitionquestionset_set.filter(guest_code__isnull=False).exists()
+
     @staticmethod
     def ongoing_competitions():
         """
