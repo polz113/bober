@@ -285,7 +285,22 @@ def index(request):
 
 class CompetitionList(ListView):
     model = Competition
-    queryset = Competition.objects.filter(public=True).order_by('-promoted')
+    queryset = Competition.objects.filter(public=True).order_by('-promoted', '-start')
+
+    def get_context_data(self, **kwargs):
+        """
+        Separate competitions into three groups:
+        - promoted (current)
+        - old
+        - available for guests
+        """
+        context = super(CompetitionList, self).get_context_data(**kwargs)
+        competitions = context['object_list']
+        context['promoted'] = competitions.filter(promoted=True)
+        regular = competitions.filter(promoted=False)
+        context['guests_allowed'] = [c for c in regular if c.guests_allowed]
+        context['old'] = [c for c in regular if not c.guests_allowed]
+        return context
 
 
 class CompetitionDetail(DetailView):
