@@ -102,7 +102,7 @@ def access_code_required(function=None):
         if "access_code" in request.session:
             return function(*args, **kwargs)
         else:
-            return redirect('access_code', next=request.get_full_path())
+            return redirect('access_code', url_next=request.get_full_path())
     return wrap
 
 
@@ -144,7 +144,7 @@ def smart_competition_admin_code_required(function=None):
             _use_access_code(request, access_code)
         else:
             _next = request.get_full_path()
-            return redirect('access_code', next=_next)
+            return redirect('access_code', url_next=_next)
         return function(*args, **kwargs)
     return login_required(code_fn)
 
