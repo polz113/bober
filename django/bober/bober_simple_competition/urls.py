@@ -27,7 +27,7 @@ urlpatterns = [
         views.CodeAutocomplete.as_view(),
         name='code_autocomplete'),
     # 1. login / enter access code
-    url(r'^access_code/*(?P<next>.*)$', views.access_code, name="access_code"),
+    url(r'^access_code/*(?P<url_next>.*)$', views.access_code, name="access_code"),
     # 2. pick competition
     url(r'^competition/id=$', views.CompetitionList.as_view(),
         name="competition_list"),
