@@ -36,6 +36,5 @@ class JuniorMentorshipForm(ModelForm):
 class JuniorYearInline(InlineFormSet):
     model = JuniorYear
     form_class = JuniorYearForm
-    can_delete = False
-    extra = 0
+    factory_kwargs = {'extra': 0, 'can_delete': False}
     fields = ['raw_data', 'questionset', 'access_code']
