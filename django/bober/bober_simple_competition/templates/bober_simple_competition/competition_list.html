@@ -9,7 +9,41 @@
 <div style="margin:1%";>
 <a href="{% url "index" %}" class="btn">{% trans "Back to Menu" %}</a>
 </div>
+<div class="row">
+	<div class="col-sm-12">
+		<div class="card-deck">
+		  <div class="card">
+		    <div class="card-body">
+		      <h5 class="card-title"><a href={% url "competition_compete" slug=i.slug %}></h5>
+		      <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+		      <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+		    </div>
+		  </div>
+		  <div class="card">
+		    <img class="card-img-top" src="..." alt="Card image cap">
+		    <div class="card-body">
+		      <h5 class="card-title">Card title</h5>
+		      <p class="card-text">This card has supporting text below as a natural lead-in to additional content.</p>
+		      <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+		    </div>
+		  </div>
+		  <div class="card">
+		    <img class="card-img-top" src="..." alt="Card image cap">
+		    <div class="card-body">
+		      <h5 class="card-title">Card title</h5>
+		      <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This card has even longer content than the first to show that equal height action.</p>
+		      <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+		    </div>
+		  </div>
+		</div>	
+	
+	</div>
+</div>
+
 <div class="competitions-list">
+
+
+
 <ul>
 {% for i in object_list %}<li {% if i.promoted %}class="promoted"{% endif %}><a href={% url "competition_compete" slug=i.slug %}>{{i.title}}</a>{% if i.award_set.count %} - <a href={% url "competition_overview" slug=i.slug %}>{% trans "Certificates available" %}.</a>{% endif %}{% if i.is_over %} - <a href={% url "competition_overview" slug=i.slug %}>{% trans "Results (for mentors)" %}.</a>{% endif %}</li>
 {% endfor %}

@@ -9,7 +9,7 @@ ENV BOBER_GIT_BRANCH=master
 # It is overrided from settings in docker-compose.
 ENV SECRET_KEY=very_secret_key
 
-# Add Tomo user and group first to make sure their IDs get assigned consistently
+# Add user and group bober first to make sure their IDs get assigned consistently
 RUN groupadd -r bober && useradd -r -g bober bober
 
 # Change locale to en_US.UTF-8
@@ -44,10 +44,13 @@ RUN apt-get update \
 WORKDIR /home/bober
 
 # Pull tomo source into current working directory
-RUN git clone --depth 1 -b ${BOBER_GIT_BRANCH} ${BOBER_GIT_LOCATION}
+# RUN git clone --depth 1 -b ${BOBER_GIT_BRANCH} ${BOBER_GIT_LOCATION}
+
+# Copy the current source code inside docker container
+COPY --chown=bober:bober . bober/
 
 # Install dependencies
-RUN pip3 install -r bober/django/bober/requirements-docker.txt
+RUN pip3 install -r bober/requirements-docker.txt
 
 
 #RUN python3 urnik/manage.py collectstatic --noinput --settings=urni_kfri.settings_example
