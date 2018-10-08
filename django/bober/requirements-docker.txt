@@ -19,3 +19,4 @@ django-impersonate  # bober/urls.py
 django-import-export  # requirement on production?
 mysqlclient  # required for mysql database
 pyjwkest  # social login 
+raven  # error reporting (sentry)

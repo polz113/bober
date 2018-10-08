@@ -61,6 +61,9 @@ CRISPY_TEMPLATE_PACK = 'bootstrap3'
 
 MIDDLEWARE = (
     'django.contrib.sessions.middleware.SessionMiddleware',
+    # Disable LocaleMiddleware to disable
+    # language detection and use default language
+    # set by LANGUAGE_CODE
     'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -142,7 +145,7 @@ DATABASES = {
 # Internationalization
 # https://docs.djangoproject.com/en/1.6/topics/i18n/
 
-# LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'en-us'
 
 TINYMCE_DEFAULT_CONFIG = {
   #'plugins': "table,spellchecker,paste,searchreplace",
