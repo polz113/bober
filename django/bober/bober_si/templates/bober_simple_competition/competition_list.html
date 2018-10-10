@@ -53,7 +53,7 @@
         </button>
       </h5>
     </div>
-    <div id="guests_allowed" class="collapse" aria-labelledby="headingOne" data-parent="#accordion">
+    <div id="guests_allowed" class="collapse {% if not promoted %}show{% endif %}" aria-labelledby="headingOne" data-parent="#accordion">
 		<div class="row justify-content-center">
 			{% for i in guests_allowed %}
 		  	<div class="card card-custom mx-2 mb-3 {% if i.promoted %}bg-warning{% endif %}">

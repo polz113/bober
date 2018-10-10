@@ -9,50 +9,93 @@
 <div style="margin:1%";>
 <a href="{% url "index" %}" class="btn">{% trans "Back to Menu" %}</a>
 </div>
-<div class="row">
-	<div class="col-sm-12">
-		<div class="card-deck">
-		  <div class="card">
-		    <div class="card-body">
-		      <h5 class="card-title"><a href={% url "competition_compete" slug=i.slug %}></h5>
-		      <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-		      <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
-		    </div>
-		  </div>
-		  <div class="card">
-		    <img class="card-img-top" src="..." alt="Card image cap">
-		    <div class="card-body">
-		      <h5 class="card-title">Card title</h5>
-		      <p class="card-text">This card has supporting text below as a natural lead-in to additional content.</p>
-		      <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
-		    </div>
-		  </div>
-		  <div class="card">
-		    <img class="card-img-top" src="..." alt="Card image cap">
-		    <div class="card-body">
-		      <h5 class="card-title">Card title</h5>
-		      <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This card has even longer content than the first to show that equal height action.</p>
-		      <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
-		    </div>
-		  </div>
-		</div>	
-	
-	</div>
+
+<style>
+    .card-custom {
+        max-width: 700px;
+    }
+</style>
+
+<div id="accordion">
+  {% if promoted %}
+  <div class="card">
+    <div class="card-header" id="headingOne">
+      <h5 class="mb-0">
+        <button class="btn btn-link" data-toggle="collapse" data-target="#current" aria-expanded="true" aria-controls="current">
+          {% trans "Current competitions" %}
+        </button>
+      </h5>
+    </div>
+    <div id="current" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
+		<div class="row justify-content-center">
+			{% for i in promoted %}
+		  	<div class="card card-custom mx-2 mb-3 bg-warning">
+			    <div class="card-body">
+			      <h5 class="card-title">{{i.title}}</h5>
+			      <p class="card-text">
+					  <a class="btn btn-secondary" href={% url "competition_compete" slug=i.slug %}>{% trans "Compete" %}</a>
+				  	  <a class="btn btn-secondary" href="{% url "teacher_overview" slug=i.slug %}">{% trans "Login as a teacher" %}</a>			      	
+			      </p>
+			    </div>
+			</div>
+			{% endfor %}
+		</div>
+    </div>
+  </div>
+  {% endif %}
+
+  {% if guests_allowed %}
+  <div class="card">
+    <div class="card-header" id="headingOne">
+      <h5 class="mb-0">
+        <button class="btn btn-link" data-toggle="collapse" data-target="#guests_allowed" aria-expanded="true" aria-controls="guests_allowed">
+          {% trans "Guests allowed" %}
+        </button>
+      </h5>
+    </div>
+    <div id="guests_allowed" class="collapse {% if not promoted %}show{% endif %}" aria-labelledby="headingOne" data-parent="#accordion">
+		<div class="row justify-content-center">
+			{% for i in guests_allowed %}
+		  	<div class="card card-custom mx-2 mb-3 {% if i.promoted %}bg-warning{% endif %}">
+			    <div class="card-body">
+			      <h5 class="card-title">{{i.title}}</h5>
+			      <p class="card-text">
+					  <a class="btn btn-secondary" href={% url "competition_compete" slug=i.slug %}>{% trans "Compete" %}</a>
+				  	  <a class="btn btn-secondary" href="{% url "teacher_overview" slug=i.slug %}">{% trans "Login as a teacher" %}</a>			      	
+			      </p>
+			    </div>
+			</div>
+			{% endfor %}
+		</div>
+    </div>
+  </div>
+  {% endif %}
+
+  {% if old %}
+  <div class="card">
+    <div class="card-header" id="headingOne">
+      <h5 class="mb-0">
+        <button class="btn btn-link" data-toggle="collapse" data-target="#old" aria-expanded="true" aria-controls="old">
+          {% trans "Old competitions" %}
+        </button>
+      </h5>
+    </div>
+    <div id="old" class="collapse" aria-labelledby="headingOne" data-parent="#accordion">
+		<div class="row justify-content-center">
+			{% for i in old %}
+		  	<div class="card card-custom mx-2 mb-3 {% if i.promoted %}bg-warning{% endif %}">
+			    <div class="card-body">
+			      <h5 class="card-title">{{i.title}}</h5>
+			      <p class="card-text">
+					  <a class="btn btn-secondary" href={% url "competition_compete" slug=i.slug %}>{% trans "Compete" %}</a>
+				  	  <a class="btn btn-secondary" href="{% url "teacher_overview" slug=i.slug %}">{% trans "Login as a teacher" %}</a>			      	
+			      </p>
+			    </div>
+			</div>
+			{% endfor %}
+		</div>
+    </div>
+  </div>
+  {% endif %}
 </div>
-
-<div class="competitions-list">
-
-
-
-<ul>
-{% for i in object_list %}<li {% if i.promoted %}class="promoted"{% endif %}><a href={% url "competition_compete" slug=i.slug %}>{{i.title}}</a>{% if i.award_set.count %} - <a href={% url "competition_overview" slug=i.slug %}>{% trans "Certificates available" %}.</a>{% endif %}{% if i.is_over %} - <a href={% url "competition_overview" slug=i.slug %}>{% trans "Results (for mentors)" %}.</a>{% endif %}</li>
-{% endfor %}
-</ul>
-</div>
-<!--<div class="toLeft">
-	<br>
-	<a href="{% url "competition_create" %}" class="btn">{% trans "Create competition" %}</a>
-	<br>
-</div> -->
-
 {% endblock %}
