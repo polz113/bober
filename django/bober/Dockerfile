@@ -39,6 +39,7 @@ RUN apt-get update \
   python3-lxml \
   python3-psycopg2 \
   default-libmysqlclient-dev \
+  gettext \
    && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /home/bober
