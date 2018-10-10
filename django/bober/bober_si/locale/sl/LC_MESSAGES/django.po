@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-11-16 08:31+0000\n"
+"POT-Creation-Date: 2018-10-10 06:29+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,35 +19,47 @@ msgstr ""
 "Plural-Forms: nplurals=4; plural=(n%100==1 ? 0 : n%100==2 ? 1 : n%100==3 || n"
 "%100==4 ? 2 : 3);\n"
 
-#: forms.py:8
+#: forms.py:11
 msgid "Access code"
 msgstr "Koda"
 
-#: forms.py:11
+#: forms.py:15
 msgid "School"
 msgstr "Šola"
 
-#: forms.py:16
+#: forms.py:23
+msgid "A user with this username exists"
+msgstr ""
+
+#: forms.py:30
+msgid "A user with this email exists"
+msgstr ""
+
+#: forms.py:34
+msgid "username"
+msgstr ""
+
+#: forms.py:37
 msgid "email"
 msgstr "e-pošta"
 
-#: forms.py:17
+#: forms.py:40
 msgid "password"
 msgstr "geslo"
 
-#: forms.py:18
+#: forms.py:41
 msgid "hidden_code"
 msgstr "skrita koda"
 
-#: models.py:9
+#: models.py:11
 msgid "Elementary school"
 msgstr "Osnovna šola"
 
-#: models.py:10
+#: models.py:12
 msgid "High school"
 msgstr "Srednja šola"
 
-#: models.py:11
+#: models.py:13
 msgid "Kindergarden"
 msgstr "Vrtec"
 
@@ -67,76 +79,55 @@ msgid "Add School"
 msgstr "Dodaj šolo"
 
 #: templates/bober_si/school_codes_create.html:22
-#: templates/bober_si/teacher_overview.html:107
-#: templates/bober_si/teacher_overviewx.html:107
+#: templates/bober_si/teacher_overview.html:158
 msgid "Add school"
 msgstr "Dodaj šolo"
 
-#: templates/bober_si/teacher_overview.html:82
-#: templates/bober_si/teacher_overviewx.html:82
+#: templates/bober_si/teacher_overview.html:119
 msgid "Edit my profile"
 msgstr "Uredi moje podatke"
 
-#: templates/bober_si/teacher_overview.html:89
-#: templates/bober_si/teacher_overviewx.html:89
+#: templates/bober_si/teacher_overview.html:124
+#, fuzzy
+#| msgid "password"
+msgid "Change password"
+msgstr "geslo"
+
+#: templates/bober_si/teacher_overview.html:127
+msgid "Save"
+msgstr ""
+
+#: templates/bober_si/teacher_overview.html:137
 msgid "Codes for each school"
 msgstr "Kode za šole"
 
-#: templates/bober_si/teacher_overview.html:112
-#: templates/bober_si/teacher_overviewx.html:112
-msgid "Competition on paper"
-msgstr "Tekmovanje na papir"
-
-#: templates/bober_si/teacher_overview.html:117
-#: templates/bober_si/teacher_overviewx.html:117
-msgid "Competition sheets"
-msgstr "Pole za tekmovanje"
-
-#: templates/bober_si/teacher_overview.html:120
-#: templates/bober_si/teacher_overviewx.html:120
+#: templates/bober_si/teacher_overview.html:144
 msgid "Result entry for tasks on paper"
 msgstr "Vnos rezultatov za tekmovanje na papir"
 
-#: templates/bober_si/teacher_overview.html:125
-#: templates/bober_si/teacher_overviewx.html:125
+#: templates/bober_si/teacher_overview.html:163
 msgid "Certificates"
 msgstr "Priznanja"
 
-#: templates/bober_si/teacher_overview.html:127
-#: templates/bober_si/teacher_overviewx.html:127
-msgid "Certificates of achievement"
-msgstr "Priznanja za tekmovalce"
+#: templates/bober_si/teacher_overview.html:171
+#, fuzzy
+#| msgid "Back to competitions"
+msgid "no competitors"
+msgstr "Nazaj na seznam tekmovanj"
 
-msgid "Show attempt times"
-msgstr "Prikaži čase poizkusov"
+#: templates/bober_si/teacher_overview.html:178
+msgid "Mentor recognition"
+msgstr "Potrdilo za mentorja"
 
+#: templates/bober_si/teacher_overview.html:192
 msgid "Hide attempt times"
 msgstr "Skrij čase poizkusov"
 
-#: templates/bober_si/teacher_overview.html:127
-#: templates/bober_si/teacher_overview.html:128
-#: templates/bober_si/teacher_overviewx.html:127
-#: templates/bober_si/teacher_overviewx.html:128
-msgid "not available yet"
-msgstr "še ni na voljo"
+#: templates/bober_si/teacher_overview.html:193
+msgid "Show attempt times"
+msgstr "Prikaži čase poizkusov"
 
-#: templates/bober_si/teacher_overview.html:128
-#: templates/bober_si/teacher_overviewx.html:128
-msgid "Certificates for mentors"
-msgstr "Priznanja za mentorje"
-
-#: templates/bober_si/teacher_overview.html:133
-#: templates/bober_si/teacher_overviewx.html:133
-msgid "Preliminary results"
-msgstr "Začasni rezultati"
-
-#: templates/bober_si/teacher_overview.html:185
-#: templates/bober_si/teacher_overviewx.html:185
-msgid "Results on paper"
-msgstr "Rezultati za nižje razrede"
-
-#: templates/bober_si/teacher_overview.html:205
-#: templates/bober_si/teacher_overviewx.html:205
+#: templates/bober_si/teacher_overview.html:256
 msgid "Advanced details"
 msgstr ""
 
@@ -145,8 +136,31 @@ msgstr ""
 msgid "Teacher registration"
 msgstr ""
 
+#: templates/bober_si/teacher_registration_password_reset.html:12
+msgid "Enter your username, e-mail and password."
+msgstr ""
+
+#: templates/bober_si/teacher_registration_password_reset.html:13
+msgid ""
+"If you have multiple mentors at your school, send them the link to this page "
+"so that they can also register."
+msgstr ""
+
+#: templates/bober_si/teacher_registration_password_reset.html:15
+msgid ""
+"If you already have a username, click here (even if you can not remember "
+"your password)."
+msgstr ""
+
+#: templates/bober_si/teacher_registration_password_reset.html:22
+#, fuzzy
+#| msgid "password"
+msgid "Set password"
+msgstr "geslo"
+
 #: templates/bober_simple_competition/competition_detail.html:6
 #: templates/bober_simple_competition/competition_detail.html:8
+#: templates/bober_simple_competition/competition_list.html:4
 msgid "Competition"
 msgstr "Tekmovanje"
 
@@ -170,8 +184,73 @@ msgstr "uredi"
 msgid "Question sets"
 msgstr "Nabori vprašanj"
 
+#: templates/bober_simple_competition/competition_detail.html:22
+#: templates/bober_simple_competition/competition_list.html:36
+#: templates/bober_simple_competition/competition_list.html:63
+#: templates/bober_simple_competition/competition_list.html:90
+msgid "Compete"
+msgstr "Tekmuj"
+
 #: templates/bober_simple_competition/competition_detail.html:23
-#, python-format
+msgid "Results"
+msgstr "Rezultati"
+
+#: templates/bober_simple_competition/competition_detail.html:24
+msgid "Awards pdf"
+msgstr "PDF z nagradami"
+
+#: templates/bober_simple_competition/competition_list.html:5
+#, fuzzy
+#| msgid "Competition on paper"
+msgid "Competitions in progress"
+msgstr "Aktivna tekmovanja"
+
+#: templates/bober_simple_competition/competition_list.html:10
+#, fuzzy
+#| msgid "Back to competitions"
+msgid "Back to Menu"
+msgstr "Nazaj na seznam tekmovanj"
+
+#: templates/bober_simple_competition/competition_list.html:25
+#, fuzzy
+#| msgid "Competition"
+msgid "Current competitions"
+msgstr "Tekmovanje"
+
+#: templates/bober_simple_competition/competition_list.html:37
+#: templates/bober_simple_competition/competition_list.html:64
+#: templates/bober_simple_competition/competition_list.html:91
+msgid "Login as a teacher"
+msgstr "Prijavi se kot učitelj"
+
+#: templates/bober_simple_competition/competition_list.html:52
+msgid "Guests allowed"
+msgstr "Tekmovanja za goste"
+
+#: templates/bober_simple_competition/competition_list.html:79
+#, fuzzy
+#| msgid "Competition"
+msgid "Old competitions"
+msgstr "Stara tekmovanja"
+
+msgid "Competition sheets"
+msgstr "Pole za tekmovanje"
+
+msgid "Certificates of achievement"
+msgstr "Priznanja za tekmovalce"
+
+msgid "not available yet"
+msgstr "še ni na voljo"
+
+msgid "Certificates for mentors"
+msgstr "Priznanja za mentorje"
+
+msgid "Preliminary results"
+msgstr "Začasni rezultati"
+
+msgid "Results on paper"
+msgstr "Rezultati za nižje razrede"
+
 msgid "%(n)s attempt"
 msgid_plural "%(n)s attempts"
 msgstr[0] "%(n)s poizkus"
@@ -179,15 +258,8 @@ msgstr[1] "%(n)s poizkusa"
 msgstr[2] "%(n)s poizkusi"
 msgstr[3] "%(n)s poizkusov"
 
-#: templates/bober_simple_competition/competition_detail.html:24
-msgid "Compete"
-msgstr "Tekmuj"
-
 msgid "Submit"
 msgstr "Oddaj"
-
-msgid "Results"
-msgstr "Rezultati"
 
 msgid "attempts"
 msgstr "seznam poizkusov"
@@ -198,8 +270,3 @@ msgstr[0] "je bil(a) mentor(ica) %(n)s tekmovalcu"
 msgstr[1] "je bil(a) mentor(ica) %(n)s tekmovalcema"
 msgstr[2] "je bil(a) mentor(ica) %(n)s tekmovalcem"
 msgstr[3] "je bil(a) mentor(ica) %(n)s tekmovalcem"
-
-msgid "Mentor recognition"
-msgstr "Potrdilo za mentorja"
-
-
