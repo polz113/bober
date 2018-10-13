@@ -112,8 +112,12 @@ urlpatterns = [
     url(r'^compete/(?P<competition_questionset_id>[\d]+)/resources/competition.html$',
         views.competition_index, name="competition_index"),
     # 2.2.1.1 get question page as guest :: GUEST
-    url(r'^guest/(?P<competition_questionset_id>[\d]+)/$',
-        views.competition_guest, name="competition_guest"),
+    url(r'^guest/compete/(?P<competition_questionset_id>[\d]+)/$',
+        views.competition_guest, name="guest_compete"),
+    url(r'^guest/competition/(?P<slug>[\w\-_]+)/$',
+        views.GuestCompetitionQuestionSetList.as_view(), name="guest_questionsets"),
+    url(r'^guest/competition/$',
+        views.GuestCompetitionList.as_view(), name="guest_competitions"),
     #     2.2.2 get question resources
     url(r'^compete/(?P<competition_questionset_id>\d+)/resources/(?P<resource_path>.*)',
         views.competition_resources, name="competition_resources"),

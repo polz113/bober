@@ -303,6 +303,25 @@ class CompetitionList(ListView):
         return context
 
 
+class GuestCompetitionList(ListView):
+    model = Competition
+    template_name = "bober_simple_competition/guest_competitions.html"
+    queryset = Competition.objects.filter(
+            public=True, competitionquestionset__guest_code__isnull=False
+        ).order_by('-promoted', '-start').distinct()
+
+
+class GuestCompetitionQuestionSetList(ListView):
+    model = CompetitionQuestionSet
+    template_name = "bober_simple_competition/guest_questionsets.html"
+
+    def get_queryset(self):
+        self.competition = get_object_or_404(Competition,
+                                             slug=self.kwargs['slug'])
+        return CompetitionQuestionSet.objects.filter(
+            competition=self.competition, guest_code__isnull=False)
+
+
 class CompetitionDetail(DetailView):
     model = Competition
 
@@ -554,7 +573,7 @@ def competition_code_list(request, slug):
 @smart_competition_admin_code_required
 def competition_code_create(request, slug, user_type='admin'):
     access_code = request.session['access_code']
-    competition = Competition.objects.get(slug=slug)
+    competition = Competition.objects.get_or_404(slug=slug)
     admin_codegen = competition.administrator_code_generator
     competitor_privilege_choices = competition.competitor_privilege_choices(
         access_code)
@@ -586,7 +605,7 @@ def competition_code_create(request, slug, user_type='admin'):
                 choices=allowed_effect_choices,
                 widget=forms.CheckboxSelectMultiple(),
                 required=False, label=_("Code effects"))
-    else:
+    else: # user_type == 'competitor'
         generator = competition.competitor_code_generator
         if not admin_codegen.code_matches(
                 access_code,
@@ -634,6 +653,21 @@ def send_codes(request, slug):
     return render(
         request,
         "bober_simple_competition/send_codes.html", locals())
+
+
+@smart_competition_admin_code_required
+def competition_competitor_code_revoke(request, slug, code_value):
+    competition = Competition.objects.get_or_404(slug=slug)
+    access_code = request.session['access_code']
+    admin_codegen = competition.admin_code_generator
+    generator = competition.competitor_code_generator
+    if not admin_codegen.code_matches(
+            access_code,
+            {'admin_privileges': ['create_competitor_codes']}):
+        raise PermissionDenied
+    code = request.profile.created_codes.get_or_404(
+        value=code_value, generator=generator)
+    code.revoke(timezone.now())
 
 
 # 2.1.3 view results
