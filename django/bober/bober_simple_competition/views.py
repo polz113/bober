@@ -7,7 +7,7 @@ import email.utils
 import os
 import logging
 
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, QueryDict, HttpResponseRedirect
 from django.core.mail import EmailMultiAlternatives
@@ -303,6 +303,30 @@ class CompetitionList(ListView):
         return context
 
 
+class GuestCompetitionList(ListView):
+    model = Competition
+    template_name = "bober_simple_competition/guest_competitions.html"
+    queryset = Competition.objects.filter(
+            public=True, competitionquestionset__guest_code__isnull=False
+        ).order_by('-promoted', '-start').distinct()
+
+
+class GuestCompetitionQuestionSetList(ListView):
+    model = CompetitionQuestionSet
+    template_name = "bober_simple_competition/guest_questionsets.html"
+
+    def get_queryset(self):
+        self.competition = get_object_or_404(Competition,
+                                             slug=self.kwargs['slug'])
+        return CompetitionQuestionSet.objects.filter(
+            competition=self.competition, guest_code__isnull=False)
+
+    def get_context_data(self, **kwargs):
+        context = super(GuestCompetitionQuestionSetList, self).get_context_data(**kwargs)
+        context['competition'] = self.competition
+        return context
+
+
 class CompetitionDetail(DetailView):
     model = Competition
 
@@ -554,7 +578,7 @@ def competition_code_list(request, slug):
 @smart_competition_admin_code_required
 def competition_code_create(request, slug, user_type='admin'):
     access_code = request.session['access_code']
-    competition = Competition.objects.get(slug=slug)
+    competition = get_object_or_404(Competition, slug=slug)
     admin_codegen = competition.administrator_code_generator
     competitor_privilege_choices = competition.competitor_privilege_choices(
         access_code)
@@ -586,7 +610,7 @@ def competition_code_create(request, slug, user_type='admin'):
                 choices=allowed_effect_choices,
                 widget=forms.CheckboxSelectMultiple(),
                 required=False, label=_("Code effects"))
-    else:
+    else: # user_type == 'competitor'
         generator = competition.competitor_code_generator
         if not admin_codegen.code_matches(
                 access_code,
@@ -634,6 +658,21 @@ def send_codes(request, slug):
     return render(
         request,
         "bober_simple_competition/send_codes.html", locals())
+
+
+@smart_competition_admin_code_required
+def competition_competitor_code_revoke(request, slug, code_value):
+    competition = get_object_or_404(Competition, slug=slug)
+    access_code = request.session['access_code']
+    admin_codegen = competition.admin_code_generator
+    generator = competition.competitor_code_generator
+    if not admin_codegen.code_matches(
+            access_code,
+            {'admin_privileges': ['create_competitor_codes']}):
+        raise PermissionDenied
+    code = get_object_or_404(request.profile.created_codes,
+                             value=code_value, generator=generator)
+    code.revoke(timezone.now())
 
 
 # 2.1.3 view results
