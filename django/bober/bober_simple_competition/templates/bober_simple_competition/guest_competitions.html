@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load render_table from django_tables2 %}
+{% block title %}{% trans "Competition" %}{% endblock %}
+{% block headline %}{% trans "Competitions in progress" %}{% endblock %}
+{% block extrahead %}
+{% endblock %}
+{% block content %}
+<div style="margin:1%";>
+<a href="{% url "index" %}" class="btn">{% trans "Back to Menu" %}</a>
+</div>
+
+<style>
+    .card-custom {
+        max-width: 700px;
+    }
+</style>
+<div id="accordion">
+  <div class="card">
+    <div class="card-header" id="headingOne">
+      <h5 class="mb-0">
+        <button class="btn btn-link" data-toggle="collapse" data-target="#guests_allowed" aria-expanded="true" aria-controls="guests_allowed">
+          {% trans "Competitions for guests" %}
+        </button>
+      </h5>
+    </div>
+    <div id="guests_allowed" class="collapse {% if not promoted %}show{% endif %}" aria-labelledby="headingOne" data-parent="#accordion">
+		<div class="row justify-content-center">
+			{% for i in object_list %}
+		  	<div class="card card-custom mx-2 mb-3 {% if i.promoted %}bg-warning{% endif %}">
+			    <div class="card-body">
+			      <h5 class="card-title">{{i.title}}</h5>
+			      <p class="card-text">
+					  <a class="btn btn-secondary" href={% url "guest_questionsets" slug=i.slug %}>{% trans "Compete" %}</a>
+			      </p>
+			    </div>
+			</div>
+			{% endfor %}
+		</div>
+    </div>
+  </div>
+</div>
+{% endblock %}
