@@ -1,33 +1,32 @@
 {% extends 'base.html' %}
+{% load crispy_forms_tags %}
 {% load i18n %}
 {% block content %}
- <div>
- <h1>{% trans "Login" %}</h1>
+ 
 
- <p>
-   {% if user and not user.is_anonymous %}
-      {% trans "Hello," %} {{ user.get_full_name|default:user.username }}!
-   {% else %}
-   <ul>
-<!--     <li>
-       <a class="btn" href="{% url 'social:begin' 'facebook' %}?next={{ request.path }}">{% trans "Login with" %} Facebook</a>
-     </li> -->
-     <li>
-       <a class="btn" href="{% url 'social:begin' 'google-oauth2' %}?next={{ next }}">{% trans "Login with" %} Google</a>
-     </li>
-   </ul>
-   {% endif %}
- </p>
-<form method="post" action="{% url 'login' %}">
-{% csrf_token %}
-<table>
-{{form.as_table}}
-</table>
-<input type="submit" value="login" />
-<input type="hidden" name="next" value="{{ next }}" />
-</form>
- </p>
- <p>
-<a href="{% url "password_reset" %}">{% trans "I have forgotten my password" %}</a>
- </div>
+<div class="card text-center">
+  <div class="card-header">
+	{% trans "Login" %}
+  </div>
+  <div class="card-body">
+    <p class="card-text">
+	  <form method="post" action="{% url 'login' %}">
+		{% csrf_token %}
+  	    {{form | crispy}}
+  	    <input type="hidden" name="next" value="{{ next }}" />
+  	    <div class="row">
+  	     <div class="col-sm text-left">
+  		   <input class="btn btn-secondary" type="submit" value="login" />				
+		 </div>
+		 <div class="col-sm text-right">
+			      <a class="btn btn-secondary" href="{% url 'social:begin' 'google-oauth2' %}?next={{ next }}">
+       		{% trans "Login with" %} Google
+	      </a>
+	      <a class="btn btn-secondary" href="{% url "password_reset" %}">{% trans "I have forgotten my password" %}</a>
+          </div>	      
+		</div>		 
+	  </form>	
+    </p>
+  </div>
+</div>
 {% endblock %}

@@ -641,7 +641,9 @@ class QuestionSetForm(forms.ModelForm):
 class CompetitionQuestionSetCreateInline(InlineFormSet):
     model = CompetitionQuestionSet
     form_class = CompetitionQuestionSetCreateForm
-    can_delete = False
+    factory_kwargs = {
+        'can_delete': False
+    }
 
 
 class CompetitionQuestionSetUpdateInline(InlineFormSet):

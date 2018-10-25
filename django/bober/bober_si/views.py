@@ -1,3 +1,9 @@
+import os
+from itertools import chain
+from openpyxl import Workbook
+from collections import defaultdict
+from openpyxl.writer.excel import save_virtual_workbook
+
 from django.shortcuts import render, get_object_or_404
 from django.views.generic import TemplateView, FormView
 from django.urls import reverse
@@ -6,22 +12,19 @@ from django.core.exceptions import PermissionDenied
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
+from django.utils import timezone
+from django.contrib.auth.models import User
+from django.db.models import Case, When, BooleanField, F
+
 from bober_si.forms import SchoolCodesCreateForm
 from bober_simple_competition.views import SmartCompetitionAdminCodeRequiredMixin
 from bober_simple_competition.views import safe_media_redirect, _profile_file_path, JsonResponse
 from bober_simple_competition.forms import ProfileEditForm
 from bober_simple_competition.models import Attempt, Profile, GradedAnswer, AttemptConfirmation
-from django.contrib.auth.models import User
-from django.utils import timezone
 
 from bober_si.models import SchoolCompetition, CompetitionQuestionSet, Competition, SCHOOL_CATEGORIES, \
     AttemptAward, AWARD_TEMPLATE_DIR
 from bober_si.forms import TeacherCodeRegistrationPasswordResetForm
-
-from collections import defaultdict
-from openpyxl import Workbook
-from openpyxl.writer.excel import save_virtual_workbook
-import os
 from bober_si.award_gen import generate_award_pdf
 
 
@@ -45,72 +48,48 @@ class TeacherOverview(SmartCompetitionAdminCodeRequiredMixin,
         context['profile'] = profile
         context['competition'] = self.competition
         context['profile_form'] = ProfileEditForm(instance=profile)
-        school = None
         schools = dict()
-        attempts = dict()
-        code_pairs = []
-        school_categories = set()
-        has_attempts = False
-        confirmed_attempts = []
-        unconfirmed_attempts = []
         for c in profile.schoolteachercode_set.filter(
                     code__codegenerator=self.competition.competitor_code_generator
                 ).order_by(
-                    'school', 'code'
+                    'school__name', 'code'
                 ).prefetch_related(
                     'school', 'code',
                 ):
-            junior_mentorships = self.competition.juniormentorship_set.filter(
-                school=c.school,
-                teacher=profile
-            )
-            if len(junior_mentorships):
-                junior_mentorship = junior_mentorships[0]
-            else:
-                junior_mentorship = None
-            if c.school != school:
-                schools[c.school] = ([], junior_mentorship)
-                attempts[c.school] = []
+            if c.school not in schools:
+                # Design decision: there is only one juniormembership per teacher per competition per school.
+                junior_mentorship = self.competition.juniormentorship_set.filter(
+                    school=c.school,
+                    teacher=profile
+                ).first()
+                schools[c.school] = {
+                    "codes": [],
+                    "junior_mentorship": junior_mentorship,
+                    "attempts": []}
             school = c.school
-            school_categories.add(school.category)
             code = c.code.value
             sep = self.competition.competitor_code_generator.format.separator
             split_code = code.split(sep)
             cqs_slug = split_code[0]
             cqs = CompetitionQuestionSet.get_by_slug(cqs_slug)
-            schools[school][0].append((cqs, sep.join(split_code[1:])))
-            a_list = []
-            all_attempts = Attempt.objects.filter(
-                access_code=code).select_related(
-                    'competitor',
-                    'competitionquestionset',
-                    'competitionquestionset__questionset').prefetch_related(
-                    'gradedanswer_set',
-                    'competitionquestionset__questionset__questions',
+            schools[school]["codes"].append((cqs, sep.join(split_code[1:])))
+            all_attempts = Attempt.objects.filter(access_code=code).select_related(
+                'competitor',
+                'competitionquestionset',
+                'competitionquestionset__questionset').prefetch_related(
+                'gradedanswer_set',
+                'competitionquestionset__questionset__questions',
+            ).annotate(
+                confirmed=Case(
+                    When(confirmed_by__id=profile.id, then=True),
+                    default=False, output_field=BooleanField()
                 )
-            confirmed_attempts = all_attempts.filter(
-                confirmed_by__id=profile.id,
-            )
-            unconfirmed_attempts = all_attempts.exclude(
-                confirmed_by__id=profile.id,
-            )
-            for a in confirmed_attempts.all():
-                has_attempts |= True
-                a_list.append((a, 'confirmed'))
-            for a in unconfirmed_attempts.all():
-                has_attempts |= True
-                a_list.append((a, 'unconfirmed'))
-            attempts[school].append((cqs, a_list))
-        # print self.competition.end, timezone.now(), self.competition.end >= timezone.now()
+            ).order_by('confirmed', 'competitor__last_name', 'competitor__first_name')
+            if all_attempts:
+                schools[school]["attempts"].append((cqs, all_attempts))
         context['show_codes'] = self.competition.end >= timezone.now()
-        context['show_awards'] = self.competition.end <= timezone.now() and has_attempts
-        # print context['show_awards'], self.competition.end <= timezone.now()
+        context['show_awards'] = self.competition.end <= timezone.now()
         context['schools'] = schools
-        context['attempts'] = attempts
-        context['junior_mentorships'] = profile.juniormentorship_set.filter(
-            competition=self.competition).prefetch_related(
-                'junioryear_set', 'junioryear_set__attempts',
-                'junioryear_set__attempts__competitor')
         return context
 
 

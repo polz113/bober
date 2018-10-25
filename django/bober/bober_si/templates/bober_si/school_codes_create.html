@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load crispy_forms_tags %}
 {% load i18n %}
 
 {% block title %}{% trans "Add School" %}{% endblock %}
@@ -9,16 +10,13 @@
 {{form.media}}
 {% endblock %}
 {% block content %}
-<p>
-</p>
-<form method=POST action="?next_url={{next_url}}">
-{% csrf_token %}
-<table>
-{{form}}
-</table>
-{% comment %}
-<input type="submit" value="{% trans "Submit" %}" />
-{% endcomment %}
-<input type="submit" value="{% trans "Add school" %}" />
-</form>
+<div class="row">
+	<div class="col-sm">
+	<form method=POST action="?next_url={{next_url}}">
+	{% csrf_token %}
+	{{form | crispy}}
+	<input type="submit" class="btn btn-secondary" value="{% trans "Add school" %}" />
+	</form>
+	</div>
+</div>
 {% endblock %}
