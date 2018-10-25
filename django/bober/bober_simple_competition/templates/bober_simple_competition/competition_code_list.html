@@ -19,7 +19,7 @@
 {% endif %}
 <ul>
 {% for i in admin_codes %}
-<li><a href={% url "access_code" next=request.get_full_path %}?access_code={{i|urlencode}}>{{i}}</a><ul>{% for k in i.user_set.all %}<li>{{k}}</li>{% endfor %}</ul></li>
+<li><a href={% url "access_code" url_next=request.get_full_path %}?access_code={{i|urlencode}}>{{i}}</a><ul>{% for k in i.user_set.all %}<li>{{k}}</li>{% endfor %}</ul></li>
 {% endfor %}
 </ul>
 <h1>{% trans "Competitor codes" %}</h1>
