@@ -57,7 +57,7 @@
 			    <div class="card-body">
 			      <h5 class="card-title">{{i.title}}</h5>
 			      <p class="card-text">
-					  <a class="btn btn-secondary" href={% url "competition_compete" slug=i.slug %}>{% trans "Compete" %}</a>
+					  <a class="btn btn-secondary" href={% url "guest_questionsets" slug=i.slug %}>{% trans "Compete" %}</a>
 				  	  <a class="btn btn-secondary" href="{% url "teacher_overview" slug=i.slug %}">{% trans "Login as a teacher" %}</a>			      	
 			      </p>
 			    </div>
