@@ -57,10 +57,10 @@ class RelatedFieldWidgetWrapper(forms.Widget):
         return self.widget.media
 
     def render(self, name, value, *args, **kwargs):
-        rel_opts = self.rel.model._meta
+        rel_opts = self.rel.related_model._meta
         self.widget.choices = self.choices
         url_params = '&'.join("%s=%s" % param for param in [
-            (TO_FIELD_VAR, self.rel.get_related_field().name),
+            (TO_FIELD_VAR, self.rel.remote_field.name),
             (IS_POPUP_VAR, 1),
         ])
         context = {
@@ -108,7 +108,7 @@ def add_related_field_wrapper(form, col_name,
                               change_related_view=None,
                               delete_related_view=None):
     rel_model = form.Meta.model
-    rel = rel_model._meta.get_field(col_name).rel
+    rel = rel_model._meta.get_field(col_name)
     form.fields[col_name].widget = RelatedFieldWidgetWrapper(
         form.fields[col_name].widget, rel,
         add_related_view=add_related_view,

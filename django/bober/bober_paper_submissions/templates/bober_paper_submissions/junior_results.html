@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load crispy_forms_tags %}
 {% load i18n %}
 {% load static %}
 {% block extrahead %}
@@ -10,24 +11,23 @@
 <form action="" method="post">
 {% csrf_token %}
 <div id="junior_instructions">
-    <p class="explain">{% trans "Use the fields below to enter the competition results for each class." %}
+<p class="explain">{% trans "Use the fields below to enter the competition results for each class." %}
 {% trans "If you did not organize a competition for some of the classes, leave those fields empty." %}
-Primer vnosa si lahko ogledate <a href="#primer">na dnu strani</a>.</p>
+<a href="#primer">{% trans "See example bellow." %}</a>
+</p>
     <div class="btn" style="clear:both">
-        <button id="submit" type="submit">{% trans "Submit data" %}</button>
+        <button id="submit" type="submit" class='btn btn-secondary'>{% trans "Submit data" %}</button>
     </div>
 </div>
 
 <div>
-<table>
-{{form}}
-</table>
+{{form | crispy}}
 {% for inline in inlines %}
 {{inline.management_form}}
 {% for inline_form in inline.forms %}
 <div class="junior_result">
 {{inline_form.instance.name}}
-{{inline_form.as_p}}
+{{inline_form | crispy}}
 </div>
 {% endfor %}
 {% endfor %}

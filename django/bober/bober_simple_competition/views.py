@@ -7,7 +7,7 @@ import email.utils
 import os
 import logging
 
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, QueryDict, HttpResponseRedirect
 from django.core.mail import EmailMultiAlternatives
@@ -320,6 +320,11 @@ class GuestCompetitionQuestionSetList(ListView):
                                              slug=self.kwargs['slug'])
         return CompetitionQuestionSet.objects.filter(
             competition=self.competition, guest_code__isnull=False)
+
+    def get_context_data(self, **kwargs):
+        context = super(GuestCompetitionQuestionSetList, self).get_context_data(**kwargs)
+        context['competition'] = self.competition
+        return context
 
 
 class CompetitionDetail(DetailView):

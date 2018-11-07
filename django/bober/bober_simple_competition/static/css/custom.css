@@ -230,20 +230,10 @@ div.results-school {
     font-weight: bold;
     margin-top: 20px;
 }
-table.results {
-    margin-left: auto;
-    margin-right: auto;
-}
 
 table.junior {
     margin-top: 10px;
     margin-left: 40px !important;
-}
-
-table.results th, table.results tr:first-of-type th {
-    font-size: 80%;
-    text-align: right !important;
-    padding-right: 10px !important;
 }
 
 table.results tr.unconfirmed th {
@@ -270,30 +260,6 @@ table.results tr.unconfirmed td span {
     display: none;
 }
 
-table.results tr:nth-child(even) {
-    background: white;
-}
-
-table.results tr {
-    line-height: 150%
-}
-
-table.results td, table.results th {
-    font-weight: normal;
-}
-
-table#results tr:first-of-type th {
-    font-weight: bold;
-}
-
-table.results tr:first-of-type th,
-table.results td {
-    text-align: center;
-    padding-left: 3px;
-    padding-right: 3px;
-    font-size: 80%;
-}
-
 table.results input {
     width: 90px;
     height: 20px;
@@ -308,28 +274,12 @@ span.wrong {
     color: red;
 }
 
-table.results tr.confirmed td.score,
-table.results tr.unconfirmed td.score {
-    text-align: right;
-    width: 27px;
-}
-
 table.results tr.unconfirmed th img.pencil {
     display: none;
 }
 
 table.results th img {
     padding-left: 5px;
-}
-
-table.results td.score {
-    width: 30px;
-    padding: 0;
-}
-
-td.score span {
-    font-weight: bold;
-    padding-left: 10px;
 }
 
 /*********/
