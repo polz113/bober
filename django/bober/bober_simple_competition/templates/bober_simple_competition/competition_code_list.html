@@ -31,7 +31,7 @@
 <li>
 {{cqs.name}}
   <ul>{%for i in codes %}
-    <li><a href={% url "competitionquestionset_access_code" competition_questionset_id=cqs.id next=request.get_full_path %}?access_code={{i|urlencode}}>{{i}}</a></li>
+    <li><a href={% url "competitionquestionset_access_code" competition_questionset_id=cqs.id url_next=request.get_full_path %}?access_code={{i|urlencode}}>{{i}}</a></li>
   {% endfor %}</ul>
 </li>
 {% endfor %}
