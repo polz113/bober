@@ -188,6 +188,15 @@ $(document).ready(function(){
   {% endfor %}
 {% endwith %}
 
+<br/>
+
+<a class='btn btn-secondary' href="{% url 'school_codes_create' slug=competition.slug %}?next_url={{request.path}}">
+     {% trans 'Add school' %}    
+     <span class="oi oi-plus small text-success"
+           data-toggle="tooltip" data-placement="top"
+           title="{% trans 'Add school' %}">
+     </span>
+</a>
 
 <br/>
 
