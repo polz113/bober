@@ -103,7 +103,7 @@ urlpatterns = [
         name="competition_compete_promoted"),
     url(r'^competition/(?P<slug>[\w\-_]+)/registration$',
         views.CompetitionRegistration.as_view(), name="competition_registration"),
-    url(r'^compete/(?P<competition_questionset_id>[\d]+)/access_code/(?P<next>.*)$',
+    url(r'^compete/(?P<competition_questionset_id>[\d]+)/access_code/(?P<url_next>.*)$',
         views.competitionquestionset_access_code,
         name="competitionquestionset_access_code"),
     url(r'^compete/(?P<competition_questionset_id>[\d]+)/$',
