@@ -54,7 +54,7 @@ COPY --chown=bober:bober django/bober bober/
 RUN pip3 install -r bober/requirements-docker.txt
 
 # Compile translations
-RUN python3 bober/manage.py compilemessages
+RUN python3 bober/manage.py compilemessages --settings=bober.settings-docker
 
 RUN chown bober.bober -R /home/bober
 
