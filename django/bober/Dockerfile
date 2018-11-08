@@ -53,8 +53,9 @@ COPY --chown=bober:bober django/bober bober/
 # Install dependencies
 RUN pip3 install -r bober/requirements-docker.txt
 
+# Compile translations
+RUN python3 bober/manage.py compilemessages
 
-#RUN python3 urnik/manage.py collectstatic --noinput --settings=urni_kfri.settings_example
 RUN chown bober.bober -R /home/bober
 
 # UWSGI options are read from environmental variables.
