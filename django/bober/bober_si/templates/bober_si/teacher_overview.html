@@ -153,7 +153,9 @@ $(document).ready(function(){
     {% endif %}
     <div class="{{ column_class }}">
       <div class="btn-group" style="width: 100%">
-        <button class="btn btn-secondary btn-block btn-lg dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <button class="btn btn-secondary btn-block btn-lg dropdown-toggle" type="button"
+         data-toggle="dropdown" aria-haspopup="true"
+         aria-expanded="false" style="margin-bottom: 5px">
           {{ school }}
         </button>
         <div class="dropdown-menu">
@@ -188,16 +190,15 @@ $(document).ready(function(){
   {% endfor %}
 {% endwith %}
 
-<br/>
-
 <a class='btn btn-secondary' href="{% url 'school_codes_create' slug=competition.slug %}?next_url={{request.path}}">
-     {% trans 'Add school' %}    
+     {% trans 'Add school' %}
      <span class="oi oi-plus small text-success"
            data-toggle="tooltip" data-placement="top"
            title="{% trans 'Add school' %}">
      </span>
 </a>
 
+<br/>
 <br/>
 
 {# Schoolcards: one per school, contains codes, results and school recognition #}
