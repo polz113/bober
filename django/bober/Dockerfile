@@ -1,6 +1,6 @@
 # vim:set ft=dockerfile:
 FROM debian:testing
-MAINTAINER Gregor Jerše <gregor.jerse@fri.uni-lj.si>
+LABEL maintainer="Gregor Jerše <gregor.jerse@fri.uni-lj.si>"
 
 ENV BOBER_GIT_LOCATION=https://github.com/polz113/bober.git
 ENV BOBER_GIT_BRANCH=master

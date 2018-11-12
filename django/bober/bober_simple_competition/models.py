@@ -23,7 +23,6 @@ from django.utils import timezone
 from django.core.cache import cache
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-from django.utils.encoding import python_2_unicode_compatible
 
 from code_based_auth.models import Code, CodeField, CodeGenerator
 from taggit.managers import TaggableManager
@@ -494,12 +493,13 @@ class QuestionSet(Model):
                         url_str = i.get(url_property, None)
                         if url_str is not None:
                             try:
-                                data_res = r.question.resource_set.get(relative_url = url_str)
-                                i[url_property] = "data:" + data_res.mimetype + ";base64,"  + data_res.as_base64().decode('utf-8')
+                                data_res = r.question.resource_set.get(relative_url=url_str)
+                                i[url_property] = ("data:" + data_res.mimetype + ";base64," +
+                                                   data_res.as_base64().decode('utf-8'))
                                 embeded_resource_ids.append(data_res.id)
                             except Exception as e:
                                 # TODO: handle exception, not print it!
-                                print ("error embedding", url, url_str, e)
+                                print("error embedding", url, url_str, e)
                 embeded_resource_ids.append(r.id)
                 index_str = bytes(index_soup.prettify().encode('utf-8'))
             else:
@@ -881,7 +881,6 @@ class AttemptManager(Manager):
         return qs
 
 
-@python_2_unicode_compatible
 class Attempt(Model):
     def __str__(self):
         return u"({}) {}, {} - {}: {} ({} - {})".format(

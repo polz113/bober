@@ -3,8 +3,17 @@
 /django/static_files
 /django/static
 settings.py
+
 *.pyc
 *~
 .idea*
+.settings*
 
 *.mo
+.directory
+.project
+.pydevproject
+.vscode
+tags
+*.code-workspace
+django/bober/bober/bober.db

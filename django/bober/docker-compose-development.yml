@@ -1,0 +1,53 @@
+version: '3.2'
+services:
+  web:
+    # image: ulfri/bober
+    build: .
+    # Overwrite bober code with the current one
+    volumes:
+      - type: bind
+        source: .
+        target: /home/bober/bober
+      - ./static:/home/bober/static  # host static:container static
+      - ./media:/home/bober/media  # host media:container media
+    secrets:
+      - source: settings
+        target: /home/bober/bober/bober/settings.py
+    ports:
+      - "8080:8080"
+    links:
+      - db
+    environment:
+      - DJANGO_SETTINGS_MODULE=bober.settings-docker
+      - SECRET_KEY=type_your_secret_key
+      - UWSGI_CHDIR=/home/bober/bober
+      - UWSGI_MODULE=bober.wsgi:application
+      - UWSGI_MASTER=True
+      - UWSGI_PIDFILE=/tmp/bober-uwsgi.pid
+      - UWSGI_VACUUM=True
+      - UWSGI_MAX_REQUESTS=5000
+      - UWSGI_UID=bober
+      - UWSGI_GID=bober
+      - UWSGI_HTTP_SOCKET=:8080
+      - UWSGI_PLUGINS=python3
+      - UWSGI_STATIC_MAP=/static=/home/bober/static
+      - UWSGI_PY_AUTORELOAD=1
+    restart: always
+
+  db:
+    image: postgres
+    volumes:
+      - bober-data:/var/lib/postgresql/data
+    restart: always
+    environment:
+      - POSTGRES_USER=bober
+      - POSTGRES_DB=bober
+      - POSTGRES_PASSWORD=database_password
+
+volumes:
+  bober-data:
+
+secrets:
+  settings:
+    file: ./bober/settings.py
+  
