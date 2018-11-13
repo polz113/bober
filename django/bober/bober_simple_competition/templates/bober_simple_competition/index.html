@@ -1,6 +1,7 @@
 <!-- Only unauthenticated users should access this view -->
 <!-- View is shown only when no competition is currently running -->
 {% extends "base.html" %}
+{% load crispy_forms_tags %}
 {% load i18n %}
 {% load staticfiles %}
 
@@ -24,14 +25,20 @@
 		    				<h2> {{ competition.title }}</h2>
   						</div>
   					</div>
-			</div>
+  					<div class='row'>
+  						<div class="col-6"></div>
+  						<div class="col-6">
+  							<a href="/simple/competition/" class="btn btn-secondary">{% trans "Login as a teacher" %}</a>
+  						</div>
+					</div>
+  		    </div>
 		</div>
 		<div class="col-md-5 col-xl-6">
 			<div class='row'>
 				<form action="" method="post" id="competition_registration" class="form_compete_table">
 					{% csrf_token %}
-					{{ form.as_p }}
-					<input type="submit" value='{% trans "Compete" %}' class="btn"/>
+					{{form | crispy}}					
+					<input type="submit" value='{% trans "Compete" %}' class="btn btn-secondary"/>
 				</form>
 			</div>
 			<div class='row'>
