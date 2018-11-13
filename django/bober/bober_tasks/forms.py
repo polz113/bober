@@ -112,8 +112,10 @@ class InlineAnswerForm(forms.ModelForm):
 class AnswerInline(InlineFormSet):
     model = Answer
     form_class = InlineAnswerForm
-    can_delete = False
-    extra = 0
+    factory_kwargs = {
+        'can_delete': False,
+        'extra': 0
+    }
 
 
 class InlineRemarkForm(forms.ModelForm):
@@ -139,5 +141,7 @@ class InlineRemarkForm(forms.ModelForm):
 class RemarkInline(InlineFormSet):
     model = Remark
     form_class = InlineRemarkForm
-    can_delete = False
-    extra = 1
+    factory_kwargs = {
+        "can_delete": False,
+        "extra": 1
+    }
