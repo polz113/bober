@@ -11,7 +11,6 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, QueryDict, HttpResponseRedirect
 from django.core.mail import EmailMultiAlternatives
-from django.shortcuts import get_object_or_404
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth import authenticate, login
 from django.core.exceptions import PermissionDenied
@@ -578,7 +577,7 @@ def competition_code_list(request, slug):
 @smart_competition_admin_code_required
 def competition_code_create(request, slug, user_type='admin'):
     access_code = request.session['access_code']
-    competition = Competition.objects.get_or_404(slug=slug)
+    competition = get_object_or_404(Competition, slug=slug)
     admin_codegen = competition.administrator_code_generator
     competitor_privilege_choices = competition.competitor_privilege_choices(
         access_code)
@@ -662,7 +661,7 @@ def send_codes(request, slug):
 
 @smart_competition_admin_code_required
 def competition_competitor_code_revoke(request, slug, code_value):
-    competition = Competition.objects.get_or_404(slug=slug)
+    competition = get_object_or_404(Competition, slug=slug)
     access_code = request.session['access_code']
     admin_codegen = competition.admin_code_generator
     generator = competition.competitor_code_generator
@@ -670,8 +669,7 @@ def competition_competitor_code_revoke(request, slug, code_value):
             access_code,
             {'admin_privileges': ['create_competitor_codes']}):
         raise PermissionDenied
-    code = request.profile.created_codes.get_or_404(
-        value=code_value, generator=generator)
+    code = get_object_or_404(request.profile.created_codes, value=code_value, generator=generator)
     code.revoke(timezone.now())
 
 
