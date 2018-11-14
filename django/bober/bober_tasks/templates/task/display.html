@@ -57,7 +57,7 @@
                         <li><a href="{% url "tasks.edit" task_translation.id %} ">Edit</a></li>
                         <li><a href="/export/task/{{ task.id }}/{{ task_translation.language_locale.id }}/{{ task_translation.version }}">Export</a></li> <!-- make dynamic url -->
                         <li><a href="{% url "tasks.translate" task_translation.id %} ">Translate</a></li>
-                        <li style="display: none"><a href="{% url "tasks.new_form" task_translation.id %} ">New from this version</a></li>
+                        <li style="display: none"><a href="{% url "tasks.new_from" task_translation.id %} ">New from this version</a></li>
                     </ul>
 
                 </div>
