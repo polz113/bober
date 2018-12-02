@@ -1,5 +1,8 @@
 import os
-import cairosvg
+# import cairosvg
+import cairocffi
+from cairosvg.parser import Tree
+from cairosvg.surface import PDFSurface
 from lxml import etree
 
 
@@ -24,22 +27,36 @@ def _data_into_svg(svg, data):
                 span.text = l
             for span in spans[len(lines):]:
                 span.text = ''
-    return etree.tostring(svg)
+    return svg
 
 
-def generate_award_pdf_svg(output, data, template_prefix):
-    svgs = b'<svg>'
+def generate_award_pdf_svg(output, data, template_prefix, dpi=96):
+    svgs = []
+    surface = cairocffi.PDFSurface(output, 1, 1)
+    context = cairocffi.Context(surface)
     for d in data:
         t = d['template']
         if len(t) < 1:
             continue
         text_template_filename = os.path.join(template_prefix, t + '.svg')
         with open(text_template_filename, 'r') as f:
-            svgs += _data_into_svg(etree.parse(f), d)
-    svgs += b'</svg>'
+            svg = etree.parse(f)
+        svg = _data_into_svg(svg, d)
+        svg_str = etree.tostring(svg)
+        tree = Tree(bytestring=svg_str)
+        svgs.append(svg_str)
+        image_surface = PDFSurface(tree, None, dpi)
+        surface.set_size(image_surface.width, image_surface.height)
+        context.set_source_surface(image_surface.cairo, 0, 0)
+        context.paint()
+        surface.show_page()
+        # with open(text_template_filename, 'r') as f:
+        #    svgs.append(_data_into_svg(etree.parse(f), d))
+    # svgs += b'</svg>'
+    surface.finish()
     with open(output + '.svg', 'wb') as f:
-        f.write(svgs)
-    cairosvg.svg2pdf(svgs, write_to=output)  # @UndefinedVariable
+        f.write(b"\n".join(svgs))
+    # cairosvg.svg2pdf(svgs, write_to=output)  # @UndefinedVariable
 
 
 def generate_award_pdf(output, data, template_prefix):
