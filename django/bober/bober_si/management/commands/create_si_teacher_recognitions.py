@@ -11,9 +11,11 @@ from bober_simple_competition.models import AttemptConfirmation
 from bober_paper_submissions.models import JuniorYear
 import json
 import os
+import re
 from django.db.models import Sum
 
-DEFAULT_TEXT_TEMPLATE = (u"""{name} je bil(a) na tekmovanju Bober, ki je potekalo {time_string}, mentor(ica)
+DEFAULT_TEXT_TEMPLATE = (
+    u"""{name} je bil(a) na tekmovanju Bober, ki je potekalo {time_string}, mentor(ica)
 {n_confirmed}.
 {next_round_listing}
 {award_listing}
@@ -31,6 +33,54 @@ DEFAULT_TEXT_TEMPLATE = (u"""{name} je bil(a) na tekmovanju Bober, ki je potekal
 """
     }
 )
+
+GENERIC_TEXT_TEMPLATES = {
+    "solsko-.*": (
+        u"""je bil(a) na šolskem nivoju mednarodnega tekmovanja 
+Bober, ki je potekalo {competition_time}, mentor(ica)
+{n_confirmed}.
+{next_round_listing}
+{award_listing}
+""",
+        { 
+            "m": u"""je bil na šolskem nivoju mednarodnega tekmovanja 
+Bober, ki je potekalo {competition_time}, mentor
+{n_confirmed}.
+{next_round_listing}
+{award_listing}
+""",
+            "f": u"""je bila na šolskem nivoju mednarodnega tekmovanja 
+Bober, ki je potekalo {competition_time}, mentorica
+{n_confirmed}.
+{next_round_listing}
+{award_listing}
+"""
+        }
+    ),
+    "drzavno-.*": (
+        u"""je bil(a) na državnem nivoju mednarodnega tekmovanja 
+Bober, ki je potekalo {competition_time}, mentor(ica)
+{n_confirmed}.
+{next_round_listing}
+{award_listing}
+""",
+        { 
+            "m": u"""je bil na državnem nivoju mednarodnega tekmovanja 
+Bober, ki je potekalo {competition_time}, mentor
+{n_confirmed}.
+{next_round_listing}
+{award_listing}
+""",
+            "f": u"""je bila na državnem nivoju mednarodnega tekmovanja 
+Bober, ki je potekalo {competition_time}, mentorica
+{n_confirmed}.
+{next_round_listing}
+{award_listing}
+""",
+        }
+    )
+    
+}
 
 TEXT_TEMPLATES = {
     "solsko-2016": (
@@ -141,6 +191,14 @@ Bober, ki je potekalo {competition_time}, mentorica
         }),
  
 }
+
+
+def _generic_text_template(cslug):
+    for k, v in GENERIC_TEXT_TEMPLATES.items():
+        if re.match(k, cslug):
+            return v
+    return DEFAULT_TEXT_TEMPLATE
+
 
 
 def _competition_time_string(competition):
@@ -255,7 +313,9 @@ class Command(BaseCommand):
             args += (None,) * (3 - len(args))
         cslug = options.get('competition_slug', [args[0]])[0]
         competition = SchoolCompetition.objects.get(slug=cslug)
-        template = TEXT_TEMPLATES.get(cslug, DEFAULT_TEXT_TEMPLATE)
+        template = TEXT_TEMPLATES.get(
+            cslug,
+            _generic_text_template(cslug))
         default_recognition, created = \
             CompetitionRecognition.objects.get_or_create(
                 competition = competition,
@@ -266,7 +326,7 @@ class Command(BaseCommand):
                 code_parts__name='admin_privileges', 
                 code_parts__value='view_all_admin_codes'
             )[0].creator_set.all()[0]
-        for teacher in Profile.objects.filter(schoolteachercode__competition_questionset__competition = competition, user_id=2341).distinct():
+        for teacher in Profile.objects.filter(schoolteachercode__competition_questionset__competition = competition).distinct():
             print("----------------------------")
             print(teacher, teacher.user.email)
             print("----------------------------")
