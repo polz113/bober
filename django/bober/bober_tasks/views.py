@@ -229,11 +229,6 @@ def tasks_translate(request, id):
     task_translation = TaskTranslation.objects.get(id=id)
     task = task_translation.task
     answer_multiple_choice = task_translation.answer_set
-    categories = task.categories.all()
-    task_age_groups = AgeGroupTask.objects.filter(task_id=task.id)
-    content_categories = all_cat()
-    age_groups = all_ages()
-    difficulty_levels = all_dif()
     if request.method == 'POST':
         title = request.POST['title']
         body = request.POST['body']
@@ -244,7 +239,6 @@ def tasks_translate(request, id):
         it_is_informatics = request.POST['informatics']
 
         answers = get_answers(request.POST)
-        age_groups = get_age_groups(request.POST)
         categories = get_categories(request.POST)
 
         new_trans = TaskTranslation(title=title, body=body, solution=solution,
@@ -260,6 +254,15 @@ def tasks_translate(request, id):
         new_trans.save()
         return redirect(reverse('/show/' + str(task.id) + '?language=' + str(language)))
     return render_to_response("task/translate.html", locals(), context_instance=RequestContext(request))
+
+
+@permission_required('bober_tasks.add_tasktranslation')
+@login_required()
+def tasks_new_from(request, id):
+    task = get_object_or_404(Task, pk=id)
+    translation0 = TaskTranslation(task_id=id)
+    translation0.save()
+    return task_translate(request, translation0.id)
 
 
 @permission_required('bober_tasks.view_tasktranslation')

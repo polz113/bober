@@ -36,7 +36,7 @@ urlpatterns = [
     url(r'^list/$', tasks_list_language, name="tasks.list"),
     url(r'^history/(\d+)$', tasks_history, name="tasks.history"),
     # TODO: the code was badly broaken
-    # url(r'^new_from/(\d+)$', tasks_new_from, name="tasks.new_form"),
+    url(r'^new_from/(\d+)$', tasks_new_from, name="tasks.new_from"),
     url(r'^translate/(\d+)$', tasks_translate, name="tasks.translate"),
     url(r'^upload/(\d+)$', tasks_upload, name="tasks.upload"),
     # TODO: the code was badly broaken

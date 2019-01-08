@@ -42,14 +42,14 @@ class ProfileAdminForm(forms.ModelForm):
 class AnswerInlineAdminForm(forms.ModelForm):
     class Meta:
         model = Answer
-        fields = ['value', 'score', 'attempt']
+        fields = ['value', 'score', 'attempt', 'remote_addr']
     question_id = forms.IntegerField(required=True)
 
 
 class AnswerAdminForm(forms.ModelForm):
     class Meta:
         model = Answer
-        fields = ['value', 'score', 'attempt', 'randomized_question_id']
+        fields = ['value', 'score', 'attempt', 'remote_addr', 'randomized_question_id']
         widgets = {'attempt': forms.CharField()}
     question_id = forms.IntegerField(required=False)
 

@@ -10,7 +10,6 @@ from bober_si.models import *
 from bober_si.award_gen import generate_award_pdf
 from bober_simple_competition.models import AttemptConfirmation
 from bober_paper_submissions.models import JuniorYear
-import json
 import os
 from django.db.models import Sum
 
@@ -21,7 +20,7 @@ class Command(BaseCommand):
     help = "Create all award .pdfs in a single file"
 
     def make_manifest(dirname):
-        print "haha"
+        print("haha")
 
     def add_arguments(self, parser):
         parser.add_argument('competition_slug', nargs=1)
@@ -65,6 +64,5 @@ class Command(BaseCommand):
                     'template': award.award.template,
                 })
         template_file = os.path.join(AWARD_TEMPLATE_DIR, 'all_si.svg')
-        generate_award_pdf(output_filename,
-            data, template_file)
+        generate_award_pdf(output_filename, data, template_file)
 

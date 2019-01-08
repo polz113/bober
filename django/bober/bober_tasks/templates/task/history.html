@@ -43,7 +43,7 @@
                     <ul class="dropdown-menu">
                       <li><a href="{% url "tasks.edit" task.id %} ">Edit</a></li>
                       <li><a href="{% url "tasks.translate" task.id %} ">Translate</a></li>
-                      <li><a href="{% url "tasks.new_form" task.id %} ">New from this version</a></li>
+                      <li><a href="{% url "tasks.new_from" task.id %} ">New from this version</a></li>
                       <li class="divider"></li>
                       <li><a id="del" href="{% url "tasks.delete" task.id %} ">Delete</a></li>
                     </ul>

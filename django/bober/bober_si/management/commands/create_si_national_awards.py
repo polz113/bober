@@ -58,6 +58,7 @@ class Command(BaseCommand):
                 'min_threshold': 0.0,
                 'from_place': 1,
                 'to_place': 1,
+                'icon': 'prva.png',
                 'template': 'prva',
                 'serial_prefix': year_str + group_prefix + '1',
             }
@@ -72,6 +73,7 @@ class Command(BaseCommand):
                 'from_place': 2,
                 'to_place': 2,
                 'template': 'druga',
+                'icon': 'druga.png',
                 'serial_prefix': year_str + group_prefix + '2',
             }
         )
@@ -84,6 +86,7 @@ class Command(BaseCommand):
                 'min_threshold': 0.0,
                 'from_place': 3,
                 'to_place': 3,
+                'icon': 'tretja.png',
                 'template': 'tretja',
                 'serial_prefix': year_str + group_prefix + '3',
             }
@@ -95,6 +98,7 @@ class Command(BaseCommand):
             defaults = {
                 'threshold': None,
                 'min_threshold': 0.0,
+                'icon': 'zlato.png',
                 'template': 'zlato',
                 'serial_prefix': year_str + group_prefix + 'G',
             }
@@ -105,6 +109,7 @@ class Command(BaseCommand):
         silver_defaults = {
             'threshold': l[(len(l)-1)//2],
             'min_threshold': 0.0,
+            'icon': 'srebrno.png',
             'template': 'srebrno',
             'serial_prefix': year_str + group_prefix + 'S',
         }

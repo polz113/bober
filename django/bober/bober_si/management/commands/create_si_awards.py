@@ -52,6 +52,7 @@ class Command(BaseCommand):
             defaults = {
                 'template': 'bronasto',
                 'threshold': max_score,
+                'icon': 'bronasto.png',
                 'min_threshold': max_score // 2,
                 'serial_prefix': year_str + group_prefix + 'B',
             }
@@ -85,6 +86,7 @@ class Command(BaseCommand):
             name = 'napreduje',
             defaults = {
                 'threshold': max_score,
+                'icon': 'napreduje.png',
                 'min_threshold': max_score,
                 'serial_prefix': year_str + group_prefix + 'N',
             }
