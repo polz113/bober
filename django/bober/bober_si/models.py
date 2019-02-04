@@ -242,9 +242,9 @@ class AttemptAward(models.Model):
     competitor_name = models.TextField(blank=True)
     school_name = models.TextField(blank=True)
     group_name = models.TextField(blank=True)
-    revoked_by = models.ForeignKey(Profile, null=True, on_delete=models.CASCADE)
+    revoked_by = models.ForeignKey(Profile, blank=True, null=True, on_delete=models.CASCADE)
     serial = models.CharField(max_length=64, blank=True, default='', unique=True)
-    files = models.ManyToManyField('AwardFile')
+    files = models.ManyToManyField('AwardFile', blank=True)
 
 
 class CompetitionRecognition(models.Model):
@@ -268,6 +268,7 @@ class TeacherRecognition(models.Model):
     revoked_by = models.ForeignKey(Profile, null=True,
                                    related_name='revoked_teacherrecognition_set',
                                    on_delete=models.CASCADE)
+    files = models.ManyToManyField('AwardFile')
 
 
 class AwardFile(models.Model):
