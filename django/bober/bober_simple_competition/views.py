@@ -286,6 +286,13 @@ class CompetitionList(ListView):
     model = Competition
     queryset = Competition.objects.filter(public=True).order_by('-promoted', '-start')
 
+    def get(self, *args, **kwargs):
+        if hasattr(self.request, 'profile'):
+            profile = self.request.profile
+            if not profile.user.first_name or not profile.user.last_name or not profile.user.email:
+                return redirect('profile_update', profile.id)
+        return super().get(*args, **kwargs)
+
     def get_context_data(self, **kwargs):
         """
         Separate competitions into three groups:
@@ -609,7 +616,7 @@ def competition_code_create(request, slug, user_type='admin'):
                 choices=allowed_effect_choices,
                 widget=forms.CheckboxSelectMultiple(),
                 required=False, label=_("Code effects"))
-    else: # user_type == 'competitor'
+    else:  # user_type == 'competitor'
         generator = competition.competitor_code_generator
         if not admin_codegen.code_matches(
                 access_code,
