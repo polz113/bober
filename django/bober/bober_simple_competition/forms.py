@@ -110,6 +110,8 @@ class BasicProfileForm(forms.ModelForm):
                 pass
         # add the fields not listed above at the end
         self.fields.update(unordered_fields)
+        for k in ['first_name', 'last_name', 'email']:
+            self.fields[k].required = True
 
     def save(self, *args, **kwargs):
         cleaned_data = self.cleaned_data

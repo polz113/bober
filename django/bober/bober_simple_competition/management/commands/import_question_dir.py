@@ -1,26 +1,25 @@
-#!/usr/bin/python
-# -*- coding: utf-8 -*-
+import os
+import sys
+from stat import S_ISDIR, ST_MODE
 
-
-import os, sys
 from django.core.management.base import BaseCommand
 from django.db import transaction
 from django.utils.text import slugify
-from bober_simple_competition.models import *
-from stat import S_ISDIR, ST_MODE
-from optparse import make_option
+
+from bober_simple_competition.models import Question, QuestionSet
+
 
 class Command(BaseCommand):
     args = "<dirname>"
     help = "Add a whole questionset at a time"
-    
+
     def add_arguments(self, parser):
         parser.add_argument('dirname', nargs='+', type=str)
-    
+
     @transaction.atomic
     def handle(self, *args, **options):
         if len(args) > 0:
-            dirname = unicode(options.get('dirname', [args[0]])[0])
+            dirname = options.get('dirname', [args[0]])[0]
         else:
             dirname = options['dirname'][0]
         mode = os.stat(dirname)[ST_MODE]
@@ -40,11 +39,11 @@ class Command(BaseCommand):
             except Exception as e:
                 self.stdout.write("Error in {}: {}".format(i, e))
         self.stdout.write("created {}".format(slug))
-        question_set, created = QuestionSet.objects.get_or_create(name = name, slug = slug)
+        question_set, _ = QuestionSet.objects.get_or_create(name=name, slug=slug)
         question_set.questions.clear()
         self.stdout.write("filling questionset")
         for q in questions:
-            q_dict = Question.objects.filter(id = q.id).values_list()[0]
+            q_dict = Question.objects.filter(id=q.id).values_list()[0]
             self.stdout.write(str(q_dict))
             question_set.questions.add(q)
         question_set.rebuild_caches()

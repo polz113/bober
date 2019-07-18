@@ -1,6 +1,6 @@
 # vim:set ft=dockerfile:
 FROM debian:testing
-MAINTAINER Gregor Jerše <gregor.jerse@fri.uni-lj.si>
+LABEL maintainer="Gregor Jerše <gregor.jerse@fri.uni-lj.si>"
 
 ENV BOBER_GIT_LOCATION=https://github.com/polz113/bober.git
 ENV BOBER_GIT_BRANCH=master
@@ -48,7 +48,7 @@ WORKDIR /home/bober
 # RUN git clone --depth 1 -b ${BOBER_GIT_BRANCH} ${BOBER_GIT_LOCATION}
 
 # Copy the current source code inside docker container
-COPY --chown=bober:bober django/bober bober/
+COPY --chown=bober:bober . bober/
 
 # Install dependencies
 RUN pip3 install -r bober/requirements-docker.txt

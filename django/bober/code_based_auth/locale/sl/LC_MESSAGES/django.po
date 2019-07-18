@@ -1,0 +1,60 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2018-10-25 14:32+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=4; plural=(n%100==1 ? 0 : n%100==2 ? 1 : n%100==3 || n"
+"%100==4 ? 2 : 3);\n"
+
+#: code_based_auth/models.py:14
+msgid "hex"
+msgstr ""
+
+#: code_based_auth/models.py:15
+msgid "decimal"
+msgstr ""
+
+#: code_based_auth/models.py:16
+msgid "letters and digits"
+msgstr "črke in števke"
+
+#: code_based_auth/models.py:17
+msgid "case-insensitive letters and digits"
+msgstr "na velikost neobčutljive črke in števke"
+
+#: code_based_auth/models.py:18
+msgid "unambiguous letters and digits"
+msgstr "nedvoumne črke in števke"
+
+#: code_based_auth/models.py:19
+msgid "case-insensitive unambiguous letters and digits"
+msgstr "na velikost neobčutljive nedvoumne črke in števke"
+
+#: code_based_auth/models.py:20
+msgid "words"
+msgstr "besede"
+
+#: code_based_auth/models.py:21
+msgid "case-insensitive words"
+msgstr "na velikost neobčutljive besede"
+
+#: code_based_auth/models.py:22
+msgid "raw no hash"
+msgstr "neobdelano brez zgoščevalne funkcije"
+
+#: code_based_auth/models.py:27
+msgid "No hash"
+msgstr "Brez zgoščevalne funkcije"

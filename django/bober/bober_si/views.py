@@ -418,6 +418,7 @@ def school_awards_pdf(request, username, slug, school_id, cqs_name):
     cert_path = os.path.join(cert_dir, cert_fname)
     cert_full_fname = os.path.join(settings.MEDIA_ROOT, cert_path)
     try:
+        assert False
         assert os.path.isfile(cert_full_fname)
     except Exception:
         # TODO: handle exception
