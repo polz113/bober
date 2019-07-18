@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load crispy_forms_tags %}
 {% load i18n %}
 {% load static %}
 {% block title %}{% trans "Edit user" %}{% endblock %}
@@ -9,65 +10,27 @@
 {{form.media}}
 {% endblock %}
 {% block content %}
-{{ object }} [{{ object.pk }}]
-
-
-<div>
-{% for a in object.attempt_list.all %}
-{{a}}<br/>
-{% endfor %}
+<h1>
+<div class=row>
+		<div class="col-sm">
+			{% trans "Profile for" %} {{ object }} [{{ object.pk }}] 
+		</div>
 </div>
+</h1>
+
+{% if not object.email or not object.first_name or not object.last_name %}
+<div class=row>
+	<div class="col-sm">		
+		<div class="alert alert-danger" role="alert">
+			{% trans "Please fill in required data" %} 
+		</div>
+	</div>
+</div>
+{% endif %}
+
 <form action="" method="post" id="profile_form" class="form_compete_table" autocomplete="off">
 {% csrf_token %}
-<table>
-{{form.as_table}}
-</table>
+{{ form | crispy }}
 <input type="submit" value='{% trans "Submit" %}' class="btn"/>
-
-<br><br>
-{% trans "Codes" %}
-<br>
-<a id="toggle_extended_form_fields1">{% trans "Show codes" %}</a>
-<div id="extended_form_fields1" class="longTextBreak">
-	<div><br>
-		{% trans "Used codes" %}<hr>
-		<ul>
-		{% for c in object.used_codes.all %}
-		<li>{{c}}</li>
-		{% endfor %}
-		</ul>
-	</div>
-	
-	<div><br>
-		{% trans "Received codes" %}<hr>
-		<ul>
-		{% for c in object.received_codes.all %}
-		<li>{{c}}</li>
-		{% endfor %}
-		</ul>
-	</div>
-	
-	<div><br>
-		{% trans "Created codes" %}<hr>
-		<ul>
-		{% for c in object.created_codes.all %}
-		<li>{{c}}</li>
-		{% endfor %}
-		</ul>
-	</div>
-</div>
 </form>
-<script type="text/javascript">
-$('#extended_form_fields1').css('visibility','hidden');
-$('#toggle_extended_form_fields1').click(function(){
-  if ( $('#extended_form_fields1').css('visibility') == 'hidden' ){
-    $('#extended_form_fields1').css('visibility','visible');
-    $('#toggle_extended_form_fields1').text('{% trans "Hide codes" %}');
-  } else {
-    $('#extended_form_fields1').css('visibility','hidden');
-    $('#toggle_extended_form_fields1').text('{% trans "Show codes" %}');
-  }
-});
-
-</script>
 {% endblock %}
