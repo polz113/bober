@@ -48,19 +48,19 @@ WORKDIR /home/bober
 # RUN git clone --depth 1 -b ${BOBER_GIT_BRANCH} ${BOBER_GIT_LOCATION}
 
 # Copy the current source code inside docker container
-COPY --chown=bober:bober .django/bober bober/
-RUN ls /home/bober
-RUN ls /home/bober/bober
-RUN pwd
-RUN ls .
+COPY --chown=bober:bober ./django/bober bober/
+
+WORKDIR /home/bober/bober
 
 # Install dependencies
 RUN pip3 install -r requirements-docker.txt
 
 # Compile translations
-RUN manage.py compilemessages --settings=bober.settings-docker
+RUN ./manage.py compilemessages --settings=bober.settings-docker
 
 RUN chown bober.bober -R /home/bober
+
+WORKDIR /home/bober
 
 # UWSGI options are read from environmental variables.
 # They are specified in docker-compose file.
