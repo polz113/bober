@@ -49,6 +49,10 @@ WORKDIR /home/bober
 
 # Copy the current source code inside docker container
 COPY --chown=bober:bober . bober/
+RUN ls /home/bober
+RUN ls /home/bober/bober
+RUN pwd
+RUN ls .
 
 # Install dependencies
 RUN pip3 install -r bober/requirements-docker.txt
