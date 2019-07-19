@@ -55,10 +55,10 @@ RUN pwd
 RUN ls .
 
 # Install dependencies
-RUN pip3 install -r bober/requirements-docker.txt
+RUN pip3 install -r requirements-docker.txt
 
 # Compile translations
-RUN python3 bober/manage.py compilemessages --settings=bober.settings-docker
+RUN manage.py compilemessages --settings=bober.settings-docker
 
 RUN chown bober.bober -R /home/bober
 
