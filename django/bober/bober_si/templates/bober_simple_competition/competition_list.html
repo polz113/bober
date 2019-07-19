@@ -14,7 +14,6 @@
 </style>
 
 <div id="accordion">
-  {% if promoted %}
   <div class="card">
     <div class="card-header" id="headingOne">
       <h5 class="mb-0">
@@ -23,8 +22,9 @@
         </button>
       </h5>
     </div>
-    <div id="current" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
+    <div id="current" class="collapse {% if promoted %}show{% endif %}" aria-labelledby="headingOne" data-parent="#accordion">
 		<div class="row justify-content-center">
+      {% if promoted %}
 			{% for i in promoted %}
 		  	<div class="card card-custom mx-2 mb-3 bg-warning">
 			    <div class="card-body">
@@ -34,14 +34,15 @@
 				  	  <a class="btn btn-secondary" href="{% url "teacher_overview" slug=i.slug %}">{% trans "Login as a teacher" %}</a>			      	
 			      </p>
 			    </div>
-			</div>
+      </div>
 			{% endfor %}
+      {% else %}
+        {% trans "There are currently no ongoing competitions" %}.
+      {% endif %}
 		</div>
     </div>
   </div>
-  {% endif %}
 
-  {% if guests_allowed %}
   <div class="card">
     <div class="card-header" id="headingOne">
       <h5 class="mb-0">
@@ -50,7 +51,7 @@
         </button>
       </h5>
     </div>
-    <div id="guests_allowed" class="collapse {% if not promoted %}show{% endif %}" aria-labelledby="headingOne" data-parent="#accordion">
+    <div id="guests_allowed" class="collapse" aria-labelledby="headingOne" data-parent="#accordion">
 		<div class="row justify-content-center">
 			{% for i in guests_allowed %}
 		  	<div class="card card-custom mx-2 mb-3 {% if i.promoted %}bg-warning{% endif %}">
@@ -63,12 +64,13 @@
 			    </div>
 			</div>
 			{% endfor %}
-		</div>
+      {% if not guests_allowed %}
+        {% trans "There are currently no competitions available for guests" %}.
+      {% endif %}
+    </div>
     </div>
   </div>
-  {% endif %}
-
-  {% if old %}
+  
   <div class="card">
     <div class="card-header" id="headingOne">
       <h5 class="mb-0">
@@ -77,7 +79,7 @@
         </button>
       </h5>
     </div>
-    <div id="old" class="collapse" aria-labelledby="headingOne" data-parent="#accordion">
+    <div id="old" class="collapse {% if not promoted %}show{% endif %}" aria-labelledby="headingOne" data-parent="#accordion">
 		<div class="row justify-content-center">
 			{% for i in old %}
 		  	<div class="card card-custom mx-2 mb-3 {% if i.promoted %}bg-warning{% endif %}">
@@ -90,9 +92,11 @@
 			    </div>
 			</div>
 			{% endfor %}
+      {% if not old %}
+        {% trans "The archive is currently empty" %}.
+      {% endif %}
 		</div>
     </div>
   </div>
-  {% endif %}
 </div>
 {% endblock %}
