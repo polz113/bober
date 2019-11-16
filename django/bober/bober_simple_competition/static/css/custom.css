@@ -266,6 +266,12 @@ table.results input {
     line-height: 20px;
 }
 
+table.results {
+    border: solid 2px #93E493;
+    border-radius: 6px;
+    background: #F8F8F8;
+}
+
 span.correct {
     color: green;
 }
