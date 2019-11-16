@@ -49,7 +49,7 @@ pytest-cov==2.2.1
 pytest-django==2.9.1
 python-openid==2.2.5
 python-social-auth==0.2.19
-requests==2.10.0
+requests==2.20.0
 requests-oauthlib==0.6.1
 selenium==2.53.6
 simplegeneric==0.8.1
