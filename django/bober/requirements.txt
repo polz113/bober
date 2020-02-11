@@ -5,7 +5,7 @@ CairoSVG==1.0.22
 cffi==1.7.0
 coverage==4.1
 decorator==4.0.10
-Django==1.10.1
+Django==1.11.28
 django-autocomplete-light==3.1.8
 django-braces==1.9.0
 django-extensions==1.6.7
