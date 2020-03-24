@@ -1,5 +1,5 @@
 from django.conf import settings
-from django.shortcuts import render_to_response,\
+from django.shortcuts import \
     redirect, render, get_object_or_404
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
@@ -66,7 +66,7 @@ def parameters(request):
     age_groups = AgeGroup.objects.all()
     difficultys = DifficultyLevel.objects.all()
     categories = Category.objects.all()
-    return render_to_response("control-panel/parameters.html", locals(), context_instance=RequestContext(request))
+    return render(request, "control-panel/parameters.html", locals(), context_instance=RequestContext(request))
 
 
 # Age groups
@@ -79,7 +79,7 @@ def edit_age_group(request, id):
             return redirect("control_panel.age_groups")
     else:
         form = forms.AgeGroupForm(instance=ag)
-    return render_to_response(
+    return render(request, 
         "control-panel/edit-age-group.html",
         locals(),
         context_instance=RequestContext(request)
@@ -94,7 +94,7 @@ def new_age_group(request):
             return redirect("control_panel.age_groups")
     else:
         form = forms.AgeGroupForm()
-    return render_to_response(
+    return render(request, 
         "control-panel/edit-age-group.html", locals(),
         context_instance=RequestContext(request))
 
@@ -114,7 +114,7 @@ def edit_category(request, id):
             return redirect("control_panel.categories")
     else:
         form = forms.CategoryForm(instance=category)
-    return render_to_response("control-panel/edit-category.html", locals(), context_instance=RequestContext(request))
+    return render(request, "control-panel/edit-category.html", locals(), context_instance=RequestContext(request))
 
 
 def new_category(request):
@@ -125,7 +125,7 @@ def new_category(request):
             return redirect("control_panel.categories")
     else:
         form = forms.CategoryForm()
-    return render_to_response("control-panel/edit-category.html", locals(), context_instance=RequestContext(request))
+    return render(request, "control-panel/edit-category.html", locals(), context_instance=RequestContext(request))
 
 
 def delete_category(request, id):
@@ -143,7 +143,7 @@ def edit_difficulty(request, id):
             return redirect("control_panel.difficulty_levels")
     else:
         form = forms.DifficultyForm(instance=difficulty)
-    return render_to_response("control-panel/edit-difficultys.html", locals(),
+    return render(request, "control-panel/edit-difficultys.html", locals(),
                               context_instance=RequestContext(request))
 
 
@@ -155,7 +155,7 @@ def new_difficulty(request):
             return redirect("control_panel.difficulty_levels")
     else:
         form = forms.DifficultyForm()
-    return render_to_response("control-panel/edit-difficultys.html", locals(),
+    return render(request, "control-panel/edit-difficultys.html", locals(),
                               context_instance=RequestContext(request))
 
 
@@ -253,7 +253,7 @@ def tasks_translate(request, id):
                 new_trans.correct_answer_id = answers[i].id
         new_trans.save()
         return redirect(reverse('/show/' + str(task.id) + '?language=' + str(language)))
-    return render_to_response("task/translate.html", locals(), context_instance=RequestContext(request))
+    return render(request, "task/translate.html", locals(), context_instance=RequestContext(request))
 
 
 @permission_required('bober_tasks.add_tasktranslation')
@@ -282,7 +282,7 @@ def tasks_history(request, id):
 
     task_translations = TaskTranslation.objects.filter(task_id__in=tasks_id, language_locale=language)
 
-    return render_to_response("task/history.html", locals(), context_instance=RequestContext(request))
+    return render(request, "task/history.html", locals(), context_instance=RequestContext(request))
 
 
 @permission_required('bober_tasks.view_tasktranslation')
@@ -483,7 +483,7 @@ def display_task(request, id):
     languages = task.available_languages
     versions = TaskTranslation.objects.filter(
         task=task, language_locale=task_translation.language_locale).order_by("-version")
-    return render_to_response("task/display.html", locals(), context_instance=RequestContext(request))
+    return render(request, "task/display.html", locals(), context_instance=RequestContext(request))
 
 
 @login_required()
@@ -497,7 +497,7 @@ def task_detail(request, id):
     age_groups = all_ages()
     difficulty_levels = all_dif()
 
-    return render_to_response("task/details.html", locals(), context_instance=RequestContext(request))
+    return render(request, "task/details.html", locals(), context_instance=RequestContext(request))
 
 
 @permission_required('bober_tasks.view_tasktranslation')

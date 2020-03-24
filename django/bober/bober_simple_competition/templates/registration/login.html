@@ -10,22 +10,22 @@
   </div>
   <div class="card-body">
     <p class="card-text">
-	  <form method="post" action="{% url 'login' %}">
-		{% csrf_token %}
-  	    {{form | crispy}}
-  	    <input type="hidden" name="next" value="{{ next }}" />
-  	    <div class="row">
-  	     <div class="col-sm text-left">
-  		   <input class="btn btn-secondary" type="submit" value="login" />				
-		 </div>
-		 <div class="col-sm text-right">
-			      <a class="btn btn-secondary" href="{% url 'social:begin' 'google-oauth2' %}?next={{ next }}">
-       		{% trans "Login with" %} Google
-	      </a>
-	      <a class="btn btn-secondary" href="{% url "password_reset" %}">{% trans "I have forgotten my password" %}</a>
+      <form method="post" action="{% url 'login' %}">
+        {% csrf_token %}
+        {{form | crispy}}
+        <input type="hidden" name="next" value="{{ next }}" />
+        <div class="row">
+          <div class="col-sm text-left">
+            <input class="btn btn-secondary" type="submit" value="login" />				
+          </div>
+          <div class="col-sm text-right">
+            {% for backend in backends.backends %}
+	    <a class="btn btn-secondary" href="{% url 'social:begin' backend %}?next={{ next }}">{% trans "Login with" %} {{backend}}</a>
+	    {% endfor %}
+            <a class="btn btn-secondary" href="{% url "password_reset" %}">{% trans "I have forgotten my password" %}</a>
           </div>	      
-		</div>		 
-	  </form>	
+        </div>		 
+      </form>	
     </p>
   </div>
 </div>

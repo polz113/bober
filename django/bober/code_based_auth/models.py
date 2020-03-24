@@ -7,7 +7,7 @@ from collections import defaultdict
 
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
-from django.utils.encoding import python_2_unicode_compatible
+# from django.utils.six import python_2_unicode_compatible
 
 
 CODE_COMPONENT_FORMATS = (
@@ -333,7 +333,7 @@ class CodeFormat(models.Model):
         return code
 
 
-@python_2_unicode_compatible
+# @python_2_unicode_compatible
 class CodePart(models.Model):
     def __str__(self):
         return str(self.ordering) + self.value
@@ -344,7 +344,7 @@ class CodePart(models.Model):
     value = models.CharField(max_length=256)
 
 
-@python_2_unicode_compatible
+# @python_2_unicode_compatible
 class Code(models.Model):
     def __str__(self):
         return self.value

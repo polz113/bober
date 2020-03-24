@@ -1,7 +1,7 @@
 from django.conf.urls import url
 from bober_tasks.views import *
 from django.views.generic import RedirectView
-from django.contrib.staticfiles.urls import staticfiles_urlpatterns
+# from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.urls import reverse_lazy
 
 urlpatterns = [
@@ -82,4 +82,4 @@ urlpatterns = [
         name="control_panel.delete_difficulty"),
 ]
 
-urlpatterns += staticfiles_urlpatterns()
+# urlpatterns += staticfiles_urlpatterns()
