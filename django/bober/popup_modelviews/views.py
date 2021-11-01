@@ -17,7 +17,6 @@ class InvalidFormRespond422():
         If the form is invalid, re-render the context data with the
         data-filled form and errors. Also, return 422
         """
-        # return self.render_to_response(self.request, self.get_context_data(form=form), status=422)
         return self.render_to_response(self.get_context_data(form=form), status=422)
 
 class PopupFormViewMixin(TemplateResponseMixin):
