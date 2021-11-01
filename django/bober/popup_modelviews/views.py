@@ -4,7 +4,8 @@ import django.forms
 # from django.utils import six
 from django.forms.widgets import HiddenInput
 from django.template.response import SimpleTemplateResponse
-from django.views.generic import CreateView, UpdateView, FormView
+from django.views.generic.edit import TemplateResponseMixin
+from django.views.generic.edit import CreateView, UpdateView, FormView
 
 IS_POPUP_VAR = '_popup'
 TO_FIELD_VAR = '_to_field'
@@ -16,10 +17,10 @@ class InvalidFormRespond422():
         If the form is invalid, re-render the context data with the
         data-filled form and errors. Also, return 422
         """
-        return self.render(self.request, self.get_context_data(form=form), status=422)
+        # return self.render_to_response(self.request, self.get_context_data(form=form), status=422)
+        return self.render_to_response(self.get_context_data(form=form), status=422)
 
-
-class PopupFormViewMixin():
+class PopupFormViewMixin(TemplateResponseMixin):
     def _form_valid_redirect(self, form):
         """
         If the form is valid, redirect to the supplied URL.
@@ -63,27 +64,30 @@ class PopupFormViewMixin():
 
 
 class PopupFormView(PopupFormViewMixin, InvalidFormRespond422, FormView):
+# class PopupFormView(PopupFormViewMixin, BaseFormView):
     def form_valid(self, form):
         retval_redir = self._form_valid_redirect(form)
-        retval = FormView.form_valid(self, form)
+        retval = BaseFormView.form_valid(self, form)
         if retval_redir is not None:
             return retval_redir
         return retval
 
 
 class PopupCreateView(PopupFormViewMixin, InvalidFormRespond422, CreateView):
+# class PopupCreateView(PopupFormViewMixin, BaseCreateView):
     def form_valid(self, form):
         retval_redir = self._form_valid_redirect(form)
-        retval = CreateView.form_valid(self, form)
+        retval = BaseCreateView.form_valid(self, form)
         if retval_redir is not None:
             return retval_redir
         return retval
 
 
 class PopupUpdateView(PopupFormViewMixin, InvalidFormRespond422, UpdateView):
+# class PopupUpdateView(PopupFormViewMixin, BaseUpdateView):
     def form_valid(self, form):
         retval_redir = self._form_valid_redirect(form)
-        retval = UpdateView.form_valid(self, form)
+        retval = BaseUpdateView.form_valid(self, form)
         if retval_redir is not None:
             return retval_redir
         return retval

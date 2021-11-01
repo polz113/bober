@@ -9,8 +9,9 @@ from bober_simple_competition.models import\
     CompetitionQuestionSet, QuestionSet, Answer
 from django.utils.text import slugify
 from django.utils.translation import ugettext_lazy as _
-from extra_views import InlineFormSet
+from django.forms import BaseInlineFormSet
 import code_based_auth.models
+from extra_views import InlineFormSetFactory
 from django.core.exceptions import ValidationError
 from dal.autocomplete import ModelSelect2Multiple, ModelSelect2
 from django.contrib.auth.models import User
@@ -640,7 +641,7 @@ class QuestionSetForm(forms.ModelForm):
         return retval
 
 
-class CompetitionQuestionSetCreateInline(InlineFormSet):
+class CompetitionQuestionSetCreateInline(InlineFormSetFactory):
     model = CompetitionQuestionSet
     form_class = CompetitionQuestionSetCreateForm
     factory_kwargs = {
@@ -648,7 +649,7 @@ class CompetitionQuestionSetCreateInline(InlineFormSet):
     }
 
 
-class CompetitionQuestionSetUpdateInline(InlineFormSet):
+class CompetitionQuestionSetUpdateInline(InlineFormSetFactory):
     model = CompetitionQuestionSet
     form_class = CompetitionQuestionSetUpdateForm
 
