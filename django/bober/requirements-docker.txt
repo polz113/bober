@@ -14,6 +14,7 @@ beautifulsoup4  # bober_simple_compotition.models
 django-braces  # bober_paper_submissions/views.py
 openpyxl  # bober_si/views.py
 cairosvg  # bober_si/award_gen.py
+lxml  # bober_si/award_gen.py
 django-password-reset  # bober/urls.py
 django-impersonate  # bober/urls.py
 django-import-export  # requirement on production?
