@@ -215,7 +215,7 @@ class CodeFormat(models.Model):
         component_str = self.separator.join([
             str(i) for i in self.components.order_by('ordering')])
         if (self.name):
-            return name
+            return self.name
         return component_str
     separator = models.CharField(max_length=1, default=DEFAULT_SEPARATOR)
     name = models.CharField(max_length=256, blank=True, null=True)

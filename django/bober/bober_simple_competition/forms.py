@@ -264,7 +264,7 @@ class CompetitionRegistrationForm(QuestionSetRegistrationForm):
 class QuestionSetCompetitorForm(forms.ModelForm):
     class Meta:
         model = Competitor
-        fields = ['first_name', 'last_name']
+        fields = ['first_name', 'last_name', 'date_of_birth']
     short_access_code = forms.CharField(label=_('Access code'), required=False)
 
     def __init__(self, *args, **kwargs):
@@ -321,6 +321,7 @@ class QuestionSetCompetitorForm(forms.ModelForm):
             self.instance = Competitor.objects.filter(
                 profile=cleaned['profile'],
                 first_name=cleaned['first_name'],
+                date_of_birth=cleaned['date_of_birth'],
                 last_name=cleaned['last_name'])[0]
         except Exception:
             # TODO: add exception handling
