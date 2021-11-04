@@ -24,7 +24,7 @@ CODE_COMPONENT_FORMATS = (
 
 
 HASH_ALGORITHMS = tuple(
-    [(i, i) for i in list(hashlib.algorithms_available)] + [('noop', _('No hash'))]
+    [(i, i) for i in sorted(list(hashlib.algorithms_available))] + [('noop', _('No hash'))]
 )
 
 DEFAULT_COMPONENT_FORMAT = 'h'
@@ -212,10 +212,13 @@ class CodeComponent(models.Model):
 
 class CodeFormat(models.Model):
     def __str__(self):
-        return self.separator.join([
+        component_str = self.separator.join([
             str(i) for i in self.components.order_by('ordering')])
+        if (self.name):
+            return name
+        return component_str
     separator = models.CharField(max_length=1, default=DEFAULT_SEPARATOR)
-
+    name = models.CharField(max_length=256, blank=True, null=True)
     @classmethod
     def from_components(cls, components, separator=DEFAULT_SEPARATOR):
         cf = cls(separator=separator)

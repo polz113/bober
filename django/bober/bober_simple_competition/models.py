@@ -861,6 +861,7 @@ class Competitor(Model):
         return u"{} {} ({})".format(self.first_name, self.last_name,
                                     self.profile or '?')
     profile = ForeignKey('Profile', null=True, blank=True, on_delete=CASCADE)
+    date_of_birth = DateField(verbose_name=_("Date Of Birth"), blank=True, null=True)
     first_name = CharField(max_length=128, verbose_name=_("First Name"))
     last_name = CharField(max_length=128, verbose_name=_("Last Name"))
 
