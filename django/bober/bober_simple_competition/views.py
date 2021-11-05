@@ -1105,7 +1105,7 @@ class CompetitorUpdateJson(LoginRequiredMixin,
                 'status': 'success',
                 'first_name': self.object.first_name,
                 'last_name': self.object.last_name,
-                'date_of_birth': self.object.date_of_birth,
+                'date_of_birth': str(self.object.date_of_birth),
                 })
 
 
