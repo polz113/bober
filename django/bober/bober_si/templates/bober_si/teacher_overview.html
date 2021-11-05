@@ -51,6 +51,7 @@ function edit_name(obj) {
     $(inputs[$(obj).hasClass('last_name') ? 1 : 0]).focus();
     $(inputs[0]).val(tr.find("span.first_name").text());
     $(inputs[1]).val(tr.find("span.last_name").text());
+    $(inputs[2]).val(tr.find("span.date_of_birth").text());
     var form = span.find("form");
 
     function cancel_editing() {
@@ -71,8 +72,10 @@ function edit_name(obj) {
                 success : function(response_data) {
                     f_name = tr.find("span.first_name");
                     l_name = tr.find("span.last_name");
+                    d_birth = tr.find("span.date_of_birth");
                     f_name.text(response_data["first_name"]);
                     l_name.text(response_data["last_name"]);
+                    d_birth.text(response_data["date_of_birth"]);
                     tr.find("span.edit-name").toggle();
                     tr.find("span.name").toggle();
                 },
@@ -275,12 +278,13 @@ $(document).ready(function(){
                             {% endif %}
                         {% endfor %}
                         <span class="name" onclick="edit_name(this);">
-                            <span class="first_name">{{attempt.competitor.first_name}}</span> <span class="last_name">{{attempt.competitor.last_name}}</span>
+                            <span class="first_name">{{attempt.competitor.first_name}}</span> <span class="last_name">{{attempt.competitor.last_name}}</span><span class="date_of_birth">{{attempt.competitor.date_of_birth}}</span>
                             <span class="attempt_time">(<span class="attempt_start">{{attempt.start}}</span>, <span class="attempt_duration">{{attempt.duration}}</span>)</span></span>
                         <span class="edit-name" style="display: none">
                         <form action="{% url "competitor_update" pk=attempt.competitor.id %}" method="post" />
                             <input name="first_name" type="text" value="{{attempt.competitor.first_name}}"/> 
                             <input name="last_name" type="text" value="{{attempt.competitor.last_name}}"/>
+                            <input name="date_of_birth" type="text" value="{{attempt.competitor.date_of_birth}}"/>
                             <input name="cqs_id" type="hidden" value="{{cqs.id}}">
                             <input name="attempt_id" type="hidden" value="{{attempt.id}}">
                             <input name="invalidate_url" class="invalidate-url" type="hidden" value="{% url "revalidate_awards" profile_id=profile.id slug=competition.slug attempt_id=attempt.id %}" />

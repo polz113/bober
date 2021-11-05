@@ -84,7 +84,7 @@ class TeacherOverview(SmartCompetitionAdminCodeRequiredMixin,
                     When(confirmed_by__id=profile.id, then=True),
                     default=False, output_field=BooleanField()
                 )
-            ).order_by('confirmed', 'competitor__last_name', 'competitor__first_name')
+            ).order_by('confirmed', 'competitor__last_name', 'competitor__first_name', 'competitor__date_of_birth')
             if all_attempts:
                 schools[school]["attempts"].append((cqs, all_attempts))
         context['show_codes'] = self.competition.end >= timezone.now()
@@ -304,6 +304,7 @@ class CompetitionXlsResults(SmartCompetitionAdminCodeRequiredMixin, TemplateView
                     access_code,
                     first_name,
                     last_name,
+                    date_of_birth,
                     attempt_score,
                 ) in attempts.values_list(
                     'id',
@@ -313,6 +314,7 @@ class CompetitionXlsResults(SmartCompetitionAdminCodeRequiredMixin, TemplateView
                     'access_code',
                     'competitor__first_name',
                     'competitor__last_name',
+                    'competitor__date_of_birth',
                     'score').distinct():
                 # print "  attempt:", attempt.id
                 mentors = profiles_by_code[access_code]
