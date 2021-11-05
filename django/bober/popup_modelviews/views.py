@@ -66,7 +66,7 @@ class PopupFormView(PopupFormViewMixin, InvalidFormRespond422, FormView):
 # class PopupFormView(PopupFormViewMixin, BaseFormView):
     def form_valid(self, form):
         retval_redir = self._form_valid_redirect(form)
-        retval = BaseFormView.form_valid(self, form)
+        retval = FormView.form_valid(self, form)
         if retval_redir is not None:
             return retval_redir
         return retval
@@ -76,7 +76,7 @@ class PopupCreateView(PopupFormViewMixin, InvalidFormRespond422, CreateView):
 # class PopupCreateView(PopupFormViewMixin, BaseCreateView):
     def form_valid(self, form):
         retval_redir = self._form_valid_redirect(form)
-        retval = BaseCreateView.form_valid(self, form)
+        retval = CreateView.form_valid(self, form)
         if retval_redir is not None:
             return retval_redir
         return retval
@@ -86,7 +86,7 @@ class PopupUpdateView(PopupFormViewMixin, InvalidFormRespond422, UpdateView):
 # class PopupUpdateView(PopupFormViewMixin, BaseUpdateView):
     def form_valid(self, form):
         retval_redir = self._form_valid_redirect(form)
-        retval = BaseUpdateView.form_valid(self, form)
+        retval = UpdateView.form_valid(self, form)
         if retval_redir is not None:
             return retval_redir
         return retval
