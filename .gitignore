@@ -3,6 +3,7 @@
 /django/static_files
 /django/static
 settings-*.py
+settings.py
 
 *.pyc
 *~

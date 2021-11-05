@@ -1,0 +1,38 @@
+        @import url(https://fonts.googleapis.com/css?family=Lato);
+
+        body {
+            font-size: 15px;
+            line-height: 21px;
+            font-family: Lato, Helvetica;
+        }
+
+        ul {
+            list-style-type: disc;
+        }
+
+        label {
+            padding-left: 10px;
+        }
+
+        .answer{
+            background: whitesmoke;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            padding: 20px;
+            border: grey 1px solid;
+        }
+
+        img.centered-image {
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+            }
+
+        div.answer, div.answer input, div.answer img {
+            vertical-align: middle;
+        }
+
+        div.answer {
+            margin-right: 15px;
+        }
+
