@@ -422,7 +422,7 @@ class CompetitionCompetitorForm(QuestionSetCompetitorForm):
 class CompetitorUpdateForm(forms.ModelForm):
     class Meta:
         model = Competitor
-        fields = ['first_name', 'last_name']
+        fields = ['first_name', 'last_name', 'date_of_birth']
     cqs_id = forms.IntegerField(min_value=0, widget=forms.HiddenInput)
     attempt_id = forms.IntegerField(min_value=0, widget=forms.HiddenInput)
 
