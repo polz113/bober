@@ -79,6 +79,11 @@ function edit_name(obj) {
                     tr.find("span.edit-name").toggle();
                     tr.find("span.name").toggle();
                 },
+                error : function() {
+                    tr.find("span.edit-name").toggle();
+                    tr.find("span.name").toggle();
+                },
+
             });
         invalidate_award($(form).find("input.invalidate-url")[0].value);
     }
