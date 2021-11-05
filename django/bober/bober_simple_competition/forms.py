@@ -1,5 +1,7 @@
+from datetime import date
 from django import forms
 from collections import OrderedDict
+import django.forms
 from django.forms.models import inlineformset_factory, model_to_dict,\
     fields_for_model
 from django.contrib.admin import widgets
@@ -19,6 +21,29 @@ from popup_modelviews.widgets import add_related_field_wrapper
 from crispy_forms.helper import FormHelper, Layout
 from crispy_forms.layout import Fieldset, Div
 
+class DateSelectorWidget(django.forms.MultiWidget):
+    def __init__(self, attrs=None):
+        days = [(day, day) for day in range(1, 32)]
+        months = [(month, month) for month in range(1, 13)]
+        widgets = [
+            forms.Select(attrs=attrs, choices=days),
+            forms.Select(attrs=attrs, choices=months),
+            forms.NumberInput(attrs=attrs),
+        ]
+        super().__init__(widgets, attrs)
+
+    def decompress(self, value):
+        if isinstance(value, date):
+            return [value.day, value.month, value.year]
+        elif isinstance(value, str):
+            year, month, day = value.split('-')
+            return [day, month, year]
+        return [None, None, None]
+
+    def value_from_datadict(self, data, files, name):
+        day, month, year = super().value_from_datadict(data, files, name)
+        # DateField expects a single string that it can parse into a date.
+        return '{}-{}-{}'.format(year, month, day)
 
 class ProfileForm(forms.ModelForm):
     class Meta:
@@ -265,6 +290,10 @@ class QuestionSetCompetitorForm(forms.ModelForm):
     class Meta:
         model = Competitor
         fields = ['first_name', 'last_name', 'date_of_birth']
+        widgets = {
+            'date_of_birth': DateSelectorWidget,
+            # 'date_of_birth': forms.SelectDateWidget(years=range(date.today().year-20, date.today().year-1)),
+        }
     short_access_code = forms.CharField(label=_('Access code'), required=False)
 
     def __init__(self, *args, **kwargs):
