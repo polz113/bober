@@ -1,4 +1,5 @@
-from django.forms import ModelForm, HiddenInput, Textarea, BaseInlineFormSet
+from django.forms import ModelForm, HiddenInput, Textarea
+from extra_views import InlineFormSetFactory
 from bober_paper_submissions.models import JuniorYear, JuniorMentorship, parse_competitor_data
 
 
@@ -32,7 +33,7 @@ class JuniorMentorshipForm(ModelForm):
         fields = ()
 
 
-class JuniorYearInline(BaseInlineFormSet):
+class JuniorYearInline(InlineFormSetFactory):
     model = JuniorYear
     form_class = JuniorYearForm
     factory_kwargs = {'extra': 0, 'can_delete': False}
