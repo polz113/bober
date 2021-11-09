@@ -36,7 +36,9 @@ class DateSelectorWidget(django.forms.MultiWidget):
         if isinstance(value, date):
             return [value.day, value.month, value.year]
         elif isinstance(value, str):
-            year, month, day = value.split('-')
+            split_date = value.split('-')
+            year = '-'.join(split_date[:-2])
+            month, day = split_date[-2:]
             return [day, month, year]
         return [None, None, None]
 
