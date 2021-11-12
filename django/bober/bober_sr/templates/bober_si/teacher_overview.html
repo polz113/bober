@@ -1,0 +1,340 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load static %}
+{% block extrahead %}
+
+<link href={% static "open-iconic-master/font/css/open-iconic-bootstrap.css" %} rel="stylesheet">
+
+<script src="{% static "js/django_csrf_cookie.js" %}"></script>
+<script>
+function switch_qualify(obj, url, confirm) {
+    var tr = $(obj).closest("tr");
+    $.ajax({
+        url: url,
+        method: "post",
+        success: function(response_data) {
+            tr.removeClass(confirm ? "unconfirmed" : "confirmed");
+            tr.addClass(confirm ? "confirmed" : "unconfirmed");
+        }
+    });
+}
+
+function invalidate_award(url) {
+    $.ajax({ url: url,
+             method: 'post'}
+    );
+}
+
+function edit_profile(obj) {
+    var myform = $(obj).closest('form');
+    $.ajax({
+        url : myform[0].action,
+        type : myform[0].method,
+        data : myform.serialize(),
+        // handle a successful response
+        success : function(response_data) {
+            $('#profile_edit').hide();
+            $('#profile_edit_hider').show();
+        },
+    });
+}
+
+function edit_name(obj) {
+    var tr = $(obj).closest("tr");
+    if (tr.hasClass("unconfirmed")) {
+        return;
+    }
+    tr.find("span.name").toggle();
+    var span = tr.find("span.edit-name");
+    span.toggle();
+    var inputs = span.find("input");
+    $(inputs[$(obj).hasClass('last_name') ? 1 : 0]).focus();
+    $(inputs[0]).val(tr.find("span.first_name").text());
+    $(inputs[1]).val(tr.find("span.last_name").text());
+    var form = span.find("form");
+
+    function cancel_editing() {
+        $('body').off('click', click_body);
+        $(tr.find("input")).off('keyup', keyup_function);     
+        tr.find("span.name").toggle();
+        tr.find("span.edit-name").toggle();
+    }
+
+    function finish_editing() {
+        $('body').off('click', click_body);
+        $(tr.find("input")).off('keyup', keyup_function);     
+        $.ajax({
+                url : form[0].action, 
+                type : form[0].method, 
+                data : form.serialize(), 
+                // handle a successful response
+                success : function(response_data) {
+                    f_name = tr.find("span.first_name");
+                    l_name = tr.find("span.last_name");
+                    f_name.text(response_data["first_name"]);
+                    l_name.text(response_data["last_name"]);
+                    tr.find("span.edit-name").toggle();
+                    tr.find("span.name").toggle();
+                },
+                error : function() {
+                    tr.find("span.edit-name").toggle();
+                    tr.find("span.name").toggle();
+                },
+
+            });
+        invalidate_award($(form).find("input.invalidate-url")[0].value);
+    }
+
+    function click_body(e) {
+        if (e.target.tagName != "INPUT") {
+            finish_editing();
+        }
+    }
+
+    function keyup_function(e) {
+        if (e.keyCode == 13) {
+            finish_editing();
+        }
+        else if (e.keyCode == 27) {
+            cancel_editing();
+        }
+    }
+
+    setTimeout(function() { $('body').on('click', click_body); }, 200);
+    tr.find("input").keyup(keyup_function);
+}
+
+function times_showhide() {
+    $('.attempt_time').toggle();	
+}
+
+$(document).ready(function(){
+    $('#profile_edit').hide();
+    $('#profile_edit_hider').click(function() {
+        $('#profile_edit').show();
+        $('#profile_edit_hider').hide();
+    });
+    $('#times_showhide').click(times_showhide);
+    $('.attempt_time').hide();
+});
+</script>
+{% endblock %}
+{% block context_menu %}
+{% if request.user.is_authenticated %}
+    <a id="profile_edit_hider" class="navbar-brand" >{% trans "Edit my profile" %}</a>
+    <div id="profile_edit">
+        <form action="{% url "profile_update" pk=request.user.profile.id %}" method="post" />
+        {{profile_form.as_p}}
+        <div>
+            <a href="{% url "password_change" %}">{% trans "Change password" %}</a>
+        </div>
+        <div>
+            <input id="profile_save_btn" type="button" onclick="edit_profile(this);" value="{% trans "Save" %}"/>
+        </div>
+        </form>
+    </div>
+{% endif %}
+{% endblock %}
+{% block content %}
+<style>
+    .card-custom {
+        max-width: 400px;
+    }
+</style>
+
+<div class='row'>
+  <div class='col'>
+    <p>
+      {{competition.motd | safe}}
+    </p>
+  </div>
+</div>
+
+{# Dashboard: one big dropdown button per school with links inside #}
+{% with buttons_in_row=3 column_class="col-4" %}
+  {% for school, school_data in schools.items %}
+    {% if forloop.counter0|divisibleby:buttons_in_row %}
+      <div class="row">
+    {% endif %}
+    <div class="{{ column_class }}">
+      <div class="btn-group" style="width: 100%">
+        <button class="btn btn-secondary btn-block btn-lg dropdown-toggle" type="button"
+         data-toggle="dropdown" aria-haspopup="true"
+         aria-expanded="false" style="margin-bottom: 5px">
+          {{ school }}
+        </button>
+        <div class="dropdown-menu">
+	  	  <a class="dropdown-item" href="#school_codes_{{school.id}}">
+  		    {% trans "Codes" %}  	    	  
+	  	  </a>
+  	      {% if school_data.junior_mentorship %}
+	        <a class="dropdown-item" href="{% url "junior_results" slug=competition.slug pk=school_data.junior_mentorship.pk %}">
+	          {% trans "Result entry for tasks on paper" %}
+            </a>  	  
+          {% endif %}
+   	      {% if school_data.attempts %}
+  	        <a href="#school_results_{{school.id}}" class='dropdown-item'>
+  	  	      {% trans "Results" %}	
+  	        </a>
+  	      {% endif %}  
+  	      {% if school_data.attempts and show_awards %}
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" href="{% url "mentor_recognition_pdf" slug=competition.slug username=request.user.username %}/potrdilo.pdf">
+            {% trans 'Mentor recognition' %}
+          </a>
+          <a class="dropdown-item" href="#school_certificates_{{school.id}}">
+            {% trans 'School certificates' %}
+          </a>
+  	      {% endif %}
+        </div>
+      </div>
+    </div>
+    {% if forloop.counter|divisibleby:buttons_in_row or forloop.last%}   <!-- end row for buttons -->
+      </div>
+    {% endif %}
+  {% endfor %}
+{% endwith %}
+
+<a class='btn btn-secondary' href="{% url 'school_codes_create' slug=competition.slug %}?next_url={{request.path}}">
+     {% trans 'Add school' %}
+     <span class="oi oi-plus small text-success"
+           data-toggle="tooltip" data-placement="top"
+           title="{% trans 'Add school' %}">
+     </span>
+</a>
+
+<br/>
+<br/>
+
+{# Schoolcards: one per school, contains codes, results and school recognition #}
+{% for school, school_data in schools.items %}
+<div class="card border-dark">
+  <div class="card-header">
+    <h5>{{ school }}</h5>
+  </div>
+  <div class="card-body">
+    <h5 class="card-title" id="school_codes_{{school.id}}">{% trans 'Codes' %}</h5>
+    <p class="card-text">
+  	<div>
+  	  <dl class='row'>
+	  {% for code, code_value in school_data.codes %}
+	    <dt class='col-6'>
+	  	  {{code.name}}
+	    </dt>  	
+	  	<dd class='col-6'>
+	  	  {{code_value}}
+	  	</dd>
+	  {% endfor %}
+	  </dl>
+	</div>
+    </p>
+  </div>
+
+  {% if school_data.attempts and show_awards %}
+  <div class="card-body">
+    <h5 class="card-title" id="school_certificates_{{school.id}}">{% trans 'Certificates' %}</h5>
+    <p class="card-text">
+  	  <div>
+	    {% for cqs, attempts in school_data.attempts %}
+          {% if attempts %}
+			<a class="btn btn-secondary" href="{% url "awards_school_pdf" slug=competition.slug username=request.user.username cqs_name=cqs.name school_id=school.id %}">
+			  {{ cqs.name }}
+			</a>
+	  	  {% endif %}
+	    {% endfor %}
+	  </div>    
+    </p>
+  </div>
+  {% endif %}
+  {% if school_data.attempts %}
+  <div class="card-body">
+    <h5 class="card-title" id="school_results_{{school.id}}">
+      {% trans 'Results' %}
+      <span class="oi oi-clock" onclick="times_showhide()" data-toggle="tooltip" data-placement="top" title="{% trans 'Show/hide attempt times' %}"></span>
+    </h5>
+    <p class="card-text">
+	<div>	
+    {% for cqs, attempts in school_data.attempts %}
+        <div>{{cqs.name}}</div>
+        <table class="table table-striped results">
+		  <thead>
+               	   <th>
+               	     {% trans 'Competitor' %}
+               	   </th>
+                   {% for q in cqs.questionset.questions.all %}
+                   <th>
+                     <span title="{{q.title}}">{{q.title|truncatechars:7}}</span>
+                   </th>
+                   {% endfor %}
+		           <th>
+                     {% trans 'Sum' %}
+                   </th>
+                   
+		  </thead>
+            {% for attempt in attempts %}
+                <tr class="{% if attempt.confirmed %}confirmed{% else %}unconfirmed{% endif %}">
+                    <th>
+                        {% for aaward in attempt.attemptaward_set.all %}
+                            {% if not aaward.revoked_by and aaward.award.icon %}
+                                <img src="{% static "img/award_icons/" %}{{aaward.award.icon}}" />
+                            {% endif %}
+                        {% endfor %}
+                        <span class="name" onclick="edit_name(this);">
+                            <span class="first_name">{{attempt.competitor.first_name}}</span> <span class="last_name">{{attempt.competitor.last_name}}</span>
+                            <span class="attempt_time">(<span class="attempt_start">{{attempt.start}}</span>, <span class="attempt_duration">{{attempt.duration}}</span>)</span></span>
+                        <span class="edit-name" style="display: none">
+                        <form action="{% url "competitor_update" pk=attempt.competitor.id %}" method="post" />
+                            <input name="first_name" type="text" value="{{attempt.competitor.first_name}}"/> 
+                            <input name="last_name" type="text" value="{{attempt.competitor.last_name}}"/>
+                            <input name="cqs_id" type="hidden" value="{{cqs.id}}">
+                            <input name="attempt_id" type="hidden" value="{{attempt.id}}">
+                            <input name="invalidate_url" class="invalidate-url" type="hidden" value="{% url "revalidate_awards" profile_id=profile.id slug=competition.slug attempt_id=attempt.id %}" />
+              
+                        </form>
+                        </span>
+                        <img class="pencil" src="/static/img/pencil.png" onclick="edit_name(this); " />
+                        <img src="/static/img/qualify.png" class="confirm" onclick="switch_qualify(this, '{% url "attempt_confirm" attempt_id=attempt.id competition_questionset_id=cqs.id %}', true); invalidate_award('{% url "revalidate_awards" profile_id=profile.id slug=competition.slug attempt_id=attempt.id %}')" />
+                        <img src="/static/img/disqualify.png" class="confirm" onclick="switch_qualify(this, '{% url "attempt_unconfirm" attempt_id=attempt.id competition_questionset_id=cqs.id %}', false); invalidate_award('{% url "revalidate_awards" profile_id=profile.id slug=competition.slug attempt_id=attempt.id %}')" />
+                    </th>
+                    {% for q, answer in attempt.graded_answers_by_question_id.items %}
+                        <td>
+                            {% if answer.score > 0 %}
+                                <span class="correct">&#x2714;</span>
+                            {% elif answer.score == None %}
+                            {% else %}
+                                <span class="wrong">&#10008;</span>
+                            {% endif %}
+                        </td>
+                    {% endfor %}
+                    <td class="score">
+                        <span>
+                            {{attempt.score|floatformat:"0"}}
+                        </span>
+                    </td>
+                </tr>
+            {% endfor %}  <!-- for attempt in attempts -->
+        </table>
+        {% endfor %} <!-- for cqs, attempts in school_data.attempts -->
+    </div>
+    </p>
+  </div>
+  {% endif %}
+</div>
+
+<br/>
+{% endfor %}
+
+
+{% if profile.feature_level > 10 %}
+<div class="footnote">
+<a href="{% url 'competition_detail' slug=competition.slug %}">{% trans "Advanced details" %}</a>
+</div>
+{% endif %}
+
+<!-- Enable all tooltips on the page, select them by tooltip data-toggle attribute -->
+<script>
+$(function () {
+  $('[data-toggle="tooltip"]').tooltip()
+})
+</script>
+{% endblock %}

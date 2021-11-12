@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Registration" %}{% endblock %}
+
+{% block headline %}{% trans "Registration" %}{% endblock %}
+
+{% block content %}
+<br>
+<br>
+<form action="" method="post" id="competition_registration" class="form_compete_table">
+{% csrf_token %}
+{{ form.non_field_errors }}
+<table>
+    <tr>
+        <th>
+          {{ form.first_name.label_tag }}
+        </th>
+       <td>{{ form.first_name.errors }}
+           {{ form.first_name }}
+       </td>
+    </tr>
+    <tr>
+        <th>
+           {{ form.last_name.label_tag }}
+        </th>
+       <td>{{ form.last_name.errors }}
+           {{ form.last_name }}
+       </td>
+    </tr>
+    <tr>
+        <th>
+           {{ form.short_access_code.label_tag }}
+        </th>
+       <td>{{ form.short_access_code.errors }}
+           {{ form.short_access_code }}
+       </td>
+    </tr>
+    <tr>
+        <th>
+           {{ form.competition_questionset.label_tag }}
+        </th>
+       <td>{{ form.competition_questionset.errors }}
+           {{ form.competition_questionset }}
+       </td>
+    </tr>
+</table>
+<input type="submit" value='{% trans "Compete" %}' class="btn"/>
+</form>
+<p style="margin-top: 24px; margin-left: 180px;">
+<a style="font-size: 18px;" href="{% url 'competition_overview' slug=competition.slug %}" class="btn">{% trans "Login as a teacher" %}</a>
+</p>{% load static %}
+{% endblock %}
