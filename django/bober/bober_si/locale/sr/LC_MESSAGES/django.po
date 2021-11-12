@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: bober\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-07-19 12:10+0000\n"
+"POT-Creation-Date: 2021-11-06 18:24+0000\n"
 "PO-Revision-Date: 2015-11-14 17:22+0100\n"
 "Last-Translator: Bojan Milosavljević <bmilosavljevic@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -83,73 +83,73 @@ msgid "Add School"
 msgstr "Dodaj školu"
 
 #: templates/bober_si/school_codes_create.html:18
-#: templates/bober_si/teacher_overview.html:194
-#: templates/bober_si/teacher_overview.html:197
+#: templates/bober_si/teacher_overview.html:202
+#: templates/bober_si/teacher_overview.html:205
 msgid "Add school"
 msgstr "Dodaj školu"
 
-#: templates/bober_si/teacher_overview.html:119
+#: templates/bober_si/teacher_overview.html:127
 msgid "Edit my profile"
 msgstr ""
 
-#: templates/bober_si/teacher_overview.html:124
+#: templates/bober_si/teacher_overview.html:132
 msgid "Change password"
 msgstr ""
 
-#: templates/bober_si/teacher_overview.html:127
+#: templates/bober_si/teacher_overview.html:135
 msgid "Save"
 msgstr ""
 
-#: templates/bober_si/teacher_overview.html:163
-#: templates/bober_si/teacher_overview.html:211
+#: templates/bober_si/teacher_overview.html:171
+#: templates/bober_si/teacher_overview.html:219
 #, fuzzy
 #| msgid "codes"
 msgid "Codes"
 msgstr "kodovi"
 
-#: templates/bober_si/teacher_overview.html:167
+#: templates/bober_si/teacher_overview.html:175
 msgid "Result entry for tasks on paper"
 msgstr "Unos rezultata takmičenja na papiru"
 
-#: templates/bober_si/teacher_overview.html:172
-#: templates/bober_si/teacher_overview.html:247
-#: templates/bober_simple_competition/competition_detail.html:23
+#: templates/bober_si/teacher_overview.html:180
+#: templates/bober_si/teacher_overview.html:255
+#: templates/bober_simple_competition/competition_detail.html:22
 msgid "Results"
 msgstr "Rezultati"
 
-#: templates/bober_si/teacher_overview.html:178
+#: templates/bober_si/teacher_overview.html:186
 msgid "Mentor recognition"
 msgstr ""
 
-#: templates/bober_si/teacher_overview.html:181
+#: templates/bober_si/teacher_overview.html:189
 #, fuzzy
 #| msgid "Certificates"
 msgid "School certificates"
 msgstr "Priznanja"
 
-#: templates/bober_si/teacher_overview.html:230
+#: templates/bober_si/teacher_overview.html:238
 msgid "Certificates"
 msgstr "Priznanja"
 
-#: templates/bober_si/teacher_overview.html:248
+#: templates/bober_si/teacher_overview.html:256
 #, fuzzy
 #| msgid "Show attempt times"
 msgid "Show/hide attempt times"
 msgstr "Pokaži vreme pokušaja"
 
-#: templates/bober_si/teacher_overview.html:257
+#: templates/bober_si/teacher_overview.html:265
 #, fuzzy
 #| msgid "Competition"
 msgid "Competitor"
 msgstr "Takmičenje"
 
-#: templates/bober_si/teacher_overview.html:265
+#: templates/bober_si/teacher_overview.html:273
 #, fuzzy
 #| msgid "Submit"
 msgid "Sum"
 msgstr "Prosledi"
 
-#: templates/bober_si/teacher_overview.html:325
+#: templates/bober_si/teacher_overview.html:334
 msgid "Advanced details"
 msgstr ""
 
@@ -178,33 +178,33 @@ msgstr ""
 msgid "Set password"
 msgstr ""
 
-#: templates/bober_simple_competition/competition_detail.html:6
-#: templates/bober_simple_competition/competition_detail.html:8
+#: templates/bober_simple_competition/competition_detail.html:5
+#: templates/bober_simple_competition/competition_detail.html:7
 #: templates/bober_simple_competition/competition_list.html:4
 msgid "Competition"
 msgstr "Takmičenje"
 
-#: templates/bober_simple_competition/competition_detail.html:12
+#: templates/bober_simple_competition/competition_detail.html:11
 msgid "Back to competitions"
 msgstr "Nazad na takmičenja"
 
-#: templates/bober_simple_competition/competition_detail.html:15
+#: templates/bober_simple_competition/competition_detail.html:14
 msgid "codes"
 msgstr "kodovi"
 
-#: templates/bober_simple_competition/competition_detail.html:16
+#: templates/bober_simple_competition/competition_detail.html:15
 msgid "overview"
 msgstr "pregled"
 
-#: templates/bober_simple_competition/competition_detail.html:17
+#: templates/bober_simple_competition/competition_detail.html:16
 msgid "edit"
 msgstr "uredi"
 
-#: templates/bober_simple_competition/competition_detail.html:19
+#: templates/bober_simple_competition/competition_detail.html:18
 msgid "Question sets"
 msgstr "Skupovi pitanja"
 
-#: templates/bober_simple_competition/competition_detail.html:22
+#: templates/bober_simple_competition/competition_detail.html:21
 #: templates/bober_simple_competition/competition_list.html:33
 #: templates/bober_simple_competition/competition_list.html:61
 #: templates/bober_simple_competition/competition_list.html:89
@@ -213,7 +213,7 @@ msgstr "Skupovi pitanja"
 msgid "Compete"
 msgstr "Takmičenje"
 
-#: templates/bober_simple_competition/competition_detail.html:24
+#: templates/bober_simple_competition/competition_detail.html:23
 msgid "Awards pdf"
 msgstr ""
 

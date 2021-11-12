@@ -3,7 +3,7 @@ from bober_tasks.models import Task, AgeGroup, Category, DifficultyLevel, \
 from django import forms
 from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
-from django.forms import BaseInlineFormSet
+from extra_views import InlineFormSetFactory
 from django.contrib.flatpages.models import FlatPage
 
 
@@ -109,7 +109,7 @@ class InlineAnswerForm(forms.ModelForm):
                                  initial=True, required=False)
 
 
-class AnswerInline(BaseInlineFormSet):
+class AnswerInline(InlineFormSetFactory):
     model = Answer
     form_class = InlineAnswerForm
     factory_kwargs = {
@@ -138,7 +138,7 @@ class InlineRemarkForm(forms.ModelForm):
         return super(InlineRemarkForm, self).save(*args, **kwargs)
 
 
-class RemarkInline(BaseInlineFormSet):
+class RemarkInline(InlineFormSetFactory):
     model = Remark
     form_class = InlineRemarkForm
     factory_kwargs = {

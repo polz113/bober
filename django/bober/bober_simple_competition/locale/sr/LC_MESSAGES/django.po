@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Bober\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-07-19 12:10+0000\n"
+"POT-Creation-Date: 2021-11-06 18:26+0000\n"
 "PO-Revision-Date: 2015-11-15 20:19+0100\n"
 "Last-Translator: Bojan Milosavljević <bmilosavljevic@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,144 +19,144 @@ msgstr ""
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Generator: Poedit 1.6.2\n"
 
-#: forms.py:67 forms.py:77 forms.py:177 forms.py:267
+#: forms.py:93 forms.py:103 forms.py:203 forms.py:297
 msgid "Access code"
 msgstr "Pristupni kôd"
 
-#: forms.py:69
+#: forms.py:95
 msgid "Update used codes later"
 msgstr "Kasnije ažuriraj korišćene kôdove"
 
-#: forms.py:72
+#: forms.py:98
 msgid "Execute effects later"
 msgstr "Izvrši efekte kasnije"
 
-#: forms.py:162 templates/bober_simple_competition/profile_detail.html:39
+#: forms.py:188 templates/bober_simple_competition/profile_detail.html:39
 msgid "Merged with"
 msgstr ""
 
-#: forms.py:211 forms.py:254 forms.py:299 forms.py:304 forms.py:373
-#: forms.py:377
+#: forms.py:237 forms.py:280 forms.py:329 forms.py:334 forms.py:404
+#: forms.py:408
 msgid "Wrong access code"
 msgstr "Pogrešan pristupni kôd"
 
-#: forms.py:233 forms.py:345
+#: forms.py:259 forms.py:376
 msgid "Group"
 msgstr "Grupa"
 
-#: forms.py:258 forms.py:386
+#: forms.py:284 forms.py:417
 msgid "This field is required"
 msgstr "Ovo polje je obavezno"
 
-#: forms.py:427
+#: forms.py:458
 #, fuzzy
 #| msgid "Back to competitions"
 msgid "Basic competition data"
 msgstr "Nazad na takmičenja"
 
-#: forms.py:437
+#: forms.py:468
 #, fuzzy
 #| msgid "Create competition"
 msgid "Advanced competition data"
 msgstr "Kreiraj takmičenje"
 
-#: forms.py:465
+#: forms.py:496
 #, fuzzy
 #| msgid "Competitor code formats"
 msgid "Competitor code format"
 msgstr "Formati kôdova takmičara"
 
-#: forms.py:469
+#: forms.py:500
 #, fuzzy
 #| msgid "Admin code formats"
 msgid "Admin code format"
 msgstr "Formati kôdova administratorâ"
 
-#: forms.py:470
+#: forms.py:501
 #, fuzzy
 #| msgid "Admin codes"
 msgid "Admin salt"
 msgstr "Kodovi administratorâ"
 
-#: forms.py:471
+#: forms.py:502
 #, fuzzy
 #| msgid "Competitor codes"
 msgid "Competitor salt"
 msgstr "Kôdovi takmičara"
 
-#: forms.py:502
+#: forms.py:533
 msgid "Code id length"
 msgstr ""
 
-#: forms.py:505
+#: forms.py:536
 #, fuzzy
 #| msgid "Code formats"
 msgid "Code id format"
 msgstr "Formati kôdova"
 
-#: forms.py:508
+#: forms.py:539
 msgid "Competitor privilege length"
 msgstr ""
 
-#: forms.py:511
+#: forms.py:542
 #, fuzzy
 #| msgid "Competitor code formats"
 msgid "Competitor privilege format"
 msgstr "Formati kôdova takmičara"
 
-#: forms.py:515
+#: forms.py:546
 #, fuzzy
 #| msgid "Competitor codes"
 msgid "Competitor privilege hash"
 msgstr "Kôdovi takmičara"
 
-#: forms.py:521
+#: forms.py:552
 #, fuzzy
 #| msgid "Question set"
 msgid "Questionset format"
 msgstr "Skupovi pitanja"
 
-#: forms.py:525
+#: forms.py:556
 #, fuzzy
 #| msgid "Question sets"
 msgid "Questionset hash"
 msgstr "Skupovi pitanja"
 
-#: forms.py:530
+#: forms.py:561
 msgid "Admin privilege length"
 msgstr ""
 
-#: forms.py:533
+#: forms.py:564
 #, fuzzy
 #| msgid "Admin code formats"
 msgid "Admin privilege format"
 msgstr "Formati kôdova administratorâ"
 
-#: forms.py:537
+#: forms.py:568
 msgid "Admin privilege hash"
 msgstr ""
 
-#: forms.py:539
+#: forms.py:570
 msgid "Allowed effects length"
 msgstr ""
 
-#: forms.py:542
+#: forms.py:573
 msgid "Allowed effects format"
 msgstr ""
 
-#: forms.py:546
+#: forms.py:577
 msgid "Allowed effects hash"
 msgstr ""
 
-#: forms.py:673
+#: forms.py:704
 msgid "To"
 msgstr ""
 
-#: forms.py:678
+#: forms.py:709
 msgid "Subject"
 msgstr ""
 
-#: forms.py:680
+#: forms.py:711
 msgid "Content"
 msgstr ""
 
@@ -270,8 +270,8 @@ msgstr "Kreiraj format kôda administratora"
 msgid "competitor code generator"
 msgstr "Formati kôdova takmičara"
 
-#: models.py:146 templates/bober_simple_competition/competition_detail.html:18
-#: templates/bober_simple_competition/competition_form.html:82
+#: models.py:146 templates/bober_simple_competition/competition_detail.html:17
+#: templates/bober_simple_competition/competition_form.html:81
 msgid "Question sets"
 msgstr "Skupovi pitanja"
 
@@ -322,17 +322,21 @@ msgstr "Prezime"
 msgid "Questions"
 msgstr "Pitanja"
 
-#: models.py:864 tables.py:13
+#: models.py:864
+msgid "Date Of Birth"
+msgstr ""
+
+#: models.py:865 tables.py:13
 #: templates/bober_simple_competition/profile_detail.html:26
 msgid "First Name"
 msgstr "Ime"
 
-#: models.py:865 tables.py:15
+#: models.py:866 tables.py:15
 #: templates/bober_simple_competition/profile_detail.html:30
 msgid "Last Name"
 msgstr "Prezime"
 
-#: models.py:1006
+#: models.py:1007
 msgid "Date of birth"
 msgstr ""
 
@@ -388,10 +392,10 @@ msgstr "Nazad na Meni"
 #: templates/bober_simple_competition/codeformat_create.html:14
 #: templates/bober_simple_competition/compete_with_short_code.html:18
 #: templates/bober_simple_competition/competition_code_create.html:13
-#: templates/bober_simple_competition/competition_form.html:106
+#: templates/bober_simple_competition/competition_form.html:105
 #: templates/bober_simple_competition/profile_form.html:34
 #: templates/bober_simple_competition/profile_table_list.html:18
-#: templates/bober_simple_competition/questionset_form.html:23
+#: templates/bober_simple_competition/questionset_form.html:22
 #: templates/bober_simple_competition/user_registration.html:21
 msgid "Submit"
 msgstr "Prosledi"
@@ -495,7 +499,7 @@ msgstr "Pokušaji takmičenja"
 
 #: templates/bober_simple_competition/competition_attempt_list.html:9
 #: templates/bober_simple_competition/competition_code_list.html:9
-#: templates/bober_simple_competition/competition_detail.html:12
+#: templates/bober_simple_competition/competition_detail.html:11
 msgid "Back to competitions"
 msgstr "Nazad na takmičenja"
 
@@ -531,8 +535,8 @@ msgstr "Generiši kôd"
 msgid "Competitor codes"
 msgstr "Kôdovi takmičara"
 
-#: templates/bober_simple_competition/competition_detail.html:6
-#: templates/bober_simple_competition/competition_detail.html:8
+#: templates/bober_simple_competition/competition_detail.html:5
+#: templates/bober_simple_competition/competition_detail.html:7
 #: templates/bober_simple_competition/competition_list.html:4
 #: templates/bober_simple_competition/guest_competition_list.html:4
 #: templates/bober_simple_competition/guest_competitions.html:4
@@ -540,28 +544,28 @@ msgstr "Kôdovi takmičara"
 msgid "Competition"
 msgstr "Takmičenje"
 
-#: templates/bober_simple_competition/competition_detail.html:15
+#: templates/bober_simple_competition/competition_detail.html:14
 msgid "codes"
 msgstr "kodova"
 
-#: templates/bober_simple_competition/competition_detail.html:16
+#: templates/bober_simple_competition/competition_detail.html:15
 msgid "edit"
 msgstr "uredi"
 
-#: templates/bober_simple_competition/competition_form.html:7
-#: templates/bober_simple_competition/competition_form.html:9
+#: templates/bober_simple_competition/competition_form.html:6
+#: templates/bober_simple_competition/competition_form.html:8
 msgid "Edit competition"
 msgstr "Uredi takmičenje"
 
-#: templates/bober_simple_competition/competition_form.html:40
+#: templates/bober_simple_competition/competition_form.html:39
 msgid "Sorry, you dont have a permission."
 msgstr ""
 
-#: templates/bober_simple_competition/competition_form.html:40
+#: templates/bober_simple_competition/competition_form.html:39
 msgid "Go back."
 msgstr ""
 
-#: templates/bober_simple_competition/competition_form.html:96
+#: templates/bober_simple_competition/competition_form.html:95
 msgid "Add Another Competition Questionset"
 msgstr ""
 
@@ -753,18 +757,18 @@ msgstr ""
 msgid "Create question set"
 msgstr "Kreiraj skup pitanja"
 
-#: templates/bober_simple_competition/questionset_detail.html:6
-#: templates/bober_simple_competition/questionset_detail.html:8
-#: templates/bober_simple_competition/questionset_form.html:6
-#: templates/bober_simple_competition/questionset_form.html:8
+#: templates/bober_simple_competition/questionset_detail.html:5
+#: templates/bober_simple_competition/questionset_detail.html:7
+#: templates/bober_simple_competition/questionset_form.html:5
+#: templates/bober_simple_competition/questionset_form.html:7
 msgid "Question set"
 msgstr "Skupovi pitanja"
 
-#: templates/bober_simple_competition/questionset_detail.html:18
+#: templates/bober_simple_competition/questionset_detail.html:17
 msgid "Edit questionset"
 msgstr "Uredi skup pitanja"
 
-#: templates/bober_simple_competition/questionset_form.html:15
+#: templates/bober_simple_competition/questionset_form.html:14
 #, fuzzy
 #| msgid "Question set"
 msgid "Add Questionset"

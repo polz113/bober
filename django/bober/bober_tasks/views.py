@@ -22,6 +22,7 @@ from bober_tasks import forms
 from django.utils.text import slugify
 from django.contrib.auth.decorators import permission_required
 from django.contrib.auth.mixins import PermissionRequiredMixin
+from django.views.decorators.clickjacking import xframe_options_sameorigin
 import mimetypes
 from bober_tasks.models import Answer, TaskTranslation, AgeGroupTask, Task,\
     Resources
@@ -173,7 +174,7 @@ def tasks_list_language(request, language_locale):
     RequestConfig(request, paginate={'per_page': 10}).configure(table)
     return render(request, "bober_tasks/list.html", {'table': table})
 
-
+@xframe_options_sameorigin
 @login_required()
 @permission_required('bober_tasks.change_tasktranslation')
 def tasks_upload(request, id=0):
