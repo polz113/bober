@@ -11,6 +11,10 @@
 <form action="" method="post" id="competition_registration" class="form_compete_table">
 {% csrf_token %}
 {{ form.non_field_errors }}
+{{form.date_of_birth.errors}}
+<input type="hidden" name="date_of_birth_0" value="1" id="date_of_birth_0">
+<input type="hidden" name="date_of_birth_1" value="1" id="date_of_birth_1">
+<input type="hidden" name="date_of_birth_2" value="0001" id="date_of_birth_2">
 <table>
     <tr>
         <th>
