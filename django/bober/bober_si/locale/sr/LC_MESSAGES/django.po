@@ -227,27 +227,27 @@ msgstr "Takmičenje na papiru"
 #, fuzzy
 #| msgid "Back to competitions"
 msgid "Ongoing competitions"
-msgstr "Nazad na takmičenja"
+msgstr "Aktivna takmičenja"
 
 #: templates/bober_simple_competition/competition_list.html:34
 #: templates/bober_simple_competition/competition_list.html:62
 #: templates/bober_simple_competition/competition_list.html:90
 msgid "Login as a teacher"
-msgstr ""
+msgstr "Prijavite se kao nastavnik"
 
 #: templates/bober_simple_competition/competition_list.html:40
 msgid "There are currently no ongoing competitions"
-msgstr ""
+msgstr "Trenutačno nema takmičenja"
 
 #: templates/bober_simple_competition/competition_list.html:50
 #, fuzzy
 #| msgid "Competition sheets"
 msgid "Competitions for guests"
-msgstr "Stranice za takmičenje"
+msgstr "Takmičenje za goste"
 
 #: templates/bober_simple_competition/competition_list.html:68
 msgid "There are currently no competitions available for guests"
-msgstr ""
+msgstr "Trenutačno nema takmičenja za goste"
 
 #: templates/bober_simple_competition/competition_list.html:78
 #, fuzzy
@@ -257,7 +257,7 @@ msgstr "Stranice za takmičenje"
 
 #: templates/bober_simple_competition/competition_list.html:96
 msgid "The archive is currently empty"
-msgstr ""
+msgstr "Arhiv je trenutačno prazan"
 
 #~ msgid "Codes for each school"
 #~ msgstr "Kôdovi za škole"

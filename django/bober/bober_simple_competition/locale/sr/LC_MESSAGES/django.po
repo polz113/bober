@@ -99,8 +99,6 @@ msgid "Competitor privilege length"
 msgstr ""
 
 #: forms.py:542
-#, fuzzy
-#| msgid "Competitor code formats"
 msgid "Competitor privilege format"
 msgstr "Formati kôdova takmičara"
 
@@ -108,13 +106,13 @@ msgstr "Formati kôdova takmičara"
 #, fuzzy
 #| msgid "Competitor codes"
 msgid "Competitor privilege hash"
-msgstr "Kôdovi takmičara"
+msgstr "Heš za privilegije takmičara"
 
 #: forms.py:552
 #, fuzzy
 #| msgid "Question set"
 msgid "Questionset format"
-msgstr "Skupovi pitanja"
+msgstr "Format za skupove pitanja"
 
 #: forms.py:556
 #, fuzzy
@@ -242,13 +240,11 @@ msgstr ""
 
 #: models.py:127
 msgid "promoted"
-msgstr ""
+msgstr "promovirano"
 
 #: models.py:128
-#, fuzzy
-#| msgid "Edit competition"
 msgid "public competition"
-msgstr "Uredi takmičenje"
+msgstr "javno takmičenje"
 
 #: models.py:129
 msgid "Public competitions are listed on the competiton list page"
@@ -262,13 +258,13 @@ msgstr ""
 #, fuzzy
 #| msgid "Create administrator code format"
 msgid "administrator code generator"
-msgstr "Kreiraj format kôda administratora"
+msgstr "generator kôdova administratora"
 
 #: models.py:141
 #, fuzzy
 #| msgid "Competitor code formats"
 msgid "competitor code generator"
-msgstr "Formati kôdova takmičara"
+msgstr "generator kôdova takmičara"
 
 #: models.py:146 templates/bober_simple_competition/competition_detail.html:17
 #: templates/bober_simple_competition/competition_form.html:81
@@ -280,16 +276,12 @@ msgid "start"
 msgstr ""
 
 #: models.py:151
-#, fuzzy
-#| msgid "Question"
 msgid "duration"
-msgstr "Pitanja"
+msgstr "trajanje"
 
 #: models.py:152
-#, fuzzy
-#| msgid "Participate in the competition"
 msgid "Duration of the competition in seconds"
-msgstr "Učestvuj u takmičenju"
+msgstr "trajanje takmičenja"
 
 #: models.py:153
 msgid "end"
@@ -300,10 +292,8 @@ msgid "message of the day"
 msgstr ""
 
 #: models.py:331
-#, fuzzy
-#| msgid "Question set"
 msgid "Questionset"
-msgstr "Skupovi pitanja"
+msgstr "Skup pitanja"
 
 #: models.py:434
 msgid "Slug"
@@ -324,7 +314,7 @@ msgstr "Pitanja"
 
 #: models.py:864
 msgid "Date Of Birth"
-msgstr ""
+msgstr "Datum rođenja"
 
 #: models.py:865 tables.py:13
 #: templates/bober_simple_competition/profile_detail.html:26
@@ -338,7 +328,7 @@ msgstr "Prezime"
 
 #: models.py:1007
 msgid "Date of birth"
-msgstr ""
+msgstr "Datum rođenja"
 
 #: tables.py:18
 msgid "username"
@@ -346,7 +336,7 @@ msgstr ""
 
 #: tables.py:19
 msgid "E-Mail"
-msgstr ""
+msgstr "E-pošta"
 
 #: tables.py:20
 msgid "vcard"
@@ -627,10 +617,8 @@ msgstr "Takmičenja u toku"
 
 #: templates/bober_simple_competition/competition_list.html:21
 #: templates/bober_simple_competition/guest_competition_list.html:25
-#, fuzzy
-#| msgid "Edit competition"
 msgid "Ongoing competitions"
-msgstr "Uredi takmičenje"
+msgstr "Takmičenja u toku"
 
 #: templates/bober_simple_competition/competition_list.html:34
 #: templates/bober_simple_competition/competition_list.html:62
@@ -645,31 +633,27 @@ msgstr "Prijavite se kao nastavnik"
 
 #: templates/bober_simple_competition/competition_list.html:40
 msgid "There are currently no ongoing competitions"
-msgstr ""
+msgstr "Nema aktivnih takmičenja"
 
 #: templates/bober_simple_competition/competition_list.html:50
 #: templates/bober_simple_competition/guest_competition_list.html:52
 #: templates/bober_simple_competition/guest_competitions.html:23
 #: templates/bober_simple_competition/guest_questionsets.html:24
-#, fuzzy
-#| msgid "Competitions in progress"
 msgid "Competitions for guests"
-msgstr "Takmičenja u toku"
+msgstr "Takmičenja za goste"
 
 #: templates/bober_simple_competition/competition_list.html:68
 msgid "There are currently no competitions available for guests"
-msgstr ""
+msgstr "Nema aktivnih takmičenja za goste"
 
 #: templates/bober_simple_competition/competition_list.html:78
 #: templates/bober_simple_competition/guest_competition_list.html:79
-#, fuzzy
-#| msgid "Competition details"
 msgid "Competition archive"
-msgstr "Detalji takmičenja"
+msgstr "Arhiv takmičenja"
 
 #: templates/bober_simple_competition/competition_list.html:96
 msgid "The archive is currently empty"
-msgstr ""
+msgstr "Arhiv je trenutačno prazan"
 
 #: templates/bober_simple_competition/index.html:8
 msgid "Welcome to the Bober competition"
@@ -679,7 +663,7 @@ msgstr "Dobrodošli na takmičenje Dabar"
 #, fuzzy
 #| msgid "Welcome to the Bober competition"
 msgid "Welcome to the competition"
-msgstr "Dobrodošli na takmičenje Dabar"
+msgstr "Dobrodošli na takmičenje"
 
 #: templates/bober_simple_competition/profile_detail.html:22
 msgid "Profile Details"
@@ -824,11 +808,11 @@ msgstr "Prijavi se sa"
 
 #: templates/registration/login.html:25
 msgid "I have forgotten my password"
-msgstr ""
+msgstr "Zaboravio sam lozinku"
 
 #: templates/registration/password_reset_complete.html:6
 msgid "Your password has been set.  You may go ahead and log in now."
-msgstr ""
+msgstr "Lozinka je promenjena. Možete se prijaviti."
 
 #: templates/registration/password_reset_confirm.html:8
 msgid ""
@@ -838,15 +822,15 @@ msgstr ""
 
 #: templates/registration/password_reset_confirm.html:12
 msgid "New password:"
-msgstr ""
+msgstr "Nova lozinka"
 
 #: templates/registration/password_reset_confirm.html:14
 msgid "Confirm password:"
-msgstr ""
+msgstr "Potvrdi lozinku"
 
 #: templates/registration/password_reset_confirm.html:15
 msgid "Change my password"
-msgstr ""
+msgstr "Promjeni lozinku"
 
 #: templates/registration/password_reset_confirm.html:20
 msgid ""
@@ -866,7 +850,7 @@ msgstr ""
 
 #: templates/registration/password_reset_form.html:9
 msgid "Email address:"
-msgstr ""
+msgstr "E-pošta:"
 
 #: templates/registration/password_reset_form.html:9
 msgid "Reset my password"
