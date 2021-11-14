@@ -154,14 +154,14 @@ $(document).ready(function(){
 </div>
 
 {# Dashboard: one big dropdown button per school with links inside #}
-{% with buttons_in_row=3 column_class="col-4" %}
+{% with buttons_in_row=3 column_class="col-12" %}
   {% for school, school_data in schools.items %}
     {% if forloop.counter0|divisibleby:buttons_in_row %}
       <div class="row">
     {% endif %}
     <div class="{{ column_class }}">
       <div class="btn-group" style="width: 100%">
-        <button class="btn btn-secondary btn-block btn-lg dropdown-toggle" type="button"
+        <button class="btn btn-secondary btn-block btn-lg dropdown-toggle text-wrap" type="button"
          data-toggle="dropdown" aria-haspopup="true"
          aria-expanded="false" style="margin-bottom: 5px">
           {{ school }}
