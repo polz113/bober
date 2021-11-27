@@ -327,7 +327,8 @@ class CompetitionXlsResults(SmartCompetitionAdminCodeRequiredMixin, TemplateView
                 confirmed_by_schools = set(schools).intersection(
                     confirmed_schools)
                 attempt_start = attempt_start.replace(tzinfo=None)
-                attempt_finish = attempt_finish.replace(tzinfo=None)
+                if attempt_finish is not None: 
+                    attempt_finish = attempt_finish.replace(tzinfo=None)
                 l1 = [
                     attempt_id,
                     attempt_start,
