@@ -20,15 +20,11 @@ class Command(BaseCommand):
         parser.add_argument('master_code', type=str)
         parser.add_argument('n_of_codes', type=int)
         
-    def handle(self, n_of_users, **options):
-        cslug = options.get('competition_slug')
-        cqs_name = options.get('questionset_name')
-        master_code = options.get('master_code')
-        n_of_codes = options.get('n_of_codes')
-        competition = Competition.objects.get(slug=cslug)
+    def handle(self, competition_slug, questionset_name, 
+               master_code, n_of_codes, **options):
+        competition = Competition.objects.get(slug=competition_slug)
         cqss = CompetitionQuestionSet.objects.filter(
-            competition = competition,
-            name = cqs_name
+            name = questionset_name
         )
         for cqs in cqss:
             code_data = competition.max_competitor_code_data(master_code)
