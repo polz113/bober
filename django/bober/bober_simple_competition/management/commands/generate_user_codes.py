@@ -8,6 +8,8 @@ from django.core.management.base import BaseCommand
 from django.db import transaction
 from django.contrib.auth.models import User
 
+from bober_simple_competition.models import Competition
+
 class Command(BaseCommand):
     # @transaction.atomic
 
