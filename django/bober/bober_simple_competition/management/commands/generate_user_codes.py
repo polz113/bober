@@ -25,9 +25,9 @@ class Command(BaseCommand):
     def handle(self, competition_slug, questionset_name, 
                master_code, n_of_codes, **options):
         competition = Competition.objects.get(slug=competition_slug)
-        cqss = CompetitionQuestionSet.objects.filter(
+        cqss = competition.competitionquestionset_set.filter(
             name = questionset_name
-        )
+        ).distinct()
         for cqs in cqss:
             code_data = competition.max_competitor_code_data(master_code)
             code_data['competition_questionset'] = [
