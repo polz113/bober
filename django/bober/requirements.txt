@@ -9,7 +9,7 @@ cryptography==35.0.0
 cssselect2==0.4.1
 defusedxml==0.7.1
 diff-match-patch==20200713
-Django==3.2.9
+Django==3.2.13
 django-autocomplete-light==3.8.2
 django-braces==1.14.0
 django-crispy-forms==1.13.0
