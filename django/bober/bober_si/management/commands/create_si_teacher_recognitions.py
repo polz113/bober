@@ -351,9 +351,8 @@ class Command(BaseCommand):
                     template = default_recognition,
                     teacher = teacher,
                     revoked_by = None,
-                    recipient = name_str,
                     defaults = {
-                        # "recipient": name_str,
+                        "recipient": name_str,
                         "text": s,
                         "serial": u"{}{}-0".format(
                             default_recognition.serial_prefix,
