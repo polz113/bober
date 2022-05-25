@@ -39,7 +39,7 @@ ptyprocess==0.7.0
 pycparser==2.20
 pycryptodomex==3.11.0
 pyjwkest==1.4.2
-PyJWT==2.3.0
+PyJWT==2.4.0
 python-bond==1.4
 python-social-auth==0.3.6
 python3-openid==3.2.0
