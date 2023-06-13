@@ -66,10 +66,63 @@ class CompetitionAdmin(DefaultAdmin):
         request._obj_ = obj
         return super(CompetitionAdmin, self).get_form(request, obj, **kwargs)
 
+    @admin.action(description='Create Slovenian awards')
+    def create_si_awards(self, request, queryset):
+        for competition in queryset.all():
+            for cqs in competition.competitionquestionset_set.all():
+                award_util.create_si_awards(cqs)
+
+    @admin.action(description='Create Slovenian national awards')
+    def create_si_national_awards(self, request, queryset):
+        for competition in queryset.all():
+            for cqs in competition.competitionquestionset_set.all():
+                award_util.create_si_national_awards(cqs)
+
+    @admin.action(description='Assign teacher awards')
+    def create_teacher_awards(self, request, queryset):
+        for competition in queryset.all():
+            award_util.create_teacher_awards(competition)
+
+    @admin.action(description='Grade according to slovenian rules')
+    def grade_si_attempts(self, request, queryset):
+        for competition in queryset.all():
+            competition.grade_answers()
+
+    @admin.action(description='Regrade attempts')
+    def regrade(self, request, queryset):
+        for competition in queryset.all():
+            competition.grade_answers(regrade=True, update_graded=True)
+
+    @admin.action(description='Rebuild question cache')
+    def rebuild_cache(self, request, queryset):
+        for competition in queryset.all():
+            for cqs in competition.competitionquestionset_set.all():
+                cqs.questionset.rebuild_caches()
+
 
 class CompetitionQuestionSetAdmin(DefaultAdmin):
     inlines = [AwardInline]
     model = CompetitionQuestionSet
+
+    @admin.action(description='Create Slovenian awards')
+    def create_si_awards(self, request, queryset):
+        for cqs in queryset.all():
+            award_util.create_si_awards(cqs)
+
+    @admin.action(description='Create Slovenian national awards')
+    def create_si_national_awards(self, request, queryset):
+        for cqs in queryset.all():
+            award_util.create_si_national_awards(cqs)
+
+    @admin.action(description='Rebuild question cache')
+    def rebuild_cache(self, request, queryset):
+        for cqs in queryset.all():
+            cqs.questionset.rebuild_caches()
+
+    @admin.action(description='Regrade')
+    def regrade(self, request, queryset):
+        for cqs in queryset.all():
+            cqs.grade_answers(update_graded=True, regrade=True)
 
 
 class TeacherRecognitionAdmin(DefaultAdmin):
