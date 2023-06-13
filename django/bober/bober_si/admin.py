@@ -61,6 +61,8 @@ class SchoolCategoryQuestionSetsInline(admin.TabularInline):
 
 class CompetitionAdmin(DefaultAdmin):
     inlines = [CompetitionQuestionSetInline, SchoolCategoryQuestionSetsInline]
+    actions = ['create_si_awards', 'create_si_national_awards', 'create_teacher_awards',\
+               'regrade', 'rebuild_cache']
 
     def get_form(self, request, obj=None, **kwargs):
         request._obj_ = obj
@@ -103,6 +105,7 @@ class CompetitionAdmin(DefaultAdmin):
 class CompetitionQuestionSetAdmin(DefaultAdmin):
     inlines = [AwardInline]
     model = CompetitionQuestionSet
+    actions = ['create_si_awards', 'create_si_national_awards', 'rebuild_cache', 'regrade']
 
     @admin.action(description='Create Slovenian awards')
     def create_si_awards(self, request, queryset):
