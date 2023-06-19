@@ -106,7 +106,7 @@ class CompetitionAdmin(DefaultAdmin):
         lr = []
         for competition in queryset.all():
             # TODO: fix this cache
-            cache_glob = "{}/user_files/*/{}/*/*.[svg,pdf]".format(settings.MEDIA_DIR, competition.slug)
+            cache_glob = "{}/user_files/*/{}/*/*.[svg,pdf]".format(settings.MEDIA_ROOT, competition.slug)
             for f in glob.glob(cache_glob):
                 try:
                     lr.append(f)
