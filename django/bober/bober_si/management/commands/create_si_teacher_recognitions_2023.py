@@ -287,13 +287,13 @@ def _n_texts(attempts):
     p_se_je = Plural(u"se je", u"sta se", u"so se", u"se je")
     p_osvojil = Plural(u"osvojil", u"osvojila", u"osvojili", u"osvojilo")
     p_uvrstil = Plural(u"uvrstil", u"uvrstila", u"uvrstili", u"uvrstilo")
-    n_nom = Numbers(u"En", u"Dva", u"Trije", u"Štirje", u"Pet", u"Šest", u"Sedem", u"Osem", u"Devet")
+    n_nom = Numbers(u"en", u"dva", u"trije", u"štirje", u"pet", u"šest", u"sedem", u"osem", u"devet")
     n_dativ = Numbers(u"enemu", u"dvema", u"trem", u"štirim", u"petim", u"šestim", u"sedmim", u"osmim", u"devetim")
     # end of slovenian language gettext replacement
     # texts are pretty much hard-coded here
     n_school = attempts.count()
     if n_school <= 0:
-        return ''
+        return None
     n_confirmed = n_dativ[n_school] + u" " + p_tekmovalcu[n_school]
     next_round_listing = u""
     awards = AttemptAward.objects.filter(
@@ -302,14 +302,14 @@ def _n_texts(attempts):
     ).distinct()
     n = awards.filter(award__name="napreduje").distinct().count()
     if n > 0:
-        next_round_listing = u"{} {} {} {} na državno tekmovanje.\n".format(
+        next_round_listing = u"{} {} {} {} na državno tekmovanje".format(
                 n_nom[n], p_tekmovalec[n], p_se_je[n], p_uvrstil[n])
     award_listing = []
     for award_name in ["bronasto", "srebrno", "zlato"]:
         n = awards.filter(award__name=award_name).distinct().count()
         if n > 0:
             award_listing.append(
-                u"{} {} {} {} priznanje.\n".format(
+                u"{} {} {} {} priznanje".format(
                     n_nom[n], p_je[n], p_osvojil[n], award_name))
     # award_listing = u"\n".join(award_listing)
     top_places_listing = []
@@ -332,17 +332,27 @@ def _compose_text(competition, teacher, attempts, template):
     name = u"{} {}".format(teacher.user.first_name, teacher.user.last_name)
     if teacher.date_of_birth:
         name += u', roj. {},'.format(str(teacher.date_of_birth))
-    n_confirmed, next_round_l, award_l, top_places_l = _n_texts(attempts)
-    award_listing = "\n".join(award_l)
-    top_places_listing = "\n".join(top_places_l)
+    # n_confirmed, next_round_l, award_l, top_places_l = _n_texts(attempts)
+    # award_listing = "\n".join(award_l)
+    # top_places_listing = "\n".join(top_places_l)
     template = template[1].get(teacher.gender, template[0])
     competition_time = _competition_time_string(competition)
     by_groups = []
     for cqs in competition.competitionquestionset_set.all():
         cqs_name = cqs.name
-        attempts = attempts.filter(competitionquestionset = cqs)
-        n_c, next_round_i, award_i, top_places_i = _n_texts(attempts)
-        by_groups.append('{n_c} v skupini "{cqs_name}", {next_round_i}, {award_i}'.format(**locals()))
+        c_attempts = attempts.filter(competitionquestionset = cqs)
+        n_txt = _n_texts(c_attempts)
+        if n_txt is not None:
+            n_c, next_round_i, award_i, top_places_i = n_txt
+            n_c = n_c[:1].upper() + n_c[1:]
+            if len(next_round_i):
+                all_awards_i = [next_round_i] + award_i
+            else:
+                all_awards_i = award_i
+            all_awards_s = ''
+            if len(all_awards_i) > 0:
+                all_awards_s = " " + ". ".join([s[:1].upper() + s[1:] for s in all_awards_i]) + '.'
+            by_groups.append('{n_c} v skupini "{cqs_name}".{all_awards_s}'.format(**locals()))
     list_by_groups = "\n".join(by_groups)
     return template.format(**locals())
 
@@ -379,9 +389,6 @@ class Command(BaseCommand):
                 code_parts__value='view_all_admin_codes'
             )[0].creator_set.all()[0]
         for teacher in Profile.objects.filter(schoolteachercode__competition_questionset__competition = competition).distinct():
-            print("----------------------------")
-            print(teacher, teacher.user.email)
-            print("----------------------------")
             attempts = Attempt.objects.filter(
                     competitionquestionset__competition = competition, 
                     confirmed_by=teacher
@@ -398,6 +405,9 @@ class Command(BaseCommand):
                 if teacher.date_of_birth is not None:
                     name_str += u", roj. {},".format(
                         teacher.date_of_birth.strftime('%d. %m. %Y'))
+                print("----------------------------")
+                print(teacher, teacher.user.email, ":", name_str)
+                print("----------------------------")
                 print(s)
                 continue
                 # the serial under here is WRONG
