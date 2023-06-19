@@ -1,6 +1,8 @@
 from django.contrib import admin, messages
+from django.conf import settings
 import glob
 import os
+
 from bober_simple_competition.models import CompetitionQuestionSet
 from bober_simple_competition.views import _profile_file_path
 from bober_si.models import School, Award, SchoolCategoryQuestionSets, AttemptAward,\
