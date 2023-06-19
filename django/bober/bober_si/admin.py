@@ -1,5 +1,8 @@
-from django.contrib import admin
+from django.contrib import admin, messages
+import glob
+import os
 from bober_simple_competition.models import CompetitionQuestionSet
+from bober_simple_competition.views import _profile_file_path
 from bober_si.models import School, Award, SchoolCategoryQuestionSets, AttemptAward,\
     SchoolTeacherCode, SchoolCompetition, CompetitionRecognition, TeacherRecognition
 
@@ -62,7 +65,7 @@ class SchoolCategoryQuestionSetsInline(admin.TabularInline):
 class CompetitionAdmin(DefaultAdmin):
     inlines = [CompetitionQuestionSetInline, SchoolCategoryQuestionSetsInline]
     actions = ['create_si_awards', 'create_si_national_awards', 'create_teacher_awards',\
-               'regrade', 'rebuild_cache']
+               'remove_award_caches', 'regrade', 'rebuild_cache']
 
     def get_form(self, request, obj=None, **kwargs):
         request._obj_ = obj
@@ -95,6 +98,23 @@ class CompetitionAdmin(DefaultAdmin):
         for competition in queryset.all():
             competition.grade_answers(regrade=True, update_graded=True)
 
+    @admin.action(description='Remove cached award files')
+    def remove_award_caches(self, request, queryset):
+        ln = []
+        lr = []
+        for competition in queryset.all():
+            # TODO: fix this cache
+            cache_glob = "{}/user_files/*/{}/*/*.[svg,pdf]".format(settings.MEDIA_DIR, competition.slug)
+            for f in glob.glob(cache_glob):
+                try:
+                    lr.append(f)
+                    # TODO: add support for django storages
+                    # os.unlink(f)
+                except:
+                    ln.append(f)
+        s = "removed:\n    " + "\n    ".join(lr) + "\nNOT removed:\n    " + "\n    ".join(ln)
+        self.message_user(request, s, messages.SUCCESS) 
+
     @admin.action(description='Rebuild question cache')
     def rebuild_cache(self, request, queryset):
         for competition in queryset.all():
@@ -109,13 +129,17 @@ class CompetitionQuestionSetAdmin(DefaultAdmin):
 
     @admin.action(description='Create Slovenian awards')
     def create_si_awards(self, request, queryset):
+        l = []
         for cqs in queryset.all():
-            award_util.create_si_awards(cqs)
+            l += award_util.create_si_awards(cqs)
+        self.message_user(request, "\n".join(l), messages.SUCCESS)
 
     @admin.action(description='Create Slovenian national awards')
     def create_si_national_awards(self, request, queryset):
+        l = []
         for cqs in queryset.all():
-            award_util.create_si_national_awards(cqs)
+            l += award_util.create_si_national_awards(cqs)
+        self.message_user(request, "\n".join(l), messages.SUCCESS)
 
     @admin.action(description='Rebuild question cache')
     def rebuild_cache(self, request, queryset):
@@ -129,14 +153,29 @@ class CompetitionQuestionSetAdmin(DefaultAdmin):
 
 
 class TeacherRecognitionAdmin(DefaultAdmin):
+    model = TeacherRecognition
     search_fields = [
         "teacher__user__username",
         "teacher__user__first_name",
         "teacher__user__last_name",
         "text",
         "serial",
-    ]
-
+    ] 
+    actions = ['remove_award_caches']
+    @admin.action(description='Remove cached award files')
+    def remove_award_caches(self, request, queryset):
+        lr = []
+        ln = []
+        for recognition in queryset.all():
+            for f in self.files:
+                # TODO: add support for django storages
+                try:
+                    # os.unlink(f.file.path)
+                    lr.append(f.file.path)
+                except:
+                    ln.append(f.file.path)
+        s = "removed:\n    " + "\n    ".join(lr) + "\nNOT removed:\n    " + "\n    ".join(ln)
+        self.message_user(request, s, messages.SUCCESS)
 
 # Register your models here.
 admin.site.register(School, SchoolAdmin)
