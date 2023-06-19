@@ -111,9 +111,9 @@ class CompetitionAdmin(DefaultAdmin):
                 cache_glob = cache_glob_prefix + cache_glob_suffix
                 for f in glob.glob(cache_glob):
                     try:
-                        lr.append(f)
                         # TODO: add support for django storages
-                        # os.unlink(f)
+                        os.unlink(f)
+                        lr.append(f)
                     except:
                         ln.append(f)
         s = "removed:\n    " + "\n    ".join(lr) + "\nNOT removed:\n    " + "\n    ".join(ln)
@@ -174,7 +174,7 @@ class TeacherRecognitionAdmin(DefaultAdmin):
             for f in self.files:
                 # TODO: add support for django storages
                 try:
-                    # os.unlink(f.file.path)
+                    os.unlink(f.file.path)
                     lr.append(f.file.path)
                 except:
                     ln.append(f.file.path)
