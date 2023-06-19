@@ -106,14 +106,16 @@ class CompetitionAdmin(DefaultAdmin):
         lr = []
         for competition in queryset.all():
             # TODO: fix this cache
-            cache_glob = "{}/user_files/*/{}/*/*.[svg,pdf]".format(settings.MEDIA_ROOT, competition.slug)
-            for f in glob.glob(cache_glob):
-                try:
-                    lr.append(f)
-                    # TODO: add support for django storages
-                    # os.unlink(f)
-                except:
-                    ln.append(f)
+            cache_glob_prefix = "{}/user_files/*/{}/".format(settings.MEDIA_ROOT, competition.slug)
+            for cache_glob_suffix in ['*/*/*.svg', '*.svg', '*.pdf', '*/*/*.pdf']:
+                cache_glob = cache_glob_prefix + cache_glob_suffix
+                for f in glob.glob(cache_glob):
+                    try:
+                        lr.append(f)
+                        # TODO: add support for django storages
+                        # os.unlink(f)
+                    except:
+                        ln.append(f)
         s = "removed:\n    " + "\n    ".join(lr) + "\nNOT removed:\n    " + "\n    ".join(ln)
         self.message_user(request, s, messages.SUCCESS) 
 
