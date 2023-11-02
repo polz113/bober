@@ -1,4 +1,5 @@
-from django.conf.urls import include, url
+from django.conf.urls import include
+from django.urls import path
 from django.conf.urls.static import static
 from django.conf import settings
 from django.contrib.staticfiles import views
@@ -19,23 +20,23 @@ js_info_dict = {
 }
 
 urlpatterns = [
-    url(r'^$', RedirectView.as_view(url='simple/')),
-    url(r'^simple/', include(bober_si.urls)),
-    url(r'^simple/', include(bober_paper_submissions.urls)),
-    url(r'^simple/', include(bober_simple_competition.urls)),
-    url(r'^tasks/', include(bober_tasks.urls)),
-    url(r'^jsi18n/(?P<packages>\S+?)/$', JavaScriptCatalog.as_view(),
+    path(r'', RedirectView.as_view(url='simple/')),
+    path(r'simple/', include(bober_si.urls)),
+    path(r'simple/', include(bober_paper_submissions.urls)),
+    path(r'simple/', include(bober_simple_competition.urls)),
+    path(r'tasks/', include(bober_tasks.urls)),
+    path(r'jsi18n/<path:packages>', JavaScriptCatalog.as_view(),
         kwargs={'domain': 'django'}, name='javascript-catalog'),
-    url('^accounts/', include('django.contrib.auth.urls')),
-    url('', include('social_django.urls', namespace='social')),
-    url('', include('password_reset.urls')),
-    url(r'^admin/', admin.site.urls),
-    url(r'^impersonate/', include('impersonate.urls')),
-    url(r'^i18n/', include('django.conf.urls.i18n')),
+    path('accounts/', include('django.contrib.auth.urls')),
+    path('', include('social_django.urls', namespace='social')),
+    # path('', include('password_reset.urls')),
+    path(r'admin/', admin.site.urls),
+    path(r'impersonate/', include('impersonate.urls')),
+    path(r'i18n/', include('django.conf.urls.i18n')),
     # url(r'^mce_filebrowser/', include('mce_filebrowser.urls')),
 ]
 
 if settings.DEBUG:
     urlpatterns += [
-        url(r'^static/(?P<path>.*)$', views.serve),
+        path(r'static/<path:path>', views.serve),
     ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

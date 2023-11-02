@@ -2,7 +2,7 @@ from bober_tasks.models import Task, AgeGroup, Category, DifficultyLevel, \
     TaskTranslation, Answer, Remark
 from django import forms
 from django.conf import settings
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from extra_views import InlineFormSetFactory
 from django.contrib.flatpages.models import FlatPage
 
