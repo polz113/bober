@@ -1,6 +1,6 @@
 import django_tables2 as dt2
 from django_tables2.utils import A
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from bober_simple_competition.models import Profile, Question
 
 

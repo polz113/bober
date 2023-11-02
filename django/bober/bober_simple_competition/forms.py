@@ -10,7 +10,7 @@ from bober_simple_competition.models import\
     Profile, Competitor, Competition,\
     CompetitionQuestionSet, QuestionSet, Answer
 from django.utils.text import slugify
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from django.forms import BaseInlineFormSet
 import code_based_auth.models
 from extra_views import InlineFormSetFactory

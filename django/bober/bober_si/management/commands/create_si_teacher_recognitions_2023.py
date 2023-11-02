@@ -228,6 +228,45 @@ Bober, ki je potekalo {competition_time}, mentorica
 {award_listing}
 """,
         }),
+    "solsko-2023": (
+        u"""je bil(a) na šolskem nivoju tekmovanja 
+Bober, ki je potekalo {competition_time}, mentor(ica):
+{list_by_groups}
+
+Učenci od 2. do 5. razreda so tekmovali na tekmovanju ACM Bober - Bobrček. Učenci od 6. do 9. razreda so tekmovali na selekcijskem tekmovanju ACM Bober - Mladi Bober. Srednješolci od 1. letnika do 4. letnika so tekmovali na tekmovanju ACM Bober - Izkušeni Bober.
+""",
+        { 
+            "m": u"""je bil na šolskem nivoju tekmovanja 
+Bober, ki je potekalo {competition_time}, mentor(ica):
+{list_by_groups}
+Učenci od 2. do 5. razreda so tekmovali na tekmovanju ACM Bober - Bobrček. Učenci od 6. do 9. razreda so tekmovali na selekcijskem tekmovanju ACM Bober - Mladi Bober. Srednješolci od 1. letnika do 4. letnika so tekmovali na tekmovanju ACM Bober - Izkušeni Bober.""",
+            "f": u"""je bila na šolskem nivoju tekmovanja 
+Bober, ki je potekalo {competition_time}, mentor(ica):
+{list_by_groups}
+Učenci od 2. do 5. razreda so tekmovali na tekmovanju ACM Bober - Bobrček. Učenci od 6. do 9. razreda so tekmovali na selekcijskem tekmovanju ACM Bober - Mladi Bober. Srednješolci od 1. letnika do 4. letnika so tekmovali na tekmovanju ACM Bober - Izkušeni Bober.
+"""
+        }),
+    "drzavno-2023": (
+        u"""je bil(a) na državnem nivoju tekmovanja 
+Bober, ki je potekalo {competition_time}, mentor(ica)
+{n_confirmed}.
+{next_round_listing}
+{award_listing}
+""",
+        { 
+            "m": u"""je bil na državnem nivoju tekmovanja 
+Bober, ki je potekalo {competition_time}, mentor
+{n_confirmed}.
+{next_round_listing}
+{award_listing}
+""",
+            "f": u"""je bila na državnem nivoju tekmovanja 
+Bober, ki je potekalo {competition_time}, mentorica
+{n_confirmed}.
+{next_round_listing}
+{award_listing}
+""",
+        }),
 
 }
 

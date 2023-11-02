@@ -2,7 +2,7 @@ from django.db import models
 from bober_simple_competition.models import Profile, CompetitionQuestionSet, Competition, Attempt
 from code_based_auth.models import Code
 from django.db.models import F, Sum
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 import os
 import traceback
 

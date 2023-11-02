@@ -18,7 +18,7 @@ from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 from django.urls import reverse
 from django.utils.text import slugify
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
 from django.core.cache import cache
 from django.db.models.signals import post_save
@@ -334,7 +334,7 @@ class CompetitionQuestionSet(Model):
     guest_code = ForeignKey(Code, null=True, blank=True, on_delete=CASCADE)
 
     def slug_str(self):
-        return str(self.id) + '.' + self.questionset.slug
+        return str(self.id) + '-' + self.questionset.slug
 
     @classmethod
     def get_by_slug(cls, slug):

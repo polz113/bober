@@ -2,12 +2,13 @@ import os
 from itertools import chain
 from openpyxl import Workbook
 from collections import defaultdict
-from openpyxl.writer.excel import save_virtual_workbook
+from io import BytesIO
+# from openpyxl.writer.excel import save_virtual_workbook
 
 from django.shortcuts import render, get_object_or_404
 from django.views.generic import TemplateView, FormView
 from django.urls import reverse
-from django.http import HttpResponse, Http404
+from django.http import HttpResponse, StreamingHttpResponse, Http404
 from django.core.exceptions import PermissionDenied
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
@@ -353,7 +354,9 @@ class CompetitionXlsResults(SmartCompetitionAdminCodeRequiredMixin, TemplateView
                                                 question_none_scores[q.id]))
                 ws.append(l1)
             ws = wb.create_sheet()
-        return save_virtual_workbook(wb)
+        output = BytesIO()
+        wb.save(output)
+        return HttpResponse(output.getvalue(), content_type='application/vnd.openxmlformatsofficedocument.spreadsheetml.sheet')
 
     def dispatch(self, *args, **kwargs):
         self.competition = SchoolCompetition.get_cached_by_slug(slug=kwargs.pop('slug'))
