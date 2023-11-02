@@ -1,62 +1,23 @@
-asgiref==3.4.1
-beautifulsoup4==4.10.0
-cairocffi==1.3.0
-CairoSVG==2.5.2
-certifi==2021.10.8
-cffi==1.15.0
-charset-normalizer==2.0.7
-cryptography==35.0.0
-cssselect2==0.4.1
-defusedxml==0.7.1
-diff-match-patch==20200713
-Django==3.2.9
-django-autocomplete-light==3.8.2
-django-braces==1.14.0
-django-crispy-forms==1.13.0
-django-extra-views==0.14.0
-django-filter==21.1
-django-impersonate==1.7.3
-django-import-export==2.6.1
-django-password-reset==2.0
-django-tables2==2.4.1
-django-taggit==1.5.1
-django-tinymce==3.3.0
-Django-tinymce-filebrowser==0.2.1
-et-xmlfile==1.1.0
-future==0.18.2
-idna==3.3
-lxml==4.6.3
-MarkupPy==1.14
-mysqlclient==2.0.3
-oauthlib==3.1.1
-odfpy==1.4.1
-openpyxl==3.0.9
-pexpect==4.8.0
-Pillow==8.4.0
-psycopg==3.0.1
-psycopg2==2.9.1
-ptyprocess==0.7.0
-pycparser==2.20
-pycryptodomex==3.11.0
-pyjwkest==1.4.2
-PyJWT==2.3.0
-python-bond==1.4
-python-social-auth==0.3.6
-python3-openid==3.2.0
-pytz==2021.3
-PyYAML==6.0
-raven==6.10.0
-requests==2.26.0
-requests-oauthlib==1.3.0
-six==1.16.0
-social-auth-app-django==5.0.0
-social-auth-core==4.1.0
-sorl-thumbnail==12.7.0
-soupsieve==2.2.1
-sqlparse==0.4.2
-tablib==3.1.0
-tinycss2==1.1.0
-urllib3==1.26.7
-webencodings==0.5.1
-xlrd==2.0.1
-xlwt==1.3.0
+Django
+django-autocomplete-light
+django-filter
+django-taggit
+python-social-auth  # Google login
+social-auth-app-django  # Django integration for python-social-auth
+django-tables2
+django-tinymce
+django-tinymce-filebrowser
+django-extra-views  # bober_simple_competition.forms
+django-crispy-forms  # Gregor attempt to make forms nicer
+python-bond  # bober_simple_competition.graders 
+beautifulsoup4  # bober_simple_compotition.models 
+django-braces  # bober_paper_submissions/views.py
+openpyxl  # bober_si/views.py
+cairosvg  # bober_si/award_gen.py
+lxml  # bober_si/award_gen.py
+django-password-reset  # bober/urls.py
+django-impersonate  # bober/urls.py
+django-import-export  # requirement on production?
+mysqlclient  # required for mysql database
+pyjwkest  # social login 
+raven  # error reporting (sentry)
