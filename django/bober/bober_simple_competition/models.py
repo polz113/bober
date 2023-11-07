@@ -338,7 +338,7 @@ class CompetitionQuestionSet(Model):
 
     @classmethod
     def get_by_slug(cls, slug):
-        return cls.objects.get(id=slug[:slug.find('.')])
+        return cls.objects.get(id=slug[:slug.find('-')])
 
     def grade_answers(self, grader_runtime_manager=None,
                       update_graded=False, regrade=False):
@@ -688,14 +688,14 @@ def _question_from_dirlike(
     if question is None:
         question = cls(
             country=manifest['country'],
-            slug=slugify(manifest['title']) + '-' + manifest['id'],
+            slug=slugify(manifest['title'])[:30] + '-' + manifest['id'],
             identifier=manifest['id'], title=manifest['title'],
             version=manifest['version'], authors=manifest['authors'],
             verification_function=",".join(manifest['acceptedAnswers']))
         question.save()
     else:
         question.country = manifest['country']
-        question.slug = slugify(manifest['title'] + '-' + manifest['id'])
+        question.slug = slugify(manifest['title'])[:30] + '-' + manifest['id']
         question.title = manifest['title']
         question.version = manifest['version']
         question.authors = manifest['authors']
