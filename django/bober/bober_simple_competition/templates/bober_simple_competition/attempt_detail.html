@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Results" %}{% endblock %}
+
+{% block headline %}{% trans "Results" %}{% endblock %}
+
+{% block content %}
+<div class="attempts_list">
+    <div class="attempt">
+    {%for i in object_list %}
+        <div class="attempt_answers_info">
+            <div class="attempt_question">{% trans "Question" %}: {{i.question}}</div>
+            <span>{i.timestamp}</span>
+            <span>randomized: {i.randomized_question_id}</span>
+            <span>val: {i.value}</span>
+            {% if i.score == None %}<span class="correct_answer">{% trans "Not graded yet" %} ?</span>
+            {% elif i.score < i.question.none_score or i.score == i.question.min_score %}<span class="wrong_answer">{% trans "Wrong Answer" %} ({{i.score}})</span>
+            {% else %}<span class="correct_answer">{% trans "Correct" %} ({{i.score}})</span>
+            {% endif %}
+            <span>ip: {i.remote_addr}</span>
+        </div>
+    {%endfor%}
+    </div>
+</div>
+<a href="{% url "competition_compete" slug=competition.slug %}">Return to competition</a>
+{% endblock %}

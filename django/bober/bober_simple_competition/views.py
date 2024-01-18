@@ -1029,6 +1029,25 @@ def attempt_results(request, competition_questionset_id, attempt_id):
         request,
         "bober_simple_competition/attempt_results.html", locals())
 
+# 2.2.8 view attempt details
+# @login_required
+@access_code_required
+def attempt_details(request, competition_questionset_id, attempt_id):
+    attempt = Attempt.objects.get(id=attempt_id)
+    competition = attempt.competitionquestionset.competition
+    codegen = competition.competitor_code_generator
+    access_code = request.session['access_code']
+    if codegen.code_matches(
+            access_code, {'competitor_privileges': ['results_before_end']}):
+        attempt.grade_answers(update_graded=True)
+    elif competition.end > timezone.now():
+        return redirect('competition_compete', slug=competition.slug)
+    object_list = attempt.answers()
+    return render(
+        request,
+        "bober_simple_competition/attempt_details.html", locals())
+
+
 
 # 3. create registration codes
 def registration_codes(request):
