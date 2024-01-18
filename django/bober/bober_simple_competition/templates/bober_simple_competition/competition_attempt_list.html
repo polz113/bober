@@ -12,7 +12,7 @@
 <div class="attempts_list">
     {% for i in object_list %}
         <div class="attempt">
-            <span class="attempt_info">{{i}}</span>
+            <span class="attempt_info"><a href={% url "attempt_detail" competition_questionset_id=i.competitionquestionset_id attempt_id=i.id %}>{{i}}</a></span>
             {% for j in i.latest_answers %}
                 <div class="attempt_answers_info">
                     <div class="attempt_question">{% trans "Question" %}: {{j.question}}</div>

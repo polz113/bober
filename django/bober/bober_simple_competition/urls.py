@@ -76,16 +76,19 @@ urlpatterns = [
         views.competition_attempt_list, name="competition_attempt_list"),
     path(r'competition/id=<int:pk>/attempts/regrade',
         views.competition_attempt_list,
-        {'regrade': True}, name="competition_attempt_list"),
+        {'regrade': True}, name="competition_regrade"),
     path(r'competition/<slug:slug>/attempts/regrade',
         views.competition_attempt_list,
-        {'regrade': True}, name="competition_attempt_list"),
+        {'regrade': True}, name="competition_regrade"),
     #     2.1.4 mark attempts as invalid
     #           all attempts with codes created or distributed by
     #           the current user can be accessed
-    path(r'competition/<slug:slug>/attempts/<int:competition_questonset_id>/<int:attempt_id>/invalidate',
+    path(r'competition/<slug:slug>/attempts/<int:competition_questionset_id>/<int:attempt_id>/invalidate',
         views.competition_attempt_list,
         {'regrade': True}, name="attempt_invalidate"),
+    path(r'competition/<slug:slug>/attempts/<int:competition_questionset_id>/regrade',
+        views.competition_attempt_list,
+        {'regrade': True}, name="competition_questionset_regrade"),
     #     2.1.5
     path(r'competition/<slug:slug>/questionsets/use',
         views.use_questionsets, name="use_questionsets"),
@@ -145,6 +148,8 @@ urlpatterns = [
         name="competition_attempt_list"),
     path(r'compete/<int:competition_questionset_id>/attempts/<int:attempt_id>/',
         views.attempt_results, name="attempt_results"),
+    path(r'compete/<int:competition_questionset_id>/attempts/<int:attempt_id>/detail',
+        views.attempt_detail, name="attempt_detail"),
     path(r'compete/<int:competition_questionset_id>/attempts/<int:attempt_id>/confirm',
         views.attempt_confirm, name="attempt_confirm"),
     path(r'compete/<int:competition_questionset_id>/attempts/<int:attempt_id>/unconfirm',
@@ -184,7 +189,7 @@ urlpatterns = [
         views.question_resources, name="question_resource"),
     path(r'question/<int:pk>/solution/', views.QuestionSolution.as_view(),
         name="question_solution"),
-    path(r'question/<int:pk>/solution/<path:resource_path',
+    path(r'question/<int:pk>/solution/<path:resource_path>',
         views.question_resources, name="question_solution_resource"),
     # 7. create questionset from questions
     path(r'questionset/id=', views.QuestionSetList.as_view(),

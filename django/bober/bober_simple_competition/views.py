@@ -684,11 +684,28 @@ def competition_competitor_code_revoke(request, slug, code_value):
 # @smart_competition_admin_code_required
 # @login_required
 @access_code_required
-def competition_attempt_list(request, slug, regrade=False):
-    competition = Competition.objects.get(slug=slug)
+def competition_attempt_list(request, slug=None, regrade=False, 
+            competition_questionset_id=None):
     access_code = request.session['access_code']
-    object_list = Attempt.objects.filter(
-        competitionquestionset__competition=competition)
+    runtime_manager = None
+    competition = None
+    competitionquestionset = None
+    if slug is not None:
+        competition = get_object_or_404(Competition, slug=slug)
+    if competition_questionset_id is not None:
+        competitionquestionset = get_object_or_404(CompetitionQuestionSet,
+                                    id=competition_questionset_id)
+        if competition is not None and competition.id != competitionquestionset.competition_id:
+            raise Http404
+        competition = competitionquestionset.competition
+    if competitionquestionset is not None:
+        object_list = Attempt.objects.filter(
+            competitionquestionset=competitionquestionset)
+    elif competition is not None:
+        object_list = Attempt.objects.filter(
+            competitionquestionset__competition=competition)
+    else:
+        object_list = Attempt.objects.none()
     if not competition.administrator_code_generator.code_matches(
             access_code,
             {'admin_privileges': ['view_all_attempts']}):
@@ -703,10 +720,9 @@ def competition_attempt_list(request, slug, regrade=False):
                 creator_set=request.profile).values_list('value', flat=True)
             # print "  values:", values
             object_list = object_list.filter(
-                Q(user=request.profile) | Q(access_code__in=values))
+                Q(competitor__profile=request.profile) | Q(access_code__in=values))
         else:
             object_list = object_list.none()
-    runtime_manager = None
     for attempt in object_list:
         if runtime_manager is None:
             runtime_manager = graders.RuntimeManager()
@@ -1032,7 +1048,7 @@ def attempt_results(request, competition_questionset_id, attempt_id):
 # 2.2.8 view attempt details
 # @login_required
 @access_code_required
-def attempt_details(request, competition_questionset_id, attempt_id):
+def attempt_detail(request, competition_questionset_id, attempt_id):
     attempt = Attempt.objects.get(id=attempt_id)
     competition = attempt.competitionquestionset.competition
     codegen = competition.competitor_code_generator
@@ -1042,11 +1058,10 @@ def attempt_details(request, competition_questionset_id, attempt_id):
         attempt.grade_answers(update_graded=True)
     elif competition.end > timezone.now():
         return redirect('competition_compete', slug=competition.slug)
-    object_list = attempt.answers()
+    object_list = attempt.answer_set.order_by('timestamp')
     return render(
         request,
-        "bober_simple_competition/attempt_details.html", locals())
-
+        "bober_simple_competition/attempt_detail.html", locals())
 
 
 # 3. create registration codes

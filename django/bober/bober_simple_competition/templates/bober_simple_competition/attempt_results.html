@@ -8,6 +8,7 @@
 {% block content %}
 <div class="attempts_list">
     <div class="attempt">
+    <a href={% url "attempt_detail" attempt_id=attempt.id competition_questionset_id=attempt.competitionquestionset_id %}>{% trans "Attempt details" %}</a>
     {%for i in object_list %}
         <div class="attempt_answers_info">
             <div class="attempt_question">{% trans "Question" %}: {{i.question}}</div>

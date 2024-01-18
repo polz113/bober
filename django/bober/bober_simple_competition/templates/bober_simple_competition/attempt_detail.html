@@ -10,15 +10,16 @@
     <div class="attempt">
     {%for i in object_list %}
         <div class="attempt_answers_info">
-            <div class="attempt_question">{% trans "Question" %}: {{i.question}}</div>
-            <span>{i.timestamp}</span>
-            <span>randomized: {i.randomized_question_id}</span>
-            <span>val: {i.value}</span>
-            {% if i.score == None %}<span class="correct_answer">{% trans "Not graded yet" %} ?</span>
-            {% elif i.score < i.question.none_score or i.score == i.question.min_score %}<span class="wrong_answer">{% trans "Wrong Answer" %} ({{i.score}})</span>
-            {% else %}<span class="correct_answer">{% trans "Correct" %} ({{i.score}})</span>
+            <h3 class="attempt_question">{% trans "Question" %}: {{i.question}}</h3>
+            <span>{{i.timestamp|date:"c"}}</span>
+            <span>val: <em>{{i.value}}</em></span>
+            {% if i.gradedanswer_set.all.0 == None %}<span class="correct_answer">?</span>
+            {% elif i.gradedanswer_set.all.0.score < i.question.none_score or i.gradedanswer_set.all.0.score == i.question.min_score %}<span class="wrong_answer">score: {{i.gradedanswer_set.all.0.score}}</span>
+            {% else %}<span class="correct_answer">score: {{i.gradedanswer_set.all.0.score}}</span>
             {% endif %}
-            <span>ip: {i.remote_addr}</span>
+            <span>r_question_id: {{i.randomized_question_id}}</span>
+            <span>sc: {{i.score}}</span>
+            <span>ip: {{i.remote_addr}}</span>
         </div>
     {%endfor%}
     </div>
