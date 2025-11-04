@@ -11,7 +11,7 @@
 <form action="" method="post" id="competition_registration" class="form_compete_table">
 {% csrf_token %}
 <table>
-  {{ form }}
+  {{ form.as_table }}
 </table>
 <input type="submit" value='{% trans "Compete" %}' class="btn"/>
 </form>
