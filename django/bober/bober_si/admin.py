@@ -51,7 +51,7 @@ class CompetitionQuestionSetInline(admin.TabularInline):
     raw_id_fields = ('guest_code',)
 
 
-class SchoolCategoryQuestionSetsInline(admin.TabularInline):
+class SchoolCategoryQuestionSetsInline(admin.StackedInline):
     model = SchoolCategoryQuestionSets
 
     def formfield_for_manytomany(self, db_field, request, **kwargs):
