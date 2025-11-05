@@ -17,7 +17,7 @@
 <div id='questionsets'>
 {% trans "Question sets" %}
 <ul>
-{% for cqs in object.competitionquestionset_set.all %}
+{% for cqs in object.competitionquestionset_set.all|dictsort:"name" %}
   <li>{{cqs.name}} ({{cqs.attempt_set.all.count}}) <a class="btn" href="{% url 'questionset_compete' competition_questionset_id=cqs.id %}">{% trans "Compete" %}</a>
 <a href="{% url "competitionquestionset_results.xls" slug=cqs.competition.slug cqs_id=cqs.id cqs_slug=cqs.questionset.slug %}">{% trans "Results" %}</a>
 <a href="{% url "awards_all_pdf" slug=cqs.competition.slug username=request.user.username cqs_name=cqs.name %}">{% trans "Awards pdf" %}</a>
