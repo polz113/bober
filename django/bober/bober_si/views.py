@@ -53,7 +53,7 @@ class TeacherOverview(SmartCompetitionAdminCodeRequiredMixin,
         for c in profile.schoolteachercode_set.filter(
                     code__codegenerator=self.competition.competitor_code_generator
                 ).order_by(
-                    'school__name', 'code'
+                    'school__name', 'code__value'
                 ).prefetch_related(
                     'school', 'code',
                 ):

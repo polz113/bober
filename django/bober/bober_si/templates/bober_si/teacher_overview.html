@@ -220,7 +220,7 @@ $(document).ready(function(){
     <p class="card-text">
   	<div>
   	  <dl class='row'>
-	  {% for code, code_value in school_data.codes|dictsort:0 %}
+	  {% for code, code_value in school_data.codes %}
 	    <dt class='col-6'>
 	  	  {{code.name}}
 	    </dt>  	
