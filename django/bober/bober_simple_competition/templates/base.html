@@ -49,7 +49,7 @@
               <img src='{% static "img/logo.png" %}' width="40" class="d-inline-block align-top" alt="">
             </a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                  <form action="{% url "logout" %}">{% csrf_token %}<button type="submit" class="dropdown-item">{% trans "Logout" %} {{request.profile}}</button></form>
+                  <form action="{% url "logout" %}" method="post">{% csrf_token %}<button type="submit" class="dropdown-item">{% trans "Logout" %} {{request.profile}}</button></form>
                {% if request.profile.manages_self %}
             <div class="dropdown-divider"></div>
             <a href="{% url "profile_detail" pk=request.profile.pk %}" class="dropdown-item">
