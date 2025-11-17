@@ -167,7 +167,7 @@ def delete_difficulty(request, id):
 
 @login_required()
 @permission_required('bober_tasks.view_tasktranslation')
-def tasks_list_language(request, language_locale):
+def tasks_list_language(request, language_locale=None):
     queryset = TaskTranslation.objects.select_related().all()
     f = TaskFilter(request.GET, queryset=queryset)
     table = TaskTable(f.qs)
@@ -183,7 +183,7 @@ def tasks_upload(request, id=0):
     # Clean and add version information to filename (for conflict avoid)
     filetype = "." + str(request.FILES.get('images')).split(".")[-1]
     filename = "".join(str(request.FILES.get('images')).split(".")[:-1])
-    rx = re.compile(r'\W+')
+    rx = re.compile('\W+')
     filename = rx.sub('_', filename).strip()
     filename = filename + "_v" + str(task_translation.version)
     file = filename + filetype

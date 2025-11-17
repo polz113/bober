@@ -35,21 +35,21 @@ urlpatterns = [
         name="tasks.translation_save"),
     path(r'list/([a-z]*)', tasks_list_language, name="tasks.list"),
     path(r'list/', tasks_list_language, name="tasks.list"),
-    path(r'history/(\d+)', tasks_history, name="tasks.history"),
+    path(r'history/<int:id>', tasks_history, name="tasks.history"),
     # TODO: the code was badly broaken
-    path(r'new_from/(\d+)', tasks_new_from, name="tasks.new_from"),
-    path(r'translate/(\d+)', tasks_translate, name="tasks.translate"),
-    path(r'upload/(\d+)', tasks_upload, name="tasks.upload"),
+    path(r'new_from/<int:id>', tasks_new_from, name="tasks.new_from"),
+    path(r'translate/<int:id>', tasks_translate, name="tasks.translate"),
+    path(r'upload/<int:id>', tasks_upload, name="tasks.upload"),
     # TODO: the code was badly broaken
-    # url(r'^delete/(\d+)', delete_task, name="tasks.delete"),
-    path(r'display/(\d+)/', display_task, name="tasks.display"),
-    path(r'display/(\d+)/resources/(\w.+)', tasks_resource,
+    # url(r'^delete/<int:id>', delete_task, name="tasks.delete"),
+    path(r'display/<int:id>/', display_task, name="tasks.display"),
+    path(r'display/<int:id>/resources/(\w.+)', tasks_resource,
         name="tasks.resource"),
     path(r'export-multiple-tasks', export_multiple_tasks,
         name="export_multiple_tasks"),
 
     # Task
-    path(r'task/(\d+)/', task_detail, name="tasks.task"),
+    path(r'task/<int:id>/', task_detail, name="tasks.task"),
     path(r'task/save', save_task, name="tasks.task_save"),
 
     # Control Panel
@@ -57,29 +57,29 @@ urlpatterns = [
         name="control_panel.parameters"),
     # Age groups
     path(r'age-groups/?', parameters, name="control_panel.age_groups"),
-    path(r'age-groups/(\d+)?', edit_age_group,
+    path(r'age-groups/<int:id>?', edit_age_group,
         name="control_panel.edit_age_group"),
     path(r'age-groups/new?', new_age_group,
         name="control_panel.new_age_group"),
-    path(r'age-groups/delete/(\d+)?', delete_age_group,
+    path(r'age-groups/delete/<int:id>?', delete_age_group,
         name="control_panel.delete_age_group"),
 
     # Categories
     path(r'categories/?', parameters, name="control_panel.categories"),
-    path(r'categories/(\d+)?', edit_category,
+    path(r'categories/<int:id>?', edit_category,
         name="control_panel.edit_category"),
     path(r'categories/new?', new_category, name="control_panel.new_category"),
-    path(r'categories/delete/(\d+)?', delete_category,
+    path(r'categories/delete/<int:id>?', delete_category,
         name="control_panel.delete_category"),
 
     # Difficulty levels
     path(r'difficulty-levels/?', parameters,
         name="control_panel.difficulty_levels"),
-    path(r'difficulty-levels/(\d+)?', edit_difficulty,
+    path(r'difficulty-levels/<int:id>?', edit_difficulty,
         name="control_panel.edit_difficulty"),
     path(r'difficulty-levels/new?', new_difficulty,
         name="control_panel.new_difficulty"),
-    path(r'difficulty-levels/delete/(\d+)?', delete_difficulty,
+    path(r'difficulty-levels/delete/<int:id>?', delete_difficulty,
         name="control_panel.delete_difficulty"),
 ]
 
