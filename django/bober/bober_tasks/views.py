@@ -183,7 +183,7 @@ def tasks_upload(request, id=0):
     # Clean and add version information to filename (for conflict avoid)
     filetype = "." + str(request.FILES.get('images')).split(".")[-1]
     filename = "".join(str(request.FILES.get('images')).split(".")[:-1])
-    rx = re.compile('\W+')
+    rx = re.compile(r'\W+')
     filename = rx.sub('_', filename).strip()
     filename = filename + "_v" + str(task_translation.version)
     file = filename + filetype
