@@ -182,7 +182,7 @@ $(document).ready(function(){
   	      {% endif %}  
   	      {% if school_data.attempts and show_awards %}
           <div class="dropdown-divider"></div>
-          <a class="dropdown-item" href="{% url "mentor_recognition_pdf" slug=competition.slug username=request.user.username %}/potrdilo.pdf">
+          <a class="dropdown-item" href="{% url "mentor_recognition_pdf" slug=competition.slug username=request.user.username %}">
             {% trans 'Mentor recognition' %}
           </a>
           <a class="dropdown-item" href="#school_certificates_{{school.id}}">
