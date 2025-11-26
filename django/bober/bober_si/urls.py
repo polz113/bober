@@ -16,7 +16,7 @@ urlpatterns = [
         views.TeacherOverview.as_view(), name="teacher_overview"),
     path(r'competition/<slug:slug>/overviewx',
         views.TeacherOverview.as_view(template_name='bober_si/teacher_overviewx.html'), name="teacher_overviewx"),
-    path(r'competition/<slug:slug>/award/<str:username>/recognitions/.*',
+    path(r'competition/<slug:slug>/award/<str:username>/recognitions/mentor_recognition.pdf',
         views.mentor_recognition_pdf, name="mentor_recognition_pdf"),
     path(r'competition/<slug:slug>/award/<str:username>/by_school/<int:school_id>/<str:cqs_name>.pdf',
         views.school_awards_pdf, name="awards_school_pdf"),
