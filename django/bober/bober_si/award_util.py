@@ -173,8 +173,11 @@ def create_si_awards(cqs):
                 confirmed_by = None
             ).order_by('-score').values_list('score', flat=True)
         # self.stdout.write("{}: {}".format(bronze_award, l))
-        bronze_award.threshold = l[(len(l) - 1) // 5]
-        bronze_award.save()
+        if len(l) >= 5:
+            bronze_award.threshold = l[(len(l) - 1) // 5]
+        else:
+            bronze_award.threshold = max_score
+            bronze_award.save()
         # self.stdout.write("Created bronze {}".format(bronze_award))
     general_award, created = Award.objects.get_or_create(
         questionset = cqs,
