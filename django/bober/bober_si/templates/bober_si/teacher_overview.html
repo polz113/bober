@@ -264,7 +264,7 @@ $(document).ready(function(){
                	   <th>
                	     {% trans 'Competitor' %}
                	   </th>
-                   {% for q in cqs.questionset.questions.all %}
+                   {% for q in cqs.questionset.questions.all|dictsort:"id" %}
                    <th>
                      <span title="{{q.title}}">{{q.title|truncatechars:7}}</span>
                    </th>
