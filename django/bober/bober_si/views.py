@@ -421,7 +421,7 @@ def school_awards_pdf(request, username, slug, school_id, cqs_name):
                 id=profile.id).count() <= 0:
         raise PermissionDenied
     cert_dir = os.path.join(_profile_file_path(
-        profile, os.path.join(slug, school_id, 'all')))
+        profile, os.path.join(slug, str(school_id), 'all')))
     cert_fname = cqs_name + '.pdf'
     cert_path = os.path.join(cert_dir, cert_fname)
     cert_full_fname = os.path.join(settings.MEDIA_ROOT, cert_path)
