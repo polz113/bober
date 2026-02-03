@@ -1,4 +1,4 @@
-from bond import make_bond
+# from bond import make_bond
 
 
 class NoneRuntime:
@@ -71,10 +71,10 @@ class PythonBondRuntime(NoneRuntime):
 
 runtimes_dict = {
     0: NoneRuntime,
-    1: JSGostisaRuntime,
-    2: JSFranceRuntime,
+    # 1: JSGostisaRuntime,
+    # 2: JSFranceRuntime,
     16: PythonExecRuntime,
-    17: PythonBondRuntime,
+    # 17: PythonBondRuntime,
 }
 
 
