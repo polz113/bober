@@ -708,9 +708,9 @@ def _question_from_dirlike(
     question.resource_set.all().delete()
     for i in resource_list:
         try:
+            fname = my_path(i['url'])
             if fname.startswith('/static/'):
                 continue
-            fname = my_path(i['url'])
             f = my_open(fname, 'rb')
             data = f.read()
             my_close(f)
