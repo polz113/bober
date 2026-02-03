@@ -38,12 +38,12 @@ class Command(BaseCommand):
                 questions.append(q)
             except Exception as e:
                 self.stdout.write("Error in {}: {}".format(i, e))
-        self.stdout.write("created {}".format(slug))
+        # self.stdout.write("created {}".format(slug))
         question_set, _ = QuestionSet.objects.get_or_create(name=name, slug=slug)
         question_set.questions.clear()
-        self.stdout.write("filling questionset")
+        # self.stdout.write("filling questionset")
         for q in questions:
             q_dict = Question.objects.filter(id=q.id).values_list()[0]
-            self.stdout.write(str(q_dict))
+            # self.stdout.write(str(q_dict))
             question_set.questions.add(q)
         question_set.rebuild_caches()
