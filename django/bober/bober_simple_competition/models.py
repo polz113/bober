@@ -499,7 +499,7 @@ class QuestionSet(Model):
                                 embeded_resource_ids.append(data_res.id)
                             except Exception as e:
                                 # TODO: handle exception, not print it!
-                                if !url.startswith('/static/'):
+                                if not url.startswith('/static/'):
                                     print("error embedding", url, url_str, e)
                 embeded_resource_ids.append(r.id)
                 index_str = bytes(index_soup.prettify().encode('utf-8'))
