@@ -492,7 +492,7 @@ def _compose_text(competition, teacher, attempts, template):
     award_listing = ""
     n_txt = _n_texts(attempts)
     if n_txt is not None:
-        n_confirmed, next_round_s, award_l = n_txt
+        n_confirmed, next_round_listing, award_l = n_txt
         award_listing = "\n".join([i[0].upper() + i[1:] + '.' for i in award_l])
     for cqs in competition.competitionquestionset_set.all():
         cqs_name = cqs.name
