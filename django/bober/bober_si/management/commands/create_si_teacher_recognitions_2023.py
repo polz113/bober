@@ -499,7 +499,7 @@ def _compose_text(competition, teacher, attempts, template):
     by_groups = []
     n_txt = _n_texts(attempts)
     if n_txt is not None:
-        n_cconfirmed, next_round, award, top_places = n_txt
+        n_confirmed, next_round, award, top_places = n_txt
     for cqs in competition.competitionquestionset_set.all():
         cqs_name = cqs.name
         c_attempts = attempts.filter(competitionquestionset = cqs)
