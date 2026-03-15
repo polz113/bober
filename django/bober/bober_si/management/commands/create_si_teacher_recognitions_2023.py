@@ -502,12 +502,12 @@ def _compose_text(competition, teacher, attempts, template):
         n_confirmed, next_round_l, award_l, top_places = n_txt
         next_round_listing = next_round_l.join(",\n")
         if len(award_l) > 0:
-            award_listing = award_l.join(",\n")
+            award_listing = ",\n".join(award_l)
             award_listing = award_listing[:1].upper() + award_listing[1:] + "."
         else:
             award_listing = ""
         if len(next_round_l) > 0:
-            next_round_listing = next_round_l.join(",\n")
+            next_round_listing = ",\n".join(next_round_l)
             next_round_listing = next_round_listing[:1].upper() + next_round_listing[1:] + "."
         else:
             next_round_listing = ""
