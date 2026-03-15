@@ -499,7 +499,7 @@ def _compose_text(competition, teacher, attempts, template):
     by_groups = []
     n_txt = _n_texts(attempts)
     if n_txt is not None:
-        n_confirmed, next_round_l, award_l, top_places = n_txt
+        n_confirmed, next_round_l, award_l, top_places_l = n_txt
         next_round_listing = next_round_l.join(",\n")
         if len(award_l) > 0:
             award_listing = ",\n".join(award_l)
@@ -511,6 +511,12 @@ def _compose_text(competition, teacher, attempts, template):
             next_round_listing = next_round_listing[:1].upper() + next_round_listing[1:] + "."
         else:
             next_round_listing = ""
+        if len(top_places_l) > 0:
+            top_places = ",\n".join(top_places_l)
+            top_places = top_places[:1].upper() + top_places[1:] + "."
+        else:
+            top_places = ""
+
     for cqs in competition.competitionquestionset_set.all():
         cqs_name = cqs.name
         c_attempts = attempts.filter(competitionquestionset = cqs)
