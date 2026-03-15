@@ -497,6 +497,7 @@ def _compose_text(competition, teacher, attempts, template):
     template = template[1].get(teacher.gender, template[0])
     competition_time = _competition_time_string(competition)
     by_groups = []
+    n_confirmed = 0
     for cqs in competition.competitionquestionset_set.all():
         cqs_name = cqs.name
         c_attempts = attempts.filter(competitionquestionset = cqs)
@@ -512,6 +513,7 @@ def _compose_text(competition, teacher, attempts, template):
             if len(all_awards_i) > 0:
                 all_awards_s = " " + ". ".join([s[:1].upper() + s[1:] for s in all_awards_i]) + '.'
             by_groups.append('{n_c} v skupini "{cqs_name}".{all_awards_s}'.format(**locals()))
+            n_confirmed += n_c
     list_by_groups = "\n".join(by_groups)
     return template.format(**locals())
 
