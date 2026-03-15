@@ -465,12 +465,13 @@ def _n_texts(attempts):
                 n_nom[n], p_tekmovalec[n], p_se_je[n], p_uvrstil[n])
     award_listing = []
     for award_name, award_trans in [
+            ("bronasto", "bronasto priznanje"),
+            ("srebrno", "srebrno priznanje"),
+            ("zlato", "zlato priznanje"),
             ("prva", "prvo mesto"),
             ("druga", "drugo mesto"),
             ("tretja", "tretje mesto"),
-            ("bronasto", "bronasto priznanje"),
-            ("srebrno", "srebrno priznanje"),
-            ("zlato", "zlato priznanje"),]:
+        ]:
         n = awards.filter(award__name=award_name).distinct().count()
         if n > 0:
             award_listing.append(
