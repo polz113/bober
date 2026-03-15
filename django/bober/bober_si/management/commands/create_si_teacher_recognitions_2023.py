@@ -484,7 +484,7 @@ def _n_texts(attempts):
                    n_nom[n], p_tekmovalec[n], p_se_je[n], p_uvrstil[n], nm)
             )
     # top_places_listing = u"\n".join(top_places_listing)
-    return n_confirmed, next_round_listing, award_listing + top_places_listing
+    return n_confirmed, [ next_round_listing, award_listing, top_places_listing ]
 
 
 def _compose_text(competition, teacher, attempts, template):
@@ -497,36 +497,31 @@ def _compose_text(competition, teacher, attempts, template):
     template = template[1].get(teacher.gender, template[0])
     competition_time = _competition_time_string(competition)
     by_groups = []
+    award_listing = ""
     n_txt = _n_texts(attempts)
     if n_txt is not None:
-        n_confirmed, next_round_l, award_l = n_txt
-        next_round_listing = next_round_l.join(",\n")
-        if len(award_l) > 0:
-            award_listing = ",\n".join(award_l)
-            award_listing = award_listing[:1].upper() + award_listing[1:] + "."
-        else:
-            award_listing = ""
-        if len(next_round_l) > 0:
-            next_round_listing = ",\n".join(next_round_l)
-            next_round_listing = next_round_listing[:1].upper() + next_round_listing[1:] + "."
-        else:
-            next_round_listing = ""
-
+        n_confirmed, award_l_l = n_txt
+        for award_l in award_l_l:
+            award_s = ""
+            if len(award_l) > 0:
+                award_s = ",\n".join(award_l)
+                award_s = award_s[:1].upper() + award_s[1:] + ".\n"
+            award_listing += award_s
     for cqs in competition.competitionquestionset_set.all():
         cqs_name = cqs.name
         c_attempts = attempts.filter(competitionquestionset = cqs)
         n_txt = _n_texts(c_attempts)
         if n_txt is not None:
-            n_c, next_round_i, award_i = n_txt
+            n_c, award_i_l = n_txt
             n_c = n_c[:1].upper() + n_c[1:]
-            if len(next_round_i):
-                all_awards_i = [next_round_i] + award_i
-            else:
-                all_awards_i = award_i
-            all_awards_s = ''
-            if len(all_awards_i) > 0:
-                all_awards_s = " " + ". ".join([s[:1].upper() + s[1:] for s in all_awards_i]) + '.'
-            by_groups.append('{n_c} v skupini "{cqs_name}".{all_awards_s}'.format(**locals()))
+            all_award_s = ""
+            for award_l in award_i_l:
+                award_s = ""
+                if len(award_l) > 0:
+                    award_s = ",\n".join(award_l)
+                    award_s = award_s[:1].upper() + award_s[1:] + ". "
+                all_awards_s += award_s
+            by_groups.append(f'{n_c} v skupini "{cqs_name}".{all_awards_s}')
     list_by_groups = "\n".join(by_groups)
     return template.format(**locals())
 
