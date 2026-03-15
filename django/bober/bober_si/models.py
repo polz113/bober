@@ -252,7 +252,7 @@ class CompetitionRecognition(models.Model):
         return self.template
     competition = models.ForeignKey(Competition, null=True, on_delete=models.CASCADE)
     template = models.CharField(max_length=256)
-    serial_prefix = models.CharField(max_length=16)
+    serial_prefix = models.CharField(max_length=32)
 
 
 class TeacherRecognition(models.Model):
