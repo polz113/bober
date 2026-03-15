@@ -500,9 +500,9 @@ def _compose_text(competition, teacher, attempts, template):
         n_txt = _n_texts(c_attempts)
         if n_txt is not None:
             n_c, n_nr_i, award_l = n_txt
-            award_listing = " ".join([i[0].upper() + i[1:] + '.' for i in award_l])
+            award_i = " ".join([i[0].upper() + i[1:] + '.' for i in award_l])
             n_c = n_c[:1].upper() + n_c[1:]
-            by_groups.append(f'{n_c} v skupini "{cqs_name}". {award_listing}')
+            by_groups.append(f'{n_c} v skupini "{cqs_name}". {award_i}')
     list_by_groups = "\n".join(by_groups)
     return template.format(**locals())
 
