@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-from collections import defaultdict
+from collections import defaultdict, OrderedDict
 from django.core.management.base import BaseCommand
 from django.db import transaction
 from django.utils import timezone
@@ -464,27 +464,19 @@ def _n_texts(attempts):
         next_round_listing = u"{} {} {} {} na državno tekmovanje".format(
                 n_nom[n], p_tekmovalec[n], p_se_je[n], p_uvrstil[n])
     award_listing = []
-    for award_name in ["bronasto", "srebrno", "zlato"]:
+    for award_name, award_trans in [
+            ("prva", "prvo mesto"),
+            ("druga", "drugo mesto"),
+            ("tretja", "tretje mesto"),
+            ("bronasto", "bronasto priznanje"),
+            ("srebrno", "srebrno priznanje"),
+            ("zlato", "zlato priznanje"),]:
         n = awards.filter(award__name=award_name).distinct().count()
         if n > 0:
             award_listing.append(
-                u"{} {} {} {} priznanje".format(
-                    n_nom[n], p_je[n], p_osvojil[n], award_name))
-    # award_listing = u"\n".join(award_listing)
-    top_places_listing = []
-    for award_name, nm in [
-                ("prva", "prvo"), 
-                ("druga", "drugo"),
-                ("tretja", "tretje")]:
-        n = awards.filter(award__name=award_name).distinct().count()
-        if n > 0:
-            if len(top_places_listing) == 0:
-                top_places_listing.append("Uvrstitve:")
-            top_places_listing.append("- {} {} {} {} na {} mesto".format(
-                   n_nom[n], p_tekmovalec[n], p_se_je[n], p_uvrstil[n], nm)
-            )
-    # top_places_listing = u"\n".join(top_places_listing)
-    return n_confirmed, [ next_round_listing, award_listing, top_places_listing ]
+                u"{} {} {} {}".format(
+                    n_nom[n], p_je[n], p_osvojil[n], award_trans))
+    return n_confirmed, next_round_listing, award_listing
 
 
 def _compose_text(competition, teacher, attempts, template):
@@ -500,29 +492,17 @@ def _compose_text(competition, teacher, attempts, template):
     award_listing = ""
     n_txt = _n_texts(attempts)
     if n_txt is not None:
-        n_confirmed, award_l_l = n_txt
-        next_round_listing = award_l_l[0]
-        for award_l in award_l_l[1:]:
-            award_s = ""
-            if len(award_l) > 0:
-                award_s = ",\n".join(award_l)
-                award_s = award_s[:1].upper() + award_s[1:] + ".\n"
-            award_listing += award_s
+        n_confirmed, next_round_s, award_l = n_txt
+        award_listing = "\n".join([i[0].upper() + i[1:] + '.' for i in award_l])
     for cqs in competition.competitionquestionset_set.all():
         cqs_name = cqs.name
         c_attempts = attempts.filter(competitionquestionset = cqs)
         n_txt = _n_texts(c_attempts)
         if n_txt is not None:
-            n_c, award_i_l = n_txt
+            n_c, n_nr_i, award_l = n_txt
+            award_listing = " ".join([i[0].upper() + i[1:] + '.' for i in award_l])
             n_c = n_c[:1].upper() + n_c[1:]
-            all_awards_s = ""
-            for award_l in award_i_l:
-                award_s = ""
-                if len(award_l) > 0:
-                    award_s = ",\n".join(award_l)
-                    award_s = award_s[:1].upper() + award_s[1:] + ". "
-                all_awards_s += award_s
-            by_groups.append(f'{n_c} v skupini "{cqs_name}".{all_awards_s}')
+            by_groups.append(f'{n_c} v skupini "{cqs_name}". {award_listing}')
     list_by_groups = "\n".join(by_groups)
     return template.format(**locals())
 
