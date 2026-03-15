@@ -501,7 +501,8 @@ def _compose_text(competition, teacher, attempts, template):
     n_txt = _n_texts(attempts)
     if n_txt is not None:
         n_confirmed, award_l_l = n_txt
-        for award_l in award_l_l:
+        next_round_listing = award_l_l[0]
+        for award_l in award_l_l[1:]:
             award_s = ""
             if len(award_l) > 0:
                 award_s = ",\n".join(award_l)
