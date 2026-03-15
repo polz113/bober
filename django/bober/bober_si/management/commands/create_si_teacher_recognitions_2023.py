@@ -514,7 +514,7 @@ def _compose_text(competition, teacher, attempts, template):
         if n_txt is not None:
             n_c, award_i_l = n_txt
             n_c = n_c[:1].upper() + n_c[1:]
-            all_award_s = ""
+            all_awards_s = ""
             for award_l in award_i_l:
                 award_s = ""
                 if len(award_l) > 0:
