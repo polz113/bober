@@ -194,17 +194,26 @@ Bober, ki je potekalo {competition_time}, mentorica
 Bober, ki je potekalo {competition_time}, mentor(ica):
 {list_by_groups}
 
-Učenci od 2. do 5. razreda so tekmovali na tekmovanju ACM Bober - Bobrček. Učenci od 6. do 9. razreda so tekmovali na selekcijskem tekmovanju ACM Bober - Mladi Bober. Srednješolci od 1. letnika do 4. letnika so tekmovali na tekmovanju ACM Bober - Izkušeni Bober.
+Učenci od 2. do 5. razreda so tekmovali na tekmovanju ACM Bober - Bobrček.
+Mentorji so na tem tekmovanju hkrati ocenjevalci nalog.
+Učenci od 6. do 9. razreda so tekmovali na selekcijskem tekmovanju ACM Bober - Mladi Bober.
+Srednješolci od 1. letnika do 4. letnika so tekmovali na tekmovanju ACM Bober - Izkušeni Bober.
 """,
         { 
             "m": u"""je bil na šolskem nivoju mednarodnega tekmovanja 
 Bober, ki je potekalo {competition_time}, mentor(ica):
 {list_by_groups}
-Učenci od 2. do 5. razreda so tekmovali na tekmovanju ACM Bober - Bobrček. Učenci od 6. do 9. razreda so tekmovali na selekcijskem tekmovanju ACM Bober - Mladi Bober. Srednješolci od 1. letnika do 4. letnika so tekmovali na tekmovanju ACM Bober - Izkušeni Bober.""",
+Učenci od 2. do 5. razreda so tekmovali na tekmovanju ACM Bober - Bobrček.
+Mentorji so na tem tekmovanju hkrati ocenjevalci nalog.
+Učenci od 6. do 9. razreda so tekmovali na selekcijskem tekmovanju ACM Bober - Mladi Bober.
+Srednješolci od 1. letnika do 4. letnika so tekmovali na tekmovanju ACM Bober - Izkušeni Bober.""",
             "f": u"""je bila na šolskem nivoju mednarodnega tekmovanja 
 Bober, ki je potekalo {competition_time}, mentor(ica):
 {list_by_groups}
-Učenci od 2. do 5. razreda so tekmovali na tekmovanju ACM Bober - Bobrček. Učenci od 6. do 9. razreda so tekmovali na selekcijskem tekmovanju ACM Bober - Mladi Bober. Srednješolci od 1. letnika do 4. letnika so tekmovali na tekmovanju ACM Bober - Izkušeni Bober.
+Učenci od 2. do 5. razreda so tekmovali na tekmovanju ACM Bober - Bobrček.
+Mentorji so na tem tekmovanju hkrati ocenjevalci nalog.
+Učenci od 6. do 9. razreda so tekmovali na selekcijskem tekmovanju ACM Bober - Mladi Bober.
+Srednješolci od 1. letnika do 4. letnika so tekmovali na tekmovanju ACM Bober - Izkušeni Bober.
 """
         }),
     "drzavno-2022": (
@@ -233,17 +242,26 @@ Bober, ki je potekalo {competition_time}, mentorica
 Bober, ki je potekalo {competition_time}, mentor(ica):
 {list_by_groups}
 
-Učenci od 2. do 5. razreda so tekmovali na tekmovanju ACM Bober - Bobrček. Učenci od 6. do 9. razreda so tekmovali na selekcijskem tekmovanju ACM Bober - Mladi Bober. Srednješolci od 1. letnika do 4. letnika so tekmovali na tekmovanju ACM Bober - Izkušeni Bober.
+Učenci od 2. do 5. razreda so tekmovali na tekmovanju ACM Bober - Bobrček.
+Mentorji so na tem tekmovanju hkrati ocenjevalci nalog.
+Učenci od 6. do 9. razreda so tekmovali na selekcijskem tekmovanju ACM Bober - Mladi Bober. 
+Srednješolci od 1. letnika do 4. letnika so tekmovali na tekmovanju ACM Bober - Izkušeni Bober.
 """,
         { 
             "m": u"""je bil na šolskem nivoju tekmovanja 
 Bober, ki je potekalo {competition_time}, mentor(ica):
 {list_by_groups}
-Učenci od 2. do 5. razreda so tekmovali na tekmovanju ACM Bober - Bobrček. Učenci od 6. do 9. razreda so tekmovali na selekcijskem tekmovanju ACM Bober - Mladi Bober. Srednješolci od 1. letnika do 4. letnika so tekmovali na tekmovanju ACM Bober - Izkušeni Bober.""",
+Učenci od 2. do 5. razreda so tekmovali na tekmovanju ACM Bober - Bobrček.
+Mentorji so na tem tekmovanju hkrati ocenjevalci nalog.
+Učenci od 6. do 9. razreda so tekmovali na selekcijskem tekmovanju ACM Bober - Mladi Bober.
+Srednješolci od 1. letnika do 4. letnika so tekmovali na tekmovanju ACM Bober - Izkušeni Bober.""",
             "f": u"""je bila na šolskem nivoju tekmovanja 
 Bober, ki je potekalo {competition_time}, mentor(ica):
 {list_by_groups}
-Učenci od 2. do 5. razreda so tekmovali na tekmovanju ACM Bober - Bobrček. Učenci od 6. do 9. razreda so tekmovali na selekcijskem tekmovanju ACM Bober - Mladi Bober. Srednješolci od 1. letnika do 4. letnika so tekmovali na tekmovanju ACM Bober - Izkušeni Bober.
+Učenci od 2. do 5. razreda so tekmovali na tekmovanju ACM Bober - Bobrček.
+Mentorji so na tem tekmovanju hkrati ocenjevalci nalog.
+Učenci od 6. do 9. razreda so tekmovali na selekcijskem tekmovanju ACM Bober - Mladi Bober.
+Srednješolci od 1. letnika do 4. letnika so tekmovali na tekmovanju ACM Bober - Izkušeni Bober.
 """
         }),
     "drzavno-2023": (
@@ -272,17 +290,26 @@ Bober, ki je potekalo {competition_time}, mentorica
 Bober, ki je potekalo {competition_time}, mentor(ica):
 {list_by_groups}
 
-Učenci od 2. do 5. razreda so tekmovali na tekmovanju ACM Bober - Bobrček. Učenci od 6. do 9. razreda so tekmovali na selekcijskem tekmovanju ACM Bober - Mladi Bober. Srednješolci od 1. letnika do 4. letnika so tekmovali na tekmovanju ACM Bober - Izkušeni Bober.
+Učenci od 2. do 5. razreda so tekmovali na tekmovanju ACM Bober - Bobrček.
+Mentorji so na tem tekmovanju hkrati ocenjevalci nalog.
+Učenci od 6. do 9. razreda so tekmovali na selekcijskem tekmovanju ACM Bober - Mladi Bober.
+Srednješolci od 1. letnika do 4. letnika so tekmovali na tekmovanju ACM Bober - Izkušeni Bober.
 """,
         { 
             "m": u"""je bil na šolskem nivoju tekmovanja 
 Bober, ki je potekalo {competition_time}, mentor(ica):
 {list_by_groups}
-Učenci od 2. do 5. razreda so tekmovali na tekmovanju ACM Bober - Bobrček. Učenci od 6. do 9. razreda so tekmovali na selekcijskem tekmovanju ACM Bober - Mladi Bober. Srednješolci od 1. letnika do 4. letnika so tekmovali na tekmovanju ACM Bober - Izkušeni Bober.""",
+Učenci od 2. do 5. razreda so tekmovali na tekmovanju ACM Bober - Bobrček.
+Mentorji so na tem tekmovanju hkrati ocenjevalci nalog.
+Učenci od 6. do 9. razreda so tekmovali na selekcijskem tekmovanju ACM Bober - Mladi Bober.
+Srednješolci od 1. letnika do 4. letnika so tekmovali na tekmovanju ACM Bober - Izkušeni Bober.""",
             "f": u"""je bila na šolskem nivoju tekmovanja 
 Bober, ki je potekalo {competition_time}, mentor(ica):
 {list_by_groups}
-Učenci od 2. do 5. razreda so tekmovali na tekmovanju ACM Bober - Bobrček. Učenci od 6. do 9. razreda so tekmovali na selekcijskem tekmovanju ACM Bober - Mladi Bober. Srednješolci od 1. letnika do 4. letnika so tekmovali na tekmovanju ACM Bober - Izkušeni Bober.
+Učenci od 2. do 5. razreda so tekmovali na tekmovanju ACM Bober - Bobrček.
+Mentorji so na tem tekmovanju hkrati ocenjevalci nalog.
+Učenci od 6. do 9. razreda so tekmovali na selekcijskem tekmovanju ACM Bober - Mladi Bober.
+Srednješolci od 1. letnika do 4. letnika so tekmovali na tekmovanju ACM Bober - Izkušeni Bober.
 """
         }),
     "drzavno-2024-os": (
@@ -332,17 +359,26 @@ Bober, ki je potekalo {competition_time}, mentorica
 Bober, ki je potekalo {competition_time}, mentor(ica):
 {list_by_groups}
 
-Učenci od 2. do 5. razreda so tekmovali na tekmovanju ACM Bober - Bobrček. Učenci od 6. do 9. razreda so tekmovali na selekcijskem tekmovanju ACM Bober - Mladi Bober. Srednješolci od 1. letnika do 4. letnika so tekmovali na tekmovanju ACM Bober - Izkušeni Bober.
+Učenci od 2. do 5. razreda so tekmovali na tekmovanju ACM Bober - Bobrček.
+Mentorji so na tem tekmovanju hkrati ocenjevalci nalog.
+Učenci od 6. do 9. razreda so tekmovali na selekcijskem tekmovanju ACM Bober - Mladi Bober.
+Srednješolci od 1. letnika do 4. letnika so tekmovali na tekmovanju ACM Bober - Izkušeni Bober.
 """,
         { 
             "m": u"""je bil na šolskem nivoju tekmovanja 
 Bober, ki je potekalo {competition_time}, mentor(ica):
 {list_by_groups}
-Učenci od 2. do 5. razreda so tekmovali na tekmovanju ACM Bober - Bobrček. Učenci od 6. do 9. razreda so tekmovali na selekcijskem tekmovanju ACM Bober - Mladi Bober. Srednješolci od 1. letnika do 4. letnika so tekmovali na tekmovanju ACM Bober - Izkušeni Bober.""",
+Učenci od 2. do 5. razreda so tekmovali na tekmovanju ACM Bober - Bobrček.
+Mentorji so na tem tekmovanju hkrati ocenjevalci nalog.
+Učenci od 6. do 9. razreda so tekmovali na selekcijskem tekmovanju ACM Bober - Mladi Bober.
+Srednješolci od 1. letnika do 4. letnika so tekmovali na tekmovanju ACM Bober - Izkušeni Bober.""",
             "f": u"""je bila na šolskem nivoju tekmovanja 
 Bober, ki je potekalo {competition_time}, mentor(ica):
 {list_by_groups}
-Učenci od 2. do 5. razreda so tekmovali na tekmovanju ACM Bober - Bobrček. Učenci od 6. do 9. razreda so tekmovali na selekcijskem tekmovanju ACM Bober - Mladi Bober. Srednješolci od 1. letnika do 4. letnika so tekmovali na tekmovanju ACM Bober - Izkušeni Bober.
+Učenci od 2. do 5. razreda so tekmovali na tekmovanju ACM Bober - Bobrček.
+Mentorji so na tem tekmovanju hkrati ocenjevalci nalog.
+Učenci od 6. do 9. razreda so tekmovali na selekcijskem tekmovanju ACM Bober - Mladi Bober.
+Srednješolci od 1. letnika do 4. letnika so tekmovali na tekmovanju ACM Bober - Izkušeni Bober.
 """
         }),
     "drzavno-2025-os": (
@@ -560,7 +596,7 @@ class Command(BaseCommand):
                 print(teacher, teacher.user.email, ":", name_str)
                 print("----------------------------")
                 print(s)
-                continue
+                # continue
                 # the serial under here is WRONG
                 teacher_recognition, created = TeacherRecognition.objects.get_or_create(
                     template = default_recognition,
@@ -592,7 +628,7 @@ class Command(BaseCommand):
                             serial = u"{}{}-{}".format(
                                     default_recognition.serial_prefix,
                                     teacher.id, i)
-                        new_teacher_recognition = \
+                        new_teacher_recognition, created = \
                             TeacherRecognition.objects.get_or_create(
                                 template = default_recognition,
                                 teacher = teacher,
@@ -600,6 +636,7 @@ class Command(BaseCommand):
                                 recipient = name_str,
                                 text = s,
                                 serial = serial)
+                        teacher_recognition = new_teacher_recognition
                 teacher_recognition.save()
 
 
