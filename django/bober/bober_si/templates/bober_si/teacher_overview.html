@@ -240,7 +240,7 @@ $(document).ready(function(){
   	  <div>
 	    {% for cqs, attempts in school_data.attempts %}
           {% if attempts %}
-			<a class="btn btn-secondary" href="{% url "awards_school_pdf" slug=competition.slug username=request.user.username cqs_id=cqs.id cert_basename=cqs.questionset.slug school_id=school.id %}">
+			<a class="btn btn-secondary" href="{% url "awards_school_pdf" slug=competition.slug username=request.user.username cqs_id=cqs.id cert_name=cqs.questionset.slug school_id=school.id %}">
 			  {{ cqs.name }}
 			</a>
 	  	  {% endif %}
