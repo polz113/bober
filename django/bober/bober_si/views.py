@@ -422,7 +422,7 @@ def school_awards_pdf(request, username, slug, school_id, cqs_id, cert_name=''):
         raise PermissionDenied
     cert_dir = os.path.join(_profile_file_path(
         profile, os.path.join(slug, str(school_id), 'all')))
-    cert_fname = f'{cqs-id}-{cert_name}.pdf'
+    cert_fname = f'{cqs_id}-{cert_name}.pdf'
     cert_path = os.path.join(cert_dir, cert_fname)
     cert_full_fname = os.path.join(settings.MEDIA_ROOT, cert_path)
     try:
@@ -486,7 +486,7 @@ def awards_school_type_pdf(request, username,
         raise PermissionDenied
     cert_dir = os.path.join(_profile_file_path(
         profile, os.path.join(slug, school_id, 'by_type', award_name)))
-    cert_fname = f'{cqs-id}-{cert_name}.pdf'
+    cert_fname = f'{cqs_id}-{cert_name}.pdf'
     cert_path = os.path.join(cert_dir, cert_fname)
     cert_full_fname = os.path.join(settings.MEDIA_ROOT, cert_path)
     try:
@@ -550,7 +550,7 @@ def awards_type_pdf(request, username, slug, award_name, cqs_id, cert_name=''):
         raise PermissionDenied
     cert_dir = os.path.join(_profile_file_path(
         profile, os.path.join(slug, 'by_type', award_name)))
-    cert_fname = f'{cqs-id}-{cert_name}.pdf'
+    cert_fname = f'{cqs_id}-{cert_name}.pdf'
     cert_path = os.path.join(cert_dir, cert_fname)
     cert_full_fname = os.path.join(settings.MEDIA_ROOT, cert_path)
     try:
@@ -598,14 +598,14 @@ def awards_type_pdf(request, username, slug, award_name, cqs_id, cert_name=''):
 
 
 @login_required
-def all_awards_pdf(request, username, slug, cert_name):
+def all_awards_pdf(request, username, slug, cqs_id, cert_name=''):
     profile = Profile.objects.get(user__username=username)
     if profile.user != request.user and \
             request.profile.managed_profiles.filter(
                 id=profile.id).count() <= 0:
         raise PermissionDenied
     cert_dir = os.path.join(_profile_file_path(profile, os.path.join(slug)))
-    cert_fname = f'{cqs-id}-{cert_name}.pdf'
+    cert_fname = f'{cqs_id}-{cert_name}.pdf'
     cert_path = os.path.join(cert_dir, cert_fname)
     cert_full_fname = os.path.join(settings.MEDIA_ROOT, cert_path)
     try:
