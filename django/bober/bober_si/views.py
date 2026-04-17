@@ -440,7 +440,7 @@ def school_awards_pdf(request, username, slug, school_id, cqs_id, cert_name=''):
         competition = SchoolCompetition.get_cached_by_slug(slug=slug)
         stcs = profile.schoolteachercode_set.filter(
                     code__codegenerator=competition.competitor_code_generator,
-                    competition_questionset=cqs_id,
+                    competition_questionset__id=cqs_id,
                     school_id=school_id
                 ).order_by(
                     'code'
@@ -504,7 +504,7 @@ def awards_school_type_pdf(request, username,
         competition = SchoolCompetition.get_cached_by_slug(slug=slug)
         stcs = profile.schoolteachercode_set.filter(
                     code__codegenerator=competition.competitor_code_generator,
-                    competition_questionset=cqs_id,
+                    competition_questionset__id=cqs_id,
                     school_id=school_id
                 ).order_by(
                     'code'
@@ -567,7 +567,7 @@ def awards_type_pdf(request, username, slug, award_name, cqs_id, cert_name=''):
         data = []
         competition = SchoolCompetition.get_cached_by_slug(slug=slug)
         awards = AttemptAward.objects.filter(
-                attempt__competitionquestionset__competition=competition,
+                # attempt__competitionquestionset__competition=competition,
                 attempt__competitionquestionset__id=cqs_id,
                 award__name=award_name,
                 revoked_by=None,
@@ -598,14 +598,14 @@ def awards_type_pdf(request, username, slug, award_name, cqs_id, cert_name=''):
 
 
 @login_required
-def all_awards_pdf(request, username, slug, cert_basename):
+def all_awards_pdf(request, username, slug, cert_name):
     profile = Profile.objects.get(user__username=username)
     if profile.user != request.user and \
             request.profile.managed_profiles.filter(
                 id=profile.id).count() <= 0:
         raise PermissionDenied
     cert_dir = os.path.join(_profile_file_path(profile, os.path.join(slug)))
-    cert_fname = cert_basename + '.pdf'
+    cert_fname = f'{cqs-id}-{cert_name}.pdf'
     cert_path = os.path.join(cert_dir, cert_fname)
     cert_full_fname = os.path.join(settings.MEDIA_ROOT, cert_path)
     try:
@@ -621,8 +621,8 @@ def all_awards_pdf(request, username, slug, cert_basename):
         data = []
         competition = SchoolCompetition.get_cached_by_slug(slug=slug)
         awards = AttemptAward.objects.filter(
-                attempt__competitionquestionset__competition=competition,
-                attempt__competitionquestionset__name=cqs_id,
+                # attempt__competitionquestionset__competition=competition,
+                attempt__competitionquestionset__id=cqs_id,
                 revoked_by=None,
             ).order_by(
                 'attempt__competitor__last_name',
