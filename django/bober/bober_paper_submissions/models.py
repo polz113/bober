@@ -122,7 +122,6 @@ class JuniorYear(models.Model):
             j_a.save()
         # print "   still missing:", missing_ids
         for j_a in JuniorAttempt.objects.filter(id__in=missing_ids):
-            j_a.attempt.competitor.delete()
             j_a.attempt.delete()
             j_a.delete()
         created_one = False
