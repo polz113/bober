@@ -275,3 +275,53 @@ class V2AdminCodeTest(CompetitorCodeTestMixin, TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertEqual(self.client.session['access_code'],
                          self.master.value)
+
+
+@override_settings(CODE_AUTH_MAX_FAILURES=3, CODE_AUTH_FAILURE_WINDOW=60)
+class AccessCodePageThrottleTest(CompetitorCodeTestMixin, TestCase):
+    """The generic access code page, where admin codes are typed."""
+
+    def setUp(self):
+        cache.clear()
+        self.competition, _groups = self.make_competition(
+            CodeFormat.create_v2(), 'admin-throttle-test',
+            admin_format=CodeFormat.create_admin_v2())
+        self.master = self.competition.master_code_create()
+        self.url = reverse('access_code', kwargs={'url_next': 'done/'})
+
+    def tearDown(self):
+        cache.clear()
+
+    def enter(self, code, ip='10.0.1.1'):
+        return self.client.get(self.url, {'access_code': code},
+                               REMOTE_ADDR=ip)
+
+    def wrong_code(self):
+        raw = self.master.value.replace('-', '')
+        return raw[:-1] + ('0' if raw[-1] != '0' else '1')
+
+    def test_correct_codes_are_not_counted(self):
+        for _ in range(5):
+            response = self.enter(self.master.value.lower())
+            self.assertEqual(response.status_code, 302)
+        self.assertEqual(self.client.session['access_code'],
+                         self.master.value)
+
+    def test_wrong_codes_are_throttled(self):
+        for _ in range(3):
+            self.assertEqual(self.enter(self.wrong_code()).status_code, 302)
+        self.assertEqual(self.enter(self.wrong_code()).status_code, 429)
+        # a correct code is refused too while throttled ...
+        self.assertEqual(self.enter(self.master.value).status_code, 429)
+        # ... but only for this client
+        self.assertEqual(
+            self.enter(self.master.value, ip='10.0.1.2').status_code, 302)
+
+    def test_legacy_admin_codes_are_counted_too(self):
+        competition, _groups = self.make_competition(
+            legacy_competitor_format(), 'admin-throttle-legacy')
+        master = competition.master_code_create()
+        self.assertEqual(self.enter(master.value).status_code, 302)
+        for _ in range(3):
+            self.enter(master.value + 'x')
+        self.assertEqual(self.enter(master.value).status_code, 429)

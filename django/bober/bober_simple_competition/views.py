@@ -228,10 +228,18 @@ def access_code(request, url_next):
     else:
         form = MinimalAccessCodeForm()
     if form.is_valid():
+        if throttle.is_throttled(request):
+            return _too_many_wrong_codes()
         defer_update = form.cleaned_data.get('defer_update_used_codes', False)
         defer_effects = form.cleaned_data.get('defer_effects', False)
         access_code = code_based_auth.models.canonical_admin_v2_code(
             form.cleaned_data['access_code'])
+        # This page does not know which competition (and therefore which
+        # code generator) a code belongs to, so a code counts as wrong when
+        # no such code was ever issued. All codes are created through
+        # CodeGenerator.create_code(), which stores them.
+        if not Code.objects.filter(value=access_code).exists():
+            throttle.register_failure(request)
         _use_access_code(request, access_code, defer_update, defer_effects)
         return HttpResponseRedirect('/' + url_next)
     return render(
