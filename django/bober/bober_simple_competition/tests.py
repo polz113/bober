@@ -13,6 +13,7 @@ from bober_simple_competition.forms import (
     CompetitionCompetitorForm, QuestionSetCompetitorForm,
 )
 from bober_simple_competition.models import (
+    ADMIN_PRIVILEGES, CODE_EFFECTS, COMPETITOR_PRIVILEGES,
     Competition, CompetitionQuestionSet, QuestionSet,
 )
 
@@ -30,8 +31,8 @@ def legacy_competitor_format():
 
 
 class CompetitorCodeTestMixin(object):
-    def make_competition(self, competitor_format, slug):
-        admin_format = CodeFormat.from_components([
+    def make_competition(self, competitor_format, slug, admin_format=None):
+        admin_format = admin_format or CodeFormat.from_components([
             {'name': 'code_id', 'hash_len': 8, 'hash_format': 'h',
              'hash_algorithm': 'noop', 'max_parts': 1},
             {'name': 'admin_privileges', 'hash_len': 3, 'hash_format': 'h',
@@ -42,7 +43,7 @@ class CompetitorCodeTestMixin(object):
             slug=slug,
             administrator_code_generator=CodeGenerator.objects.create(
                 unique_code_component='code_id', format=admin_format,
-                salt='adminsalt1'),
+                salt='adminsalt1adminsalt1adminsalt1'),
             competitor_code_generator=CodeGenerator.objects.create(
                 unique_code_component='code_id', format=competitor_format,
                 salt='0123456789abcdef0123456789abcdef'),
@@ -214,3 +215,63 @@ class AccessCodeThrottleTest(CompetitorCodeTestMixin, TestCase):
         response = self.client.get(url, {'access_code': self.short},
                                    REMOTE_ADDR='10.0.0.3')
         self.assertEqual(response.status_code, 429)
+
+
+class V2AdminCodeTest(CompetitorCodeTestMixin, TestCase):
+    def setUp(self):
+        self.competition, (self.cqs, self.other_cqs) = self.make_competition(
+            CodeFormat.create_v2(), 'v2-admin-test',
+            admin_format=CodeFormat.create_admin_v2())
+        self.master = self.competition.master_code_create()
+
+    def test_layout_matches_privilege_lists(self):
+        layout = code_v2.ADMIN_LAYOUT
+        self.assertEqual(
+            sorted(v for c, v in layout.flags if c == 'admin_privileges'),
+            sorted(p for p, _ in ADMIN_PRIVILEGES))
+        self.assertEqual(
+            sorted(v for c, v in layout.flags if c == 'allowed_effects'),
+            sorted(e for e, _ in CODE_EFFECTS))
+        self.assertEqual(
+            sorted(v for c, v in layout.flags
+                   if c == 'competitor_privileges'),
+            sorted(p for p, _ in COMPETITOR_PRIVILEGES))
+
+    def test_master_code_has_everything(self):
+        self.assertEqual(len(self.master.value), 20)
+        data = self.competition.max_admin_code_data(self.master.value)
+        self.assertEqual(sorted(data['admin_privileges']),
+                         sorted(p for p, _ in ADMIN_PRIVILEGES))
+        self.assertEqual(sorted(data['allowed_effects']),
+                         sorted(e for e, _ in CODE_EFFECTS))
+        self.assertEqual(sorted(data['competitor_privileges']),
+                         sorted(p for p, _ in COMPETITOR_PRIVILEGES))
+
+    def test_admin_code_hands_out_its_privileges(self):
+        teacher = self.competition.admin_code_create(
+            self.master.value, code_data={
+                'admin_privileges': ['create_competitor_codes'],
+                'allowed_effects': [],
+                'competitor_privileges': ['attempt', 'resume_attempt'],
+            })
+        data = self.competition.max_admin_code_data(teacher.value)
+        self.assertEqual(data['admin_privileges'],
+                         ['create_competitor_codes'])
+        self.assertEqual(data['allowed_effects'], [])
+        competitor = self.competition.competitor_code_create(
+            teacher.value, competition_questionset=self.cqs)
+        codegen = self.competition.competitor_code_generator
+        for privilege, ok in (('attempt', True), ('resume_attempt', True),
+                              ('results_before_end', False)):
+            self.assertEqual(codegen.code_matches(
+                competitor.value, {'competitor_privileges': [privilege]}),
+                ok)
+
+    def test_access_code_view_stores_canonical_code(self):
+        typed = self.master.value.lower().replace('-', '')
+        response = self.client.get(
+            reverse('access_code', kwargs={'url_next': 'done/'}),
+            {'access_code': typed})
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(self.client.session['access_code'],
+                         self.master.value)

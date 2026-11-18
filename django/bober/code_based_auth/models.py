@@ -37,10 +37,17 @@ DEFAULT_PART_SEPARATOR = "+"
 
 CODE_VERSION_LEGACY = 1
 CODE_VERSION_V2 = 2
+CODE_VERSION_V2_ADMIN = 3
 CODE_VERSIONS = (
     (CODE_VERSION_LEGACY, _('legacy (hash components)')),
     (CODE_VERSION_V2, _('v2 (fixed length, signed, check character)')),
+    (CODE_VERSION_V2_ADMIN, _('v2 administrator code (17 characters)')),
 )
+# code_version -> (layout, whether the code value has a context part)
+V2_LAYOUTS = {
+    CODE_VERSION_V2: (code_v2.COMPETITOR_LAYOUT, True),
+    CODE_VERSION_V2_ADMIN: (code_v2.ADMIN_LAYOUT, False),
+}
 # v2 keys are derived from the generator salt; shorter salts are rejected
 # when a competition with a v2 competitor code format is created.
 V2_MIN_SALT_LENGTH = 16
@@ -52,6 +59,19 @@ CODE_ERROR_MESSAGES = {
     code_v2.CodeSignatureError: _(
         'The access code is not valid for this group.'),
 }
+ADMIN_SIGNATURE_ERROR_MESSAGE = _(
+    'The access code is not valid for this competition.')
+
+# Codes typed without knowing which generator they belong to (the generic
+# access code page) are canonicalized when they look like v2 admin codes.
+
+
+def canonical_admin_v2_code(code):
+    """Canonical form of a typed v2 admin code; anything else unchanged."""
+    try:
+        return code_v2.canonical(code, code_v2.ADMIN_LAYOUT)
+    except Exception:
+        return code
 
 # TODO load words from a file or database
 DEFAULT_WORDS = ['Beaver', 'Tree', 'Brook', 'Stream']
@@ -257,7 +277,7 @@ class CodeFormat(models.Model):
                   id_component='code_id',
                   privileges_component='competitor_privileges',
                   name=None, separator=DEFAULT_SEPARATOR):
-        """Create a v2 code format.
+        """Create a v2 competitor code format.
 
         A v2 code value is ``<context><separator><v2 code>``, for example
         ``12-questionset-slug*0030E-D95AF-BWJVD``. The components describe
@@ -265,41 +285,90 @@ class CodeFormat(models.Model):
         signature, not part of the v2 code), the unique code id and the
         privileges (encoded as bit flags, see ``code_v2.FLAGS``).
         """
+        layout = code_v2.COMPETITOR_LAYOUT
         return cls.from_components([
             {'name': context_component, 'hash_format': 'r',
              'hash_algorithm': 'noop', 'hash_len': 256, 'max_parts': 1},
             {'name': id_component, 'hash_format': 'S',
-             'hash_algorithm': 'noop', 'hash_len': code_v2.ID_CHARS,
+             'hash_algorithm': 'noop', 'hash_len': layout.id_chars,
              'max_parts': 1},
             {'name': privileges_component, 'hash_format': 'S',
-             'hash_algorithm': 'noop', 'hash_len': code_v2.FLAG_CHARS,
+             'hash_algorithm': 'noop', 'hash_len': layout.flag_chars,
              'max_parts': len(code_v2.FLAGS)},
         ], separator=separator, code_version=CODE_VERSION_V2, name=name)
 
+    @classmethod
+    def create_admin_v2(cls, id_component='code_id', name=None,
+                        separator=DEFAULT_SEPARATOR):
+        """Create a v2 administrator code format.
+
+        The value is the bare 17 character code (``XXXXX-XXXXX-XXXXX-XX``);
+        there is no context part. The first component is the unique code
+        id, the others are the flag components of
+        ``code_v2.ADMIN_LAYOUT``.
+        """
+        layout = code_v2.ADMIN_LAYOUT
+        components = [
+            {'name': id_component, 'hash_format': 'S',
+             'hash_algorithm': 'noop', 'hash_len': layout.id_chars,
+             'max_parts': 1}]
+        for flag_component in layout.components:
+            components.append({
+                'name': flag_component, 'hash_format': 'S',
+                'hash_algorithm': 'noop', 'hash_len': layout.flag_chars,
+                'max_parts': len([1 for c, _v in layout.flags
+                                  if c == flag_component])})
+        return cls.from_components(
+            components, separator=separator,
+            code_version=CODE_VERSION_V2_ADMIN, name=name)
+
     @property
     def is_v2(self):
-        return self.code_version == CODE_VERSION_V2
+        return self.code_version in V2_LAYOUTS
 
-    def _v2_component_names(self):
+    @property
+    def _v2_layout(self):
+        """(code_v2.Layout, whether the value has a context part)"""
+        return V2_LAYOUTS[self.code_version]
+
+    def _v2_roles(self):
+        """Return (context name or None, id name, flag component names)."""
+        layout, has_context = self._v2_layout
         names = list(self.components.order_by('ordering').values_list(
             'name', flat=True))
-        if len(names) != 3:
-            raise ValueError("a v2 code format needs exactly 3 components "
-                             "(context, code id, privileges)")
-        return names
+        context_name = names.pop(0) if has_context and names else None
+        if not names or (has_context and context_name is None):
+            raise ValueError("a v2 code format needs a code id component")
+        id_name, flag_names = names[0], names[1:]
+        unknown = set(flag_names) - set(layout.components)
+        if unknown:
+            raise ValueError("components not supported by this v2 layout: "
+                             + ", ".join(sorted(unknown)))
+        return context_name, id_name, flag_names
 
     def _v2_split(self, code):
+        """Return (context, short code); context is '' without context."""
+        _layout, has_context = self._v2_layout
+        if not has_context:
+            return "", code
         context, sep, short_code = code.partition(self.separator)
         if not sep or not context:
             raise code_v2.InvalidCodeFormat()
         return context, short_code
 
+    def _v2_join(self, context, short_code):
+        _layout, has_context = self._v2_layout
+        if not has_context:
+            return short_code
+        return context + self.separator + short_code
+
     def _v2_parse(self, code, salt):
-        """Return (context, canonical short code, code id, privileges)."""
+        """Return (context, canonical short code, code id, flag parts)."""
+        layout, _has_context = self._v2_layout
         context, short_code = self._v2_split(code)
-        canonical, code_id, privileges = code_v2.parse_code(
-            code_v2.derive_key(salt), context, short_code)
-        return context, canonical, code_id, privileges
+        canonical, code_id, flags = code_v2.decode(
+            code_v2.derive_key(salt), context, short_code, layout)
+        return context, canonical, code_id, layout.parts_from_flags(flags)
 
     @staticmethod
     def _v2_code_id(value):
@@ -326,24 +395,26 @@ class CodeFormat(models.Model):
         error = self.code_error(code, salt)
         if error is None:
             return None
+        if isinstance(error, code_v2.CodeSignatureError) \
+                and not self._v2_layout[1]:
+            return ADMIN_SIGNATURE_ERROR_MESSAGE
         return CODE_ERROR_MESSAGES.get(type(error))
 
     def _v2_code_matches(self, code, salt, parts):
         try:
-            context_name, id_name, privileges_name = \
-                self._v2_component_names()
-            context, canonical, code_id, privileges = self._v2_parse(
+            context_name, id_name, flag_names = self._v2_roles()
+            context, canonical, code_id, flag_parts = self._v2_parse(
                 code, salt)
             for k, values in parts.items():
                 if len(values) < 1:
                     return False
                 for value in values:
-                    if k == context_name:
+                    if context_name is not None and k == context_name:
                         ok = value == context
                     elif k == id_name:
                         ok = self._v2_code_id(value) == code_id
-                    elif k == privileges_name:
-                        ok = value in privileges
+                    elif k in flag_names:
+                        ok = value in flag_parts[k]
                     else:
                         ok = False
                     if not ok:
@@ -353,22 +424,28 @@ class CodeFormat(models.Model):
         return True
 
     def _v2_code_from_parts(self, salt, parts):
-        context_name, id_name, privileges_name = self._v2_component_names()
-        contexts = parts.get(context_name, [])
+        layout, has_context = self._v2_layout
+        context_name, id_name, flag_names = self._v2_roles()
         ids = parts.get(id_name, [])
         if not ids:
             # Code.create() saves the code once before its id is known.
             return ""
-        if len(contexts) != 1 or len(ids) != 1:
-            raise ValueError("v2 codes need exactly one context and id")
-        # Privileges unknown to v2 (e.g. 'new_attempt') can not be encoded
-        # and are therefore never granted by a v2 code.
-        privileges = [p for p in parts.get(privileges_name, [])
-                      if p in code_v2.FLAGS]
-        short_code = code_v2.make_code(
-            code_v2.derive_key(salt), contexts[0],
-            self._v2_code_id(ids[0]), privileges)
-        return contexts[0] + self.separator + short_code
+        context = ""
+        if has_context:
+            contexts = parts.get(context_name, [])
+            if len(contexts) != 1:
+                raise ValueError("v2 codes need exactly one context")
+            context = contexts[0]
+        if len(ids) != 1:
+            raise ValueError("v2 codes need exactly one id")
+        # Values unknown to the layout (e.g. the 'new_attempt' competitor
+        # privilege) can not be encoded and are therefore never granted.
+        flags = layout.flags_from_parts(
+            {k: parts.get(k, []) for k in flag_names})
+        short_code = code_v2.encode(
+            code_v2.derive_key(salt), context, self._v2_code_id(ids[0]),
+            flags, layout)
+        return self._v2_join(context, short_code)
 
     def code_matches(self, code, salt, parts):
         if len(parts) < 1:
@@ -469,8 +546,8 @@ class CodeFormat(models.Model):
         if self.is_v2:
             try:
                 context, short_code = self._v2_split(code)
-                return context + self.separator + code_v2.canonical(
-                    short_code)
+                return self._v2_join(context, code_v2.canonical(
+                    short_code, self._v2_layout[0]))
             except Exception:
                 return code
         try:

@@ -522,14 +522,16 @@ class CompetitionCreateForm(forms.ModelForm):
 
     def clean(self):
         cleaned_data = super(CompetitionCreateForm, self).clean()
-        code_format = cleaned_data.get('competitor_code_format')
-        salt = cleaned_data.get('competitor_salt') or ''
         min_len = code_based_auth.models.V2_MIN_SALT_LENGTH
-        if code_format is not None and code_format.is_v2 \
-                and len(salt) < min_len:
-            self.add_error('competitor_salt', _(
-                'The v2 code format derives its signing key from the salt; '
-                'use at least %(n)d random characters.') % {'n': min_len})
+        for prefix in ('competitor', 'admin'):
+            code_format = cleaned_data.get(prefix + '_code_format')
+            salt = cleaned_data.get(prefix + '_salt') or ''
+            if code_format is not None and code_format.is_v2 \
+                    and len(salt) < min_len:
+                self.add_error(prefix + '_salt', _(
+                    'The v2 code format derives its signing key from the '
+                    'salt; use at least %(n)d random characters.')
+                    % {'n': min_len})
         return cleaned_data
 
 

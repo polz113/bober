@@ -2,7 +2,8 @@ from django.test import SimpleTestCase, TestCase
 
 from code_based_auth import code_v2
 from code_based_auth.models import (
-    CODE_VERSION_V2, CodeFormat, CodeGenerator, CODE_ERROR_MESSAGES,
+    ADMIN_SIGNATURE_ERROR_MESSAGE, CODE_VERSION_V2, CODE_VERSION_V2_ADMIN,
+    CodeFormat, CodeGenerator, CODE_ERROR_MESSAGES, canonical_admin_v2_code,
     long_to_str,
 )
 
@@ -324,3 +325,153 @@ class LegacyCodeFormatTest(TestCase):
         self.assertEqual(code.value, stored)
         self.assertTrue(self.format.code_matches(
             stored, 'abcdefghij', {'competitor_privileges': ['attempt']}))
+
+
+ADMIN = code_v2.ADMIN_LAYOUT
+ADMIN_PARTS = {
+    'admin_privileges': ['create_competitor_codes'],
+    'competitor_privileges': ['attempt'],
+}
+
+
+class AdminCodeV2Test(SimpleTestCase):
+    """The 17 character administrator layout (no database)."""
+
+    def make(self, parts=ADMIN_PARTS, code_id=7, key=KEY):
+        return code_v2.encode(key, "", code_id,
+                              ADMIN.flags_from_parts(parts), ADMIN)
+
+    def test_layout(self):
+        self.assertEqual(ADMIN.code_chars, 17)
+        self.assertEqual(len(ADMIN.flags), 14)
+        self.assertEqual(ADMIN.components, [
+            'admin_privileges', 'allowed_effects', 'competitor_privileges'])
+
+    def test_reference_vectors(self):
+        self.assertEqual(self.make(), "00000-7102D-PRWB5-CZ")
+        self.assertEqual(
+            code_v2.encode(KEY, "", 2 ** 30 - 1, sum(ADMIN.flags.values()),
+                           ADMIN),
+            "ZZZZZ-ZFZZB-CCRQ1-JJ")
+
+    def test_round_trip_every_flag(self):
+        for (name, value), bit in ADMIN.flags.items():
+            code = self.make({name: [value]}, code_id=bit)
+            self.assertRegex(
+                code, r'^[0-9A-Z]{5}-[0-9A-Z]{5}-[0-9A-Z]{5}-[0-9A-Z]{2}$')
+            canonical, code_id, flags = code_v2.decode(KEY, "", code, ADMIN)
+            self.assertEqual((canonical, code_id, flags), (code, bit, bit))
+            parts = ADMIN.parts_from_flags(flags)
+            self.assertEqual(parts[name], {value})
+            self.assertEqual(sum(len(p) for p in parts.values()), 1)
+
+    def test_lenient_input(self):
+        code = self.make()
+        for typed in (code.lower(), code.replace('-', ''),
+                      code.replace('0', 'O').replace('-', ' ')):
+            self.assertEqual(code_v2.decode(KEY, "", typed, ADMIN)[0], code)
+
+    def test_typo(self):
+        code = self.make()
+        raw = code.replace('-', '')
+        for i in range(len(raw)):
+            typo = raw[:i] + other_char(raw[i]) + raw[i + 1:]
+            with self.assertRaises(code_v2.CodeChecksumError):
+                code_v2.decode(KEY, "", typo, ADMIN)
+
+    def test_changed_flags_with_fixed_check_char_are_rejected(self):
+        raw = self.make().replace('-', '')
+        body = raw[:-1]
+        for i in range(ADMIN.id_chars, ADMIN.id_chars + ADMIN.flag_chars):
+            forged = body[:i] + other_char(body[i]) + body[i + 1:]
+            forged += code_v2.luhn32(forged)
+            with self.assertRaises(code_v2.CodeSignatureError):
+                code_v2.decode(KEY, "", forged, ADMIN)
+
+    def test_other_key_is_rejected(self):
+        with self.assertRaises(code_v2.CodeSignatureError):
+            code_v2.decode(b"other", "", self.make(), ADMIN)
+
+    def test_competitor_and_admin_codes_do_not_mix(self):
+        competitor = code_v2.make_code(KEY, "", 7, ['attempt'])
+        with self.assertRaises(code_v2.InvalidCodeFormat):
+            code_v2.decode(KEY, "", competitor, ADMIN)
+        with self.assertRaises(code_v2.InvalidCodeFormat):
+            code_v2.parse_code(KEY, "", self.make())
+        # different signature prefixes for the same id and flags
+        self.assertNotEqual(
+            code_v2.mac(KEY, "", 7, 1, code_v2.COMPETITOR_LAYOUT),
+            code_v2.mac(KEY, "", 7, 1, ADMIN))
+
+
+class AdminCodeFormatV2Test(TestCase):
+    """v2 admin codes through CodeFormat / CodeGenerator."""
+
+    ALL = {
+        'admin_privileges': list(code_v2.ADMIN_PRIVILEGE_NAMES),
+        'allowed_effects': list(code_v2.ADMIN_EFFECT_NAMES),
+        'competitor_privileges': COMPETITOR_PRIVILEGES,
+    }
+
+    def setUp(self):
+        self.format = CodeFormat.create_admin_v2()
+        self.generator = CodeGenerator.objects.create(
+            unique_code_component='code_id', format=self.format,
+            salt='fedcba9876543210fedcba9876543210')
+
+    def test_migration_created_v2_admin_format(self):
+        f = CodeFormat.objects.get(name="Admin code v2")
+        self.assertEqual(f.code_version, CODE_VERSION_V2_ADMIN)
+        self.assertEqual(
+            list(f.components.order_by('ordering').values_list(
+                'name', 'max_parts')),
+            list(self.format.components.order_by('ordering').values_list(
+                'name', 'max_parts')))
+
+    def test_master_code(self):
+        code = self.generator.create_code(dict(self.ALL))
+        self.assertRegex(
+            code.value, r'^[0-9A-Z]{5}-[0-9A-Z]{5}-[0-9A-Z]{5}-[0-9A-Z]{2}$')
+        for name, values in self.ALL.items():
+            for value in values:
+                self.assertTrue(self.generator.code_matches(
+                    code.value, {name: [value]}), value)
+        self.assertTrue(self.generator.code_matches(code.value, self.ALL))
+        self.assertTrue(self.generator.code_matches(
+            code.value, {'code_id': [code.id]}))
+
+    def test_limited_code(self):
+        code = self.generator.create_code({
+            'admin_privileges': ['create_competitor_codes'],
+            'allowed_effects': ['let_manage'],
+            'competitor_privileges': ['attempt', 'unknown'],
+        })
+        m = self.generator.code_matches
+        self.assertTrue(m(code.value,
+                          {'admin_privileges': ['create_competitor_codes']}))
+        self.assertFalse(m(code.value,
+                           {'admin_privileges': ['create_admin_codes']}))
+        self.assertTrue(m(code.value, {'allowed_effects': ['let_manage']}))
+        self.assertFalse(m(code.value,
+                           {'allowed_effects': ['let_manage_recursive']}))
+        self.assertTrue(m(code.value, {'competitor_privileges': ['attempt']}))
+        self.assertFalse(m(code.value,
+                           {'competitor_privileges': ['unknown']}))
+        self.assertFalse(m(code.value, {'competition_questionset': ['x']}))
+        # typed sloppily
+        typed = code.value.lower().replace('-', '')
+        self.assertTrue(m(typed, {'admin_privileges':
+                                  ['create_competitor_codes']}))
+        self.assertEqual(self.generator.canonical_code(typed), code.value)
+        self.assertEqual(canonical_admin_v2_code(typed), code.value)
+        self.assertEqual(canonical_admin_v2_code('12-x*abc'), '12-x*abc')
+
+    def test_other_competition_is_rejected(self):
+        code = self.generator.create_code(dict(self.ALL))
+        other = CodeGenerator.objects.create(
+            unique_code_component='code_id', format=self.format,
+            salt='another competition, another salt')
+        self.assertFalse(other.code_matches(
+            code.value, {'admin_privileges': ['create_admin_codes']}))
+        self.assertEqual(other.code_error_message(code.value),
+                         ADMIN_SIGNATURE_ERROR_MESSAGE)

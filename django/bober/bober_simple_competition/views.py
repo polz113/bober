@@ -230,7 +230,8 @@ def access_code(request, url_next):
     if form.is_valid():
         defer_update = form.cleaned_data.get('defer_update_used_codes', False)
         defer_effects = form.cleaned_data.get('defer_effects', False)
-        access_code = form.cleaned_data['access_code']
+        access_code = code_based_auth.models.canonical_admin_v2_code(
+            form.cleaned_data['access_code'])
         _use_access_code(request, access_code, defer_update, defer_effects)
         return HttpResponseRedirect('/' + url_next)
     return render(
@@ -426,19 +427,17 @@ class CompetitionCreate(LoginRequiredMixin, CreateWithInlinesView):
 
     def get_initial(self):
         return {
+            # prefer the v2 code formats for new competitions
             'admin_code_format':
                 (code_based_auth.models.CodeFormat.objects.filter(
                     components__name='admin_privileges'
-                ).order_by('id')[:1] or [None])[0],
-            # prefer the v2 competitor code format for new competitions
+                ).distinct().order_by('-code_version', 'id')[:1] or [None])[0],
             'competitor_code_format':
                 (code_based_auth.models.CodeFormat.objects.filter(
                     components__name='competition_questionset'
                 ).distinct().order_by('-code_version', 'id')[:1] or [None])[0],
-            'admin_salt': ''.join([
-                random.choice(string.ascii_letters+string.digits)
-                for _ in range(10)]),
-            # also the v2 signing key material, see code_v2.derive_key()
+            # the salts are also the v2 signing keys, see code_v2.derive_key()
+            'admin_salt': secrets.token_hex(16),
             'competitor_salt': secrets.token_hex(16),
             }
 
