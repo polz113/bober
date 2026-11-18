@@ -197,6 +197,14 @@ class ProfileMergeForm(forms.ModelForm):
             assert mps.filter(id=self.instance.merged_with).exists()
 
 
+def _wrong_code_message(codegen, full_code):
+    """Specific error for v2 codes (format / typo / wrong group)."""
+    message = None
+    if full_code:
+        message = codegen.code_error_message(full_code)
+    return message or _('Wrong access code')
+
+
 class QuestionSetRegistrationForm(forms.ModelForm):
     class Meta:
         model = User
@@ -231,12 +239,14 @@ class QuestionSetRegistrationForm(forms.ModelForm):
         return cleaned_data
 
     def clean_access_code(self):
-        full_code = self.questionset_slug + self.codegen.format.separator\
-            + self.cleaned_data['access_code']
+        full_code = self.codegen.canonical_code(
+            self.questionset_slug + self.codegen.format.separator
+            + self.cleaned_data['access_code'])
         if not self.codegen.code_matches(
                 full_code,
                 {'competitor_privileges': ['attempt']}):
-            raise ValidationError(_('Wrong access code'), code='access_code')
+            raise ValidationError(_wrong_code_message(self.codegen, full_code),
+                                  code='access_code')
         self.cleaned_data['full_code'] = full_code
         return self.cleaned_data['access_code']
 
@@ -274,12 +284,14 @@ class CompetitionRegistrationForm(QuestionSetRegistrationForm):
         cqs = self.cleaned_data.get('competition_questionset', None)
         if cqs is not None:
             questionset_slug = cqs.slug_str()
-            full_code = questionset_slug + self.codegen.format.separator\
-                + self.cleaned_data['access_code']
+            full_code = self.codegen.canonical_code(
+                questionset_slug + self.codegen.format.separator
+                + self.cleaned_data['access_code'])
             if not self.codegen.code_matches(
                     full_code,
                     {'competitor_privileges': ['attempt']}):
-                self.errors['access_code'] = [_('Wrong access code')]
+                self.errors['access_code'] = [
+                    _wrong_code_message(self.codegen, full_code)]
             self.cleaned_data['full_code'] = full_code
         else:
             self.errors['competition_questionset'] = [
@@ -333,7 +345,7 @@ class QuestionSetCompetitorForm(forms.ModelForm):
         if not self.codegen.code_matches(
                 full_code,
                 {'competitor_privileges': ['attempt']}):
-            raise ValidationError(_('Wrong access code'),
+            raise ValidationError(_wrong_code_message(self.codegen, full_code),
                                   code='short_access_code')
         if self.codegen.code_matches(
                 full_code,
@@ -407,7 +419,8 @@ class CompetitionCompetitorForm(QuestionSetCompetitorForm):
             if not self.codegen.code_matches(
                     full_code,
                     {'competitor_privileges': ['attempt']}):
-                self.errors['short_access_code'] = [_('Wrong access code')]
+                self.errors['short_access_code'] = [
+                    _wrong_code_message(self.codegen, full_code)]
             if self.codegen.code_matches(
                     full_code,
                     {'competitor_privileges': ['resume_attempt']}):
@@ -506,6 +519,18 @@ class CompetitionCreateForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(CompetitionCreateForm, self).__init__(*args, **kwargs)
         self.helper = CompetitionCreateFormHelper()
+
+    def clean(self):
+        cleaned_data = super(CompetitionCreateForm, self).clean()
+        code_format = cleaned_data.get('competitor_code_format')
+        salt = cleaned_data.get('competitor_salt') or ''
+        min_len = code_based_auth.models.V2_MIN_SALT_LENGTH
+        if code_format is not None and code_format.is_v2 \
+                and len(salt) < min_len:
+            self.add_error('competitor_salt', _(
+                'The v2 code format derives its signing key from the salt; '
+                'use at least %(n)d random characters.') % {'n': min_len})
+        return cleaned_data
 
 
 class CompetitionUpdateFormHelper(CompetitionFormHelper):

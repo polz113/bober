@@ -7,6 +7,8 @@ from collections import defaultdict
 
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+
+from code_based_auth import code_v2
 # from django.utils.six import python_2_unicode_compatible
 
 
@@ -32,6 +34,24 @@ DEFAULT_HASH_BITS = 32
 DEFAULT_HASH_ALGORITHM = 'sha512'
 DEFAULT_SEPARATOR = "*"
 DEFAULT_PART_SEPARATOR = "+"
+
+CODE_VERSION_LEGACY = 1
+CODE_VERSION_V2 = 2
+CODE_VERSIONS = (
+    (CODE_VERSION_LEGACY, _('legacy (hash components)')),
+    (CODE_VERSION_V2, _('v2 (fixed length, signed, check character)')),
+)
+# v2 keys are derived from the generator salt; shorter salts are rejected
+# when a competition with a v2 competitor code format is created.
+V2_MIN_SALT_LENGTH = 16
+
+CODE_ERROR_MESSAGES = {
+    code_v2.InvalidCodeFormat: _('The access code has the wrong format.'),
+    code_v2.CodeChecksumError: _(
+        'The access code contains a typo. Please check it.'),
+    code_v2.CodeSignatureError: _(
+        'The access code is not valid for this group.'),
+}
 
 # TODO load words from a file or database
 DEFAULT_WORDS = ['Beaver', 'Tree', 'Brook', 'Stream']
@@ -219,18 +239,142 @@ class CodeFormat(models.Model):
         return component_str
     separator = models.CharField(max_length=1, default=DEFAULT_SEPARATOR)
     name = models.CharField(max_length=256, blank=True, null=True)
+    code_version = models.PositiveSmallIntegerField(
+        choices=CODE_VERSIONS, default=CODE_VERSION_LEGACY)
+
     @classmethod
-    def from_components(cls, components, separator=DEFAULT_SEPARATOR):
-        cf = cls(separator=separator)
+    def from_components(cls, components, separator=DEFAULT_SEPARATOR,
+                        code_version=CODE_VERSION_LEGACY, name=None):
+        cf = cls(separator=separator, code_version=code_version, name=name)
         cf.save()
         for i, p in enumerate(components):
             cc = CodeComponent(code_format=cf, ordering=i, **p)
             cc.save()
         return cf
 
+    @classmethod
+    def create_v2(cls, context_component='competition_questionset',
+                  id_component='code_id',
+                  privileges_component='competitor_privileges',
+                  name=None, separator=DEFAULT_SEPARATOR):
+        """Create a v2 code format.
+
+        A v2 code value is ``<context><separator><v2 code>``, for example
+        ``12-questionset-slug*0030E-D95AF-BWJVD``. The components describe
+        the roles of the parts, in this order: the context (bound into the
+        signature, not part of the v2 code), the unique code id and the
+        privileges (encoded as bit flags, see ``code_v2.FLAGS``).
+        """
+        return cls.from_components([
+            {'name': context_component, 'hash_format': 'r',
+             'hash_algorithm': 'noop', 'hash_len': 256, 'max_parts': 1},
+            {'name': id_component, 'hash_format': 'S',
+             'hash_algorithm': 'noop', 'hash_len': code_v2.ID_CHARS,
+             'max_parts': 1},
+            {'name': privileges_component, 'hash_format': 'S',
+             'hash_algorithm': 'noop', 'hash_len': code_v2.FLAG_CHARS,
+             'max_parts': len(code_v2.FLAGS)},
+        ], separator=separator, code_version=CODE_VERSION_V2, name=name)
+
+    @property
+    def is_v2(self):
+        return self.code_version == CODE_VERSION_V2
+
+    def _v2_component_names(self):
+        names = list(self.components.order_by('ordering').values_list(
+            'name', flat=True))
+        if len(names) != 3:
+            raise ValueError("a v2 code format needs exactly 3 components "
+                             "(context, code id, privileges)")
+        return names
+
+    def _v2_split(self, code):
+        context, sep, short_code = code.partition(self.separator)
+        if not sep or not context:
+            raise code_v2.InvalidCodeFormat()
+        return context, short_code
+
+    def _v2_parse(self, code, salt):
+        """Return (context, canonical short code, code id, privileges)."""
+        context, short_code = self._v2_split(code)
+        canonical, code_id, privileges = code_v2.parse_code(
+            code_v2.derive_key(salt), context, short_code)
+        return context, canonical, code_id, privileges
+
+    @staticmethod
+    def _v2_code_id(value):
+        # CodeGenerator.create_code stores the id with long_to_str()
+        if isinstance(value, int):
+            return value
+        return int.from_bytes(value.encode('iso8859-1'), 'big')
+
+    def code_error(self, code, salt):
+        """Return the v2 validation error for code, or None.
+
+        Legacy formats can not tell why a code does not match, so this
+        always returns None for them.
+        """
+        if not self.is_v2:
+            return None
+        try:
+            self._v2_parse(code, salt)
+        except code_v2.CodeError as e:
+            return e
+        return None
+
+    def code_error_message(self, code, salt):
+        error = self.code_error(code, salt)
+        if error is None:
+            return None
+        return CODE_ERROR_MESSAGES.get(type(error))
+
+    def _v2_code_matches(self, code, salt, parts):
+        try:
+            context_name, id_name, privileges_name = \
+                self._v2_component_names()
+            context, canonical, code_id, privileges = self._v2_parse(
+                code, salt)
+            for k, values in parts.items():
+                if len(values) < 1:
+                    return False
+                for value in values:
+                    if k == context_name:
+                        ok = value == context
+                    elif k == id_name:
+                        ok = self._v2_code_id(value) == code_id
+                    elif k == privileges_name:
+                        ok = value in privileges
+                    else:
+                        ok = False
+                    if not ok:
+                        return False
+        except Exception:
+            return False
+        return True
+
+    def _v2_code_from_parts(self, salt, parts):
+        context_name, id_name, privileges_name = self._v2_component_names()
+        contexts = parts.get(context_name, [])
+        ids = parts.get(id_name, [])
+        if not ids:
+            # Code.create() saves the code once before its id is known.
+            return ""
+        if len(contexts) != 1 or len(ids) != 1:
+            raise ValueError("v2 codes need exactly one context and id")
+        # Privileges unknown to v2 (e.g. 'new_attempt') can not be encoded
+        # and are therefore never granted by a v2 code.
+        privileges = [p for p in parts.get(privileges_name, [])
+                      if p in code_v2.FLAGS]
+        short_code = code_v2.make_code(
+            code_v2.derive_key(salt), contexts[0],
+            self._v2_code_id(ids[0]), privileges)
+        return contexts[0] + self.separator + short_code
+
     def code_matches(self, code, salt, parts):
         if len(parts) < 1:
             return False
+        if self.is_v2:
+            return self._v2_code_matches(code, salt, parts)
         format_components = self.components.order_by('ordering')
         # hash_params is a dict of
         # (  format conversion function,
@@ -295,6 +439,8 @@ class CodeFormat(models.Model):
         return fn(value)[-component.hash_len:]
 
     def code_from_parts(self, salt, parts):
+        if self.is_v2:
+            return self._v2_code_from_parts(salt, parts)
         # print ("parts:", parts)
         salt = salt.encode('utf-8')
         format_components = self.components.order_by('ordering')
@@ -320,6 +466,13 @@ class CodeFormat(models.Model):
 
     def canonical_code(self, code):
         # print("canonizing:", code)
+        if self.is_v2:
+            try:
+                context, short_code = self._v2_split(code)
+                return context + self.separator + code_v2.canonical(
+                    short_code)
+            except Exception:
+                return code
         try:
             format_components = self.components.order_by('ordering')
             split_parts = code.split(self.separator)
@@ -422,3 +575,7 @@ class CodeGenerator(models.Model):
 
     def canonical_code(self, code):
         return self.format.canonical_code(code)
+
+    def code_error_message(self, code):
+        """Explain why code is invalid (v2 formats only), or None."""
+        return self.format.code_error_message(code, self.salt)

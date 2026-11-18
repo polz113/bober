@@ -2,6 +2,7 @@ import datetime
 import time
 import json
 import random
+import secrets
 import string
 import email.utils
 import os
@@ -419,16 +420,16 @@ class CompetitionCreate(LoginRequiredMixin, CreateWithInlinesView):
                 (code_based_auth.models.CodeFormat.objects.filter(
                     components__name='admin_privileges'
                 ).order_by('id')[:1] or [None])[0],
+            # prefer the v2 competitor code format for new competitions
             'competitor_code_format':
                 (code_based_auth.models.CodeFormat.objects.filter(
                     components__name='competition_questionset'
-                ).order_by('id')[:1] or [None])[0],
+                ).distinct().order_by('-code_version', 'id')[:1] or [None])[0],
             'admin_salt': ''.join([
                 random.choice(string.ascii_letters+string.digits)
                 for _ in range(10)]),
-            'competitor_salt': ''.join([
-                random.choice(string.ascii_letters+string.digits)
-                for _ in range(10)]),
+            # also the v2 signing key material, see code_v2.derive_key()
+            'competitor_salt': secrets.token_hex(16),
             }
 
 
