@@ -1,6 +1,8 @@
 import datetime
 
-from django.test import TestCase
+from django.core.cache import cache
+from django.test import TestCase, override_settings
+from django.urls import reverse
 from django.utils import timezone
 
 from code_based_auth import code_v2
@@ -161,3 +163,54 @@ class LegacyCompetitorCodeTest(CompetitorCodeTestMixin, TestCase):
         self.assertFalse(form.is_valid())
         self.assertEqual(form.errors['short_access_code'],
                          ['Wrong access code'])
+
+
+@override_settings(CODE_AUTH_MAX_FAILURES=3, CODE_AUTH_FAILURE_WINDOW=60)
+class AccessCodeThrottleTest(CompetitorCodeTestMixin, TestCase):
+    def setUp(self):
+        cache.clear()
+        self.competition, (self.cqs, self.other_cqs) = self.make_competition(
+            CodeFormat.create_v2(), 'throttle-test')
+        self.code = self.competition.competitor_code_create(
+            None, competition_questionset=self.cqs,
+            code_data={'competitor_privileges': ['attempt']})
+        self.short = self.competition.split_competitor_code(
+            self.code.value)[1]
+        self.url = reverse('questionset_compete', kwargs={
+            'competition_questionset_id': self.cqs.id})
+
+    def tearDown(self):
+        cache.clear()
+
+    def post(self, short_code, ip='10.0.0.1'):
+        return self.client.post(self.url, self.form_data(short_code),
+                                REMOTE_ADDR=ip)
+
+    def test_wrong_codes_are_throttled(self):
+        wrong = self.short[:-1] + ('0' if self.short[-1] != '0' else '1')
+        for _ in range(3):
+            response = self.post(wrong)
+            self.assertNotEqual(response.status_code, 429)
+        self.assertEqual(self.post(wrong).status_code, 429)
+        # also a correct code is refused while throttled
+        self.assertEqual(self.post(self.short).status_code, 429)
+        # other clients are not affected
+        response = self.post(self.short, ip='10.0.0.2')
+        self.assertEqual(response.status_code, 302)
+
+    def test_correct_codes_are_not_counted(self):
+        for _ in range(5):
+            self.client.logout()
+            response = self.post(self.short)
+            self.assertEqual(response.status_code, 302)
+
+    def test_access_code_view_counts_typed_wrong_codes(self):
+        url = reverse('competitionquestionset_access_code', kwargs={
+            'competition_questionset_id': self.cqs.id, 'url_next': 'done/'})
+        for _ in range(3):
+            response = self.client.get(url, {'access_code': 'WRONG'},
+                                       REMOTE_ADDR='10.0.0.3')
+            self.assertEqual(response.status_code, 302)
+        response = self.client.get(url, {'access_code': self.short},
+                                   REMOTE_ADDR='10.0.0.3')
+        self.assertEqual(response.status_code, 429)
