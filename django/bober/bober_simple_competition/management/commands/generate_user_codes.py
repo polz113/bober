@@ -30,9 +30,7 @@ class Command(BaseCommand):
         ).distinct()
         for cqs in cqss:
             code_data = competition.max_competitor_code_data(master_code)
-            code_data['competition_questionset'] = [
-                cqs.slug_str()
-            ]
             for i in range(n_of_codes):
-                c = competition.competitor_code_generator.create_code(code_data)
+                c = competition.competitor_code_create(
+                    master_code, cqs, code_data)
                 c.save()

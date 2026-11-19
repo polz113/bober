@@ -12,7 +12,8 @@ from django.db.models import FileField, BooleanField, FloatField, Model
 from django.db.models import DateField, DateTimeField, DurationField
 from django.db.models import ForeignKey, ManyToManyField, OneToOneField
 from django.db.models import signals, F, ExpressionWrapper, Manager
-from django.db.models import BinaryField, CASCADE
+from django.db.models import BinaryField, CASCADE, UniqueConstraint
+from django.db import IntegrityError, transaction
 from django.contrib.auth.models import User
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
@@ -24,7 +25,8 @@ from django.core.cache import cache
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
-from code_based_auth.models import Code, CodeField, CodeGenerator
+from code_based_auth.models import Code, CodeField, CodeGenerator, CodePart
+from code_based_auth import random_code
 from taggit.managers import TaggableManager
 
 from . import graders
@@ -74,6 +76,8 @@ COMPETITOR_PRIVILEGES = (
      _('See results before official end of competition')),
     ('resume_attempt', _('Resume existing attempts')),
 )
+
+COMPETITOR_PRIVILEGE_NAMES = tuple(p for p, _ in COMPETITOR_PRIVILEGES)
 
 
 CODE_EFFECTS = (
@@ -265,15 +269,30 @@ class Competition(Model):
     def competitor_code_create(self, access_code,
                                competition_questionset=None,
                                code_data=None):
+        """Create a random competitor code; returns its Code.
+
+        The privileges (and code effects) come from code_data, by default
+        everything the administrator code access_code may hand out.
+        """
         if code_data is None:
             code_data = self.max_competitor_code_data(access_code)
-        if competition_questionset is not None:
-            code_data['competition_questionset'] = [
-                competition_questionset.slug_str()
-            ]
-        c = self.competitor_code_generator.create_code(code_data)
-        c.save()
-        return c
+        if competition_questionset is None:
+            slugs = code_data.get('competition_questionset')
+            if isinstance(slugs, str):
+                slugs = [slugs]
+            competition_questionset = CompetitionQuestionSet.get_by_slug(
+                slugs[0])
+        if competition_questionset.competition_id != self.id:
+            raise ValueError("questionset is not part of this competition")
+        cc = CompetitorCode.create(
+            competition_questionset,
+            privileges=code_data.get('competitor_privileges', []),
+            code_effects=code_data.get('code_effects', []))
+        return cc.code
+
+    def competitor_code(self, access_code):
+        """The CompetitorCode of this competition for a full access code."""
+        return CompetitorCode.for_competition(self, access_code)
 
     def master_code_create(self):
         c = self.administrator_code_generator.create_code({
@@ -391,6 +410,133 @@ class CompetitionQuestionSet(Model):
                 graded_list = []
                 grades_set.clear()
         GradedAnswer.objects.bulk_create(graded_list)
+
+
+class CompetitorCode(Model):
+    """A competitor access code.
+
+    The value is a random string (see code_based_auth.random_code) that is
+    only valid for one CompetitionQuestionSet; the same value may exist in
+    other questionsets. A code is checked by looking up the pair
+    (competition questionset, value); what it allows is stored in the flags
+    below, not in the value.
+
+    The full access code (stored in Code.value, in the session and in
+    Attempt.access_code) is the questionset slug, the separator of the
+    competitor code format and the value, as for older codes.
+    """
+    def __str__(self):
+        return self.code.value
+
+    code = OneToOneField(Code, related_name='competitor_code',
+                         on_delete=CASCADE)
+    competition_questionset = ForeignKey(
+        'CompetitionQuestionSet', related_name='competitor_codes',
+        on_delete=CASCADE)
+    value = CharField(max_length=256)
+    attempt = BooleanField(default=False)
+    attempt_before_start = BooleanField(default=False)
+    results_before_end = BooleanField(default=False)
+    resume_attempt = BooleanField(default=False)
+
+    class Meta:
+        constraints = [
+            UniqueConstraint(
+                fields=['competition_questionset', 'value'],
+                name='unique_competitor_code_value_per_cqs'),
+        ]
+
+    MAX_CREATE_TRIES = 10
+
+    def has_privilege(self, privilege):
+        return privilege in COMPETITOR_PRIVILEGE_NAMES \
+            and getattr(self, privilege)
+
+    @property
+    def privileges(self):
+        return [p for p in COMPETITOR_PRIVILEGE_NAMES if getattr(self, p)]
+
+    @staticmethod
+    def _prefix(competition_questionset):
+        competition = competition_questionset.competition
+        separator = competition.competitor_code_generator.format.separator
+        return competition_questionset.slug_str() + separator
+
+    @classmethod
+    def create(cls, competition_questionset, privileges=(),
+               code_effects=()):
+        """Store a new random code; retry when the value is already used."""
+        generator = \
+            competition_questionset.competition.competitor_code_generator
+        prefix = cls._prefix(competition_questionset)
+        flags = dict((p, p in privileges) for p in COMPETITOR_PRIVILEGE_NAMES)
+        for _try in range(cls.MAX_CREATE_TRIES):
+            value = random_code.generate()
+            try:
+                with transaction.atomic():
+                    code = Code.objects.create(
+                        value=prefix + value, salt=generator.salt,
+                        format=generator.format)
+                    cc = cls.objects.create(
+                        code=code,
+                        competition_questionset=competition_questionset,
+                        value=value, **flags)
+            except IntegrityError:
+                continue
+            # The parts are informative only (admin pages, exports); codes
+            # are checked with the flags above.
+            parts = [('competition_questionset',
+                      [competition_questionset.slug_str()]),
+                     ('competitor_privileges', cc.privileges),
+                     ('code_effects', list(code_effects))]
+            for name, values in parts:
+                for i, v in enumerate(values):
+                    CodePart.objects.create(code=code, ordering=i,
+                                            name=name, value=v)
+            generator.codes.add(code)
+            return cc
+        raise RuntimeError("could not create a unique competitor code")
+
+    @classmethod
+    def lookup(cls, competition_questionset, typed):
+        """Find the code a competitor typed for a questionset, or None."""
+        values = random_code.lookup_values(typed)
+        if not values:
+            return None
+        found = dict((cc.value, cc) for cc in cls.objects.filter(
+            competition_questionset=competition_questionset,
+            value__in=values).select_related('code'))
+        for v in values:
+            if v in found:
+                return found[v]
+        return None
+
+    @classmethod
+    def from_access_code(cls, competition_questionset, access_code):
+        """Find the code for a full access code (questionset slug + value).
+
+        Returns None if the access code belongs to another questionset.
+        """
+        if not access_code:
+            return None
+        prefix = cls._prefix(competition_questionset)
+        if not access_code.startswith(prefix):
+            return None
+        return cls.lookup(competition_questionset, access_code[len(prefix):])
+
+    @classmethod
+    def for_competition(cls, competition, access_code):
+        """Find the code for a full access code of any questionset of
+        the competition."""
+        try:
+            cqs_id = int(access_code[:access_code.index('-')])
+        except (AttributeError, TypeError, ValueError):
+            return None
+        cqs = competition.competitionquestionset_set.filter(
+            id=cqs_id).first()
+        if cqs is None:
+            return None
+        return cls.from_access_code(cqs, access_code)
 
 
 class CodeEffect(Model):

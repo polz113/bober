@@ -44,7 +44,7 @@ from bober_simple_competition import tables
 from bober_simple_competition import filters
 from bober_simple_competition.models import\
     Profile, Competition, CompetitionQuestionSet, Resource,\
-    QuestionSet, Code, Question, Attempt, Competitor,\
+    QuestionSet, Code, Question, Attempt, Competitor, CompetitorCode,\
     ADMIN_PRIVILEGES, COMPETITOR_PRIVILEGES, CODE_EFFECTS,\
     graders, Answer, GradedAnswer, AttemptConfirmation
 
@@ -259,8 +259,16 @@ def competitionquestionset_access_code(request, competition_questionset_id,
         defer_effects = form.cleaned_data.get('defer_effects', False)
         short_access_code = form.cleaned_data['access_code']
         request.session['short_access_code'] = short_access_code
-        access_code = cqs_slug + code_format.separator + short_access_code
-        access_code = code_format.canonical_code(access_code)
+        # the code from the session is a full access code
+        competitor_code = CompetitorCode.from_access_code(
+            cqs, short_access_code) or CompetitorCode.lookup(
+                cqs, short_access_code)
+        if competitor_code is not None:
+            access_code = competitor_code.code.value
+        else:
+            # unknown code: stored as typed, every check will refuse it
+            access_code = cqs_slug + code_format.separator \
+                + short_access_code.strip()
         _use_access_code(request, access_code, defer_update, defer_effects)
         # print "    ", request.session['access_code']
         return redirect(url_next)
@@ -404,11 +412,11 @@ class CompetitionCreate(LoginRequiredMixin, CreateWithInlinesView):
                     f.instance.save()
                     code_data = {
                         'competitor_privileges': [
-                            'attempt', 'results_before_end', 'new_attempt'
+                            'attempt', 'results_before_end'
                         ],
-                        'competition_questionset': [f.instance.slug_str()]
                     }
-                    c = competitor_codegen.create_code(code_data)
+                    c = competition.competitor_code_create(
+                        None, f.instance, code_data)
                     f.instance.guest_code = c
                     f.instance.save()
         return retval
@@ -642,11 +650,11 @@ def competition_code_create(request, slug, user_type='admin'):
         if form.is_valid():
             data = form.cleaned_data
             if 'competition_questionset' in data:
-                cqs = data['competition_questionset']
-                data['competition_questionset'] = [cqs.slug_str()]
+                cqs = data.pop('competition_questionset')
+                c = competition.competitor_code_create(
+                    access_code, cqs, data)
             else:
-                cqs = None
-            c = generator.create_code(data)
+                c = generator.create_code(data)
             request.profile.created_codes.add(c)
             return redirect('competition_code_list',
                             slug=competition.slug)
@@ -709,9 +717,9 @@ def competition_attempt_list(request, slug=None, regrade=False,
     if not competition.administrator_code_generator.code_matches(
             access_code,
             {'admin_privileges': ['view_all_attempts']}):
-        if competition.competitor_code_generator.code_matches(
-                    access_code,
-                    {'competitor_privileges': ['results_before_end']}) \
+        competitor_code = competition.competitor_code(access_code)
+        if (competitor_code is not None
+                and competitor_code.results_before_end) \
                 or competition.administrator_code_generator.code_matches(
                     access_code,
                     {'competitor_privileges': ['results_before_end']}) \
@@ -834,16 +842,15 @@ def _can_attempt(request, competition_questionset):
         competition = competition_questionset.competition
         access_code = request.session['access_code']
         now = timezone.now()
-        codegen = competition.competitor_code_generator
-        access_allowed |= codegen.code_matches(
-            access_code, {'competitor_privileges': ['attempt_before_start']})
+        # None if the code is not a code of this questionset
+        competitor_code = CompetitorCode.from_access_code(
+            competition_questionset, access_code)
+        if competitor_code is None:
+            return False
+        access_allowed |= competitor_code.attempt_before_start
         access_allowed |= competition.start < now and \
-            codegen.code_matches(
-                access_code, {'competitor_privileges': ['attempt']})
+            competitor_code.attempt
         access_allowed &= (competition.end > now)
-        access_allowed &= codegen.code_matches(
-            access_code, {'competition_questionset':
-                          [competition_questionset.slug_str()]})
     except Exception as e:
         # TODO: add exception handling
         access_allowed = False
@@ -892,16 +899,12 @@ def competition_data(request, competition_questionset_id):
             pass
         raise PermissionDenied
     try:
-        competition = competition_questionset.competition
-        codegen = competition.competitor_code_generator
-        assert codegen.code_matches(
-            access_code, {'competitor_privileges': ['resume_attempt']})
-        sep = codegen.format.separator
-        # access_code_id_part contains both the group and the code id
-        access_code_id_part = sep.join(access_code.split(sep)[:2])
+        competitor_code = CompetitorCode.from_access_code(
+            competition_questionset, access_code)
+        assert competitor_code.resume_attempt
         attempt = Attempt.objects.filter(
             competitor=competitor,
-            access_code__startswith=access_code_id_part,
+            access_code=competitor_code.code.value,
             competitionquestionset_id=competition_questionset_id)[0]
         answers = []
         finish = attempt.finish
@@ -1033,10 +1036,9 @@ def finish_competition(request, competition_questionset_id, attempt_id):
 def attempt_results(request, competition_questionset_id, attempt_id):
     attempt = Attempt.objects.get(id=attempt_id)
     competition = attempt.competitionquestionset.competition
-    codegen = competition.competitor_code_generator
-    access_code = request.session['access_code']
-    if codegen.code_matches(
-            access_code, {'competitor_privileges': ['results_before_end']}):
+    competitor_code = competition.competitor_code(
+        request.session['access_code'])
+    if competitor_code is not None and competitor_code.results_before_end:
         attempt.grade_answers(update_graded=True)
     elif competition.end > timezone.now():
         return redirect('competition_compete', slug=competition.slug)
@@ -1051,10 +1053,9 @@ def attempt_results(request, competition_questionset_id, attempt_id):
 def attempt_detail(request, competition_questionset_id, attempt_id):
     attempt = Attempt.objects.get(id=attempt_id)
     competition = attempt.competitionquestionset.competition
-    codegen = competition.competitor_code_generator
-    access_code = request.session['access_code']
-    if codegen.code_matches(
-            access_code, {'competitor_privileges': ['results_before_end']}):
+    competitor_code = competition.competitor_code(
+        request.session['access_code'])
+    if competitor_code is not None and competitor_code.results_before_end:
         attempt.grade_answers(update_graded=True)
     elif competition.end > timezone.now():
         return redirect('competition_compete', slug=competition.slug)
