@@ -3,7 +3,8 @@ import importlib
 from unittest import mock
 
 from django.apps import apps
-from django.test import RequestFactory, TestCase
+from django.core.cache import cache
+from django.test import RequestFactory, TestCase, override_settings
 from django.urls import reverse
 from django.utils import timezone
 
@@ -346,3 +347,95 @@ class LegacyCodeMigrationTest(CompetitorCodeTestMixin, TestCase):
         self.migrate()
         self.assertEqual(guest.competitor_code.privileges,
                          ['attempt', 'results_before_end'])
+
+
+@override_settings(CODE_AUTH_MAX_FAILURES=3)
+class AccessCodeThrottleTest(CompetitorCodeTestMixin, TestCase):
+    def setUp(self):
+        cache.clear()
+        self.competition, (self.cqs, self.other_cqs) = \
+            self.make_competition('throttle-test')
+        self.code, self.cc = self.make_code(self.cqs)
+        self.short = self.cc.value
+        self.url = reverse('questionset_compete', kwargs={
+            'competition_questionset_id': self.cqs.id})
+
+    def tearDown(self):
+        cache.clear()
+
+    def post(self, short_code, ip='10.0.0.1'):
+        return self.client.post(self.url, self.form_data(short_code),
+                                REMOTE_ADDR=ip)
+
+    def wrong_code(self):
+        return self.short[:-1] + ('0' if self.short[-1] != '0' else '1')
+
+    def test_wrong_codes_are_throttled(self):
+        for _ in range(3):
+            response = self.post(self.wrong_code())
+            self.assertNotEqual(response.status_code, 429)
+        self.assertEqual(self.post(self.wrong_code()).status_code, 429)
+        # also a correct code is refused while throttled
+        self.assertEqual(self.post(self.short).status_code, 429)
+        # other clients are not affected
+        response = self.post(self.short, ip='10.0.0.2')
+        self.assertEqual(response.status_code, 302)
+
+    def test_correct_codes_are_not_counted(self):
+        for _ in range(5):
+            self.client.logout()
+            response = self.post(self.short)
+            self.assertEqual(response.status_code, 302)
+
+    def test_code_of_other_group_is_counted(self):
+        other_code, other_cc = self.make_code(self.other_cqs)
+        for _ in range(3):
+            self.post(other_cc.value)
+        self.assertEqual(self.post(self.short).status_code, 429)
+
+    def test_access_code_view_counts_typed_wrong_codes(self):
+        url = reverse('competitionquestionset_access_code', kwargs={
+            'competition_questionset_id': self.cqs.id, 'url_next': 'done/'})
+        for _ in range(3):
+            response = self.client.get(url, {'access_code': 'WRONG'},
+                                       REMOTE_ADDR='10.0.0.3')
+            self.assertEqual(response.status_code, 302)
+        response = self.client.get(url, {'access_code': self.short},
+                                   REMOTE_ADDR='10.0.0.3')
+        self.assertEqual(response.status_code, 429)
+
+
+@override_settings(CODE_AUTH_MAX_FAILURES=3)
+class AccessCodePageThrottleTest(CompetitorCodeTestMixin, TestCase):
+    """The generic access code page, where admin codes are typed."""
+
+    def setUp(self):
+        cache.clear()
+        self.competition, _groups = self.make_competition(
+            'admin-throttle-test')
+        self.master = self.competition.master_code_create()
+        self.url = reverse('access_code', kwargs={'url_next': 'done/'})
+
+    def tearDown(self):
+        cache.clear()
+
+    def enter(self, code, ip='10.0.1.1'):
+        return self.client.get(self.url, {'access_code': code},
+                               REMOTE_ADDR=ip)
+
+    def test_correct_codes_are_not_counted(self):
+        for _ in range(5):
+            self.assertEqual(self.enter(self.master.value).status_code, 302)
+        self.assertEqual(self.client.session['access_code'],
+                         self.master.value)
+
+    def test_wrong_codes_are_throttled(self):
+        for _ in range(3):
+            self.assertEqual(
+                self.enter(self.master.value + 'x').status_code, 302)
+        self.assertEqual(self.enter(self.master.value + 'x').status_code, 429)
+        # a correct code is refused too while throttled ...
+        self.assertEqual(self.enter(self.master.value).status_code, 429)
+        # ... but only for this client
+        self.assertEqual(
+            self.enter(self.master.value, ip='10.0.1.2').status_code, 302)

@@ -32,6 +32,7 @@ from popup_modelviews.views import\
     InvalidFormRespond422
 
 import code_based_auth.models
+from code_based_auth import throttle
 from bober_simple_competition.forms import\
     MailForm, CompetitorCodeFormatForm,\
     CompetitorUpdateForm, ProfileEditForm,\
@@ -226,9 +227,16 @@ def access_code(request, url_next):
     else:
         form = MinimalAccessCodeForm()
     if form.is_valid():
+        if throttle.is_throttled(request):
+            return _too_many_wrong_codes()
         defer_update = form.cleaned_data.get('defer_update_used_codes', False)
         defer_effects = form.cleaned_data.get('defer_effects', False)
         access_code = form.cleaned_data['access_code']
+        # This page does not know which competition (and therefore which
+        # code generator) a code belongs to, so a code counts as wrong when
+        # no such code was ever issued (all codes are stored).
+        if not Code.objects.filter(value=access_code).exists():
+            throttle.register_failure(request)
         _use_access_code(request, access_code, defer_update, defer_effects)
         return HttpResponseRedirect('/' + url_next)
     return render(
@@ -245,6 +253,8 @@ def competitionquestionset_access_code(request, competition_questionset_id,
         form = MinimalAccessCodeForm(qd)
     else:
         form = MinimalAccessCodeForm()
+    # only codes typed by the client count towards the throttle
+    code_from_client = 'access_code' in qd
     if 'access_code' in request.session and 'access_code' not in qd:
         qd['access_code'] = request.session['access_code']
     try:
@@ -255,6 +265,8 @@ def competitionquestionset_access_code(request, competition_questionset_id,
     except Exception as e:
         cqs_slug = None
     if cqs_slug is not None and form.is_valid():
+        if throttle.is_throttled(request):
+            return _too_many_wrong_codes()
         defer_update = form.cleaned_data.get('defer_update_used_codes', False)
         defer_effects = form.cleaned_data.get('defer_effects', False)
         short_access_code = form.cleaned_data['access_code']
@@ -266,6 +278,8 @@ def competitionquestionset_access_code(request, competition_questionset_id,
         if competitor_code is not None:
             access_code = competitor_code.code.value
         else:
+            if code_from_client:
+                throttle.register_failure(request)
             # unknown code: stored as typed, every check will refuse it
             access_code = cqs_slug + code_format.separator \
                 + short_access_code.strip()
@@ -1243,8 +1257,30 @@ class ProfileAutocomplete(autocomplete.Select2QuerySetView):
         return profiles
 
 
+def _too_many_wrong_codes():
+    return HttpResponse(
+        _('Too many wrong access codes. Please try again later.'),
+        status=429, content_type='text/plain; charset=utf-8')
+
+
+class AccessCodeThrottleMixin(object):
+    """Refuse code entry after too many wrong codes from one client."""
+    access_code_fields = ('short_access_code', 'access_code')
+
+    def post(self, request, *args, **kwargs):
+        if throttle.is_throttled(request):
+            return _too_many_wrong_codes()
+        return super(AccessCodeThrottleMixin, self).post(
+            request, *args, **kwargs)
+
+    def form_invalid(self, form):
+        if any(f in form.errors for f in self.access_code_fields):
+            throttle.register_failure(self.request)
+        return super(AccessCodeThrottleMixin, self).form_invalid(form)
+
+
 # 4. register competitor
-class QuestionSetCompete(CreateView):
+class QuestionSetCompete(AccessCodeThrottleMixin, CreateView):
     form_class = QuestionSetCompetitorForm
     template_name = "bober_simple_competition/questionset_registration.html"
 
@@ -1319,7 +1355,7 @@ class CompetitionCompete(QuestionSetCompete):
 
 
 # 4. register user
-class QuestionSetRegistration(CreateView):
+class QuestionSetRegistration(AccessCodeThrottleMixin, CreateView):
     form_class = QuestionSetRegistrationForm
     template_name = "bober_simple_competition/questionset_registration.html"
 
