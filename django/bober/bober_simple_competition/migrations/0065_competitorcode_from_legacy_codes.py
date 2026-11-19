@@ -1,7 +1,8 @@
 from django.db import migrations
 
-PRIVILEGES = ('attempt', 'attempt_before_start', 'results_before_end',
-              'resume_attempt')
+# resume_attempt is not migrated: resuming attempts was removed in favour
+# of merging attempts (Attempt.merge()).
+PRIVILEGES = ('attempt', 'attempt_before_start', 'results_before_end')
 BATCH_SIZE = 1000
 
 

@@ -335,9 +335,6 @@ class QuestionSetCompetitorForm(forms.ModelForm):
         if competitor_code is None or not competitor_code.attempt:
             raise ValidationError(WRONG_CODE_MESSAGE,
                                   code='short_access_code')
-        if competitor_code.resume_attempt:
-            if not self.profile:
-                self.profile = None
         self.cleaned_data['full_code'] = competitor_code.code.value
         return self.cleaned_data['short_access_code']
 
@@ -391,9 +388,6 @@ class CompetitionCompetitorForm(QuestionSetCompetitorForm):
             if competitor_code is None or not competitor_code.attempt:
                 self.errors['short_access_code'] = [WRONG_CODE_MESSAGE]
             else:
-                if competitor_code.resume_attempt:
-                    if not self.profile:
-                        self.profile = None
                 self.cleaned_data['full_code'] = competitor_code.code.value
         else:
             self.errors['competition_questionset'] = [

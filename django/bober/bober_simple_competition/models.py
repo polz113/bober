@@ -74,7 +74,6 @@ COMPETITOR_PRIVILEGES = (
     ('attempt_before_start', _('Attempt competition before start')),
     ('results_before_end',
      _('See results before official end of competition')),
-    ('resume_attempt', _('Resume existing attempts')),
 )
 
 COMPETITOR_PRIVILEGE_NAMES = tuple(p for p, _ in COMPETITOR_PRIVILEGES)
@@ -437,7 +436,6 @@ class CompetitorCode(Model):
     attempt = BooleanField(default=False)
     attempt_before_start = BooleanField(default=False)
     results_before_end = BooleanField(default=False)
-    resume_attempt = BooleanField(default=False)
 
     class Meta:
         constraints = [

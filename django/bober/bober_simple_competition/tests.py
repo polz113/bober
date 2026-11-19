@@ -87,15 +87,15 @@ class CompetitorCodeCreateTest(CompetitorCodeTestMixin, TestCase):
 
     def test_create_stores_random_code(self):
         code, cc = self.make_code(
-            self.cqs, ('attempt', 'resume_attempt'))
+            self.cqs, ('attempt', 'results_before_end'))
         self.assertEqual(random_code.canonical(cc.value), cc.value)
         self.assertEqual(code.value, self.cqs.slug_str() + '*' + cc.value)
         self.assertEqual(cc.competition_questionset, self.cqs)
-        self.assertEqual(cc.privileges, ['attempt', 'resume_attempt'])
+        self.assertEqual(cc.privileges, ['attempt', 'results_before_end'])
         self.assertTrue(self.competition.competitor_code_generator.codes
                         .filter(id=code.id).exists())
         self.assertEqual(code.parts['competitor_privileges'],
-                         ['attempt', 'resume_attempt'])
+                         ['attempt', 'results_before_end'])
 
     def test_values_are_unique_per_questionset(self):
         values = [self.make_code(self.cqs)[1].value for _ in range(200)]
@@ -197,13 +197,6 @@ class CompetitorCodeCheckTest(CompetitorCodeTestMixin, TestCase):
         form = QuestionSetCompetitorForm(
             self.form_data(self.raw), competitionquestionset=self.cqs)
         self.assertFalse(form.is_valid())
-        # resume_attempt drops the profile (look up attempts by code only)
-        CompetitorCode.objects.filter(id=self.cc.id).update(
-            attempt=True, resume_attempt=True)
-        form = QuestionSetCompetitorForm(
-            self.form_data(self.raw), competitionquestionset=self.cqs)
-        self.assertTrue(form.is_valid(), form.errors)
-        self.assertIsNone(form.profile)
 
     def _request(self, access_code):
         request = RequestFactory().get('/')
@@ -285,7 +278,7 @@ class LegacyCodeMigrationTest(CompetitorCodeTestMixin, TestCase):
         self.codegen = self.competition.competitor_code_generator
         self.legacy = self.codegen.create_code({
             'competition_questionset': [self.cqs.slug_str()],
-            'competitor_privileges': ['attempt', 'resume_attempt'],
+            'competitor_privileges': ['attempt', 'results_before_end'],
         })
         self.legacy_short = self.legacy.value[len(self.cqs.slug_str()) + 1:]
         self.assertFalse(CompetitorCode.objects.filter(
@@ -299,7 +292,7 @@ class LegacyCodeMigrationTest(CompetitorCodeTestMixin, TestCase):
         cc = self.legacy.competitor_code
         self.assertEqual(cc.competition_questionset, self.cqs)
         self.assertEqual(cc.value, self.legacy_short)
-        self.assertEqual(cc.privileges, ['attempt', 'resume_attempt'])
+        self.assertEqual(cc.privileges, ['attempt', 'results_before_end'])
         # Code and CodePart rows are untouched
         self.legacy.refresh_from_db()
         self.assertEqual(self.legacy.value,

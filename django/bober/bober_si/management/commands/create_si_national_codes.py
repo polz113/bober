@@ -73,7 +73,6 @@ class Command(BaseCommand):
                             code_data = {
                                 'competitor_privileges':[
                                     'attempt',
-                                    'resume_attempt',
                                 ]
                             })
                         code.save()

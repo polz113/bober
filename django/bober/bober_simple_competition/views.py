@@ -912,33 +912,18 @@ def competition_data(request, competition_questionset_id):
         except Exception:
             pass
         raise PermissionDenied
-    try:
-        competitor_code = CompetitorCode.from_access_code(
-            competition_questionset, access_code)
-        assert competitor_code.resume_attempt
-        attempt = Attempt.objects.filter(
-            competitor=competitor,
-            access_code=competitor_code.code.value,
-            competitionquestionset_id=competition_questionset_id)[0]
-        answers = []
-        finish = attempt.finish
-        attempt.grade_answers()
-        for g_a in attempt.gradedanswer_set():
-            val = g_a.answer.value
-            if val is None:
-                val = ''
-            answers.append({'q': a.randomized_question_id, 'a': str(val)})
-    except Exception as e:
-        competition = competition_questionset.competition
-        finish = timezone.now() + datetime.timedelta(
-            seconds=competition.duration)
-        attempt = Attempt(competitor=competitor,
-                          competitionquestionset_id=competition_questionset_id,
-                          access_code=access_code,
-                          finish=finish,
-                          random_seed=random.getrandbits(31))
-        attempt.save()
-        answers = []
+    # Every start is a new attempt; a teacher can merge interrupted
+    # attempts of one competitor afterwards (Attempt.merge()).
+    competition = competition_questionset.competition
+    finish = timezone.now() + datetime.timedelta(
+        seconds=competition.duration)
+    attempt = Attempt(competitor=competitor,
+                      competitionquestionset_id=competition_questionset_id,
+                      access_code=access_code,
+                      finish=finish,
+                      random_seed=random.getrandbits(31))
+    attempt.save()
+    answers = []
     request.session['attempt_id'] = attempt.id
     data = dict()
     data['attempt_id'] = attempt.id

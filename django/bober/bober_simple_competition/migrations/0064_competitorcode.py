@@ -20,7 +20,6 @@ class Migration(migrations.Migration):
                 ('attempt', models.BooleanField(default=False)),
                 ('attempt_before_start', models.BooleanField(default=False)),
                 ('results_before_end', models.BooleanField(default=False)),
-                ('resume_attempt', models.BooleanField(default=False)),
                 ('code', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, related_name='competitor_code', to='code_based_auth.code')),
                 ('competition_questionset', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='competitor_codes', to='bober_simple_competition.competitionquestionset')),
             ],
