@@ -39,7 +39,7 @@ class Command(BaseCommand):
                 code_parts__value='view_all_admin_codes'
             )[0].creator_set.all()[0]
         for cqs in cqss:
-            attempts = Attempt.objects.filter(
+            attempts = Attempt.objects.filter(merged_into__isnull=True,
                 competitionquestionset=cqs).exclude(
                     attemptconfirmation = None,
                 ).order_by("-score", "duration")

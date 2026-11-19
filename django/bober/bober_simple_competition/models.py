@@ -12,7 +12,7 @@ from django.db.models import FileField, BooleanField, FloatField, Model
 from django.db.models import DateField, DateTimeField, DurationField
 from django.db.models import ForeignKey, ManyToManyField, OneToOneField
 from django.db.models import signals, F, ExpressionWrapper, Manager
-from django.db.models import BinaryField, CASCADE, UniqueConstraint
+from django.db.models import BinaryField, CASCADE, SET_NULL, UniqueConstraint
 from django.db import IntegrityError, transaction
 from django.contrib.auth.models import User
 from django.conf import settings
@@ -313,13 +313,38 @@ class Competition(Model):
 ANSWER_BATCH_SIZE = 100000
 
 
-def _create_graded(answer, regrade, grader_runtime_manager):
+class _AnswerQuestionIds(object):
+    """Answer.question_id, computed once per (attempt, randomized id)."""
+    def __init__(self):
+        self.cache = {}
+
+    def get(self, answer):
+        key = (answer.attempt_id, answer.randomized_question_id)
+        if key not in self.cache:
+            try:
+                self.cache[key] = answer.question_id
+            except Exception:
+                # unknown question; keep the old per-attempt behaviour
+                self.cache[key] = key
+        return self.cache[key]
+
+
+def _create_graded(answer, regrade, grader_runtime_manager,
+                   attempt_id=None):
+    """Grade an answer for attempt_id (default: the answer's attempt).
+
+    attempt_id differs from answer.attempt_id for answers of attempts that
+    were merged into another attempt; the answer is still graded with the
+    random seed of its own attempt.
+    """
+    if attempt_id is None:
+        attempt_id = answer.attempt_id
     try:
         a = answer
         if regrade:
             # print a
             g_a = GradedAnswer(
-                attempt_id=a.attempt_id, question_id=a.question_id,
+                attempt_id=attempt_id, question_id=a.question_id,
                 answer=a
             )
             q = Question.objects.get(id=g_a.question_id)
@@ -329,7 +354,7 @@ def _create_graded(answer, regrade, grader_runtime_manager):
             return g_a
         else:
             g_a, created = GradedAnswer.objects.get_or_create(
-                attempt_id=a.attempt_id, question_id=a.question_id,
+                attempt_id=attempt_id, question_id=a.question_id,
                 defaults={'answer': a, 'score': None})
             if not created and g_a.answer != a:
                 g_a.answer = a
@@ -372,15 +397,15 @@ class CompetitionQuestionSet(Model):
             attempt__competitionquestionset=self).distinct()
         if not regrade:
             graded_answers = graded_answers.filter(score=None)
-        graded_answers.select_related(
-            'question__verification_function',
-            'question__verification_function_type',
-            'answer__value', 'attempt')
+        graded_answers = graded_answers.select_related(
+            'question', 'answer__attempt')
         for g_a in graded_answers:
             q = g_a.question
             grader = grader_runtime_manager.get_grader(
                 q.verification_function, q.verification_function_type)
-            g_a.score = grader(g_a.answer.value, g_a.attempt.random_seed, q)
+            # the seed of the attempt the answer was given in
+            g_a.score = grader(g_a.answer.value,
+                               g_a.answer.attempt.random_seed, q)
             g_a.save()
 
     def update_graded_answers(self, check_timestamp=False,
@@ -388,7 +413,8 @@ class CompetitionQuestionSet(Model):
         grader_runtime_manager = graders.init_runtimes(
             grader_runtime_manager)
         answers = Answer.objects.filter(
-            attempt__competitionquestionset=self).order_by('-id')
+            attempt__competitionquestionset=self).order_by(
+                '-id').select_related('attempt')
         if check_timestamp:
             answers.select_related('attempt__finish')
         if regrade:
@@ -397,13 +423,20 @@ class CompetitionQuestionSet(Model):
                 attempt__competitionquestionset=self).delete()
         graded_list = []
         grades_set = set()
+        question_ids = _AnswerQuestionIds()
         for a in answers:
-            if (not check_timestamp or a.timestamp < a.attempt.finish) and (
-                   (a.attempt_id, a.randomized_question_id) not in grades_set):
-                g_a = _create_graded(a, regrade, grader_runtime_manager)
+            # answers of merged attempts are graded for the attempt they
+            # were merged into
+            graded_attempt_id = a.attempt.merged_into_id or a.attempt_id
+            if not check_timestamp or a.timestamp < a.attempt.finish:
+                key = (graded_attempt_id, question_ids.get(a))
+                if key in grades_set:
+                    continue
+                g_a = _create_graded(a, regrade, grader_runtime_manager,
+                                     attempt_id=graded_attempt_id)
                 if g_a:
                     graded_list.append(g_a)
-                grades_set.add((a.attempt_id, a.randomized_question_id))
+                grades_set.add(key)
             if len(graded_list) > ANSWER_BATCH_SIZE:
                 GradedAnswer.objects.bulk_create(graded_list)
                 graded_list = []
@@ -1048,6 +1081,15 @@ class Attempt(Model):
     start = DateTimeField(auto_now_add=True)
     finish = DateTimeField(null=True, blank=True)
     score = FloatField(null=True, blank=True)
+    # A teacher can merge attempts of one competitor (e.g. after a broken
+    # connection) into the first of them. Merged attempts keep their own
+    # answers; their answers count for merged_into. Splitting sets
+    # merged_into back to None.
+    merged_into = ForeignKey('self', null=True, blank=True,
+                             related_name='merged_attempts',
+                             on_delete=SET_NULL)
+    merged_by = ForeignKey('Profile', null=True, blank=True,
+                           related_name='+', on_delete=SET_NULL)
     objects = AttemptManager()
 
     @property
@@ -1085,13 +1127,17 @@ class Attempt(Model):
         graded_answers = self.gradedanswer_set.all()
         if not regrade:
             graded_answers = graded_answers.filter(score=None)
-        graded_answers.select_related('question', 'answer__value')
+        graded_answers = graded_answers.select_related(
+            'question', 'answer__attempt')
         for g_a in graded_answers:
             # print "    regrading", g_a.answer
             q = g_a.question
             grader = grader_runtime_manager.get_grader(
                 q.verification_function, q.verification_function_type)
-            g_a.score = grader(g_a.answer.value, self.random_seed, q)
+            # the seed of the attempt the answer was given in (merged
+            # attempts have their own seeds)
+            g_a.score = grader(g_a.answer.value,
+                               g_a.answer.attempt.random_seed, q)
             g_a.save()
             # a.answer.score = a.score
             # a.answer.save()
@@ -1104,16 +1150,22 @@ class Attempt(Model):
         if regrade:
             GradedAnswer.objects.filter(attempt=self).delete()
         # answers = self.answer_set.order_by("-timestamp", "-id")
-        answers = self.answer_set.order_by("-id")
+        # the latest answer to each question over this attempt and the
+        # attempts merged into it
+        answers = Answer.objects.filter(
+            attempt_id__in=self.merged_attempt_ids()).order_by("-id")
         if check_timestamp:
-            answers = answers.filter(timestamp__lte=self.finish)
+            answers = answers.filter(timestamp__lte=F('attempt__finish'))
         n_questions = self.questionset.questions.count()
         n_found = 0
+        question_ids = _AnswerQuestionIds()
         for a in answers.all():
             # print "a:", a
-            if a.randomized_question_id not in answered_questions:
-                g_a = _create_graded(a, regrade, grader_runtime_manager)
-                answered_questions.add(a.randomized_question_id)
+            question_id = question_ids.get(a)
+            if question_id not in answered_questions:
+                g_a = _create_graded(a, regrade, grader_runtime_manager,
+                                     attempt_id=self.id)
+                answered_questions.add(question_id)
                 if g_a:
                     graded_list.append(g_a)
                 n_found += 1
@@ -1124,6 +1176,64 @@ class Attempt(Model):
     def latest_answers(self):
         # get only the latest answers
         return self.gradedanswer_set.all()
+
+    @property
+    def is_merged(self):
+        """True if this attempt was merged into another attempt."""
+        return self.merged_into_id is not None
+
+    def merged_attempt_ids(self):
+        """Ids of this attempt and of the attempts merged into it."""
+        return [self.id] + list(Attempt.objects.filter(
+            merged_into=self).values_list('id', flat=True))
+
+    def regrade(self, grader_runtime_manager=None):
+        """Grade again from the answers; update the score if it was set."""
+        grader_runtime_manager = graders.init_runtimes(
+            grader_runtime_manager)
+        self.update_graded_answers(
+            regrade=True, grader_runtime_manager=grader_runtime_manager)
+        if self.score is not None:
+            self.score = sum(max(0, a.score or 0)
+                             for a in self.latest_answers())
+            self.save(update_fields=['score'])
+
+    def merge(self, attempts, by=None):
+        """Merge attempts into this one.
+
+        The answers of all attempts count for this attempt (the latest
+        answer to each question). Nothing is deleted: the merged attempts
+        keep their answers and can be split off again with split().
+        Attempts merged into one of the given attempts are moved here.
+        """
+        attempts = [a for a in attempts if a.id != self.id]
+        if self.is_merged:
+            raise ValueError("can not merge into a merged attempt")
+        for a in attempts:
+            if a.competitionquestionset_id != self.competitionquestionset_id:
+                raise ValueError("attempts of different questionsets")
+            if a.is_merged:
+                raise ValueError("attempt %d is already merged" % a.id)
+        ids = [a.id for a in attempts]
+        with transaction.atomic():
+            Attempt.objects.filter(merged_into_id__in=ids).update(
+                merged_into=self)
+            Attempt.objects.filter(id__in=ids).update(
+                merged_into=self, merged_by=by)
+            self.regrade()
+
+    def split(self):
+        """Undo merge(): every merged attempt is on its own again."""
+        parts = list(Attempt.objects.filter(merged_into=self))
+        with transaction.atomic():
+            Attempt.objects.filter(merged_into=self).update(
+                merged_into=None, merged_by=None)
+            manager = graders.init_runtimes(None)
+            self.regrade(manager)
+            for a in parts:
+                a.merged_into = None
+                a.regrade(manager)
+        return parts
 
     def graded_answers_by_question_id(self):
         # return self.graded_answers.order_by('gradedanswer__question_id')

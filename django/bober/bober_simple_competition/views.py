@@ -722,10 +722,12 @@ def competition_attempt_list(request, slug=None, regrade=False,
         competition = competitionquestionset.competition
     if competitionquestionset is not None:
         object_list = Attempt.objects.filter(
-            competitionquestionset=competitionquestionset)
+            competitionquestionset=competitionquestionset,
+            merged_into__isnull=True)
     elif competition is not None:
         object_list = Attempt.objects.filter(
-            competitionquestionset__competition=competition)
+            competitionquestionset__competition=competition,
+            merged_into__isnull=True)
     else:
         object_list = Attempt.objects.none()
     if not competition.administrator_code_generator.code_matches(
@@ -1087,6 +1089,9 @@ def attempt_confirm(request, competition_questionset_id, attempt_id):
                 value=attempt.access_code
             ).count() < 1:
         raise PermissionDenied
+    if attempt.is_merged:
+        return JsonResponse({'status': 'error',
+                             'error': 'attempt is merged'}, status=400)
     ac, created = AttemptConfirmation.objects.get_or_create(
         by=profile,
         attempt=attempt
@@ -1112,6 +1117,71 @@ def attempt_unconfirm(request, competition_questionset_id, attempt_id):
         attempt=attempt
     ).delete()
     return JsonResponse({'status': 'success'})
+
+
+def _teacher_attempts(profile, cqs, attempt_ids):
+    """Attempts of cqs whose codes were created by profile (the teacher).
+
+    Raises PermissionDenied unless every attempt id qualifies.
+    """
+    attempts = list(Attempt.objects.filter(
+        id__in=attempt_ids, competitionquestionset=cqs).order_by(
+            'start', 'id'))
+    if len(attempts) != len(set(attempt_ids)):
+        raise PermissionDenied
+    own_codes = set(profile.created_codes.filter(
+        codegenerator=cqs.competition.competitor_code_generator,
+        value__in=[a.access_code for a in attempts]).values_list(
+            'value', flat=True))
+    if any(a.access_code not in own_codes for a in attempts):
+        raise PermissionDenied
+    return attempts
+
+
+# Merge attempts of one competitor (e.g. after a broken connection) into
+# the earliest of them. Only the teacher who created the codes may do it.
+@login_required
+def attempt_merge(request, competition_questionset_id):
+    if request.method != 'POST':
+        raise PermissionDenied
+    cqs = get_object_or_404(CompetitionQuestionSet,
+                            id=competition_questionset_id)
+    try:
+        attempt_ids = [int(i) for i in request.POST.getlist('attempt_id')]
+    except ValueError:
+        return JsonResponse({'status': 'error',
+                             'error': 'invalid attempt id'}, status=400)
+    if len(set(attempt_ids)) < 2:
+        return JsonResponse({'status': 'error',
+                             'error': 'select at least two attempts'},
+                            status=400)
+    attempts = _teacher_attempts(request.profile, cqs, attempt_ids)
+    if any(a.is_merged for a in attempts):
+        return JsonResponse({'status': 'error',
+                             'error': 'an attempt is already merged'},
+                            status=400)
+    target = attempts[0]
+    target.merge(attempts[1:], by=request.profile)
+    return JsonResponse({'status': 'success', 'id': target.id,
+                         'merged': [a.id for a in attempts[1:]]})
+
+
+# Undo attempt_merge: all attempts merged into attempt_id are on their own
+# again, with their original answers.
+@login_required
+def attempt_split(request, competition_questionset_id, attempt_id):
+    if request.method != 'POST':
+        raise PermissionDenied
+    cqs = get_object_or_404(CompetitionQuestionSet,
+                            id=competition_questionset_id)
+    attempt, = _teacher_attempts(request.profile, cqs, [attempt_id])
+    part_ids = list(Attempt.objects.filter(
+        merged_into=attempt).values_list('id', flat=True))
+    # the teacher must own all merged attempts too
+    _teacher_attempts(request.profile, cqs, part_ids)
+    parts = attempt.split()
+    return JsonResponse({'status': 'success', 'id': attempt.id,
+                         'split': [a.id for a in parts]})
 
 
 class CompetitorUpdateJson(LoginRequiredMixin,

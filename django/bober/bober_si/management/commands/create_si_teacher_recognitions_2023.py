@@ -576,7 +576,7 @@ class Command(BaseCommand):
                 code_parts__value='view_all_admin_codes'
             )[0].creator_set.all()[0]
         for teacher in Profile.objects.filter(schoolteachercode__competition_questionset__competition = competition).distinct():
-            attempts = Attempt.objects.filter(
+            attempts = Attempt.objects.filter(merged_into__isnull=True,
                     competitionquestionset__competition = competition, 
                     confirmed_by=teacher
                 ).distinct()

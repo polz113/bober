@@ -19,6 +19,44 @@ function switch_qualify(obj, url, confirm) {
     });
 }
 
+function merge_attempts(obj, url) {
+    var selected = $(obj).closest("div.cqs-attempts").find("input.merge-select:checked");
+    var ids = selected.map(function() { return this.value; }).get();
+    if (ids.length < 2) {
+        alert("{% trans 'Select at least two attempts of the same competitor.' %}");
+        return;
+    }
+    if (!confirm("{% trans 'Merge the selected attempts into one? The latest answer to each question counts. You can split them again later.' %}")) {
+        return;
+    }
+    $.ajax({
+        url: url,
+        method: "post",
+        traditional: true,
+        data: {attempt_id: ids},
+        success: function(response_data) {
+            selected.each(function() { invalidate_award($(this).data("invalidate-url")); });
+            location.reload();
+        },
+        error: function(xhr) { alert(xhr.responseText); }
+    });
+}
+
+function split_attempt(url, invalidate_url) {
+    if (!confirm("{% trans 'Split this attempt back into the original attempts?' %}")) {
+        return;
+    }
+    $.ajax({
+        url: url,
+        method: "post",
+        success: function(response_data) {
+            invalidate_award(invalidate_url);
+            location.reload();
+        },
+        error: function(xhr) { alert(xhr.responseText); }
+    });
+}
+
 function invalidate_award(url) {
     $.ajax({ url: url,
              method: 'post'}
@@ -258,6 +296,7 @@ $(document).ready(function(){
     <p class="card-text">
 	<div>	
     {% for cqs, attempts in school_data.attempts %}
+        <div class="cqs-attempts">
         <div>{{cqs.name}}</div>
         <table class="table table-striped results">
 		  <thead>
@@ -277,6 +316,7 @@ $(document).ready(function(){
             {% for attempt in attempts %}
                 <tr class="{% if attempt.confirmed %}confirmed{% else %}unconfirmed{% endif %}">
                     <th>
+                        <input type="checkbox" class="merge-select" value="{{attempt.id}}" data-invalidate-url="{% url "revalidate_awards" profile_id=profile.id slug=competition.slug attempt_id=attempt.id %}" title="{% trans 'Select for merging' %}" />
                         {% for aaward in attempt.attemptaward_set.all %}
                             {% if not aaward.revoked_by and aaward.award.icon %}
                                 <img src="{% static "img/award_icons/" %}{{aaward.award.icon}}" />
@@ -299,6 +339,10 @@ $(document).ready(function(){
                         <img class="pencil" src="/static/img/pencil.png" onclick="edit_name(this); " />
                         <img src="/static/img/qualify.png" class="confirm" onclick="switch_qualify(this, '{% url "attempt_confirm" attempt_id=attempt.id competition_questionset_id=cqs.id %}', true); invalidate_award('{% url "revalidate_awards" profile_id=profile.id slug=competition.slug attempt_id=attempt.id %}')" />
                         <img src="/static/img/disqualify.png" class="confirm" onclick="switch_qualify(this, '{% url "attempt_unconfirm" attempt_id=attempt.id competition_questionset_id=cqs.id %}', false); invalidate_award('{% url "revalidate_awards" profile_id=profile.id slug=competition.slug attempt_id=attempt.id %}')" />
+                        {% with merged=attempt.merged_attempts.all %}{% if merged %}
+                            <span class="merged" title="{% trans 'Merged attempts' %}">({% trans 'merged' %}: {{merged|length|add:1}})</span>
+                            <button type="button" class="btn btn-sm btn-outline-secondary" onclick="split_attempt('{% url "attempt_split" attempt_id=attempt.id competition_questionset_id=cqs.id %}', '{% url "revalidate_awards" profile_id=profile.id slug=competition.slug attempt_id=attempt.id %}')">{% trans 'Split' %}</button>
+                        {% endif %}{% endwith %}
                     </th>
                     {% for q, answer in attempt.graded_answers_by_question_id.items %}
                         <td>
@@ -318,6 +362,8 @@ $(document).ready(function(){
                 </tr>
             {% endfor %}  <!-- for attempt in attempts -->
         </table>
+        <button type="button" class="btn btn-sm btn-outline-secondary" onclick="merge_attempts(this, '{% url "attempt_merge" competition_questionset_id=cqs.id %}')">{% trans 'Merge selected attempts' %}</button>
+        </div>
         {% endfor %} <!-- for cqs, attempts in school_data.attempts -->
     </div>
     </p>

@@ -74,11 +74,12 @@ class TeacherOverview(SmartCompetitionAdminCodeRequiredMixin,
             cqs_slug = split_code[0]
             cqs = CompetitionQuestionSet.get_by_slug(cqs_slug)
             schools[school]["codes"].append((cqs, sep.join(split_code[1:])))
-            all_attempts = Attempt.objects.filter(access_code=code).select_related(
+            all_attempts = Attempt.objects.filter(merged_into__isnull=True, access_code=code).select_related(
                 'competitor',
                 'competitionquestionset',
                 'competitionquestionset__questionset').prefetch_related(
                 'gradedanswer_set',
+                'merged_attempts',
                 'competitionquestionset__questionset__questions',
             ).annotate(
                 confirmed=Case(
@@ -296,7 +297,7 @@ class CompetitionXlsResults(SmartCompetitionAdminCodeRequiredMixin, TemplateView
                     revoked_awards[attempt_id].append("{}: {}".format(award_name, award_serial))
                 else:
                     awards[attempt_id].append("{}: {}".format(award_name, award_serial))
-            attempts = cqs.attempt_set.all()
+            attempts = cqs.attempt_set.filter(merged_into__isnull=True)
             for (
                     attempt_id,
                     attempt_start,

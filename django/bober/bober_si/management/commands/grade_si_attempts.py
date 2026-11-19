@@ -37,7 +37,7 @@ class Command(BaseCommand):
         for cqs in cqss:
             print(cqs)
             cqs.grade_answers(regrade=True, update_graded=True)
-            for attempt in Attempt.objects.filter(
+            for attempt in Attempt.objects.filter(merged_into__isnull=True,
                         competitionquestionset = cqs
                     ).exclude(confirmed_by = None):
                 attempt.score = sum([max(0, i.score) for i in attempt.latest_answers()])

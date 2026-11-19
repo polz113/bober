@@ -16,8 +16,10 @@ from bober_simple_competition.forms import (
     CompetitionQuestionSetUpdateForm, QuestionSetCompetitorForm,
     QuestionSetRegistrationForm,
 )
+from django.contrib.auth.models import User
 from bober_simple_competition.models import (
-    Competition, CompetitionQuestionSet, CompetitorCode, QuestionSet,
+    Answer, Attempt, Competition, CompetitionQuestionSet, CompetitorCode,
+    Question, QuestionSet,
 )
 
 legacy_migration = importlib.import_module(
@@ -432,3 +434,204 @@ class AccessCodePageThrottleTest(CompetitorCodeTestMixin, TestCase):
         # ... but only for this client
         self.assertEqual(
             self.enter(self.master.value, ip='10.0.1.2').status_code, 302)
+
+
+class FakeGraders(object):
+    """Grades 'ok' with 1 and anything else with -1; records the seeds."""
+    def __init__(self):
+        self.seeds = []
+
+    def get_grader(self, function, function_type):
+        def grade(value, seed, question):
+            self.seeds.append(seed)
+            return 1.0 if value == 'ok' else -1.0
+        return grade
+
+
+class AttemptMergeTestMixin(CompetitorCodeTestMixin):
+    def setUp(self):
+        self.graders = FakeGraders()
+        patcher = mock.patch(
+            'bober_simple_competition.graders.init_runtimes',
+            side_effect=lambda m=None: m or self.graders)
+        patcher.start()
+        self.addCleanup(patcher.stop)
+        self.competition, (self.cqs, self.other_cqs) = \
+            self.make_competition('merge-test')
+        self.questions = []
+        for i in range(3):
+            q = Question.objects.create(
+                country='si', slug='q%d' % i, identifier='q%d' % i,
+                title='Q%d' % i, language='sl')
+            self.cqs.questionset.questions.add(q)
+            self.other_cqs.questionset.questions.add(q)
+            self.questions.append(q)
+        self.code, _ = self.make_code(self.cqs)
+
+    def attempt(self, answers, cqs=None, seed=None, code=None):
+        """answers: list of (question index, value), oldest first."""
+        cqs = cqs or self.cqs
+        a = Attempt.objects.create(
+            competitionquestionset=cqs,
+            access_code=(code or self.code).value,
+            random_seed=seed if seed is not None else len(
+                Attempt.objects.all()) + 11,
+            finish=timezone.now() + datetime.timedelta(hours=1))
+        mapping = cqs.questionset.question_mapping(a.random_seed)
+        for i, value in answers:
+            Answer.objects.create(
+                attempt=a, value=value,
+                randomized_question_id=mapping[self.questions[i].identifier])
+        a.regrade()
+        return a
+
+    def graded(self, attempt):
+        return dict((g.question_id, (g.answer.attempt_id, g.score))
+                    for g in attempt.gradedanswer_set.all())
+
+
+class AttemptMergeTest(AttemptMergeTestMixin, TestCase):
+    def test_merge_counts_latest_answers_of_all_attempts(self):
+        first = self.attempt([(0, 'ok'), (1, 'bad')])
+        second = self.attempt([(1, 'ok'), (2, 'bad')])
+        first.merge([second])
+        second.refresh_from_db()
+        self.assertEqual(second.merged_into, first)
+        q0, q1, q2 = [q.id for q in self.questions]
+        self.assertEqual(self.graded(first), {
+            q0: (first.id, 1.0), q1: (second.id, 1.0),
+            q2: (second.id, -1.0)})
+
+    def test_answers_are_graded_with_their_own_seed(self):
+        first = self.attempt([(0, 'ok')], seed=101)
+        second = self.attempt([(1, 'ok')], seed=202)
+        self.graders.seeds = []
+        first.merge([second])
+        self.assertEqual(sorted(self.graders.seeds), [101, 202])
+
+    def test_split_restores_the_original_attempts(self):
+        first = self.attempt([(0, 'ok'), (1, 'bad')])
+        second = self.attempt([(1, 'ok')])
+        before = (self.graded(first), self.graded(second))
+        first.merge([second])
+        parts = first.split()
+        self.assertEqual([p.id for p in parts], [second.id])
+        second.refresh_from_db()
+        self.assertIsNone(second.merged_into)
+        self.assertEqual((self.graded(first), self.graded(second)), before)
+
+    def test_score_is_updated_if_it_was_set(self):
+        first = self.attempt([(0, 'ok')])
+        second = self.attempt([(1, 'ok')])
+        Attempt.objects.filter(id=first.id).update(score=1)
+        first.refresh_from_db()
+        first.merge([second])
+        self.assertEqual(first.score, 2)
+        first.split()
+        self.assertEqual(first.score, 1)
+
+    def test_merge_moves_earlier_merges(self):
+        a, b, c = [self.attempt([(i, 'ok')]) for i in range(3)]
+        b.merge([c])
+        a.merge([b])
+        self.assertEqual(sorted(Attempt.objects.filter(
+            merged_into=a).values_list('id', flat=True)), [b.id, c.id])
+        self.assertEqual(len(self.graded(a)), 3)
+        a.split()
+        self.assertFalse(Attempt.objects.filter(
+            merged_into__isnull=False).exists())
+
+    def test_merge_refuses_other_questionset_and_merged(self):
+        first = self.attempt([(0, 'ok')])
+        other = self.attempt([(0, 'ok')], cqs=self.other_cqs)
+        with self.assertRaises(ValueError):
+            first.merge([other])
+        second = self.attempt([(1, 'ok')])
+        first.merge([second])
+        second.refresh_from_db()
+        third = self.attempt([(2, 'ok')])
+        with self.assertRaises(ValueError):
+            second.merge([third])
+        with self.assertRaises(ValueError):
+            third.merge([second])
+
+    def test_questionset_regrade_keeps_merges(self):
+        first = self.attempt([(0, 'ok')])
+        second = self.attempt([(1, 'ok'), (0, 'bad')])
+        first.merge([second])
+        expected = self.graded(first)
+        self.cqs.grade_answers(update_graded=True, regrade=True)
+        self.assertEqual(self.graded(first), expected)
+        self.assertEqual(self.graded(second), {})
+
+
+class AttemptMergeViewTest(AttemptMergeTestMixin, TestCase):
+    def setUp(self):
+        super(AttemptMergeViewTest, self).setUp()
+        self.teacher = User.objects.create_user('teacher', password='pw')
+        self.teacher.profile.created_codes.add(self.code)
+        self.other = User.objects.create_user('other', password='pw')
+        self.first = self.attempt([(0, 'ok')])
+        self.second = self.attempt([(1, 'ok')])
+        self.merge_url = reverse('attempt_merge', kwargs={
+            'competition_questionset_id': self.cqs.id})
+
+    def split_url(self, attempt):
+        return reverse('attempt_split', kwargs={
+            'competition_questionset_id': self.cqs.id,
+            'attempt_id': attempt.id})
+
+    def test_teacher_merges_and_splits(self):
+        self.client.login(username='teacher', password='pw')
+        response = self.client.post(
+            self.merge_url,
+            {'attempt_id': [self.second.id, self.first.id]})
+        self.assertEqual(response.status_code, 200, response.content)
+        self.second.refresh_from_db()
+        # merged into the earliest attempt
+        self.assertEqual(self.second.merged_into_id, self.first.id)
+        self.assertEqual(self.second.merged_by, self.teacher.profile)
+        # a merged attempt can not be confirmed
+        response = self.client.post(reverse('attempt_confirm', kwargs={
+            'competition_questionset_id': self.cqs.id,
+            'attempt_id': self.second.id}))
+        self.assertEqual(response.status_code, 400)
+        response = self.client.post(self.split_url(self.first))
+        self.assertEqual(response.status_code, 200, response.content)
+        self.second.refresh_from_db()
+        self.assertIsNone(self.second.merged_into)
+
+    def test_only_the_teacher_can_merge(self):
+        self.client.login(username='other', password='pw')
+        response = self.client.post(
+            self.merge_url, {'attempt_id': [self.first.id, self.second.id]})
+        self.assertEqual(response.status_code, 403)
+        self.first.merge([self.second])
+        response = self.client.post(self.split_url(self.first))
+        self.assertEqual(response.status_code, 403)
+        self.second.refresh_from_db()
+        self.assertEqual(self.second.merged_into_id, self.first.id)
+
+    def test_teacher_needs_all_codes(self):
+        foreign_code, _ = self.make_code(self.cqs)
+        foreign = self.attempt([(2, 'ok')], code=foreign_code)
+        self.client.login(username='teacher', password='pw')
+        response = self.client.post(
+            self.merge_url, {'attempt_id': [self.first.id, foreign.id]})
+        self.assertEqual(response.status_code, 403)
+
+    def test_attempts_of_other_questionset_are_refused(self):
+        other_code, _ = self.make_code(self.other_cqs)
+        self.teacher.profile.created_codes.add(other_code)
+        other = self.attempt([(0, 'ok')], cqs=self.other_cqs,
+                             code=other_code)
+        self.client.login(username='teacher', password='pw')
+        response = self.client.post(
+            self.merge_url, {'attempt_id': [self.first.id, other.id]})
+        self.assertEqual(response.status_code, 403)
+
+    def test_needs_two_attempts(self):
+        self.client.login(username='teacher', password='pw')
+        response = self.client.post(
+            self.merge_url, {'attempt_id': [self.first.id]})
+        self.assertEqual(response.status_code, 400)

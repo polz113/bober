@@ -44,7 +44,7 @@ class Command(BaseCommand):
                 competition = school_competition,
                 name = cqs.name)
             cqs_list.append(cqs)
-            for a in Attempt.objects.filter(
+            for a in Attempt.objects.filter(merged_into__isnull=True,
                     competitionquestionset = school_cqs,
                     attemptaward__award__name = 'napreduje').distinct():
                 # print a.id, school_cqs

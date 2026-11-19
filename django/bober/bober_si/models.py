@@ -90,7 +90,7 @@ class School(models.Model):
 
     def competitionquestionset_attempts(self, cqs, confirmed=True):
         if confirmed:
-            attempts = Attempt.objects.filter(
+            attempts = Attempt.objects.filter(merged_into__isnull=True,
                 attemptconfirmation__by__schoolteachercode__school=self,
                 attemptconfirmation__by__schoolteachercode__code__value=F('access_code'),
                 competition_questionset=cqs).distinct()
@@ -100,7 +100,7 @@ class School(models.Model):
                 ).values_list(
                     'code__value', flat=True
                 ).distinct()
-            attempts = Attempt.objects.filter(
+            attempts = Attempt.objects.filter(merged_into__isnull=True,
                 competition_questionset=cqs,
                 access__code__in=school_access_codes
             )
@@ -116,7 +116,7 @@ class School(models.Model):
                 general_award = cqs.award_set.get(name='priznanje')
                 max_score = cqs.questionset.questions.all().aggregate(
                     Sum('max_score'))['max_score__sum']
-                attempts = Attempt.objects.filter(
+                attempts = Attempt.objects.filter(merged_into__isnull=True,
                     competitionquestionset=cqs,
                     attemptconfirmation__by__schoolteachercode__school=self,
                     attemptconfirmation__by__schoolteachercode__code__value=F('access_code'),
@@ -175,7 +175,7 @@ class SchoolTeacherCode(models.Model):
     code = models.ForeignKey(Code, on_delete=models.CASCADE)
 
     def attempts(self, confirmed=True):
-        a = Attempt.objects.filter(
+        a = Attempt.objects.filter(merged_into__isnull=True,
             competitionquestionset=self.competition_questionset,
             access_code=self.code.value,
         )

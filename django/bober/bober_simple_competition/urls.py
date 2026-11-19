@@ -154,6 +154,10 @@ urlpatterns = [
         views.attempt_confirm, name="attempt_confirm"),
     path(r'compete/<int:competition_questionset_id>/attempts/<int:attempt_id>/unconfirm',
         views.attempt_unconfirm, name="attempt_unconfirm"),
+    path(r'compete/<int:competition_questionset_id>/attempts/merge',
+        views.attempt_merge, name="attempt_merge"),
+    path(r'compete/<int:competition_questionset_id>/attempts/<int:attempt_id>/split',
+        views.attempt_split, name="attempt_split"),
     # 3. create registration codes
     path(r'registration_codes/', views.registration_codes,
         name="registration_codes"),

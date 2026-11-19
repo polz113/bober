@@ -44,7 +44,7 @@ class Command(BaseCommand):
                 name = award_name)
         # print attempt_ids
         for award in awards:
-            for attempt in Attempt.objects.filter(
+            for attempt in Attempt.objects.filter(merged_into__isnull=True,
                     competitionquestionset = award.questionset,
                     id__in = attempt_ids).exclude(
                     confirmed_by = None):
