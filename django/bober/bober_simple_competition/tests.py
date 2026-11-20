@@ -248,7 +248,7 @@ class GuestCodeTest(CompetitorCodeTestMixin, TestCase):
     def test_guest_code_from_questionset_form(self):
         form = CompetitionQuestionSetUpdateForm(
             {'name': self.cqs.name, 'questionset': self.cqs.questionset.id,
-             'competition': self.competition.id,
+             'competition': self.competition.id, 'code_length': 10,
              'guest_privileges': ['attempt', 'results_before_end']},
             instance=self.cqs)
         self.assertTrue(form.is_valid(), form.errors)
@@ -916,3 +916,57 @@ class ThrottleClientAddressTest(CompetitorCodeTestMixin, TestCase):
         self.assertEqual(self.post(
             self.cc.value, HTTP_X_FORWARDED_FOR='3.3.3.3', **proxy
         ).status_code, 302)
+
+
+
+class CodeLengthTest(CompetitorCodeTestMixin, TestCase):
+    def setUp(self):
+        self.competition, (self.cqs, self.other_cqs) = \
+            self.make_competition('length-test')
+
+    def test_default_length(self):
+        self.assertEqual(self.cqs.code_length, 10)
+        code, cc = self.make_code(self.cqs)
+        self.assertEqual(len(cc.value), len('XXXXX-XXXXX'))
+
+    def test_length_per_questionset(self):
+        CompetitionQuestionSet.objects.filter(id=self.cqs.id).update(
+            code_length=8)
+        self.cqs.refresh_from_db()
+        code, cc = self.make_code(self.cqs)
+        self.assertRegex(cc.value, r'^[0-9A-Z]{4}-[0-9A-Z]{4}$')
+        self.assertEqual(code.value, self.cqs.slug_str() + '*' + cc.value)
+        # the other group keeps the default
+        other_code, other_cc = self.make_code(self.other_cqs)
+        self.assertEqual(len(other_cc.value), len('XXXXX-XXXXX'))
+        # typed in any form
+        form = QuestionSetCompetitorForm(
+            self.form_data(cc.value.replace('-', '').lower()),
+            competitionquestionset=self.cqs)
+        self.assertTrue(form.is_valid(), form.errors)
+        self.assertEqual(form.cleaned_data['full_code'], code.value)
+
+    def test_codes_keep_working_after_length_change(self):
+        code, cc = self.make_code(self.cqs)
+        CompetitionQuestionSet.objects.filter(id=self.cqs.id).update(
+            code_length=6)
+        self.cqs.refresh_from_db()
+        self.assertEqual(
+            CompetitorCode.lookup(self.cqs, cc.value.replace('-', '')), cc)
+        short_code, short_cc = self.make_code(self.cqs)
+        self.assertRegex(short_cc.value, r'^[0-9A-Z]{3}-[0-9A-Z]{3}$')
+
+    def test_length_bounds(self):
+        from django.core.exceptions import ValidationError
+        for length in (5, 21):
+            self.cqs.code_length = length
+            with self.assertRaises(ValidationError):
+                self.cqs.full_clean()
+        self.cqs.code_length = 6
+        self.cqs.full_clean()
+
+    def test_form_has_code_length(self):
+        form = CompetitionQuestionSetUpdateForm(instance=self.cqs)
+        self.assertIn('code_length', form.fields)
+        self.assertEqual(form.fields['code_length'].initial or
+                         form.initial['code_length'], 10)

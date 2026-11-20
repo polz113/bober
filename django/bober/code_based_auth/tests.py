@@ -24,7 +24,7 @@ class RandomCodeTest(SimpleTestCase):
                              typed)
 
     def test_canonical_rejects_other_input(self):
-        for typed in ('', 'AB1CD-EF0G', 'AB1CD-EF0GHJ', 'AB1CD-EF0GU',
+        for typed in ('', 'AB1CD', 'AB1CD-EF0GH-JKMNP-QRSTVW', 'AB1CD-EF0GU',
                       'AB1CD*EF0GH', None):
             self.assertIsNone(random_code.canonical(typed), typed)
 
@@ -37,3 +37,19 @@ class RandomCodeTest(SimpleTestCase):
         self.assertEqual(random_code.lookup_values(' 0000002a*f3c '),
                          ['0000002a*f3c'])
         self.assertEqual(random_code.lookup_values('  '), [])
+
+    def test_lengths(self):
+        for length, form in ((6, 'XXX-XXX'), (7, 'XXXX-XXX'), (8, 'XXXX-XXXX'),
+                             (9, 'XXXXX-XXXX'), (10, 'XXXXX-XXXXX'),
+                             (12, 'XXXX-XXXX-XXXX'),
+                             (20, 'XXXXX-XXXXX-XXXXX-XXXXX')):
+            code = random_code.generate(length)
+            self.assertEqual(len(code.replace('-', '')), length)
+            self.assertEqual(
+                ''.join('X' if c != '-' else '-' for c in code), form)
+            self.assertEqual(random_code.canonical(code), code)
+            self.assertEqual(random_code.canonical(
+                code.replace('-', '').lower()), code)
+        for length in (5, 21):
+            with self.assertRaises(ValueError):
+                random_code.generate(length)

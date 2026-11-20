@@ -13,6 +13,8 @@ from django.db.models import DateField, DateTimeField, DurationField
 from django.db.models import ForeignKey, ManyToManyField, OneToOneField
 from django.db.models import signals, F, ExpressionWrapper, Manager
 from django.db.models import BinaryField, CASCADE, SET_NULL, UniqueConstraint
+from django.db.models import PositiveSmallIntegerField
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import IntegrityError, transaction
 from django.contrib.auth.models import User
 from django.conf import settings
@@ -395,6 +397,14 @@ class CompetitionQuestionSet(Model):
                              on_delete=CASCADE)
     competition = ForeignKey('Competition', on_delete=CASCADE)
     guest_code = ForeignKey(Code, null=True, blank=True, on_delete=CASCADE)
+    code_length = PositiveSmallIntegerField(
+        default=random_code.CODE_CHARS,
+        validators=[MinValueValidator(random_code.MIN_CODE_CHARS),
+                    MaxValueValidator(random_code.MAX_CODE_CHARS)],
+        verbose_name=_("Code length"),
+        help_text=_("Number of characters of new competitor codes of this "
+                    "group. Shorter codes are easier to type and to guess; "
+                    "10 is recommended. Existing codes keep their length."))
 
     def slug_str(self):
         return str(self.id) + '-' + self.questionset.slug
@@ -522,7 +532,8 @@ class CompetitorCode(Model):
         prefix = cls._prefix(competition_questionset)
         flags = dict((p, p in privileges) for p in COMPETITOR_PRIVILEGE_NAMES)
         for _try in range(cls.MAX_CREATE_TRIES):
-            value = random_code.generate()
+            value = random_code.generate(
+                competition_questionset.code_length)
             try:
                 with transaction.atomic():
                     code = Code.objects.create(value=prefix + value)

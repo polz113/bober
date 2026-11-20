@@ -933,6 +933,14 @@ msgstr "Potrjene poskuse in poskuse s priznanji je mogoče združiti v drug posk
 msgid "Only attempts with answers given online can be merged."
 msgstr "Združiti je mogoče le poskuse z odgovori, oddanimi prek spleta."
 
+#: bober_simple_competition/models.py
+msgid "Code length"
+msgstr "Dolžina kode"
+
+#: bober_simple_competition/models.py
+msgid "Number of characters of new competitor codes of this group. Shorter codes are easier to type and to guess; 10 is recommended. Existing codes keep their length."
+msgstr "Število znakov novih kod tekmovalcev te skupine. Krajše kode je lažje vtipkati in tudi uganiti; priporočeno je 10. Obstoječe kode ohranijo svojo dolžino."
+
 #~ msgid "Show codes"
 #~ msgstr "Prikaži kode"
 

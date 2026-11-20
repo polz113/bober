@@ -499,6 +499,7 @@ class CompetitionQuestionSetFormHelper(FormHelper):
                 'name',
                 'id',
                 'questionset',
+                'code_length',
                 'guest_privileges'
             )
         )
