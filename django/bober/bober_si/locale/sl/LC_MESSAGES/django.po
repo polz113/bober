@@ -238,6 +238,38 @@ msgstr "Arhiv tekmovanj"
 msgid "The archive is currently empty"
 msgstr ""
 
+#: bober_si/templates/bober_si/teacher_overview.html
+msgid "Select at least two attempts of the same competitor."
+msgstr "Izberite vsaj dva poskusa istega tekmovalca."
+
+#: bober_si/templates/bober_si/teacher_overview.html
+msgid "Merge these attempts into one? The latest answer to each question counts. You can split them again later."
+msgstr "Združim te poskuse v enega? Šteje zadnji odgovor na vsako vprašanje. Pozneje jih lahko spet razdružite."
+
+#: bober_si/templates/bober_si/teacher_overview.html
+msgid "Split this attempt back into the original attempts?"
+msgstr "Razdružim ta poskus nazaj na prvotne poskuse?"
+
+#: bober_si/templates/bober_si/teacher_overview.html
+msgid "Select for merging"
+msgstr "Izberi za združevanje"
+
+#: bober_si/templates/bober_si/teacher_overview.html
+msgid "Merged attempts"
+msgstr "Združeni poskusi"
+
+#: bober_si/templates/bober_si/teacher_overview.html
+msgid "merged"
+msgstr "združenih"
+
+#: bober_si/templates/bober_si/teacher_overview.html
+msgid "Split"
+msgstr "Razdruži"
+
+#: bober_si/templates/bober_si/teacher_overview.html
+msgid "Merge selected attempts"
+msgstr "Združi izbrane poskuse"
+
 #~ msgid "Codes for each school"
 #~ msgstr "Kode za šole"
 
