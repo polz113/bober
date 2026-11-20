@@ -73,8 +73,7 @@ class Command(BaseCommand):
                                 ]
                             })
                         code.save()
-                        short_code_value = code.value[
-                            code.value.find(code.format.separator)+1:]
+                        short_code_value = code.competitor_code.value
                         teacher.created_codes.add(code)
                         stc = SchoolTeacherCode(
                             competition_questionset = cqs,

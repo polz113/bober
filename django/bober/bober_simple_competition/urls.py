@@ -1,6 +1,5 @@
 # from django.conf.urls import url
 from django.urls import path
-from django.views.generic import TemplateView
 from django.views.generic.base import RedirectView
 from bober_simple_competition.models import Competition,\
     QuestionSet, Question
@@ -227,22 +226,5 @@ urlpatterns = [
     #   all questionsets for competitions you have admin access to can be used.
     #   Also, newly created questionsets can be used.
     # handling code formats
-    path(r'code_format/', TemplateView.as_view(
-            template_name="bober_simple_competition/codeformat_index.html"),
-        name="code_format_index"),
-    path(r'code_format/admin/', views.AdminCodeFormatList.as_view(),
-        name="admin_code_format_list"),
-    path(r'code_format/competitor/', views.CompetitorCodeFormatList.as_view(),
-        name="competitor_code_format_list"),
-    path(r'code_format/admin/<int:pk>', views.CodeFormatDetail.as_view(),
-        name="admin_code_detail"),
-    path(r'code_format/competitor/<int:pk>',
-        views.CodeFormatDetail.as_view(),
-        name="competitor_code_detail"),
-    path(r'code_format/admin/create', views.AdminCodeFormatCreate.as_view(),
-        name="admin_code_format_create"),
-    path(r'code_format/competitor/create',
-        views.CompetitorCodeFormatCreate.as_view(),
-        name="competitor_code_format_create"),
     # shortcut for registering and competing immediately
 ]

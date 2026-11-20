@@ -195,11 +195,11 @@ class Competition(Model):
         return c
 
     def expand_competitor_code(self, short_code, competition_questionset):
-        sep = self.competitor_code_generator.format.separator
+        sep = self.competitor_code_generator.separator
         return competition_questionset.slug_str() + sep + short_code
 
     def split_competitor_code(self, access_code):
-        sep = self.competitor_code_generator.format.separator
+        sep = self.competitor_code_generator.separator
         return access_code.split(sep)
 
     def grade_answers(self, grader_runtime_manager=None,
@@ -510,7 +510,7 @@ class CompetitorCode(Model):
     @staticmethod
     def _prefix(competition_questionset):
         competition = competition_questionset.competition
-        separator = competition.competitor_code_generator.format.separator
+        separator = competition.competitor_code_generator.separator
         return competition_questionset.slug_str() + separator
 
     @classmethod
@@ -525,25 +525,16 @@ class CompetitorCode(Model):
             value = random_code.generate()
             try:
                 with transaction.atomic():
-                    code = Code.objects.create(
-                        value=prefix + value, salt=generator.salt,
-                        format=generator.format)
+                    code = Code.objects.create(value=prefix + value)
                     cc = cls.objects.create(
                         code=code,
                         competition_questionset=competition_questionset,
                         value=value, **flags)
             except IntegrityError:
                 continue
-            # The parts are informative only (admin pages, exports); codes
-            # are checked with the flags above.
-            parts = [('competition_questionset',
-                      [competition_questionset.slug_str()]),
-                     ('competitor_privileges', cc.privileges),
-                     ('code_effects', list(code_effects))]
-            for name, values in parts:
-                for i, v in enumerate(values):
-                    CodePart.objects.create(code=code, ordering=i,
-                                            name=name, value=v)
+            for i, effect in enumerate(code_effects):
+                CodePart.objects.create(code=code, ordering=i,
+                                        name='code_effects', value=effect)
             generator.codes.add(code)
             return cc
         raise RuntimeError("could not create a unique competitor code")
@@ -668,9 +659,7 @@ class AdminCode(Model):
             value = random_code.generate()
             try:
                 with transaction.atomic():
-                    code = Code.objects.create(
-                        value=value, salt=generator.salt,
-                        format=generator.format)
+                    code = Code.objects.create(value=value)
                     admin_code = cls.objects.create(
                         code=code, competition=competition, value=value,
                         **flags)
@@ -1450,11 +1439,7 @@ class Profile(Model):
         for a in attempts:
             try:
                 codegen = a.competitionquestionset.competition.competitor_code_generator
-                codes = Code.objects.filter(
-                    value=a.access_code,
-                    salt=codegen.salt,
-                    format=codegen.format
-                )
+                codes = codegen.codes.filter(value=a.access_code)
                 for c in codes:
                     self.used_codes.add(c)
             except Exception:
@@ -1470,14 +1455,10 @@ class Profile(Model):
 
     def update_managers(self, codes=None):
         for c in codes:
-            if c.format.code_matches(
-                    c.salt,
-                    c.value, {'code_effects': ['let_manage']}):
+            if c.has_part('code_effects', 'let_manage'):
                 for u in c.owner_set:
                     u.managed_profiles.add(self)
-            if c.format.code_matches(
-                    c.salt,
-                    c.value, {'code_effects': ['let_manage_recursive']}):
+            if c.has_part('code_effects', 'let_manage_recursive'):
                 competitions = Competition.objects.filter(
                     competitor_code_generator__salt=c.salt,
                     competitor_code_generator__format=c.format).unique()
@@ -1495,13 +1476,10 @@ class Profile(Model):
         if codes is None:
             codes = Code.objects.filter(owner_set=self).unique()
         for c in codes:
-            if c.format.code_matches(
-                    c.salt, c.value, {'code_effects': ['let_manage']}):
+            if c.has_part('code_effects', 'let_manage'):
                     for u in c.user_set:
                         u.managers.add(self.user)
-            if c.format.code_matches(
-                c.salt, c.value,
-                    {'code_effects': ['let_manage_recursive']}):
+            if c.has_part('code_effects', 'let_manage_recursive'):
                     competitions = Competition.objects.filter(
                         competitor_code_generator__salt=c.salt,
                         competitor_code_generator__format=c.format).unique()

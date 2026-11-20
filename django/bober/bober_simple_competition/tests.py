@@ -28,35 +28,35 @@ legacy_migration = importlib.import_module(
     '0065_competitorcode_from_legacy_codes')
 
 
-def legacy_competitor_format():
-    # as created by CompetitorCodeFormatCreate
-    return CodeFormat.from_components([
-        {'name': 'competition_questionset', 'hash_len': 64,
-         'hash_format': 'r', 'hash_algorithm': 'noop', 'max_parts': 1},
-        {'name': 'code_id', 'hash_len': 8, 'hash_format': 'h',
-         'hash_algorithm': 'noop', 'max_parts': 1},
-        {'name': 'competitor_privileges', 'hash_len': 3, 'hash_format': 'h',
-         'hash_algorithm': 'sha512', 'max_parts': 4},
-    ])
+def legacy_code(generator, value, parts):
+    """Store a code the way codes were stored before random codes: the
+    value, the privileges as CodeParts, and the code in its generator."""
+    code = Code.objects.create(value=value, salt=generator.salt,
+                               format=generator.format)
+    for name, values in parts.items():
+        for i, v in enumerate(values):
+            CodePart.objects.create(code=code, ordering=i, name=name, value=v)
+    generator.codes.add(code)
+    return code
 
 
 class CompetitorCodeTestMixin(object):
-    def make_competition(self, slug, start_offset=-1):
-        admin_format = CodeFormat.from_components([
-            {'name': 'code_id', 'hash_len': 8, 'hash_format': 'h',
-             'hash_algorithm': 'noop', 'max_parts': 1},
-            {'name': 'admin_privileges', 'hash_len': 3, 'hash_format': 'h',
-             'hash_algorithm': 'sha512', 'max_parts': 10},
-        ])
+    def make_competition(self, slug, start_offset=-1, legacy=False):
+        """A competition; legacy: created before random codes (its code
+        generators have a code format and a salt)."""
+        if legacy:
+            generators = [CodeGenerator.objects.create(
+                unique_code_component='code_id', salt=salt,
+                format=CodeFormat.objects.create(separator='*'))
+                for salt in ('adminsalt', 'competitorsalt')]
+        else:
+            generators = [CodeGenerator.objects.create(),
+                          CodeGenerator.objects.create()]
         now = timezone.now()
         competition = Competition.objects.create(
             slug=slug,
-            administrator_code_generator=CodeGenerator.objects.create(
-                unique_code_component='code_id', format=admin_format,
-                salt='adminsalt'),
-            competitor_code_generator=CodeGenerator.objects.create(
-                unique_code_component='code_id',
-                format=legacy_competitor_format(), salt='competitorsalt'),
+            administrator_code_generator=generators[0],
+            competitor_code_generator=generators[1],
             start=now + datetime.timedelta(hours=start_offset),
             end=now + datetime.timedelta(hours=2))
         groups = []
@@ -97,8 +97,8 @@ class CompetitorCodeCreateTest(CompetitorCodeTestMixin, TestCase):
         self.assertEqual(cc.privileges, ['attempt', 'results_before_end'])
         self.assertTrue(self.competition.competitor_code_generator.codes
                         .filter(id=code.id).exists())
-        self.assertEqual(code.parts['competitor_privileges'],
-                         ['attempt', 'results_before_end'])
+        # privileges live in the row, not in CodeParts
+        self.assertEqual(code.parts, {})
 
     def test_values_are_unique_per_questionset(self):
         values = [self.make_code(self.cqs)[1].value for _ in range(200)]
@@ -277,12 +277,13 @@ class LegacyCodeMigrationTest(CompetitorCodeTestMixin, TestCase):
 
     def setUp(self):
         self.competition, (self.cqs, self.other_cqs) = \
-            self.make_competition('legacy-test')
+            self.make_competition('legacy-test', legacy=True)
         self.codegen = self.competition.competitor_code_generator
-        self.legacy = self.codegen.create_code({
-            'competition_questionset': [self.cqs.slug_str()],
-            'competitor_privileges': ['attempt', 'results_before_end'],
-        })
+        self.legacy = legacy_code(
+            self.codegen, self.cqs.slug_str() + '*0000002a*f3c+a01', {
+                'competition_questionset': [self.cqs.slug_str()],
+                'competitor_privileges': ['attempt', 'results_before_end'],
+            })
         self.legacy_short = self.legacy.value[len(self.cqs.slug_str()) + 1:]
         self.assertFalse(CompetitorCode.objects.filter(
             code=self.legacy).exists())
@@ -325,7 +326,7 @@ class LegacyCodeMigrationTest(CompetitorCodeTestMixin, TestCase):
         self.assertFalse(form.is_valid())
 
     def test_migration_skips_foreign_values(self):
-        stray = self.codegen.create_code({
+        stray = legacy_code(self.codegen, '999-nope*0000002b*f3c', {
             'competition_questionset': ['999-nope'],
             'competitor_privileges': ['attempt'],
         })
@@ -333,10 +334,11 @@ class LegacyCodeMigrationTest(CompetitorCodeTestMixin, TestCase):
         self.assertFalse(CompetitorCode.objects.filter(code=stray).exists())
 
     def test_migration_includes_guest_code(self):
-        guest = self.codegen.create_code({
-            'competition_questionset': [self.other_cqs.slug_str()],
-            'competitor_privileges': ['attempt', 'results_before_end'],
-        })
+        guest = legacy_code(
+            self.codegen, self.other_cqs.slug_str() + '*0000002c*a01', {
+                'competition_questionset': [self.other_cqs.slug_str()],
+                'competitor_privileges': ['attempt', 'results_before_end'],
+            })
         self.codegen.codes.remove(guest)
         self.other_cqs.guest_code = guest
         self.other_cqs.save()
@@ -782,21 +784,17 @@ class AdminCodeViewTest(CompetitorCodeTestMixin, TestCase):
 
 class LegacyAdminCodeMigrationTest(CompetitorCodeTestMixin, TestCase):
     def setUp(self):
-        self.competition, _ = self.make_competition('legacy-admin')
-        generator = self.competition.administrator_code_generator
+        self.competition, _ = self.make_competition(
+            'legacy-admin', legacy=True)
         # an administrator code as stored before random codes
-        self.legacy = Code.objects.create(
-            value='0000002a*f3c+a01', salt=generator.salt,
-            format=generator.format)
-        for i, (name, value) in enumerate((
-                ('admin_privileges', 'view_all_admin_codes'),
-                ('admin_privileges', 'create_competitor_codes'),
-                ('competitor_privileges', 'attempt'),
-                ('competitor_privileges', 'resume_attempt'),
-                ('allowed_effects', 'let_manage'))):
-            CodePart.objects.create(code=self.legacy, ordering=i,
-                                    name=name, value=value)
-        generator.codes.add(self.legacy)
+        self.legacy = legacy_code(
+            self.competition.administrator_code_generator,
+            '0000002a*f3c+a01', {
+                'admin_privileges': ['view_all_admin_codes',
+                                     'create_competitor_codes'],
+                'competitor_privileges': ['attempt', 'resume_attempt'],
+                'allowed_effects': ['let_manage'],
+            })
 
     def migrate(self):
         admin_migration.legacy_codes_to_admin_codes(apps, None)
@@ -825,3 +823,18 @@ class LegacyAdminCodeMigrationTest(CompetitorCodeTestMixin, TestCase):
         self.assertFalse(allows(self.legacy.value.upper(),
                                 'admin_privileges',
                                 'create_competitor_codes'))
+
+
+class CompetitionCreateTest(TestCase):
+    def test_create_form_has_no_code_format_fields(self):
+        from bober_simple_competition.forms import CompetitionCreateForm
+        form = CompetitionCreateForm()
+        for name in ('admin_code_format', 'competitor_code_format',
+                     'admin_salt', 'competitor_salt'):
+            self.assertNotIn(name, form.fields)
+
+    def test_new_competition_codes(self):
+        """Code generators of new competitions have no format and salt."""
+        generator = CodeGenerator.objects.create()
+        self.assertIsNone(generator.format)
+        self.assertEqual(generator.separator, '*')

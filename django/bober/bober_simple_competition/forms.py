@@ -12,7 +12,6 @@ from bober_simple_competition.models import\
 from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
 from django.forms import BaseInlineFormSet
-import code_based_auth.models
 from extra_views import InlineFormSetFactory
 from django.core.exceptions import ValidationError
 from dal.autocomplete import ModelSelect2Multiple, ModelSelect2
@@ -445,10 +444,6 @@ class CompetitionCreateFormHelper(CompetitionFormHelper):
                 + str(_('Advanced competition data')) + "</a>",
                 Div(
                     'promoted',
-                    'competitor_code_format',
-                    'competitor_salt',
-                    'admin_code_format',
-                    'admin_salt',
                     css_class="competition_advanced collapse",
                     id="competition_advanced",
                 )
@@ -467,17 +462,6 @@ class CompetitionCreateForm(forms.ModelForm):
             'start': widgets.AdminDateWidget(),
             'end': widgets.AdminDateWidget(),
         }
-    competitor_code_format = forms.ModelChoiceField(
-        queryset=code_based_auth.models.CodeFormat.objects.filter(
-            components__name='competition_questionset').distinct(),
-        label=_('Competitor code format'))
-    admin_code_format = forms.ModelChoiceField(
-        queryset=code_based_auth.models.CodeFormat.objects.filter(
-            components__name='admin_privileges').distinct(),
-        label=_('Admin code format'))
-    admin_salt = forms.CharField(label=_('Admin salt'))
-    competitor_salt = forms.CharField(label=_('Competitor salt'))
-
     def __init__(self, *args, **kwargs):
         super(CompetitionCreateForm, self).__init__(*args, **kwargs)
         self.helper = CompetitionCreateFormHelper()
@@ -504,54 +488,6 @@ class CompetitionUpdateForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(CompetitionUpdateForm, self).__init__(*args, **kwargs)
         self.helper = CompetitionUpdateFormHelper()
-
-
-class CodeFormatForm(forms.Form):
-    code_id_length = forms.IntegerField(initial=8, label=_("Code id length"))
-    code_id_format = forms.ChoiceField(
-        choices=code_based_auth.models.CODE_COMPONENT_FORMATS,
-        label=_("Code id format"))
-    competitor_privilege_length = forms.IntegerField(
-        min_value=1,
-        label=_("Competitor privilege length"))
-    competitor_privilege_format = forms.ChoiceField(
-        choices=code_based_auth.models.CODE_COMPONENT_FORMATS,
-        label=_("Competitor privilege format"))
-    competitor_privilege_hash = forms.ChoiceField(
-        initial=code_based_auth.models.DEFAULT_HASH_ALGORITHM,
-        choices=code_based_auth.models.HASH_ALGORITHMS,
-        label=_("Competitor privilege hash"))
-
-
-class CompetitorCodeFormatForm(CodeFormatForm):
-    questionset_format = forms.ChoiceField(
-        choices=code_based_auth.models.CODE_COMPONENT_FORMATS,
-        label=_("Questionset format"))
-    questionset_hash = forms.ChoiceField(
-        initial='noop',
-        choices=code_based_auth.models.HASH_ALGORITHMS,
-        label=_("Questionset hash"))
-
-
-class AdminCodeFormatForm(CodeFormatForm):
-    admin_privilege_length = forms.IntegerField(
-        min_value=1, label=_("Admin privilege length"))
-    admin_privilege_format = forms.ChoiceField(
-        choices=code_based_auth.models.CODE_COMPONENT_FORMATS,
-        label=_("Admin privilege format"))
-    admin_privilege_hash = forms.ChoiceField(
-        initial=code_based_auth.models.DEFAULT_HASH_ALGORITHM,
-        choices=code_based_auth.models.HASH_ALGORITHMS,
-        label=_("Admin privilege hash"))
-    allowed_effects_length = forms.IntegerField(
-        min_value=1, label=_("Allowed effects length"))
-    allowed_effects_format = forms.ChoiceField(
-        choices=code_based_auth.models.CODE_COMPONENT_FORMATS,
-        label=_("Allowed effects format"))
-    allowed_effects_hash = forms.ChoiceField(
-        initial=code_based_auth.models.DEFAULT_HASH_ALGORITHM,
-        choices=code_based_auth.models.HASH_ALGORITHMS,
-        label=_("Allowed effects hash"))
 
 
 class CompetitionQuestionSetFormHelper(FormHelper):

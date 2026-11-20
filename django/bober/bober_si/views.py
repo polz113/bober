@@ -69,7 +69,7 @@ class TeacherOverview(SmartCompetitionAdminCodeRequiredMixin,
                     "attempts": []}
             school = c.school
             code = c.code.value
-            sep = self.competition.competitor_code_generator.format.separator
+            sep = self.competition.competitor_code_generator.separator
             split_code = code.split(sep)
             cqs_slug = split_code[0]
             cqs = CompetitionQuestionSet.get_by_slug(cqs_slug)

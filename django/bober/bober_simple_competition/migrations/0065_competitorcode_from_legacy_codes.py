@@ -30,8 +30,9 @@ def legacy_codes_to_competitor_codes(apps, schema_editor):
         'questionset', 'competition__competitor_code_generator__format')
     for cqs in cqs_list.iterator():
         generator = cqs.competition.competitor_code_generator
-        prefix = (str(cqs.id) + '-' + cqs.questionset.slug
-                  + generator.format.separator)
+        separator = (generator.format.separator
+                     if generator.format_id is not None else '*')
+        prefix = str(cqs.id) + '-' + cqs.questionset.slug + separator
         code_ids = set(generator.codes.filter(
             value__startswith=prefix).values_list('id', flat=True))
         if cqs.guest_code_id is not None:
