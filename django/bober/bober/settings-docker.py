@@ -274,4 +274,16 @@ AUTHENTICATION_BACKENDS = (
 #    'bober_auth.auth.BoberCompetitionAuthBackend',
 )
 
-
+# Throttling of wrong access codes (code_based_auth/throttle.py).
+# Behind a reverse proxy, REMOTE_ADDR is the proxy for every client: pass
+# the client address in a header set by the proxy, or all clients share one
+# counter. Use a cache shared by all worker processes.
+# CODE_AUTH_CLIENT_IP_HEADER = 'HTTP_X_REAL_IP'
+# CODE_AUTH_MAX_FAILURES = 100
+# CODE_AUTH_FAILURE_WINDOW = 600
+# CACHES = {
+#     'default': {
+#         'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
+#         'LOCATION': 'django_cache',
+#     }
+# }

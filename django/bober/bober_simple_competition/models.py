@@ -1334,34 +1334,41 @@ class Attempt(Model):
         keep their answers and can be split off again with split().
         Attempts merged into one of the given attempts are moved here.
         """
-        attempts = [a for a in attempts if a.id != self.id]
-        if self.is_merged:
-            raise MergeError(_("Can not merge into a merged attempt."))
-        for a in attempts:
-            if a.competitionquestionset_id != self.competitionquestionset_id:
-                raise MergeError(
-                    _("Only attempts of the same group can be merged."))
-            if a.is_merged:
-                raise MergeError(_("An attempt is already merged."))
-            # Confirmations and awards of merged attempts would still count
-            # (or be printed) next to the ones of this attempt.
-            if a.confirmed_by.exists() or (
-                    hasattr(a, 'attemptaward_set')  # bober_si awards
-                    and a.attemptaward_set.filter(revoked_by=None).exists()):
-                raise MergeError(_(
-                    "Confirmed attempts and attempts with awards can only "
-                    "be merged into another attempt after they are "
-                    "unconfirmed and their awards revoked."))
-        # Scores of attempts without answers (e.g. paper submissions) were
-        # entered, not graded, and would be lost by regrading.
-        with_answers = set(Answer.objects.filter(
-            attempt_id__in=[self.id] + [a.id for a in attempts]).values_list(
-                'attempt_id', flat=True))
-        if any(a.id not in with_answers for a in [self] + attempts):
-            raise MergeError(
-                _("Only attempts with answers given online can be merged."))
-        ids = [a.id for a in attempts]
+        ids = [a.id for a in attempts if a.id != self.id]
         with transaction.atomic():
+            # lock the rows and check their current state, so that two
+            # concurrent merges can not both pass the checks
+            locked = dict((a.id, a) for a in Attempt.objects.select_for_update(
+                ).filter(id__in=[self.id] + ids))
+            target = locked[self.id]
+            attempts = [locked[i] for i in ids if i in locked]
+            if target.is_merged:
+                raise MergeError(_("Can not merge into a merged attempt."))
+            for a in attempts:
+                if a.competitionquestionset_id != \
+                        target.competitionquestionset_id:
+                    raise MergeError(
+                        _("Only attempts of the same group can be merged."))
+                if a.is_merged:
+                    raise MergeError(_("An attempt is already merged."))
+                # Confirmations and awards of merged attempts would still
+                # count (or be printed) next to the ones of this attempt.
+                if a.confirmed_by.exists() or (
+                        hasattr(a, 'attemptaward_set')  # bober_si awards
+                        and a.attemptaward_set.filter(
+                            revoked_by=None).exists()):
+                    raise MergeError(_(
+                        "Confirmed attempts and attempts with awards can "
+                        "only be merged into another attempt after they are "
+                        "unconfirmed and their awards revoked."))
+            # Scores of attempts without answers (e.g. paper submissions)
+            # were entered, not graded, and would be lost by regrading.
+            with_answers = set(Answer.objects.filter(
+                attempt_id__in=[self.id] + ids).values_list(
+                    'attempt_id', flat=True))
+            if any(i not in with_answers for i in [self.id] + ids):
+                raise MergeError(_(
+                    "Only attempts with answers given online can be merged."))
             Attempt.objects.filter(merged_into_id__in=ids).update(
                 merged_into=self)
             Attempt.objects.filter(id__in=ids).update(
