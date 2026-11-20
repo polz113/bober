@@ -893,6 +893,54 @@ msgstr "Kode tekmovalcev"
 msgid "Competition questionset"
 msgstr "Tekmovanja"
 
+#: bober_simple_competition
+msgid "This access code does not exist or is not valid for this group."
+msgstr "Ta koda za dostop ne obstaja ali ne velja za to skupino."
+
+#: bober_simple_competition
+msgid "Too many wrong access codes. Please try again later."
+msgstr "Preveč napačnih kod za dostop. Poskusite znova pozneje."
+
+#: bober_simple_competition
+msgid "Invalid attempt."
+msgstr "Neveljaven poskus."
+
+#: bober_simple_competition
+msgid "Select at least two attempts of the same competitor."
+msgstr "Izberite vsaj dva poskusa istega tekmovalca."
+
+#: bober_simple_competition
+msgid "A merged attempt can not be confirmed."
+msgstr "Združenega poskusa ni mogoče potrditi."
+
+#: bober_simple_competition
+msgid "Can not merge into a merged attempt."
+msgstr "V že združen poskus ni mogoče združevati."
+
+#: bober_simple_competition
+msgid "Only attempts of the same group can be merged."
+msgstr "Združiti je mogoče le poskuse iste skupine."
+
+#: bober_simple_competition
+msgid "An attempt is already merged."
+msgstr "Eden od poskusov je že združen."
+
+#: bober_simple_competition
+msgid "Confirmed attempts and attempts with awards can only be merged into another attempt after they are unconfirmed and their awards revoked."
+msgstr "Potrjene poskuse in poskuse s priznanji je mogoče združiti v drug poskus šele, ko jim odvzamete potrditev in priznanja."
+
+#: bober_simple_competition
+msgid "Only attempts with answers given online can be merged."
+msgstr "Združiti je mogoče le poskuse z odgovori, oddanimi prek spleta."
+
+#: bober_simple_competition/models.py
+msgid "Code length"
+msgstr "Dolžina kode"
+
+#: bober_simple_competition/models.py
+msgid "Number of characters of new competitor codes of this group. Shorter codes are easier to type and to guess; 10 is recommended. Existing codes keep their length."
+msgstr "Število znakov novih kod tekmovalcev te skupine. Krajše kode je lažje vtipkati in tudi uganiti; priporočeno je 10. Obstoječe kode ohranijo svojo dolžino."
+
 #~ msgid "Show codes"
 #~ msgstr "Prikaži kode"
 

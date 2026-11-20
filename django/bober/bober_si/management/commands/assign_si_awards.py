@@ -29,10 +29,7 @@ class Command(BaseCommand):
             first_arg = None
         cslug = options.get('competition_slug', [first_arg])[0]
         competition = SchoolCompetition.objects.get(slug=cslug)
-        organizer = competition.administrator_code_generator.codes.filter(
-                code_parts__name='admin_privileges', 
-                code_parts__value='view_all_admin_codes'
-            )[0].creator_set.all()[0]
+        organizer = competition.organizer_codes()[0].creator_set.all()[0]
         attempt_awards = []
         revoked_awards = []
         for school in School.objects.filter(

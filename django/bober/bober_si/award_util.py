@@ -34,7 +34,7 @@ def create_si_national_awards(cqs):
         '8. razred': '08',
         '9. razred': '09',
     }.get(group_name, slugify(group_name))
-    l = list(Attempt.objects.filter(
+    l = list(Attempt.objects.filter(merged_into__isnull=True,
         competitionquestionset = cqs
     ).exclude(
         confirmed_by = None
@@ -167,7 +167,7 @@ def create_si_awards(cqs):
     )
     if created or True:
         # set the threshold to cover 1/5 of all competitors
-        l = Attempt.objects.filter(
+        l = Attempt.objects.filter(merged_into__isnull=True,
                 competitionquestionset = cqs
             ).exclude(
                 confirmed_by = None
@@ -496,15 +496,12 @@ def create_teacher_awards(competition):
             template = 'potrdilo',
             defaults = {'serial_prefix' : 't-' + cslug}
         )
-    organizer = competition.administrator_code_generator.codes.filter(
-            code_parts__name='admin_privileges', 
-            code_parts__value='view_all_admin_codes'
-        )[0].creator_set.all()[0]
+    organizer = competition.organizer_codes()[0].creator_set.all()[0]
     for teacher in Profile.objects.filter(schoolteachercode__competition_questionset__competition = competition).distinct():
         # print("----------------------------")
         # print(teacher, teacher.user.email)
         # print("----------------------------")
-        attempts = Attempt.objects.filter(
+        attempts = Attempt.objects.filter(merged_into__isnull=True,
                 competitionquestionset__competition = competition, 
                 confirmed_by=teacher
             ).distinct()

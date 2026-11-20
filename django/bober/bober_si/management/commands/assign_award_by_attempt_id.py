@@ -34,17 +34,14 @@ class Command(BaseCommand):
         award_name = unicode(options.get('award_name', [args[1]])[0])
         fname = unicode(options.get('attempt_list_filename', [args[2]])[0])
         competition = SchoolCompetition.objects.get(slug=cslug)
-        organizer = competition.administrator_code_generator.codes.filter(
-                code_parts__name='admin_privileges', 
-                code_parts__value='view_all_admin_codes'
-            )[0].creator_set.all()[0]
+        organizer = competition.organizer_codes()[0].creator_set.all()[0]
         with open(fname) as f:
             attempt_ids = f.read().split()
         awards = Award.objects.filter(questionset__competition = competition,
                 name = award_name)
         # print attempt_ids
         for award in awards:
-            for attempt in Attempt.objects.filter(
+            for attempt in Attempt.objects.filter(merged_into__isnull=True,
                     competitionquestionset = award.questionset,
                     id__in = attempt_ids).exclude(
                     confirmed_by = None):

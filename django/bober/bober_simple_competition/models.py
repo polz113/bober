@@ -12,7 +12,10 @@ from django.db.models import FileField, BooleanField, FloatField, Model
 from django.db.models import DateField, DateTimeField, DurationField
 from django.db.models import ForeignKey, ManyToManyField, OneToOneField
 from django.db.models import signals, F, ExpressionWrapper, Manager
-from django.db.models import BinaryField, CASCADE
+from django.db.models import BinaryField, CASCADE, SET_NULL, UniqueConstraint
+from django.db.models import PositiveSmallIntegerField
+from django.core.validators import MaxValueValidator, MinValueValidator
+from django.db import IntegrityError, transaction
 from django.contrib.auth.models import User
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
@@ -24,7 +27,8 @@ from django.core.cache import cache
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
-from code_based_auth.models import Code, CodeField, CodeGenerator
+from code_based_auth.models import Code, CodeField, CodeGenerator, CodePart
+from code_based_auth import random_code
 from taggit.managers import TaggableManager
 
 from . import graders
@@ -72,8 +76,9 @@ COMPETITOR_PRIVILEGES = (
     ('attempt_before_start', _('Attempt competition before start')),
     ('results_before_end',
      _('See results before official end of competition')),
-    ('resume_attempt', _('Resume existing attempts')),
 )
+
+COMPETITOR_PRIVILEGE_NAMES = tuple(p for p, _ in COMPETITOR_PRIVILEGES)
 
 
 CODE_EFFECTS = (
@@ -192,11 +197,11 @@ class Competition(Model):
         return c
 
     def expand_competitor_code(self, short_code, competition_questionset):
-        sep = self.competitor_code_generator.format.separator
+        sep = self.competitor_code_generator.separator
         return competition_questionset.slug_str() + sep + short_code
 
     def split_competitor_code(self, access_code):
-        sep = self.competitor_code_generator.format.separator
+        sep = self.competitor_code_generator.separator
         return access_code.split(sep)
 
     def grade_answers(self, grader_runtime_manager=None,
@@ -225,26 +230,36 @@ class Competition(Model):
                 regrade=regrade,
                 grader_runtime_manager=grader_runtime_manager)
 
+    def admin_code(self, access_code):
+        """The AdminCode of this competition for access_code, or None."""
+        return AdminCode.lookup(self, access_code)
+
+    def admin_code_allows(self, access_code, kind, name):
+        """True if the administrator code access_code has a privilege.
+
+        kind is 'admin_privileges', 'competitor_privileges' or
+        'allowed_effects'.
+        """
+        admin_code = self.admin_code(access_code)
+        return admin_code is not None and admin_code.has_privilege(kind, name)
+
+    def _privilege_choices(self, access_code, kind, choices):
+        admin_code = self.admin_code(access_code)
+        if admin_code is None:
+            return []
+        return [c for c in choices if admin_code.has_privilege(kind, c[0])]
+
     def admin_privilege_choices(self, access_code):
-        return filter(
-            lambda x: self.administrator_code_generator.code_matches(
-                access_code,
-                {'admin_privileges': [x[0]]}),
-            ADMIN_PRIVILEGES)
+        return self._privilege_choices(
+            access_code, 'admin_privileges', ADMIN_PRIVILEGES)
 
     def allowed_effect_choices(self, access_code):
-        return filter(
-            lambda x: self.administrator_code_generator.code_matches(
-                access_code,
-                {'allowed_effects': [x[0]]}),
-            CODE_EFFECTS)
+        return self._privilege_choices(
+            access_code, 'allowed_effects', CODE_EFFECTS)
 
     def competitor_privilege_choices(self, access_code):
-        return filter(
-            lambda x: self.administrator_code_generator.code_matches(
-                access_code,
-                {'competitor_privileges': [x[0]]}),
-            COMPETITOR_PRIVILEGES)
+        return self._privilege_choices(
+            access_code, 'competitor_privileges', COMPETITOR_PRIVILEGES)
 
     def max_admin_code_data(self, access_code):
         return {
@@ -265,43 +280,93 @@ class Competition(Model):
     def competitor_code_create(self, access_code,
                                competition_questionset=None,
                                code_data=None):
+        """Create a random competitor code; returns its Code.
+
+        The privileges (and code effects) come from code_data, by default
+        everything the administrator code access_code may hand out.
+        """
         if code_data is None:
             code_data = self.max_competitor_code_data(access_code)
-        if competition_questionset is not None:
-            code_data['competition_questionset'] = [
-                competition_questionset.slug_str()
-            ]
-        c = self.competitor_code_generator.create_code(code_data)
-        c.save()
-        return c
+        if competition_questionset is None:
+            slugs = code_data.get('competition_questionset')
+            if isinstance(slugs, str):
+                slugs = [slugs]
+            competition_questionset = CompetitionQuestionSet.get_by_slug(
+                slugs[0])
+        if competition_questionset.competition_id != self.id:
+            raise ValueError("questionset is not part of this competition")
+        cc = CompetitorCode.create(
+            competition_questionset,
+            privileges=code_data.get('competitor_privileges', []),
+            code_effects=code_data.get('code_effects', []))
+        return cc.code
+
+    def competitor_code(self, access_code):
+        """The CompetitorCode of this competition for a full access code."""
+        return CompetitorCode.for_competition(self, access_code)
 
     def master_code_create(self):
-        c = self.administrator_code_generator.create_code({
+        """Create an administrator code with all privileges."""
+        return AdminCode.create(self, {
             'admin_privileges': [i[0] for i in ADMIN_PRIVILEGES],
             'competitor_privileges': [i[0] for i in COMPETITOR_PRIVILEGES],
-            'allowed_effects':  [i[0] for i in CODE_EFFECTS],
-        })
-        c.save()
-        return c
+            'allowed_effects': [i[0] for i in CODE_EFFECTS],
+        }).code
 
     def admin_code_create(self, access_code, code_data=None):
+        """Create an administrator code; returns its Code.
+
+        The privileges come from code_data, by default everything the
+        administrator code access_code may hand out.
+        """
         if code_data is None:
             code_data = self.max_admin_code_data(access_code)
-        c = self.administrator_code_generator.create_code(code_data)
-        c.save()
-        return c
+        return AdminCode.create(
+            self, code_data,
+            code_effects=code_data.get('code_effects', [])).code
+
+    def organizer_codes(self):
+        """Codes of this competition that may view all administrator codes
+        (used to find the organizer)."""
+        return Code.objects.filter(admin_code__competition=self,
+                                   admin_code__view_all_admin_codes=True)
 
 
 ANSWER_BATCH_SIZE = 100000
 
 
-def _create_graded(answer, regrade, grader_runtime_manager):
+class _AnswerQuestionIds(object):
+    """Answer.question_id, computed once per (attempt, randomized id)."""
+    def __init__(self):
+        self.cache = {}
+
+    def get(self, answer):
+        key = (answer.attempt_id, answer.randomized_question_id)
+        if key not in self.cache:
+            try:
+                self.cache[key] = answer.question_id
+            except Exception:
+                # unknown question; keep the old per-attempt behaviour
+                self.cache[key] = key
+        return self.cache[key]
+
+
+def _create_graded(answer, regrade, grader_runtime_manager,
+                   attempt_id=None):
+    """Grade an answer for attempt_id (default: the answer's attempt).
+
+    attempt_id differs from answer.attempt_id for answers of attempts that
+    were merged into another attempt; the answer is still graded with the
+    random seed of its own attempt.
+    """
+    if attempt_id is None:
+        attempt_id = answer.attempt_id
     try:
         a = answer
         if regrade:
             # print a
             g_a = GradedAnswer(
-                attempt_id=a.attempt_id, question_id=a.question_id,
+                attempt_id=attempt_id, question_id=a.question_id,
                 answer=a
             )
             q = Question.objects.get(id=g_a.question_id)
@@ -311,7 +376,7 @@ def _create_graded(answer, regrade, grader_runtime_manager):
             return g_a
         else:
             g_a, created = GradedAnswer.objects.get_or_create(
-                attempt_id=a.attempt_id, question_id=a.question_id,
+                attempt_id=attempt_id, question_id=a.question_id,
                 defaults={'answer': a, 'score': None})
             if not created and g_a.answer != a:
                 g_a.answer = a
@@ -332,6 +397,14 @@ class CompetitionQuestionSet(Model):
                              on_delete=CASCADE)
     competition = ForeignKey('Competition', on_delete=CASCADE)
     guest_code = ForeignKey(Code, null=True, blank=True, on_delete=CASCADE)
+    code_length = PositiveSmallIntegerField(
+        default=random_code.CODE_CHARS,
+        validators=[MinValueValidator(random_code.MIN_CODE_CHARS),
+                    MaxValueValidator(random_code.MAX_CODE_CHARS)],
+        verbose_name=_("Code length"),
+        help_text=_("Number of characters of new competitor codes of this "
+                    "group. Shorter codes are easier to type and to guess; "
+                    "10 is recommended. Existing codes keep their length."))
 
     def slug_str(self):
         return str(self.id) + '-' + self.questionset.slug
@@ -354,15 +427,15 @@ class CompetitionQuestionSet(Model):
             attempt__competitionquestionset=self).distinct()
         if not regrade:
             graded_answers = graded_answers.filter(score=None)
-        graded_answers.select_related(
-            'question__verification_function',
-            'question__verification_function_type',
-            'answer__value', 'attempt')
+        graded_answers = graded_answers.select_related(
+            'question', 'answer__attempt')
         for g_a in graded_answers:
             q = g_a.question
             grader = grader_runtime_manager.get_grader(
                 q.verification_function, q.verification_function_type)
-            g_a.score = grader(g_a.answer.value, g_a.attempt.random_seed, q)
+            # the seed of the attempt the answer was given in
+            g_a.score = grader(g_a.answer.value,
+                               g_a.answer.attempt.random_seed, q)
             g_a.save()
 
     def update_graded_answers(self, check_timestamp=False,
@@ -370,7 +443,8 @@ class CompetitionQuestionSet(Model):
         grader_runtime_manager = graders.init_runtimes(
             grader_runtime_manager)
         answers = Answer.objects.filter(
-            attempt__competitionquestionset=self).order_by('-id')
+            attempt__competitionquestionset=self).order_by(
+                '-id').select_related('attempt')
         if check_timestamp:
             answers.select_related('attempt__finish')
         if regrade:
@@ -379,18 +453,255 @@ class CompetitionQuestionSet(Model):
                 attempt__competitionquestionset=self).delete()
         graded_list = []
         grades_set = set()
+        question_ids = _AnswerQuestionIds()
         for a in answers:
-            if (not check_timestamp or a.timestamp < a.attempt.finish) and (
-                   (a.attempt_id, a.randomized_question_id) not in grades_set):
-                g_a = _create_graded(a, regrade, grader_runtime_manager)
+            # answers of merged attempts are graded for the attempt they
+            # were merged into
+            graded_attempt_id = a.attempt.merged_into_id or a.attempt_id
+            if not check_timestamp or a.timestamp < a.attempt.finish:
+                key = (graded_attempt_id, question_ids.get(a))
+                if key in grades_set:
+                    continue
+                g_a = _create_graded(a, regrade, grader_runtime_manager,
+                                     attempt_id=graded_attempt_id)
                 if g_a:
                     graded_list.append(g_a)
-                grades_set.add((a.attempt_id, a.randomized_question_id))
+                grades_set.add(key)
             if len(graded_list) > ANSWER_BATCH_SIZE:
                 GradedAnswer.objects.bulk_create(graded_list)
                 graded_list = []
                 grades_set.clear()
         GradedAnswer.objects.bulk_create(graded_list)
+
+
+class CompetitorCode(Model):
+    """A competitor access code.
+
+    The value is a random string (see code_based_auth.random_code) that is
+    only valid for one CompetitionQuestionSet; the same value may exist in
+    other questionsets. A code is checked by looking up the pair
+    (competition questionset, value); what it allows is stored in the flags
+    below, not in the value.
+
+    The full access code (stored in Code.value, in the session and in
+    Attempt.access_code) is the questionset slug, the separator of the
+    competitor code format and the value, as for older codes.
+    """
+    def __str__(self):
+        return self.code.value
+
+    code = OneToOneField(Code, related_name='competitor_code',
+                         on_delete=CASCADE)
+    competition_questionset = ForeignKey(
+        'CompetitionQuestionSet', related_name='competitor_codes',
+        on_delete=CASCADE)
+    value = CharField(max_length=256)
+    attempt = BooleanField(default=False)
+    attempt_before_start = BooleanField(default=False)
+    results_before_end = BooleanField(default=False)
+
+    class Meta:
+        constraints = [
+            UniqueConstraint(
+                fields=['competition_questionset', 'value'],
+                name='unique_competitor_code_value_per_cqs'),
+        ]
+
+    MAX_CREATE_TRIES = 10
+
+    def has_privilege(self, privilege):
+        return privilege in COMPETITOR_PRIVILEGE_NAMES \
+            and getattr(self, privilege)
+
+    @property
+    def privileges(self):
+        return [p for p in COMPETITOR_PRIVILEGE_NAMES if getattr(self, p)]
+
+    @staticmethod
+    def _prefix(competition_questionset):
+        competition = competition_questionset.competition
+        separator = competition.competitor_code_generator.separator
+        return competition_questionset.slug_str() + separator
+
+    @classmethod
+    def create(cls, competition_questionset, privileges=(),
+               code_effects=()):
+        """Store a new random code; retry when the value is already used."""
+        generator = \
+            competition_questionset.competition.competitor_code_generator
+        prefix = cls._prefix(competition_questionset)
+        flags = dict((p, p in privileges) for p in COMPETITOR_PRIVILEGE_NAMES)
+        for _try in range(cls.MAX_CREATE_TRIES):
+            value = random_code.generate(
+                competition_questionset.code_length)
+            try:
+                with transaction.atomic():
+                    code = Code.objects.create(value=prefix + value)
+                    cc = cls.objects.create(
+                        code=code,
+                        competition_questionset=competition_questionset,
+                        value=value, **flags)
+            except IntegrityError:
+                if cls.objects.filter(
+                        competition_questionset=competition_questionset,
+                        value=value).exists():
+                    continue  # value already used: try another one
+                raise
+            for i, effect in enumerate(code_effects):
+                CodePart.objects.create(code=code, ordering=i,
+                                        name='code_effects', value=effect)
+            generator.codes.add(code)
+            return cc
+        raise RuntimeError("could not create a unique competitor code")
+
+    @classmethod
+    def lookup(cls, competition_questionset, typed):
+        """Find the code a competitor typed for a questionset, or None."""
+        values = random_code.lookup_values(typed)
+        if not values:
+            return None
+        found = dict((cc.value, cc) for cc in cls.objects.filter(
+            competition_questionset=competition_questionset,
+            value__in=values).select_related('code'))
+        for v in values:
+            if v in found:
+                return found[v]
+        return None
+
+    @classmethod
+    def from_access_code(cls, competition_questionset, access_code):
+        """Find the code for a full access code (questionset slug + value).
+
+        Returns None if the access code belongs to another questionset.
+        """
+        if not access_code:
+            return None
+        prefix = cls._prefix(competition_questionset)
+        if not access_code.startswith(prefix):
+            return None
+        return cls.lookup(competition_questionset, access_code[len(prefix):])
+
+    @classmethod
+    def for_competition(cls, competition, access_code):
+        """Find the code for a full access code of any questionset of
+        the competition."""
+        try:
+            cqs_id = int(access_code[:access_code.index('-')])
+        except (AttributeError, TypeError, ValueError):
+            return None
+        cqs = competition.competitionquestionset_set.filter(
+            id=cqs_id).first()
+        if cqs is None:
+            return None
+        return cls.from_access_code(cqs, access_code)
+
+
+# kind of privilege -> {privilege name: AdminCode field}
+ADMIN_CODE_FIELDS = {
+    'admin_privileges': dict((p, p) for p, _ in ADMIN_PRIVILEGES),
+    'competitor_privileges': dict(
+        (p, 'competitor_' + p) for p, _ in COMPETITOR_PRIVILEGES),
+    'allowed_effects': dict((e, 'allow_' + e) for e, _ in CODE_EFFECTS),
+}
+
+
+class AdminCode(Model):
+    """An administrator access code of a competition.
+
+    Like CompetitorCode: the value is random (code_based_auth.random_code),
+    the privileges are stored in the fields below and a code is checked by
+    looking up (competition, value). Administrator codes are typed on a page
+    that does not know the competition, so the full access code (Code.value,
+    session) is the value itself, without a prefix.
+    """
+    def __str__(self):
+        return self.code.value
+
+    code = OneToOneField(Code, related_name='admin_code', on_delete=CASCADE)
+    competition = ForeignKey('Competition', related_name='admin_codes',
+                             on_delete=CASCADE)
+    value = CharField(max_length=256)
+    # admin_privileges
+    create_admin_codes = BooleanField(default=False)
+    create_competitor_codes = BooleanField(default=False)
+    view_all_attempts = BooleanField(default=False)
+    view_all_admin_codes = BooleanField(default=False)
+    view_all_competitor_codes = BooleanField(default=False)
+    use_question_sets = BooleanField(default=False)
+    modify_competition = BooleanField(default=False)
+    use_questions = BooleanField(default=False)
+    # competitor_privileges (what competitor codes created with it may get)
+    competitor_attempt = BooleanField(default=False)
+    competitor_attempt_before_start = BooleanField(default=False)
+    competitor_results_before_end = BooleanField(default=False)
+    # allowed_effects
+    allow_let_manage = BooleanField(default=False)
+    allow_let_manage_recursive = BooleanField(default=False)
+
+    class Meta:
+        constraints = [
+            UniqueConstraint(
+                fields=['competition', 'value'],
+                name='unique_admin_code_value_per_competition'),
+        ]
+
+    MAX_CREATE_TRIES = 10
+
+    def has_privilege(self, kind, name):
+        field = ADMIN_CODE_FIELDS.get(kind, {}).get(name)
+        return field is not None and getattr(self, field)
+
+    def privileges(self, kind):
+        return [name for name, field in ADMIN_CODE_FIELDS[kind].items()
+                if getattr(self, field)]
+
+    @classmethod
+    def flags(cls, privileges):
+        """Field values for a dict {kind: [privilege names]}."""
+        flags = {}
+        for kind, fields in ADMIN_CODE_FIELDS.items():
+            given = privileges.get(kind, ())
+            for name, field in fields.items():
+                flags[field] = name in given
+        return flags
+
+    @classmethod
+    def create(cls, competition, privileges, code_effects=()):
+        """Store a new random code; retry when the value is already used."""
+        generator = competition.administrator_code_generator
+        flags = cls.flags(privileges)
+        for _try in range(cls.MAX_CREATE_TRIES):
+            value = random_code.generate()
+            try:
+                with transaction.atomic():
+                    code = Code.objects.create(value=value)
+                    admin_code = cls.objects.create(
+                        code=code, competition=competition, value=value,
+                        **flags)
+            except IntegrityError:
+                if cls.objects.filter(competition=competition,
+                                      value=value).exists():
+                    continue  # value already used: try another one
+                raise
+            for i, effect in enumerate(code_effects):
+                CodePart.objects.create(code=code, ordering=i,
+                                        name='code_effects', value=effect)
+            generator.codes.add(code)
+            return admin_code
+        raise RuntimeError("could not create a unique administrator code")
+
+    @classmethod
+    def lookup(cls, competition, typed):
+        """Find an administrator code of competition, or None."""
+        values = random_code.lookup_values(typed)
+        if not values:
+            return None
+        found = dict((ac.value, ac) for ac in cls.objects.filter(
+            competition=competition, value__in=values).select_related('code'))
+        for v in values:
+            if v in found:
+                return found[v]
+        return None
 
 
 class CodeEffect(Model):
@@ -885,6 +1196,10 @@ class AttemptManager(Manager):
         return qs
 
 
+class MergeError(ValueError):
+    """Attempts can not be merged; the message is shown to the teacher."""
+
+
 class Attempt(Model):
     def __str__(self):
         return u"({}) {}, {} - {}: {} ({} - {})".format(
@@ -904,6 +1219,15 @@ class Attempt(Model):
     start = DateTimeField(auto_now_add=True)
     finish = DateTimeField(null=True, blank=True)
     score = FloatField(null=True, blank=True)
+    # A teacher can merge attempts of one competitor (e.g. after a broken
+    # connection) into the first of them. Merged attempts keep their own
+    # answers; their answers count for merged_into. Splitting sets
+    # merged_into back to None.
+    merged_into = ForeignKey('self', null=True, blank=True,
+                             related_name='merged_attempts',
+                             on_delete=SET_NULL)
+    merged_by = ForeignKey('Profile', null=True, blank=True,
+                           related_name='+', on_delete=SET_NULL)
     objects = AttemptManager()
 
     @property
@@ -941,13 +1265,17 @@ class Attempt(Model):
         graded_answers = self.gradedanswer_set.all()
         if not regrade:
             graded_answers = graded_answers.filter(score=None)
-        graded_answers.select_related('question', 'answer__value')
+        graded_answers = graded_answers.select_related(
+            'question', 'answer__attempt')
         for g_a in graded_answers:
             # print "    regrading", g_a.answer
             q = g_a.question
             grader = grader_runtime_manager.get_grader(
                 q.verification_function, q.verification_function_type)
-            g_a.score = grader(g_a.answer.value, self.random_seed, q)
+            # the seed of the attempt the answer was given in (merged
+            # attempts have their own seeds)
+            g_a.score = grader(g_a.answer.value,
+                               g_a.answer.attempt.random_seed, q)
             g_a.save()
             # a.answer.score = a.score
             # a.answer.save()
@@ -960,16 +1288,23 @@ class Attempt(Model):
         if regrade:
             GradedAnswer.objects.filter(attempt=self).delete()
         # answers = self.answer_set.order_by("-timestamp", "-id")
-        answers = self.answer_set.order_by("-id")
+        # the latest answer to each question over this attempt and the
+        # attempts merged into it
+        answers = Answer.objects.filter(
+            attempt_id__in=self.merged_attempt_ids()).order_by(
+                "-id").select_related('attempt')
         if check_timestamp:
-            answers = answers.filter(timestamp__lte=self.finish)
+            answers = answers.filter(timestamp__lte=F('attempt__finish'))
         n_questions = self.questionset.questions.count()
         n_found = 0
+        question_ids = _AnswerQuestionIds()
         for a in answers.all():
             # print "a:", a
-            if a.randomized_question_id not in answered_questions:
-                g_a = _create_graded(a, regrade, grader_runtime_manager)
-                answered_questions.add(a.randomized_question_id)
+            question_id = question_ids.get(a)
+            if question_id not in answered_questions:
+                g_a = _create_graded(a, regrade, grader_runtime_manager,
+                                     attempt_id=self.id)
+                answered_questions.add(question_id)
                 if g_a:
                     graded_list.append(g_a)
                 n_found += 1
@@ -980,6 +1315,89 @@ class Attempt(Model):
     def latest_answers(self):
         # get only the latest answers
         return self.gradedanswer_set.all()
+
+    @property
+    def is_merged(self):
+        """True if this attempt was merged into another attempt."""
+        return self.merged_into_id is not None
+
+    def merged_attempt_ids(self):
+        """Ids of this attempt and of the attempts merged into it."""
+        return [self.id] + list(Attempt.objects.filter(
+            merged_into=self).values_list('id', flat=True))
+
+    def regrade(self, grader_runtime_manager=None):
+        """Grade again from the answers; update the score if it was set."""
+        grader_runtime_manager = graders.init_runtimes(
+            grader_runtime_manager)
+        self.update_graded_answers(
+            regrade=True, grader_runtime_manager=grader_runtime_manager)
+        if self.score is not None:
+            self.score = sum(max(0, a.score or 0)
+                             for a in self.latest_answers())
+            self.save(update_fields=['score'])
+
+    def merge(self, attempts, by=None):
+        """Merge attempts into this one.
+
+        The answers of all attempts count for this attempt (the latest
+        answer to each question). Nothing is deleted: the merged attempts
+        keep their answers and can be split off again with split().
+        Attempts merged into one of the given attempts are moved here.
+        """
+        ids = [a.id for a in attempts if a.id != self.id]
+        with transaction.atomic():
+            # lock the rows and check their current state, so that two
+            # concurrent merges can not both pass the checks
+            locked = dict((a.id, a) for a in Attempt.objects.select_for_update(
+                ).filter(id__in=[self.id] + ids))
+            target = locked[self.id]
+            attempts = [locked[i] for i in ids if i in locked]
+            if target.is_merged:
+                raise MergeError(_("Can not merge into a merged attempt."))
+            for a in attempts:
+                if a.competitionquestionset_id != \
+                        target.competitionquestionset_id:
+                    raise MergeError(
+                        _("Only attempts of the same group can be merged."))
+                if a.is_merged:
+                    raise MergeError(_("An attempt is already merged."))
+                # Confirmations and awards of merged attempts would still
+                # count (or be printed) next to the ones of this attempt.
+                if a.confirmed_by.exists() or (
+                        hasattr(a, 'attemptaward_set')  # bober_si awards
+                        and a.attemptaward_set.filter(
+                            revoked_by=None).exists()):
+                    raise MergeError(_(
+                        "Confirmed attempts and attempts with awards can "
+                        "only be merged into another attempt after they are "
+                        "unconfirmed and their awards revoked."))
+            # Scores of attempts without answers (e.g. paper submissions)
+            # were entered, not graded, and would be lost by regrading.
+            with_answers = set(Answer.objects.filter(
+                attempt_id__in=[self.id] + ids).values_list(
+                    'attempt_id', flat=True))
+            if any(i not in with_answers for i in [self.id] + ids):
+                raise MergeError(_(
+                    "Only attempts with answers given online can be merged."))
+            Attempt.objects.filter(merged_into_id__in=ids).update(
+                merged_into=self)
+            Attempt.objects.filter(id__in=ids).update(
+                merged_into=self, merged_by=by)
+            self.regrade()
+
+    def split(self):
+        """Undo merge(): every merged attempt is on its own again."""
+        parts = list(Attempt.objects.filter(merged_into=self))
+        with transaction.atomic():
+            Attempt.objects.filter(merged_into=self).update(
+                merged_into=None, merged_by=None)
+            manager = graders.init_runtimes(None)
+            self.regrade(manager)
+            for a in parts:
+                a.merged_into = None
+                a.regrade(manager)
+        return parts
 
     def graded_answers_by_question_id(self):
         # return self.graded_answers.order_by('gradedanswer__question_id')
@@ -1069,11 +1487,7 @@ class Profile(Model):
         for a in attempts:
             try:
                 codegen = a.competitionquestionset.competition.competitor_code_generator
-                codes = Code.objects.filter(
-                    value=a.access_code,
-                    salt=codegen.salt,
-                    format=codegen.format
-                )
+                codes = codegen.codes.filter(value=a.access_code)
                 for c in codes:
                     self.used_codes.add(c)
             except Exception:
@@ -1089,14 +1503,10 @@ class Profile(Model):
 
     def update_managers(self, codes=None):
         for c in codes:
-            if c.format.code_matches(
-                    c.salt,
-                    c.value, {'code_effects': ['let_manage']}):
+            if c.has_part('code_effects', 'let_manage'):
                 for u in c.owner_set:
                     u.managed_profiles.add(self)
-            if c.format.code_matches(
-                    c.salt,
-                    c.value, {'code_effects': ['let_manage_recursive']}):
+            if c.has_part('code_effects', 'let_manage_recursive'):
                 competitions = Competition.objects.filter(
                     competitor_code_generator__salt=c.salt,
                     competitor_code_generator__format=c.format).unique()
@@ -1114,13 +1524,10 @@ class Profile(Model):
         if codes is None:
             codes = Code.objects.filter(owner_set=self).unique()
         for c in codes:
-            if c.format.code_matches(
-                    c.salt, c.value, {'code_effects': ['let_manage']}):
+            if c.has_part('code_effects', 'let_manage'):
                     for u in c.user_set:
                         u.managers.add(self.user)
-            if c.format.code_matches(
-                c.salt, c.value,
-                    {'code_effects': ['let_manage_recursive']}):
+            if c.has_part('code_effects', 'let_manage_recursive'):
                     competitions = Competition.objects.filter(
                         competitor_code_generator__salt=c.salt,
                         competitor_code_generator__format=c.format).unique()

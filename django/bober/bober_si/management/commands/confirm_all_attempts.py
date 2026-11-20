@@ -33,13 +33,10 @@ class Command(BaseCommand):
             competition = competition,
             name = cqs_name
         )
-        organizer = competition.administrator_code_generator.codes.filter(
-                code_parts__name='admin_privileges', 
-                code_parts__value='view_all_admin_codes'
-            )[0].creator_set.all()[0]
+        organizer = competition.organizer_codes()[0].creator_set.all()[0]
         # confirm attempts
         for cqs in cqss.all():   
-            for attempt in Attempt.objects.filter(
+            for attempt in Attempt.objects.filter(merged_into__isnull=True,
                     competitionquestionset = cqs):
                 mentor = organizer
                 possible_mentors = SchoolTeacherCode.objects.filter(

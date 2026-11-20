@@ -571,12 +571,9 @@ class Command(BaseCommand):
                 template = 'potrdilo',
                 defaults = {'serial_prefix' : 't-' + cslug}
             )
-        organizer = competition.administrator_code_generator.codes.filter(
-                code_parts__name='admin_privileges', 
-                code_parts__value='view_all_admin_codes'
-            )[0].creator_set.all()[0]
+        organizer = competition.organizer_codes()[0].creator_set.all()[0]
         for teacher in Profile.objects.filter(schoolteachercode__competition_questionset__competition = competition).distinct():
-            attempts = Attempt.objects.filter(
+            attempts = Attempt.objects.filter(merged_into__isnull=True,
                     competitionquestionset__competition = competition, 
                     confirmed_by=teacher
                 ).distinct()

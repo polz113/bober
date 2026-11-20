@@ -30,10 +30,7 @@ class Command(BaseCommand):
         ncslug = options.get('national_competition_slug', [args[1]])[0]
         school_competition = SchoolCompetition.objects.get(slug=scslug)
         national_competition = SchoolCompetition.objects.get(slug=ncslug)
-        organizer = national_competition.administrator_code_generator.codes.filter(
-                code_parts__name='admin_privileges', 
-                code_parts__value='view_all_admin_codes'
-            )[0].creator_set.all()[0]
+        organizer = national_competition.organizer_codes()[0].creator_set.all()[0]
         attempts_by_teacher = defaultdict(
             lambda: defaultdict(
                 lambda: defaultdict(list)))
@@ -44,7 +41,7 @@ class Command(BaseCommand):
                 competition = school_competition,
                 name = cqs.name)
             cqs_list.append(cqs)
-            for a in Attempt.objects.filter(
+            for a in Attempt.objects.filter(merged_into__isnull=True,
                     competitionquestionset = school_cqs,
                     attemptaward__award__name = 'napreduje').distinct():
                 # print a.id, school_cqs
@@ -73,12 +70,10 @@ class Command(BaseCommand):
                             code_data = {
                                 'competitor_privileges':[
                                     'attempt',
-                                    'resume_attempt',
                                 ]
                             })
                         code.save()
-                        short_code_value = code.value[
-                            code.value.find(code.format.separator)+1:]
+                        short_code_value = code.competitor_code.value
                         teacher.created_codes.add(code)
                         stc = SchoolTeacherCode(
                             competition_questionset = cqs,

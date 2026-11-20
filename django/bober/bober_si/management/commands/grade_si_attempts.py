@@ -28,16 +28,13 @@ class Command(BaseCommand):
             name = cqs_name
         )
         competition = SchoolCompetition.objects.get(slug=cslug)
-        organizer = competition.administrator_code_generator.codes.filter(
-                code_parts__name='admin_privileges', 
-                code_parts__value='view_all_admin_codes'
-            )[0].creator_set.all()[0]
+        organizer = competition.organizer_codes()[0].creator_set.all()[0]
         # cslug = args[0]
         competition = Competition.objects.get(slug=cslug)
         for cqs in cqss:
             print(cqs)
             cqs.grade_answers(regrade=True, update_graded=True)
-            for attempt in Attempt.objects.filter(
+            for attempt in Attempt.objects.filter(merged_into__isnull=True,
                         competitionquestionset = cqs
                     ).exclude(confirmed_by = None):
                 attempt.score = sum([max(0, i.score) for i in attempt.latest_answers()])

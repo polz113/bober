@@ -69,16 +69,17 @@ class TeacherOverview(SmartCompetitionAdminCodeRequiredMixin,
                     "attempts": []}
             school = c.school
             code = c.code.value
-            sep = self.competition.competitor_code_generator.format.separator
+            sep = self.competition.competitor_code_generator.separator
             split_code = code.split(sep)
             cqs_slug = split_code[0]
             cqs = CompetitionQuestionSet.get_by_slug(cqs_slug)
             schools[school]["codes"].append((cqs, sep.join(split_code[1:])))
-            all_attempts = Attempt.objects.filter(access_code=code).select_related(
+            all_attempts = Attempt.objects.filter(merged_into__isnull=True, access_code=code).select_related(
                 'competitor',
                 'competitionquestionset',
                 'competitionquestionset__questionset').prefetch_related(
                 'gradedanswer_set',
+                'merged_attempts',
                 'competitionquestionset__questionset__questions',
             ).annotate(
                 confirmed=Case(
@@ -102,9 +103,8 @@ class SchoolCodesCreate(SmartCompetitionAdminCodeRequiredMixin, FormView):
         self.competition = SchoolCompetition.objects.get(slug=kwargs['slug'])
         self.next_url = self.request.GET.get('next_url', None)
         self.access_code = self.request.session['access_code']
-        codegen = self.competition.administrator_code_generator
-        if not codegen.code_matches(self.access_code,
-                                    {'admin_privileges': ['create_competitor_codes']}):
+        if not self.competition.admin_code_allows(
+                self.access_code, 'admin_privileges', 'create_competitor_codes'):
             raise PermissionDenied
         return super(SchoolCodesCreate, self).dispatch(*args, **kwargs)
 
@@ -207,9 +207,8 @@ class ProfilesBySchoolCategory(SmartCompetitionAdminCodeRequiredMixin, TemplateV
 
     def dispatch(self, *args, **kwargs):
         self.competition = SchoolCompetition.objects.get(slug=kwargs.pop('slug'))
-        if not self.competition.administrator_code_generator.code_matches(
-                self.access_code,
-                {'admin_privileges': ['view_all_competitor_codes']}):
+        if not self.competition.admin_code_allows(
+                self.access_code, 'admin_privileges', 'view_all_competitor_codes'):
             print ("No view_all_competitor_codes privilege")
             raise PermissionDenied
         return super(ProfilesBySchoolCategory, self).dispatch(*args, **kwargs)
@@ -296,7 +295,7 @@ class CompetitionXlsResults(SmartCompetitionAdminCodeRequiredMixin, TemplateView
                     revoked_awards[attempt_id].append("{}: {}".format(award_name, award_serial))
                 else:
                     awards[attempt_id].append("{}: {}".format(award_name, award_serial))
-            attempts = cqs.attempt_set.all()
+            attempts = cqs.attempt_set.filter(merged_into__isnull=True)
             for (
                     attempt_id,
                     attempt_start,
@@ -360,9 +359,9 @@ class CompetitionXlsResults(SmartCompetitionAdminCodeRequiredMixin, TemplateView
 
     def dispatch(self, *args, **kwargs):
         self.competition = SchoolCompetition.get_cached_by_slug(slug=kwargs.pop('slug'))
-        if not self.competition.administrator_code_generator.code_matches(
+        if not self.competition.admin_code_allows(
                 self.request.session['access_code'],
-                {'admin_privileges': ['view_all_competitor_codes']}):
+                'admin_privileges', 'view_all_competitor_codes'):
             raise PermissionDenied
         self.competitionquestionsets = CompetitionQuestionSet.objects.filter(
             competition=self.competition)
