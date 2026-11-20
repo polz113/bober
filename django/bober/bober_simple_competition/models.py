@@ -531,7 +531,11 @@ class CompetitorCode(Model):
                         competition_questionset=competition_questionset,
                         value=value, **flags)
             except IntegrityError:
-                continue
+                if cls.objects.filter(
+                        competition_questionset=competition_questionset,
+                        value=value).exists():
+                    continue  # value already used: try another one
+                raise
             for i, effect in enumerate(code_effects):
                 CodePart.objects.create(code=code, ordering=i,
                                         name='code_effects', value=effect)
@@ -664,7 +668,10 @@ class AdminCode(Model):
                         code=code, competition=competition, value=value,
                         **flags)
             except IntegrityError:
-                continue
+                if cls.objects.filter(competition=competition,
+                                      value=value).exists():
+                    continue  # value already used: try another one
+                raise
             for i, effect in enumerate(code_effects):
                 CodePart.objects.create(code=code, ordering=i,
                                         name='code_effects', value=effect)
@@ -1178,6 +1185,10 @@ class AttemptManager(Manager):
         return qs
 
 
+class MergeError(ValueError):
+    """Attempts can not be merged; the message is shown to the teacher."""
+
+
 class Attempt(Model):
     def __str__(self):
         return u"({}) {}, {} - {}: {} ({} - {})".format(
@@ -1269,7 +1280,8 @@ class Attempt(Model):
         # the latest answer to each question over this attempt and the
         # attempts merged into it
         answers = Answer.objects.filter(
-            attempt_id__in=self.merged_attempt_ids()).order_by("-id")
+            attempt_id__in=self.merged_attempt_ids()).order_by(
+                "-id").select_related('attempt')
         if check_timestamp:
             answers = answers.filter(timestamp__lte=F('attempt__finish'))
         n_questions = self.questionset.questions.count()
@@ -1324,12 +1336,30 @@ class Attempt(Model):
         """
         attempts = [a for a in attempts if a.id != self.id]
         if self.is_merged:
-            raise ValueError("can not merge into a merged attempt")
+            raise MergeError(_("Can not merge into a merged attempt."))
         for a in attempts:
             if a.competitionquestionset_id != self.competitionquestionset_id:
-                raise ValueError("attempts of different questionsets")
+                raise MergeError(
+                    _("Only attempts of the same group can be merged."))
             if a.is_merged:
-                raise ValueError("attempt %d is already merged" % a.id)
+                raise MergeError(_("An attempt is already merged."))
+            # Confirmations and awards of merged attempts would still count
+            # (or be printed) next to the ones of this attempt.
+            if a.confirmed_by.exists() or (
+                    hasattr(a, 'attemptaward_set')  # bober_si awards
+                    and a.attemptaward_set.filter(revoked_by=None).exists()):
+                raise MergeError(_(
+                    "Confirmed attempts and attempts with awards can only "
+                    "be merged into another attempt after they are "
+                    "unconfirmed and their awards revoked."))
+        # Scores of attempts without answers (e.g. paper submissions) were
+        # entered, not graded, and would be lost by regrading.
+        with_answers = set(Answer.objects.filter(
+            attempt_id__in=[self.id] + [a.id for a in attempts]).values_list(
+                'attempt_id', flat=True))
+        if any(a.id not in with_answers for a in [self] + attempts):
+            raise MergeError(
+                _("Only attempts with answers given online can be merged."))
         ids = [a.id for a in attempts]
         with transaction.atomic():
             Attempt.objects.filter(merged_into_id__in=ids).update(

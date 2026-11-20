@@ -26,7 +26,13 @@ function merge_attempts(obj, url) {
         alert("{% trans 'Select at least two attempts of the same competitor.' %}");
         return;
     }
-    if (!confirm("{% trans 'Merge the selected attempts into one? The latest answer to each question counts. You can split them again later.' %}")) {
+    var names = selected.map(function() {
+        var row = $(this).closest("tr");
+        return "- " + $.trim(row.find(".first_name").first().text()) + " "
+            + $.trim(row.find(".last_name").first().text()) + " ("
+            + $.trim(row.find(".attempt_start").first().text()) + ")";
+    }).get().join("\n");
+    if (!confirm("{% trans 'Merge these attempts into one? The latest answer to each question counts. You can split them again later.' %}\n\n" + names)) {
         return;
     }
     $.ajax({
@@ -35,10 +41,12 @@ function merge_attempts(obj, url) {
         traditional: true,
         data: {attempt_id: ids},
         success: function(response_data) {
-            selected.each(function() { invalidate_award($(this).data("invalidate-url")); });
-            location.reload();
+            var requests = selected.map(function() {
+                return invalidate_award($(this).data("invalidate-url"));
+            }).get();
+            $.when.apply($, requests).always(function() { location.reload(); });
         },
-        error: function(xhr) { alert(xhr.responseText); }
+        error: function(xhr) { alert(error_message(xhr)); }
     });
 }
 
@@ -50,15 +58,22 @@ function split_attempt(url, invalidate_url) {
         url: url,
         method: "post",
         success: function(response_data) {
-            invalidate_award(invalidate_url);
-            location.reload();
+            invalidate_award(invalidate_url).always(function() { location.reload(); });
         },
-        error: function(xhr) { alert(xhr.responseText); }
+        error: function(xhr) { alert(error_message(xhr)); }
     });
 }
 
+function error_message(xhr) {
+    try {
+        return JSON.parse(xhr.responseText).error;
+    } catch (e) {
+        return xhr.statusText;
+    }
+}
+
 function invalidate_award(url) {
-    $.ajax({ url: url,
+    return $.ajax({ url: url,
              method: 'post'}
     );
 }

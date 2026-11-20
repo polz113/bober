@@ -21,15 +21,27 @@ def legacy_codes_to_admin_codes(apps, schema_editor):
     value is kept exactly as stored, so these codes keep working when typed
     as issued. Only adds rows; Code and CodePart rows are not changed. A
     second code with the same value in one competition is skipped.
+
+    A code belongs to one competition (AdminCode.code is one to one). If
+    several competitions share one administrator code generator (only
+    possible through the Django admin), its codes go to the competition
+    with the lowest id and are reported here; the others need new codes.
     """
     Competition = apps.get_model('bober_simple_competition', 'Competition')
     AdminCode = apps.get_model('bober_simple_competition', 'AdminCode')
     Code = apps.get_model('code_based_auth', 'Code')
     CodePart = apps.get_model('code_based_auth', 'CodePart')
     for competition in Competition.objects.select_related(
-            'administrator_code_generator').iterator():
+            'administrator_code_generator').order_by('id').iterator():
         generator = competition.administrator_code_generator
         code_ids = set(generator.codes.values_list('id', flat=True))
+        taken = set(AdminCode.objects.filter(
+            code_id__in=code_ids).exclude(competition=competition)
+            .values_list('code_id', flat=True))
+        if taken:
+            print("\n  administrator codes of competition %s already belong "
+                  "to another competition with the same code generator: "
+                  "%d codes not migrated" % (competition.slug, len(taken)))
         code_ids -= set(AdminCode.objects.filter(
             code_id__in=code_ids).values_list('code_id', flat=True))
         seen = set(AdminCode.objects.filter(
@@ -64,7 +76,8 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('bober_simple_competition', '0067_admincode'),
-        ('code_based_auth', '0019_alter_codecomponent_hash_algorithm'),
+        # new codes are created without a code format and salt
+        ('code_based_auth', '0020_codes_without_format'),
     ]
 
     operations = [

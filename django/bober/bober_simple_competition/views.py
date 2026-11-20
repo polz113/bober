@@ -18,6 +18,7 @@ from django.urls import reverse
 from django.views.generic import ListView, DetailView, CreateView, DeleteView,\
     UpdateView
 from django.views.decorators.csrf import ensure_csrf_cookie
+from django.views.decorators.http import require_POST
 from django.conf import settings
 from django import forms
 from django.db.models import Q
@@ -45,6 +46,7 @@ from bober_simple_competition import filters
 from bober_simple_competition.models import\
     Profile, Competition, CompetitionQuestionSet, Resource,\
     QuestionSet, Code, Question, Attempt, Competitor, CompetitorCode,\
+    MergeError,\
     ADMIN_PRIVILEGES, COMPETITOR_PRIVILEGES, CODE_EFFECTS,\
     graders, Answer, GradedAnswer, AttemptConfirmation
 
@@ -491,7 +493,6 @@ def competition_code_list(request, slug):
 def competition_code_create(request, slug, user_type='admin'):
     access_code = request.session['access_code']
     competition = get_object_or_404(Competition, slug=slug)
-    admin_codegen = competition.administrator_code_generator
     competitor_privilege_choices = competition.competitor_privilege_choices(
         access_code)
     allowed_effect_choices = competition.allowed_effect_choices(access_code)
@@ -502,7 +503,6 @@ def competition_code_create(request, slug, user_type='admin'):
             raise PermissionDenied
         admin_privilege_choices = competition.admin_privilege_choices(
             access_code)
-        generator = admin_codegen
 
         class FormClass(forms.Form):
             competitor_privileges = forms.MultipleChoiceField(
@@ -522,7 +522,6 @@ def competition_code_create(request, slug, user_type='admin'):
                 widget=forms.CheckboxSelectMultiple(),
                 required=False, label=_("Code effects"))
     else:  # user_type == 'competitor'
-        generator = competition.competitor_code_generator
         if not competition.admin_code_allows(
                 access_code, 'admin_privileges', 'create_competitor_codes'):
             raise PermissionDenied
@@ -968,8 +967,8 @@ def attempt_confirm(request, competition_questionset_id, attempt_id):
             ).count() < 1:
         raise PermissionDenied
     if attempt.is_merged:
-        return JsonResponse({'status': 'error',
-                             'error': 'attempt is merged'}, status=400)
+        return JsonResponse({'status': 'error', 'error': str(_(
+            'A merged attempt can not be confirmed.'))}, status=400)
     ac, created = AttemptConfirmation.objects.get_or_create(
         by=profile,
         attempt=attempt
@@ -1018,38 +1017,36 @@ def _teacher_attempts(profile, cqs, attempt_ids):
 
 # Merge attempts of one competitor (e.g. after a broken connection) into
 # the earliest of them. Only the teacher who created the codes may do it.
+@require_POST
 @login_required
 def attempt_merge(request, competition_questionset_id):
-    if request.method != 'POST':
-        raise PermissionDenied
     cqs = get_object_or_404(CompetitionQuestionSet,
                             id=competition_questionset_id)
     try:
         attempt_ids = [int(i) for i in request.POST.getlist('attempt_id')]
     except ValueError:
         return JsonResponse({'status': 'error',
-                             'error': 'invalid attempt id'}, status=400)
+                             'error': str(_('Invalid attempt.'))},
+                            status=400)
     if len(set(attempt_ids)) < 2:
-        return JsonResponse({'status': 'error',
-                             'error': 'select at least two attempts'},
-                            status=400)
+        return JsonResponse({'status': 'error', 'error': str(_(
+            'Select at least two attempts of the same competitor.'))},
+            status=400)
     attempts = _teacher_attempts(request.profile, cqs, attempt_ids)
-    if any(a.is_merged for a in attempts):
-        return JsonResponse({'status': 'error',
-                             'error': 'an attempt is already merged'},
-                            status=400)
     target = attempts[0]
-    target.merge(attempts[1:], by=request.profile)
+    try:
+        target.merge(attempts[1:], by=request.profile)
+    except MergeError as e:
+        return JsonResponse({'status': 'error', 'error': str(e)}, status=400)
     return JsonResponse({'status': 'success', 'id': target.id,
                          'merged': [a.id for a in attempts[1:]]})
 
 
 # Undo attempt_merge: all attempts merged into attempt_id are on their own
 # again, with their original answers.
+@require_POST
 @login_required
 def attempt_split(request, competition_questionset_id, attempt_id):
-    if request.method != 'POST':
-        raise PermissionDenied
     cqs = get_object_or_404(CompetitionQuestionSet,
                             id=competition_questionset_id)
     attempt, = _teacher_attempts(request.profile, cqs, [attempt_id])

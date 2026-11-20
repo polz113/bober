@@ -220,8 +220,6 @@ class QuestionSetRegistrationForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         cqs = kwargs.pop('competitionquestionset')
         self.cqs = cqs
-        self.questionset_slug = cqs.slug_str()
-        self.codegen = cqs.competition.competitor_code_generator
         retval = super(QuestionSetRegistrationForm, self).__init__(*args,
                                                                    **kwargs)
         self._meta.fields += ['username', 'email']
@@ -266,7 +264,6 @@ class QuestionSetRegistrationForm(forms.ModelForm):
 class CompetitionRegistrationForm(QuestionSetRegistrationForm):
     def __init__(self, *args, **kwargs):
         self.competition = kwargs.pop('competition')
-        self.codegen = self.competition.competitor_code_generator
         retval = super(QuestionSetRegistrationForm, self).__init__(*args,
                                                                    **kwargs)
         self.fields['competition_questionset'] = forms.ModelChoiceField(
@@ -313,8 +310,6 @@ class QuestionSetCompetitorForm(forms.ModelForm):
         self.cqs = cqs
         self.guest_code = cqs.guest_code
         self.profile = kwargs.pop('profile', False)
-        self.questionset_slug = cqs.slug_str()
-        self.codegen = cqs.competition.competitor_code_generator
         retval = super(QuestionSetCompetitorForm, self).__init__(*args,
                                                                  **kwargs)
         self._meta.fields += ['profile']
@@ -363,7 +358,6 @@ class CompetitionCompetitorForm(QuestionSetCompetitorForm):
     def __init__(self, *args, **kwargs):
         self.competition = kwargs.pop('competition')
         self.profile = kwargs.pop('profile', False)
-        self.codegen = self.competition.competitor_code_generator
         retval = super(QuestionSetCompetitorForm, self).__init__(*args,
                                                                  **kwargs)
         self.fields['competition_questionset'] = CompetitionSetChoiceField(

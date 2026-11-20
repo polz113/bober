@@ -19,7 +19,7 @@ from bober_simple_competition.forms import (
 from django.contrib.auth.models import User
 from bober_simple_competition.models import (
     ADMIN_PRIVILEGES, CODE_EFFECTS, COMPETITOR_PRIVILEGES, AdminCode,
-    Answer, Attempt, Competition, CompetitionQuestionSet, CompetitorCode,
+    Answer, Attempt, AttemptConfirmation, Competition, MergeError, CompetitionQuestionSet, CompetitorCode,
     Question, QuestionSet,
 )
 
@@ -838,3 +838,81 @@ class CompetitionCreateTest(TestCase):
         generator = CodeGenerator.objects.create()
         self.assertIsNone(generator.format)
         self.assertEqual(generator.separator, '*')
+
+
+class AttemptMergeRefusalTest(AttemptMergeTestMixin, TestCase):
+    def test_attempt_without_answers_is_refused(self):
+        online = self.attempt([(0, 'ok')])
+        # e.g. a paper submission: score entered, no answers
+        paper = self.attempt([])
+        Attempt.objects.filter(id=paper.id).update(score=23)
+        for target, part in ((online, paper), (paper, online)):
+            with self.assertRaises(MergeError):
+                target.merge([part])
+        paper.refresh_from_db()
+        self.assertEqual(paper.score, 23)
+        self.assertFalse(Attempt.objects.filter(
+            merged_into__isnull=False).exists())
+
+    def test_confirmed_part_is_refused(self):
+        first = self.attempt([(0, 'ok')])
+        second = self.attempt([(1, 'ok')])
+        teacher = User.objects.create_user('t', password='pw')
+        AttemptConfirmation.objects.create(by=teacher.profile, attempt=second)
+        with self.assertRaises(MergeError):
+            first.merge([second])
+        # a confirmed target is fine
+        AttemptConfirmation.objects.all().delete()
+        AttemptConfirmation.objects.create(by=teacher.profile, attempt=first)
+        first.merge([second])
+        second.refresh_from_db()
+        self.assertEqual(second.merged_into, first)
+
+    def test_view_reports_refusal(self):
+        teacher = User.objects.create_user('teacher', password='pw')
+        teacher.profile.created_codes.add(self.code)
+        first = self.attempt([(0, 'ok')])
+        paper = self.attempt([])
+        self.client.login(username='teacher', password='pw')
+        url = reverse('attempt_merge', kwargs={
+            'competition_questionset_id': self.cqs.id})
+        response = self.client.post(url, {'attempt_id': [first.id, paper.id]})
+        self.assertEqual(response.status_code, 400)
+        self.assertIn('error', response.json())
+        self.assertEqual(self.client.get(url).status_code, 405)
+
+
+@override_settings(CODE_AUTH_MAX_FAILURES=3)
+class ThrottleClientAddressTest(CompetitorCodeTestMixin, TestCase):
+    def setUp(self):
+        cache.clear()
+        self.competition, (self.cqs, _) = self.make_competition('throttle-ip')
+        self.code, self.cc = self.make_code(self.cqs)
+        self.url = reverse('competition_compete', kwargs={
+            'slug': self.competition.slug})
+
+    def tearDown(self):
+        cache.clear()
+
+    def post(self, code, **meta):
+        return self.client.post(self.url, self.form_data(
+            code, competition_questionset=self.cqs.id), **meta)
+
+    def test_competition_compete_is_throttled(self):
+        for _ in range(3):
+            self.assertNotEqual(self.post('AAAAA-AAAAA').status_code, 429)
+        self.assertEqual(self.post(self.cc.value).status_code, 429)
+
+    @override_settings(CODE_AUTH_CLIENT_IP_HEADER='HTTP_X_FORWARDED_FOR')
+    def test_client_address_from_proxy_header(self):
+        proxy = {'REMOTE_ADDR': '10.9.9.9'}
+        for _ in range(3):
+            self.post('AAAAA-AAAAA', HTTP_X_FORWARDED_FOR='1.1.1.1, 2.2.2.2',
+                      **proxy)
+        self.assertEqual(self.post(
+            self.cc.value, HTTP_X_FORWARDED_FOR='2.2.2.2', **proxy
+        ).status_code, 429)
+        # another client behind the same proxy is not affected
+        self.assertEqual(self.post(
+            self.cc.value, HTTP_X_FORWARDED_FOR='3.3.3.3', **proxy
+        ).status_code, 302)
