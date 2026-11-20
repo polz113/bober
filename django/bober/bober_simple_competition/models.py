@@ -228,26 +228,36 @@ class Competition(Model):
                 regrade=regrade,
                 grader_runtime_manager=grader_runtime_manager)
 
+    def admin_code(self, access_code):
+        """The AdminCode of this competition for access_code, or None."""
+        return AdminCode.lookup(self, access_code)
+
+    def admin_code_allows(self, access_code, kind, name):
+        """True if the administrator code access_code has a privilege.
+
+        kind is 'admin_privileges', 'competitor_privileges' or
+        'allowed_effects'.
+        """
+        admin_code = self.admin_code(access_code)
+        return admin_code is not None and admin_code.has_privilege(kind, name)
+
+    def _privilege_choices(self, access_code, kind, choices):
+        admin_code = self.admin_code(access_code)
+        if admin_code is None:
+            return []
+        return [c for c in choices if admin_code.has_privilege(kind, c[0])]
+
     def admin_privilege_choices(self, access_code):
-        return filter(
-            lambda x: self.administrator_code_generator.code_matches(
-                access_code,
-                {'admin_privileges': [x[0]]}),
-            ADMIN_PRIVILEGES)
+        return self._privilege_choices(
+            access_code, 'admin_privileges', ADMIN_PRIVILEGES)
 
     def allowed_effect_choices(self, access_code):
-        return filter(
-            lambda x: self.administrator_code_generator.code_matches(
-                access_code,
-                {'allowed_effects': [x[0]]}),
-            CODE_EFFECTS)
+        return self._privilege_choices(
+            access_code, 'allowed_effects', CODE_EFFECTS)
 
     def competitor_privilege_choices(self, access_code):
-        return filter(
-            lambda x: self.administrator_code_generator.code_matches(
-                access_code,
-                {'competitor_privileges': [x[0]]}),
-            COMPETITOR_PRIVILEGES)
+        return self._privilege_choices(
+            access_code, 'competitor_privileges', COMPETITOR_PRIVILEGES)
 
     def max_admin_code_data(self, access_code):
         return {
@@ -294,20 +304,30 @@ class Competition(Model):
         return CompetitorCode.for_competition(self, access_code)
 
     def master_code_create(self):
-        c = self.administrator_code_generator.create_code({
+        """Create an administrator code with all privileges."""
+        return AdminCode.create(self, {
             'admin_privileges': [i[0] for i in ADMIN_PRIVILEGES],
             'competitor_privileges': [i[0] for i in COMPETITOR_PRIVILEGES],
-            'allowed_effects':  [i[0] for i in CODE_EFFECTS],
-        })
-        c.save()
-        return c
+            'allowed_effects': [i[0] for i in CODE_EFFECTS],
+        }).code
 
     def admin_code_create(self, access_code, code_data=None):
+        """Create an administrator code; returns its Code.
+
+        The privileges come from code_data, by default everything the
+        administrator code access_code may hand out.
+        """
         if code_data is None:
             code_data = self.max_admin_code_data(access_code)
-        c = self.administrator_code_generator.create_code(code_data)
-        c.save()
-        return c
+        return AdminCode.create(
+            self, code_data,
+            code_effects=code_data.get('code_effects', [])).code
+
+    def organizer_codes(self):
+        """Codes of this competition that may view all administrator codes
+        (used to find the organizer)."""
+        return Code.objects.filter(admin_code__competition=self,
+                                   admin_code__view_all_admin_codes=True)
 
 
 ANSWER_BATCH_SIZE = 100000
@@ -568,6 +588,113 @@ class CompetitorCode(Model):
         if cqs is None:
             return None
         return cls.from_access_code(cqs, access_code)
+
+
+# kind of privilege -> {privilege name: AdminCode field}
+ADMIN_CODE_FIELDS = {
+    'admin_privileges': dict((p, p) for p, _ in ADMIN_PRIVILEGES),
+    'competitor_privileges': dict(
+        (p, 'competitor_' + p) for p, _ in COMPETITOR_PRIVILEGES),
+    'allowed_effects': dict((e, 'allow_' + e) for e, _ in CODE_EFFECTS),
+}
+
+
+class AdminCode(Model):
+    """An administrator access code of a competition.
+
+    Like CompetitorCode: the value is random (code_based_auth.random_code),
+    the privileges are stored in the fields below and a code is checked by
+    looking up (competition, value). Administrator codes are typed on a page
+    that does not know the competition, so the full access code (Code.value,
+    session) is the value itself, without a prefix.
+    """
+    def __str__(self):
+        return self.code.value
+
+    code = OneToOneField(Code, related_name='admin_code', on_delete=CASCADE)
+    competition = ForeignKey('Competition', related_name='admin_codes',
+                             on_delete=CASCADE)
+    value = CharField(max_length=256)
+    # admin_privileges
+    create_admin_codes = BooleanField(default=False)
+    create_competitor_codes = BooleanField(default=False)
+    view_all_attempts = BooleanField(default=False)
+    view_all_admin_codes = BooleanField(default=False)
+    view_all_competitor_codes = BooleanField(default=False)
+    use_question_sets = BooleanField(default=False)
+    modify_competition = BooleanField(default=False)
+    use_questions = BooleanField(default=False)
+    # competitor_privileges (what competitor codes created with it may get)
+    competitor_attempt = BooleanField(default=False)
+    competitor_attempt_before_start = BooleanField(default=False)
+    competitor_results_before_end = BooleanField(default=False)
+    # allowed_effects
+    allow_let_manage = BooleanField(default=False)
+    allow_let_manage_recursive = BooleanField(default=False)
+
+    class Meta:
+        constraints = [
+            UniqueConstraint(
+                fields=['competition', 'value'],
+                name='unique_admin_code_value_per_competition'),
+        ]
+
+    MAX_CREATE_TRIES = 10
+
+    def has_privilege(self, kind, name):
+        field = ADMIN_CODE_FIELDS.get(kind, {}).get(name)
+        return field is not None and getattr(self, field)
+
+    def privileges(self, kind):
+        return [name for name, field in ADMIN_CODE_FIELDS[kind].items()
+                if getattr(self, field)]
+
+    @classmethod
+    def flags(cls, privileges):
+        """Field values for a dict {kind: [privilege names]}."""
+        flags = {}
+        for kind, fields in ADMIN_CODE_FIELDS.items():
+            given = privileges.get(kind, ())
+            for name, field in fields.items():
+                flags[field] = name in given
+        return flags
+
+    @classmethod
+    def create(cls, competition, privileges, code_effects=()):
+        """Store a new random code; retry when the value is already used."""
+        generator = competition.administrator_code_generator
+        flags = cls.flags(privileges)
+        for _try in range(cls.MAX_CREATE_TRIES):
+            value = random_code.generate()
+            try:
+                with transaction.atomic():
+                    code = Code.objects.create(
+                        value=value, salt=generator.salt,
+                        format=generator.format)
+                    admin_code = cls.objects.create(
+                        code=code, competition=competition, value=value,
+                        **flags)
+            except IntegrityError:
+                continue
+            for i, effect in enumerate(code_effects):
+                CodePart.objects.create(code=code, ordering=i,
+                                        name='code_effects', value=effect)
+            generator.codes.add(code)
+            return admin_code
+        raise RuntimeError("could not create a unique administrator code")
+
+    @classmethod
+    def lookup(cls, competition, typed):
+        """Find an administrator code of competition, or None."""
+        values = random_code.lookup_values(typed)
+        if not values:
+            return None
+        found = dict((ac.value, ac) for ac in cls.objects.filter(
+            competition=competition, value__in=values).select_related('code'))
+        for v in values:
+            if v in found:
+                return found[v]
+        return None
 
 
 class CodeEffect(Model):

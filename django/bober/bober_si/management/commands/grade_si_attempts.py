@@ -28,10 +28,7 @@ class Command(BaseCommand):
             name = cqs_name
         )
         competition = SchoolCompetition.objects.get(slug=cslug)
-        organizer = competition.administrator_code_generator.codes.filter(
-                code_parts__name='admin_privileges', 
-                code_parts__value='view_all_admin_codes'
-            )[0].creator_set.all()[0]
+        organizer = competition.organizer_codes()[0].creator_set.all()[0]
         # cslug = args[0]
         competition = Competition.objects.get(slug=cslug)
         for cqs in cqss:

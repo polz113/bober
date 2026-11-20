@@ -103,9 +103,8 @@ class SchoolCodesCreate(SmartCompetitionAdminCodeRequiredMixin, FormView):
         self.competition = SchoolCompetition.objects.get(slug=kwargs['slug'])
         self.next_url = self.request.GET.get('next_url', None)
         self.access_code = self.request.session['access_code']
-        codegen = self.competition.administrator_code_generator
-        if not codegen.code_matches(self.access_code,
-                                    {'admin_privileges': ['create_competitor_codes']}):
+        if not self.competition.admin_code_allows(
+                self.access_code, 'admin_privileges', 'create_competitor_codes'):
             raise PermissionDenied
         return super(SchoolCodesCreate, self).dispatch(*args, **kwargs)
 
@@ -208,9 +207,8 @@ class ProfilesBySchoolCategory(SmartCompetitionAdminCodeRequiredMixin, TemplateV
 
     def dispatch(self, *args, **kwargs):
         self.competition = SchoolCompetition.objects.get(slug=kwargs.pop('slug'))
-        if not self.competition.administrator_code_generator.code_matches(
-                self.access_code,
-                {'admin_privileges': ['view_all_competitor_codes']}):
+        if not self.competition.admin_code_allows(
+                self.access_code, 'admin_privileges', 'view_all_competitor_codes'):
             print ("No view_all_competitor_codes privilege")
             raise PermissionDenied
         return super(ProfilesBySchoolCategory, self).dispatch(*args, **kwargs)
@@ -361,9 +359,9 @@ class CompetitionXlsResults(SmartCompetitionAdminCodeRequiredMixin, TemplateView
 
     def dispatch(self, *args, **kwargs):
         self.competition = SchoolCompetition.get_cached_by_slug(slug=kwargs.pop('slug'))
-        if not self.competition.administrator_code_generator.code_matches(
+        if not self.competition.admin_code_allows(
                 self.request.session['access_code'],
-                {'admin_privileges': ['view_all_competitor_codes']}):
+                'admin_privileges', 'view_all_competitor_codes'):
             raise PermissionDenied
         self.competitionquestionsets = CompetitionQuestionSet.objects.filter(
             competition=self.competition)

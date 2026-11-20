@@ -32,7 +32,7 @@ from popup_modelviews.views import\
     InvalidFormRespond422
 
 import code_based_auth.models
-from code_based_auth import throttle
+from code_based_auth import random_code, throttle
 from bober_simple_competition.forms import\
     MailForm, CompetitorCodeFormatForm,\
     CompetitorUpdateForm, ProfileEditForm,\
@@ -116,13 +116,9 @@ def smart_competition_admin_code_required(function=None):
             codegen = competition.administrator_code_generator
             codes = []
             if access_code is not None:
-                codes = codegen.codes.filter(
-                    value=access_code).values_list('value', flat=True)
-            if not codes and access_code is not None\
-                    and codegen.code_matches(
-                        access_code,
-                        {'competitor_privileges': ['attempt']}):
-                codes = [codegen.format.canonical_code(access_code)]
+                admin_code = competition.admin_code(access_code)
+                if admin_code is not None:
+                    codes = [admin_code.code.value]
             if not codes:
                 codes = codegen.codes.filter(
                     recipient_set__id=request.profile.id).values_list(
@@ -218,6 +214,14 @@ class CodeAutocomplete(autocomplete.Select2QuerySetView):
         return qs
 
 
+def _stored_code_value(typed):
+    """The value of an issued code matching typed, or None."""
+    for value in random_code.lookup_values(typed):
+        if Code.objects.filter(value=value).exists():
+            return value
+    return None
+
+
 def access_code(request, url_next):
     qd = QueryDict(dict(), mutable=True)
     qd.update(request.GET)
@@ -231,11 +235,13 @@ def access_code(request, url_next):
             return _too_many_wrong_codes()
         defer_update = form.cleaned_data.get('defer_update_used_codes', False)
         defer_effects = form.cleaned_data.get('defer_effects', False)
-        access_code = form.cleaned_data['access_code']
         # This page does not know which competition (and therefore which
-        # code generator) a code belongs to, so a code counts as wrong when
-        # no such code was ever issued (all codes are stored).
-        if not Code.objects.filter(value=access_code).exists():
+        # code generator) a code belongs to: store the stored form of the
+        # code (canonical for random codes, exact for older codes); a code
+        # counts as wrong when no such code was ever issued.
+        access_code = _stored_code_value(form.cleaned_data['access_code'])
+        if access_code is None:
+            access_code = form.cleaned_data['access_code'].strip()
             throttle.register_failure(request)
         _use_access_code(request, access_code, defer_update, defer_effects)
         return HttpResponseRedirect('/' + url_next)
@@ -368,9 +374,8 @@ class CompetitionUpdate(SmartCompetitionAdminCodeRequiredMixin,
     def get_object(self, queryset=None):
         c = super(CompetitionUpdate, self).get_object(queryset)
         access_code = self.request.session['access_code']
-        if not c.administrator_code_generator.code_matches(
-                access_code,
-                {'admin_privileges': ['modify_competition']}):
+        if not c.admin_code_allows(
+                access_code, 'admin_privileges', 'modify_competition'):
             raise PermissionDenied
         return c
 
@@ -559,16 +564,16 @@ def competition_code_list(request, slug):
         access_code = ""
     admin_codes = admin_codegen.codes.all().distinct()
     all_competitor_codes = competition.competitor_code_generator.codes.all().distinct()
-    if not admin_codegen.code_matches(
-            access_code, {'admin_privileges': ['view_all_admin_codes']}):
+    if not competition.admin_code_allows(
+            access_code, 'admin_privileges', 'view_all_admin_codes'):
         admin_codes = admin_codes.filter(
             Q(creator_set=request.profile)
             | Q(recipient_set=request.profile)
             | Q(user_set=request.profile))
     else:
         print("Have permission to view admin codes")
-    if not admin_codegen.code_matches(
-            access_code, {'admin_privileges': ['view_all_competitor_codes']}):
+    if not competition.admin_code_allows(
+            access_code, 'admin_privileges', 'view_all_competitor_codes'):
         all_competitor_codes = all_competitor_codes.filter(
             Q(creator_set=request.profile)
             | Q(recipient_set=request.profile)
@@ -585,11 +590,11 @@ def competition_code_list(request, slug):
         for c in all_competitor_codes.filter(value__startswith=cqs_slug):
             c_list.append(c.value[slugpart_len:])
         competitor_codes[cqs] = c_list
-    can_create_administrator_codes = admin_codegen.code_matches(
-        access_code, {'admin_privileges': ['create_admin_codes']})
+    can_create_administrator_codes = competition.admin_code_allows(
+            access_code, 'admin_privileges', 'create_admin_codes')
     # print access_code, can_create_administrator_codes
-    can_create_competitor_codes = admin_codegen.code_matches(
-        access_code, {'admin_privileges': ['create_competitor_codes']})
+    can_create_competitor_codes = competition.admin_code_allows(
+            access_code, 'admin_privileges', 'create_competitor_codes')
     return render(
         request, "bober_simple_competition/competition_code_list.html",
         locals())
@@ -613,9 +618,8 @@ def competition_code_create(request, slug, user_type='admin'):
     allowed_effect_choices = competition.allowed_effect_choices(access_code)
     admin_privilege_choices = list()
     if user_type == 'admin':
-        if not admin_codegen.code_matches(
-                access_code,
-                {'admin_privileges': ['create_admin_codes']}):
+        if not competition.admin_code_allows(
+                access_code, 'admin_privileges', 'create_admin_codes'):
             raise PermissionDenied
         admin_privilege_choices = competition.admin_privilege_choices(
             access_code)
@@ -640,9 +644,8 @@ def competition_code_create(request, slug, user_type='admin'):
                 required=False, label=_("Code effects"))
     else:  # user_type == 'competitor'
         generator = competition.competitor_code_generator
-        if not admin_codegen.code_matches(
-                access_code,
-                {'admin_privileges': ['create_competitor_codes']}):
+        if not competition.admin_code_allows(
+                access_code, 'admin_privileges', 'create_competitor_codes'):
             raise PermissionDenied
 
         class FormClass(forms.Form):
@@ -668,7 +671,7 @@ def competition_code_create(request, slug, user_type='admin'):
                 c = competition.competitor_code_create(
                     access_code, cqs, data)
             else:
-                c = generator.create_code(data)
+                c = competition.admin_code_create(access_code, data)
             request.profile.created_codes.add(c)
             return redirect('competition_code_list',
                             slug=competition.slug)
@@ -694,9 +697,8 @@ def competition_competitor_code_revoke(request, slug, code_value):
     access_code = request.session['access_code']
     admin_codegen = competition.admin_code_generator
     generator = competition.competitor_code_generator
-    if not admin_codegen.code_matches(
-            access_code,
-            {'admin_privileges': ['create_competitor_codes']}):
+    if not competition.admin_code_allows(
+            access_code, 'admin_privileges', 'create_competitor_codes'):
         raise PermissionDenied
     code = get_object_or_404(request.profile.created_codes, value=code_value, generator=generator)
     code.revoke(timezone.now())
@@ -730,15 +732,14 @@ def competition_attempt_list(request, slug=None, regrade=False,
             merged_into__isnull=True)
     else:
         object_list = Attempt.objects.none()
-    if not competition.administrator_code_generator.code_matches(
-            access_code,
-            {'admin_privileges': ['view_all_attempts']}):
+    if not competition.admin_code_allows(
+            access_code, 'admin_privileges', 'view_all_attempts'):
         competitor_code = competition.competitor_code(access_code)
         if (competitor_code is not None
                 and competitor_code.results_before_end) \
-                or competition.administrator_code_generator.code_matches(
-                    access_code,
-                    {'competitor_privileges': ['results_before_end']}) \
+                or competition.admin_code_allows(
+                    access_code, 'competitor_privileges',
+                    'results_before_end') \
                 or competition.end < timezone.now():
             values = competition.competitor_code_generator.codes.filter(
                 creator_set=request.profile).values_list('value', flat=True)
@@ -775,11 +776,10 @@ def invalidate_attempt(request, slug, attempt_id):
 def use_questionsets(request, slug, competition_questionset_id=None):
     access_code = request.session['access_code']
     competition = Competition.objects.get(slug=slug)
-    codegen = competition.administrator_code_generator
-    can_use_questionsets = codegen.code_matches(access_code, {
-        'admin_privileges': ['use_question_sets']})
-    can_use_questions = codegen.code_matches(access_code, {
-        'admin_privileges': ['use_questions']})
+    can_use_questionsets = competition.admin_code_allows(
+            access_code, 'admin_privileges', 'use_question_sets')
+    can_use_questions = competition.admin_code_allows(
+            access_code, 'admin_privileges', 'use_questions')
     if competition_questionset_id is not None:
         cqs = CompetitionQuestionSet.objects.get(id=competition_questionset_id)
         questionsets = [cqs.questionset]

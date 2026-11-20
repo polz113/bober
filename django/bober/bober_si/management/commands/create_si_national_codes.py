@@ -30,10 +30,7 @@ class Command(BaseCommand):
         ncslug = options.get('national_competition_slug', [args[1]])[0]
         school_competition = SchoolCompetition.objects.get(slug=scslug)
         national_competition = SchoolCompetition.objects.get(slug=ncslug)
-        organizer = national_competition.administrator_code_generator.codes.filter(
-                code_parts__name='admin_privileges', 
-                code_parts__value='view_all_admin_codes'
-            )[0].creator_set.all()[0]
+        organizer = national_competition.organizer_codes()[0].creator_set.all()[0]
         attempts_by_teacher = defaultdict(
             lambda: defaultdict(
                 lambda: defaultdict(list)))

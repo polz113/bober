@@ -9,7 +9,7 @@ from django.urls import reverse
 from django.utils import timezone
 
 from code_based_auth import random_code
-from code_based_auth.models import CodeFormat, CodeGenerator
+from code_based_auth.models import Code, CodeFormat, CodeGenerator, CodePart
 from bober_simple_competition import views
 from bober_simple_competition.forms import (
     WRONG_CODE_MESSAGE, CompetitionCompetitorForm,
@@ -18,6 +18,7 @@ from bober_simple_competition.forms import (
 )
 from django.contrib.auth.models import User
 from bober_simple_competition.models import (
+    ADMIN_PRIVILEGES, CODE_EFFECTS, COMPETITOR_PRIVILEGES, AdminCode,
     Answer, Attempt, Competition, CompetitionQuestionSet, CompetitorCode,
     Question, QuestionSet,
 )
@@ -635,3 +636,192 @@ class AttemptMergeViewTest(AttemptMergeTestMixin, TestCase):
         response = self.client.post(
             self.merge_url, {'attempt_id': [self.first.id]})
         self.assertEqual(response.status_code, 400)
+
+
+admin_migration = importlib.import_module(
+    'bober_simple_competition.migrations.0068_admincode_from_legacy_codes')
+
+
+class AdminCodeTest(CompetitorCodeTestMixin, TestCase):
+    def setUp(self):
+        self.competition, (self.cqs, _) = self.make_competition('admin-test')
+        self.master = self.competition.master_code_create()
+        self.admin_code = self.master.admin_code
+
+    def test_master_code_has_everything(self):
+        self.assertEqual(random_code.canonical(self.master.value),
+                         self.master.value)
+        self.assertEqual(self.admin_code.competition, self.competition)
+        self.assertEqual(sorted(self.admin_code.privileges(
+            'admin_privileges')), sorted(p for p, _ in ADMIN_PRIVILEGES))
+        self.assertEqual(sorted(self.admin_code.privileges(
+            'competitor_privileges')),
+            sorted(p for p, _ in COMPETITOR_PRIVILEGES))
+        self.assertEqual(sorted(self.admin_code.privileges(
+            'allowed_effects')), sorted(e for e, _ in CODE_EFFECTS))
+        self.assertTrue(self.competition.administrator_code_generator.codes
+                        .filter(id=self.master.id).exists())
+        self.assertEqual(list(self.competition.organizer_codes()),
+                         [self.master])
+
+    def test_lookup_normalizes_input(self):
+        raw = self.master.value.replace('-', '')
+        for typed in (self.master.value, raw.lower(),
+                      raw.replace('0', 'o').replace('1', 'i')):
+            self.assertEqual(self.competition.admin_code(typed),
+                             self.admin_code, typed)
+        self.assertIsNone(self.competition.admin_code('AAAAA-AAAAA'))
+        self.assertIsNone(self.competition.admin_code(None))
+
+    def test_code_of_other_competition_is_rejected(self):
+        other, _ = self.make_competition('admin-other')
+        self.assertIsNone(other.admin_code(self.master.value))
+        self.assertFalse(other.admin_code_allows(
+            self.master.value, 'admin_privileges', 'modify_competition'))
+
+    def test_privileges_are_read_from_the_row(self):
+        allows = self.competition.admin_code_allows
+        self.assertTrue(allows(self.master.value, 'admin_privileges',
+                               'modify_competition'))
+        AdminCode.objects.filter(id=self.admin_code.id).update(
+            modify_competition=False, competitor_attempt=False)
+        self.assertFalse(allows(self.master.value, 'admin_privileges',
+                                'modify_competition'))
+        self.assertFalse(allows(self.master.value, 'competitor_privileges',
+                                'attempt'))
+        self.assertFalse(allows(self.master.value, 'admin_privileges',
+                                'no_such_privilege'))
+
+    def test_admin_code_create_defaults_to_own_privileges(self):
+        AdminCode.objects.filter(id=self.admin_code.id).update(
+            create_admin_codes=False, allow_let_manage=False)
+        code = self.competition.admin_code_create(self.master.value)
+        created = code.admin_code
+        self.assertNotEqual(code.value, self.master.value)
+        self.assertFalse(created.create_admin_codes)
+        self.assertFalse(created.allow_let_manage)
+        self.assertTrue(created.modify_competition)
+        self.assertEqual(
+            self.competition.max_competitor_code_data(self.master.value),
+            {'competitor_privileges': [p for p, _ in COMPETITOR_PRIVILEGES]})
+
+    def test_create_retries_on_collision(self):
+        with mock.patch.object(random_code, 'generate',
+                               side_effect=[self.master.value,
+                                            'AAAAA-BBBBB']):
+            code = self.competition.admin_code_create(
+                None, {'admin_privileges': ['view_all_attempts']})
+        self.assertEqual(code.value, 'AAAAA-BBBBB')
+        self.assertEqual(code.admin_code.privileges('admin_privileges'),
+                         ['view_all_attempts'])
+        # the same value in another competition is fine
+        other, _ = self.make_competition('admin-other')
+        with mock.patch.object(random_code, 'generate',
+                               return_value=self.master.value):
+            code = other.master_code_create()
+        self.assertEqual(code.value, self.master.value)
+
+    def test_code_effects_are_stored(self):
+        code = self.competition.admin_code_create(None, {
+            'admin_privileges': [], 'code_effects': ['let_manage']})
+        self.assertEqual(code.parts, {'code_effects': ['let_manage']})
+
+    def test_access_code_page_stores_canonical_code(self):
+        response = self.client.get(
+            reverse('access_code', kwargs={'url_next': 'done/'}),
+            {'access_code': self.master.value.replace('-', '').lower()})
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(self.client.session['access_code'],
+                         self.master.value)
+
+
+class AdminCodeViewTest(CompetitorCodeTestMixin, TestCase):
+    def setUp(self):
+        self.competition, (self.cqs, _) = self.make_competition('admin-view')
+        self.master = self.competition.master_code_create()
+        self.user = User.objects.create_user('organizer', password='pw')
+        self.client.login(username='organizer', password='pw')
+        session = self.client.session
+        session['access_code'] = self.master.value
+        session.save()
+
+    def test_create_admin_code_in_view(self):
+        url = reverse('competition_code_create', kwargs={
+            'slug': self.competition.slug, 'user_type': 'admin'})
+        response = self.client.post(url, {
+            'admin_privileges': ['view_all_attempts'],
+            'competitor_privileges': ['attempt']})
+        self.assertEqual(response.status_code, 302)
+        code = self.user.profile.created_codes.get()
+        self.assertEqual(code.admin_code.privileges('admin_privileges'),
+                         ['view_all_attempts'])
+        self.assertEqual(code.admin_code.privileges('competitor_privileges'),
+                         ['attempt'])
+
+    def test_create_competitor_code_in_view(self):
+        url = reverse('competition_code_create', kwargs={
+            'slug': self.competition.slug, 'user_type': 'competitor'})
+        response = self.client.post(url, {
+            'competitor_privileges': ['attempt'],
+            'competition_questionset': self.cqs.id})
+        self.assertEqual(response.status_code, 302)
+        code = self.user.profile.created_codes.get()
+        self.assertEqual(code.competitor_code.competition_questionset,
+                         self.cqs)
+        self.assertEqual(code.competitor_code.privileges, ['attempt'])
+
+    def test_without_privilege(self):
+        AdminCode.objects.filter(code=self.master).update(
+            create_admin_codes=False)
+        url = reverse('competition_code_create', kwargs={
+            'slug': self.competition.slug, 'user_type': 'admin'})
+        response = self.client.post(url, {
+            'admin_privileges': ['view_all_attempts']})
+        self.assertEqual(response.status_code, 403)
+
+
+class LegacyAdminCodeMigrationTest(CompetitorCodeTestMixin, TestCase):
+    def setUp(self):
+        self.competition, _ = self.make_competition('legacy-admin')
+        generator = self.competition.administrator_code_generator
+        # an administrator code as stored before random codes
+        self.legacy = Code.objects.create(
+            value='0000002a*f3c+a01', salt=generator.salt,
+            format=generator.format)
+        for i, (name, value) in enumerate((
+                ('admin_privileges', 'view_all_admin_codes'),
+                ('admin_privileges', 'create_competitor_codes'),
+                ('competitor_privileges', 'attempt'),
+                ('competitor_privileges', 'resume_attempt'),
+                ('allowed_effects', 'let_manage'))):
+            CodePart.objects.create(code=self.legacy, ordering=i,
+                                    name=name, value=value)
+        generator.codes.add(self.legacy)
+
+    def migrate(self):
+        admin_migration.legacy_codes_to_admin_codes(apps, None)
+
+    def test_migration_fills_new_fields(self):
+        self.migrate()
+        self.migrate()
+        admin_code = self.legacy.admin_code
+        self.assertEqual(admin_code.value, self.legacy.value)
+        self.assertEqual(
+            sorted(admin_code.privileges('admin_privileges')),
+            ['create_competitor_codes', 'view_all_admin_codes'])
+        self.assertEqual(admin_code.privileges('competitor_privileges'),
+                         ['attempt'])
+        self.assertEqual(admin_code.privileges('allowed_effects'),
+                         ['let_manage'])
+        self.assertEqual(AdminCode.objects.count(), 1)
+        self.assertEqual(list(self.competition.organizer_codes()),
+                         [self.legacy])
+
+    def test_migrated_code_works_in_exact_form(self):
+        self.migrate()
+        allows = self.competition.admin_code_allows
+        self.assertTrue(allows(self.legacy.value, 'admin_privileges',
+                               'create_competitor_codes'))
+        self.assertFalse(allows(self.legacy.value.upper(),
+                                'admin_privileges',
+                                'create_competitor_codes'))
